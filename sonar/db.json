@@ -1,0 +1,30 @@
+{
+  "users": [
+    {
+      "id": "1",
+      "username": "Mateo Rivaes",
+      "email": "mateo@email.com",
+      "password": "hashed_password_mock",
+      "role": "user",
+      "avatarUrl": "/avatars/default-teal.png",
+      "bio": "Audiófilo explorando vinilos japoneses...",
+      "stats": {
+        "savedAlbums": 142,
+        "reviewsCount": 86,
+        "followers": 420
+      },
+      "preferences": ["Art Rock", "Electrónica"]
+    }
+  ],
+  "reviews": [
+    {
+      "id": "101",
+      "userId": "1",
+      "albumId": "album_01",
+      "rating": 4.7,
+      "content": "Obra cumbre del pop psicodélico.",
+      "status": "pending_moderation",
+      "aiFlagged": false
+    }
+  ]
+}
