@@ -1,11 +1,11 @@
 import React from 'react';
 import { ThemeProvider } from './shared/context/theme-context';
-import HomePage from './pages/public/home-page';
+import AppRouter from './shared/routing/app-router';
 
 function App() {
   return (
     <ThemeProvider>
-      <HomePage />
+      <AppRouter />
     </ThemeProvider>
   );
 }
