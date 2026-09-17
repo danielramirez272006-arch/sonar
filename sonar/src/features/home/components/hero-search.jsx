@@ -1,32 +1,21 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 
+const heroVariants = {
+  hidden: { opacity: 0, y: 30 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: {
+      duration: 0.7,
+      ease: [0.16, 1, 0.3, 1],
+    },
+  },
+};
+
 export const HeroSearch = ({ onSearch = () => {}, onSubmit = (e) => e.preventDefault() }) => {
   const [searchValue, setSearchValue] = useState('');
   const [isFocused, setIsFocused] = useState(false);
-
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.18,
-        delayChildren: 0.1,
-      },
-    },
-  };
-
-  const itemVariants = {
-    hidden: { opacity: 0, y: 20 },
-    visible: {
-      opacity: 1,
-      y: 0,
-      transition: {
-        duration: 0.7,
-        ease: [0.16, 1, 0.3, 1],
-      },
-    },
-  };
 
   const handleInputChange = (e) => {
     setSearchValue(e.target.value);
@@ -39,114 +28,40 @@ export const HeroSearch = ({ onSearch = () => {}, onSubmit = (e) => e.preventDef
   };
 
   return (
-    <section
-      style={{
-        position: 'relative',
-        width: '100%',
-        padding: '72px 24px',
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        justifyContent: 'center',
-        textAlign: 'center',
-        overflow: 'hidden',
-        backgroundColor: 'var(--bg-page)',
-        transition: 'background-color 0.25s ease',
-      }}
+    <motion.section
+      variants={heroVariants}
+      className="relative w-full px-4 sm:px-6 lg:px-10 py-12 sm:py-16 md:py-24 flex flex-col items-center justify-center text-center overflow-hidden bg-[#fff7fa] dark:bg-[#231123] transition-colors duration-300"
     >
       {/* Resplandor ambiental de fondo */}
-      <div
-        style={{
-          position: 'absolute',
-          top: '50%',
-          left: '50%',
-          transform: 'translate(-50%, -50%)',
-          width: '500px',
-          height: '250px',
-          background: 'radial-gradient(circle, rgba(184, 12, 9, 0.12) 0%, transparent 70%)',
-          filter: 'blur(80px)',
-          pointerEvents: 'none',
-          zIndex: 0,
-        }}
-      />
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[320px] sm:w-[500px] h-[200px] sm:h-[260px] bg-rose-200/50 dark:bg-[#B80C09]/15 blur-[70px] sm:blur-[100px] pointer-events-none -z-10 transition-colors duration-300" />
 
-      <motion.div
-        variants={containerVariants}
-        initial="hidden"
-        animate="visible"
-        style={{
-          maxWidth: '820px',
-          width: '100%',
-          margin: '0 auto',
-          position: 'relative',
-          zIndex: 1,
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-        }}
-      >
-        {/* Título Principal */}
-        <motion.h1
-          variants={itemVariants}
-          style={{
-            fontSize: 'clamp(36px, 5.5vw, 60px)',
-            fontWeight: 800,
-            lineHeight: 1.15,
-            letterSpacing: '-1px',
-            margin: '0 0 16px 0',
-            background: 'linear-gradient(135deg, var(--text-main) 40%, #B80C09 100%)',
-            WebkitBackgroundClip: 'text',
-            WebkitTextFillColor: 'transparent',
-          }}
-        >
-          Descubre. Escucha. Reseña.
-        </motion.h1>
+      <div className="max-w-[820px] w-full mx-auto relative z-10 flex flex-col items-center">
+        {/* Título Principal Mobile-First */}
+        <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold tracking-tight leading-tight mb-3 sm:mb-4 text-[#231123] dark:text-[#FAF5F8] transition-colors">
+          <span className="bg-gradient-to-r from-[#231123] via-[#5c1d5e] to-[#B80C09] dark:from-white dark:via-rose-300 dark:to-[#B80C09] bg-clip-text text-transparent">
+            Descubre. Escucha. Reseña.
+          </span>
+        </h1>
 
-        {/* Subtítulo */}
-        <motion.p
-          variants={itemVariants}
-          style={{
-            fontSize: 'clamp(15px, 2vw, 19px)',
-            fontWeight: 400,
-            lineHeight: 1.6,
-            color: 'var(--text-secondary)',
-            maxWidth: '640px',
-            margin: '0 0 36px 0',
-            transition: 'color 0.25s ease',
-          }}
-        >
+        {/* Subtítulo Mobile-First */}
+        <p className="text-sm sm:text-base md:text-lg lg:text-xl font-normal leading-relaxed text-[#5c435a] dark:text-[#B89CB0] max-w-[620px] mb-6 sm:mb-8 md:mb-10 transition-colors px-2">
           Únete a la comunidad de audiófilos y comparte tu perspectiva sobre los mejores álbumes del mundo.
-        </motion.p>
+        </p>
 
         {/* Buscador Principal */}
-        <motion.form
-          variants={itemVariants}
+        <form
           onSubmit={handleFormSubmit}
-          style={{
-            width: '100%',
-            maxWidth: '620px',
-            position: 'relative',
-            display: 'flex',
-            alignItems: 'center',
-          }}
+          className="w-full max-w-[620px] relative flex items-center px-1"
         >
           {/* Ícono de Lupa */}
           <div
-            style={{
-              position: 'absolute',
-              left: '20px',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              pointerEvents: 'none',
-              zIndex: 2,
-              color: isFocused ? '#B80C09' : 'var(--text-muted)',
-              transition: 'color 0.25s ease',
-            }}
+            className={`absolute left-5 flex items-center justify-center pointer-events-none z-10 transition-colors ${
+              isFocused ? 'text-[#B80C09]' : 'text-[#81737e] dark:text-[#B89CB0]'
+            }`}
           >
             <svg
-              width="22"
-              height="22"
+              width="20"
+              height="20"
               viewBox="0 0 24 24"
               fill="none"
               stroke="currentColor"
@@ -159,63 +74,33 @@ export const HeroSearch = ({ onSearch = () => {}, onSubmit = (e) => e.preventDef
             </svg>
           </div>
 
-          {/* Input Grande y Redondeado */}
+          {/* Input Grande Adaptable */}
           <input
             type="text"
-            placeholder="Buscar por álbum, artista o género musical..."
+            placeholder="Buscar por álbum, artista o género..."
             value={searchValue}
             onChange={handleInputChange}
             onFocus={() => setIsFocused(true)}
             onBlur={() => setIsFocused(false)}
-            style={{
-              width: '100%',
-              height: '58px',
-              padding: '0 24px 0 56px',
-              fontSize: '15px',
-              fontWeight: 500,
-              color: 'var(--text-main)',
-              backgroundColor: 'var(--bg-card)',
-              border: isFocused ? '1.5px solid #B80C09' : '1px solid var(--border-subtle)',
-              borderRadius: '9999px',
-              outline: 'none',
-              boxShadow: isFocused
-                ? '0 0 0 4px rgba(184, 12, 9, 0.2), var(--shadow-card-hover)'
-                : 'var(--shadow-card)',
-              transition: 'all 0.25s cubic-bezier(0.16, 1, 0.3, 1)',
-              boxSizing: 'border-box',
-            }}
+            className={`w-full h-13 sm:h-14 md:h-[60px] pl-12 sm:pl-14 pr-24 sm:pr-28 text-xs sm:text-sm md:text-base font-medium rounded-full outline-none transition-all duration-300 ${
+              isFocused
+                ? 'border-2 border-[#B80C09] ring-4 ring-[#B80C09]/20 shadow-lg'
+                : 'border border-[#e6d5e2] dark:border-white/10 shadow-[0_4px_20px_-2px_rgba(75,40,64,0.06)]'
+            } bg-white dark:bg-[#4B2840] text-[#231123] dark:text-[#FAF5F8] placeholder:text-[#81737e] dark:placeholder:text-[#B89CB0]/70`}
           />
 
-          {/* Botón Buscar opcional */}
-          {searchValue && (
-            <motion.button
-              initial={{ opacity: 0, scale: 0.8 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.8 }}
-              type="submit"
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              style={{
-                position: 'absolute',
-                right: '8px',
-                height: '42px',
-                padding: '0 20px',
-                backgroundColor: '#B80C09',
-                color: '#FFFFFF',
-                borderRadius: '9999px',
-                border: 'none',
-                fontSize: '13px',
-                fontWeight: 700,
-                cursor: 'pointer',
-                boxShadow: '0 2px 10px rgba(184, 12, 9, 0.4)',
-              }}
-            >
-              Buscar
-            </motion.button>
-          )}
-        </motion.form>
-      </motion.div>
-    </section>
+          {/* Botón Buscar */}
+          <motion.button
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            type="submit"
+            className="absolute right-2.5 sm:right-3 h-9 sm:h-10 md:h-11 px-3.5 sm:px-5 bg-[#B80C09] text-white rounded-full text-xs sm:text-sm font-bold cursor-pointer shadow-md hover:bg-[#9c0a07] transition-all flex items-center justify-center gap-1"
+          >
+            <span>Buscar</span>
+          </motion.button>
+        </form>
+      </div>
+    </motion.section>
   );
 };
 

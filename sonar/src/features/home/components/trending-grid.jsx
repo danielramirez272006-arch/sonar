@@ -87,90 +87,32 @@ export const TrendingGrid = () => {
   const [activeTab, setActiveTab] = useState('week');
 
   return (
-    <section
-      style={{
-        width: '100%',
-        padding: '56px 24px',
-        backgroundColor: 'var(--bg-page)',
-        transition: 'background-color 0.25s ease',
-      }}
-    >
-      <div
-        style={{
-          maxWidth: '1440px',
-          margin: '0 auto',
-          display: 'flex',
-          flexDirection: 'column',
-          gap: '32px',
-        }}
-      >
+    <section className="w-full px-4 sm:px-6 lg:px-10 py-12 sm:py-16 bg-[#fff7fa] dark:bg-[#231123] transition-colors duration-300">
+      <div className="max-w-[1440px] mx-auto flex flex-col gap-8">
         {/* Section Header & Filter Tabs */}
-        <div
-          style={{
-            display: 'flex',
-            flexWrap: 'wrap',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            gap: '16px',
-            borderBottom: '1px solid var(--border-subtle)',
-            paddingBottom: '16px',
-          }}
-        >
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
-            <span
-              style={{
-                fontSize: '11px',
-                textTransform: 'uppercase',
-                letterSpacing: '1.5px',
-                color: 'var(--badge-text)',
-                fontWeight: 800,
-              }}
-            >
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-[#e6d5e2] dark:border-white/10 pb-4">
+          <div className="flex flex-col gap-1">
+            <span className="text-xs uppercase tracking-widest text-[#5c1d5e] dark:text-pink-300 font-extrabold">
               RADAR MUSICAL
             </span>
-            <h2
-              style={{
-                fontSize: 'clamp(24px, 3.5vw, 36px)',
-                fontWeight: 800,
-                color: 'var(--text-main)',
-                margin: 0,
-                transition: 'color 0.25s ease',
-              }}
-            >
+            <h2 className="text-2xl sm:text-3xl lg:text-4xl text-[#231123] dark:text-[#FAF5F8] font-extrabold">
               Exploración — Álbumes en Tendencia
             </h2>
           </div>
 
           {/* Filter Tabs */}
-          <div
-            style={{
-              display: 'inline-flex',
-              alignItems: 'center',
-              padding: '4px',
-              borderRadius: '12px',
-              backgroundColor: 'var(--bg-card)',
-              border: '1px solid var(--border-subtle)',
-              gap: '4px',
-              boxShadow: 'var(--shadow-card)',
-            }}
-          >
+          <div className="inline-flex items-center p-1 rounded-xl bg-white dark:bg-[#4B2840] border border-[#e6d5e2] dark:border-white/10 self-start md:self-auto gap-1 shadow-xs transition-colors">
             {tabs.map((tab) => {
               const isActive = activeTab === tab.id;
               return (
                 <button
                   key={tab.id}
                   onClick={() => setActiveTab(tab.id)}
-                  style={{
-                    padding: '8px 16px',
-                    borderRadius: '8px',
-                    fontSize: '13px',
-                    fontWeight: 700,
-                    cursor: 'pointer',
-                    transition: 'all 0.2s ease',
-                    border: 'none',
-                    backgroundColor: isActive ? '#B80C09' : 'transparent',
-                    color: isActive ? '#FFFFFF' : 'var(--text-secondary)',
-                  }}
+                  className={`px-4 py-2 rounded-lg text-xs sm:text-sm font-bold transition-all cursor-pointer ${
+                    isActive
+                      ? 'bg-[#B80C09] text-white shadow-xs'
+                      : 'text-[#5c435a] hover:text-[#231123] dark:text-[#B89CB0] dark:hover:text-[#FAF5F8]'
+                  }`}
                   type="button"
                 >
                   {tab.label}
@@ -181,129 +123,51 @@ export const TrendingGrid = () => {
         </div>
 
         {/* 8 Albums Responsive Card Grid */}
-        <div
-          style={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))',
-            gap: '24px',
-          }}
-        >
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
           {trendingAlbums.map((album) => (
             <motion.div
               key={album.id}
               whileHover={{ y: -4 }}
               transition={{ duration: 0.25 }}
-              style={{
-                display: 'flex',
-                flexDirection: 'column',
-                padding: '16px',
-                borderRadius: '16px',
-                backgroundColor: 'var(--bg-card)',
-                border: '1px solid var(--border-subtle)',
-                boxShadow: 'var(--shadow-card)',
-                transition: 'all 0.25s ease',
-              }}
-              className="group"
+              className="group flex flex-col p-4 rounded-2xl bg-white dark:bg-[#4B2840] border border-[#e6d5e2] dark:border-white/10 shadow-[0_4px_20px_-2px_rgba(75,40,64,0.06)] dark:shadow-[0_4px_20px_-4px_rgba(0,0,0,0.4)] hover:shadow-md dark:hover:shadow-[0_12px_32px_-6px_rgba(0,0,0,0.6)] hover:border-[#B80C09]/40 transition-all duration-300"
             >
               {/* Album Image & Hover Actions */}
-              <div
-                style={{
-                  position: 'relative',
-                  width: '100%',
-                  aspectRatio: '1/1',
-                  borderRadius: '12px',
-                  overflow: 'hidden',
-                  backgroundColor: 'var(--badge-bg)',
-                  marginBottom: '12px',
-                }}
-              >
+              <div className="relative w-full aspect-square rounded-xl overflow-hidden bg-[#f8e9f6] dark:bg-[#231123] mb-3 shadow-xs">
                 <img
-                  style={{ width: '100%', height: '100%', objectFit: 'cover', transition: 'transform 0.5s ease' }}
-                  className="group-hover:scale-105"
+                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                   alt={album.title}
                   src={album.cover}
                   onError={(e) => {
                     e.target.style.display = 'none';
                   }}
                 />
-                <div
-                  style={{
-                    position: 'absolute',
-                    inset: 0,
-                    background: 'linear-gradient(to top, rgba(0,0,0,0.8) 0%, transparent 70%)',
-                    display: 'flex',
-                    alignItems: 'flex-end',
-                    justifyContent: 'space-between',
-                    padding: '12px',
-                    transition: 'opacity 0.25s ease',
-                  }}
-                  className="opacity-0 group-hover:opacity-100"
-                >
+                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end justify-between p-3">
                   <button
-                    style={{
-                      padding: '6px 12px',
-                      borderRadius: '8px',
-                      backgroundColor: '#B80C09',
-                      color: '#FFFFFF',
-                      fontSize: '11px',
-                      fontWeight: 700,
-                      textTransform: 'uppercase',
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: '4px',
-                      border: 'none',
-                      cursor: 'pointer',
-                      boxShadow: '0 2px 8px rgba(0,0,0,0.3)',
-                    }}
+                    className="px-3 py-1.5 rounded-lg bg-[#B80C09] text-white text-xs uppercase font-bold flex items-center gap-1 shadow-md hover:bg-[#9c0a07] transition-colors cursor-pointer"
                     type="button"
                   >
-                    <span className="material-symbols-outlined" style={{ fontSize: '14px' }}>bookmark_add</span>
+                    <span className="material-symbols-outlined text-[16px]">bookmark_add</span>
                     <span>Guardar</span>
                   </button>
                   <button
                     aria-label="Reproducir muestra"
-                    style={{
-                      width: '32px',
-                      height: '32px',
-                      borderRadius: '50%',
-                      backgroundColor: '#FFFFFF',
-                      color: '#231123',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      border: 'none',
-                      cursor: 'pointer',
-                      boxShadow: '0 2px 8px rgba(0,0,0,0.3)',
-                    }}
+                    className="w-8 h-8 rounded-full bg-white text-[#231123] flex items-center justify-center hover:scale-105 transition-transform shadow-md cursor-pointer"
                     type="button"
                   >
-                    <span className="material-symbols-outlined" style={{ fontSize: '18px' }}>play_arrow</span>
+                    <span className="material-symbols-outlined text-[18px]">play_arrow</span>
                   </button>
                 </div>
               </div>
 
               {/* Album Title & Rating */}
-              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '8px', marginBottom: '4px' }}>
-                <span style={{ fontSize: '15px', fontWeight: 700, color: 'var(--text-main)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+              <div className="flex items-center justify-between gap-2 mb-1">
+                <span className="text-base text-[#231123] dark:text-[#FAF5F8] font-bold truncate">
                   {album.title}
                 </span>
-                <div
-                  style={{
-                    display: 'inline-flex',
-                    alignItems: 'center',
-                    gap: '2px',
-                    padding: '2px 8px',
-                    borderRadius: '9999px',
-                    backgroundColor: 'var(--badge-bg)',
-                    color: 'var(--text-main)',
-                    fontSize: '12px',
-                    fontWeight: 700,
-                    flexShrink: 0,
-                  }}
-                >
+                <div className="inline-flex items-center gap-0.5 px-2 py-0.5 rounded-full bg-[#f8e9f6] dark:bg-[#231123] text-[#5c1d5e] dark:text-pink-200 text-xs font-bold shrink-0">
                   <span
-                    className="material-symbols-outlined"
-                    style={{ fontSize: '13px', color: '#f59e0b', fontVariationSettings: "'FILL' 1" }}
+                    className="material-symbols-outlined text-[13px] text-amber-500"
+                    style={{ fontVariationSettings: "'FILL' 1" }}
                   >
                     star
                   </span>
@@ -311,103 +175,42 @@ export const TrendingGrid = () => {
                 </div>
               </div>
 
-              <p style={{ fontSize: '13px', color: 'var(--text-secondary)', margin: '0 0 8px 0', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+              <p className="text-xs sm:text-sm text-[#5c435a] dark:text-[#B89CB0] font-medium truncate">
                 {album.artist}
               </p>
 
-              <div
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'space-between',
-                  fontSize: '12px',
-                  color: 'var(--text-muted)',
-                  borderTop: '1px solid var(--border-subtle)',
-                  paddingTop: '8px',
-                }}
-              >
+              <div className="flex items-center justify-between text-[#81737e] dark:text-[#B89CB0] text-xs mt-2 pt-2 border-t border-[#e6d5e2]/60 dark:border-white/10">
                 <span>{album.year}</span>
-                <span style={{ fontWeight: 600, color: 'var(--badge-text)' }}>{album.genre}</span>
+                <span className="text-[#4B2840] dark:text-pink-300 font-semibold">{album.genre}</span>
               </div>
             </motion.div>
           ))}
         </div>
 
         {/* Discovery Bottom Banner CTA */}
-        <div
-          style={{
-            position: 'relative',
-            width: '100%',
-            borderRadius: '24px',
-            background: 'var(--bg-banner)',
-            border: '1px solid var(--border-subtle)',
-            overflow: 'hidden',
-            padding: '40px',
-            boxShadow: 'var(--shadow-card-hover)',
-            display: 'flex',
-            flexWrap: 'wrap',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            gap: '24px',
-            color: '#FFFFFF',
-          }}
-        >
-          {/* Ambient interior highlights */}
-          <div
-            style={{
-              position: 'absolute',
-              right: '-4rem',
-              bottom: '-4rem',
-              width: '320px',
-              height: '320px',
-              borderRadius: '50%',
-              backgroundColor: 'rgba(184, 12, 9, 0.25)',
-              filter: 'blur(80px)',
-              pointerEvents: 'none',
-            }}
-          />
+        <div className="relative w-full rounded-3xl bg-gradient-to-r from-[#4B2840] via-[#5c1d5e] to-[#231123] border border-white/10 overflow-hidden p-6 sm:p-10 shadow-lg flex flex-col md:flex-row items-center justify-between gap-6 text-white">
+          {/* Ambient interior radial highlights */}
+          <div className="absolute -right-16 -bottom-16 w-80 h-80 rounded-full bg-[#B80C09]/20 blur-[80px] pointer-events-none" />
+          <div className="absolute -left-16 -top-16 w-80 h-80 rounded-full bg-purple-500/15 blur-[80px] pointer-events-none" />
 
-          <div style={{ position: 'relative', zIndex: 1, maxWidth: '580px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
-            <div
-              style={{
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: '8px',
-                fontSize: '11px',
-                fontWeight: 700,
-                textTransform: 'uppercase',
-                letterSpacing: '1.5px',
-                color: '#ffdad5',
-              }}
-            >
-              <span className="material-symbols-outlined" style={{ fontSize: '16px', color: '#B80C09' }}>album</span>
+          <div className="relative z-10 flex flex-col gap-2 max-w-xl text-center md:text-left">
+            <div className="inline-flex items-center gap-2 self-center md:self-start text-pink-200 text-xs uppercase tracking-widest font-bold">
+              <span className="material-symbols-outlined text-[16px] text-[#B80C09]">album</span>
               <span>Bitácora de Escucha Personal</span>
             </div>
-            <h3 style={{ fontSize: 'clamp(22px, 3vw, 32px)', fontWeight: 800, margin: 0 }}>
+            <h3 className="text-2xl sm:text-3xl text-white font-extrabold">
               ¿Listo para registrar tu viaje musical?
             </h3>
-            <p style={{ fontSize: '15px', color: 'rgba(255, 255, 255, 0.85)', margin: 0, lineHeight: 1.5 }}>
+            <p className="text-sm sm:text-base text-white/85">
               Califica cada surco, escribe ensayos detallados y conecta con audiófilos que sienten la música con la misma intensidad que tú.
             </p>
           </div>
 
-          <div style={{ position: 'relative', zIndex: 1, display: 'flex', flexWrap: 'wrap', gap: '14px' }}>
+          <div className="relative z-10 flex flex-wrap items-center justify-center gap-4 shrink-0">
             <motion.button
               whileHover={{ scale: 1.04, y: -2 }}
               whileTap={{ scale: 0.96 }}
-              style={{
-                padding: '14px 24px',
-                borderRadius: '12px',
-                backgroundColor: '#B80C09',
-                color: '#FFFFFF',
-                fontSize: '14px',
-                fontWeight: 700,
-                textTransform: 'uppercase',
-                letterSpacing: '1px',
-                border: 'none',
-                cursor: 'pointer',
-                boxShadow: '0 8px 20px rgba(184, 12, 9, 0.5)',
-              }}
+              className="px-6 py-3.5 rounded-xl bg-[#B80C09] text-white text-sm uppercase tracking-wider shadow-[0_10px_25px_-6px_rgba(184,12,9,0.6)] hover:bg-[#9c0a07] transition-all font-bold cursor-pointer"
               type="button"
             >
               Crear Cuenta Gratis
@@ -415,19 +218,7 @@ export const TrendingGrid = () => {
             <motion.button
               whileHover={{ scale: 1.04, y: -2 }}
               whileTap={{ scale: 0.96 }}
-              style={{
-                padding: '14px 24px',
-                borderRadius: '12px',
-                backgroundColor: 'rgba(255, 255, 255, 0.12)',
-                color: '#FFFFFF',
-                border: '1px solid rgba(255, 255, 255, 0.25)',
-                fontSize: '14px',
-                fontWeight: 600,
-                textTransform: 'uppercase',
-                letterSpacing: '1px',
-                backdropFilter: 'blur(8px)',
-                cursor: 'pointer',
-              }}
+              className="px-6 py-3.5 rounded-xl bg-white/10 hover:bg-white/15 text-white border border-white/20 text-sm uppercase tracking-wider backdrop-blur-md transition-all font-semibold cursor-pointer"
               type="button"
             >
               Explorar Catálogo Completo

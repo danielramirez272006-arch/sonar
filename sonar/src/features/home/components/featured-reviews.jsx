@@ -7,7 +7,7 @@ const reviewsData = [
     author: '@sofia_sound',
     badge: 'Crítica Verificada',
     badgeIcon: 'verified',
-    badgeColor: '#B80C09',
+    badgeColor: 'text-[#B80C09]',
     avatarLetter: 'S',
     avatarBg: '#5c1d5e',
     rating: 5,
@@ -26,7 +26,7 @@ const reviewsData = [
     author: '@marcos_vinyl',
     badge: 'Top Reseñador',
     badgeIcon: 'award_star',
-    badgeColor: '#f59e0b',
+    badgeColor: 'text-amber-500',
     avatarLetter: 'M',
     avatarBg: '#4B2840',
     rating: 4.5,
@@ -45,7 +45,7 @@ const reviewsData = [
     author: '@elena_analog',
     badge: 'Curadora',
     badgeIcon: 'auto_awesome',
-    badgeColor: '#75527b',
+    badgeColor: 'text-[#5c1d5e] dark:text-pink-300',
     avatarLetter: 'E',
     avatarBg: '#75527b',
     rating: 5,
@@ -63,154 +63,59 @@ const reviewsData = [
 
 export const FeaturedReviews = () => {
   return (
-    <section
-      style={{
-        width: '100%',
-        padding: '56px 24px',
-        backgroundColor: 'var(--bg-page)',
-        transition: 'background-color 0.25s ease',
-      }}
-    >
-      <div
-        style={{
-          maxWidth: '1440px',
-          margin: '0 auto',
-          display: 'flex',
-          flexDirection: 'column',
-          gap: '28px',
-        }}
-      >
+    <section className="w-full px-4 sm:px-6 lg:px-10 py-12 sm:py-16 bg-[#fff7fa] dark:bg-[#231123] transition-colors duration-300">
+      <div className="max-w-[1440px] mx-auto flex flex-col gap-6">
         {/* Section Header */}
-        <div
-          style={{
-            display: 'flex',
-            flexWrap: 'wrap',
-            alignItems: 'flex-end',
-            justifyContent: 'space-between',
-            gap: '12px',
-            borderBottom: '1px solid var(--border-subtle)',
-            paddingBottom: '16px',
-          }}
-        >
+        <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-3 border-b border-[#e6d5e2] dark:border-white/10 pb-4">
           <div>
-            <span
-              style={{
-                fontSize: '11px',
-                textTransform: 'uppercase',
-                letterSpacing: '1.5px',
-                color: '#B80C09',
-                fontWeight: 800,
-              }}
-            >
+            <span className="text-xs uppercase tracking-widest text-[#B80C09] font-extrabold">
               DISCURSO & ANÁLISIS
             </span>
-            <h2
-              style={{
-                fontSize: 'clamp(24px, 3.5vw, 36px)',
-                fontWeight: 800,
-                color: 'var(--text-main)',
-                margin: '4px 0 0 0',
-                transition: 'color 0.25s ease',
-              }}
-            >
+            <h2 className="text-2xl sm:text-3xl lg:text-4xl text-[#231123] dark:text-[#FAF5F8] font-extrabold mt-1">
               Reseñas Destacadas
             </h2>
-            <p
-              style={{
-                fontSize: '15px',
-                color: 'var(--text-secondary)',
-                margin: '4px 0 0 0',
-                transition: 'color 0.25s ease',
-              }}
-            >
+            <p className="text-sm sm:text-base text-[#5c435a] dark:text-[#B89CB0] mt-1">
               Voces críticas y oyentes apasionados compartiendo su perspectiva musical en alta resolución.
             </p>
           </div>
           <a
-            style={{
-              display: 'inline-flex',
-              alignItems: 'center',
-              gap: '6px',
-              fontSize: '14px',
-              fontWeight: 700,
-              color: 'var(--text-main)',
-              cursor: 'pointer',
-              transition: 'color 0.2s ease',
-            }}
+            className="inline-flex items-center gap-1.5 text-sm font-bold text-[#5c1d5e] dark:text-pink-300 hover:text-[#B80C09] dark:hover:text-[#B80C09] transition-colors group cursor-pointer"
             href="#reviews"
-            onMouseEnter={(e) => (e.currentTarget.style.color = '#B80C09')}
-            onMouseLeave={(e) => (e.currentTarget.style.color = 'var(--text-main)')}
           >
             <span>Ver todas (1.2k)</span>
-            <span className="material-symbols-outlined" style={{ fontSize: '18px' }}>
+            <span className="material-symbols-outlined text-[18px] group-hover:translate-x-1 transition-transform">
               arrow_forward
             </span>
           </a>
         </div>
 
         {/* 3 Featured Critique Cards Grid */}
-        <div
-          style={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
-            gap: '24px',
-          }}
-        >
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {reviewsData.map((review) => (
             <motion.article
               key={review.id}
               whileHover={{ y: -4 }}
               transition={{ duration: 0.25 }}
-              style={{
-                display: 'flex',
-                flexDirection: 'column',
-                justifyContent: 'space-between',
-                padding: '24px',
-                borderRadius: '16px',
-                backgroundColor: 'var(--bg-card)',
-                border: '1px solid var(--border-subtle)',
-                boxShadow: 'var(--shadow-card)',
-                transition: 'all 0.25s ease',
-              }}
+              className="flex flex-col justify-between p-6 rounded-2xl bg-white dark:bg-[#4B2840] border border-[#e6d5e2] dark:border-white/10 shadow-[0_6px_24px_-4px_rgba(75,40,64,0.06)] dark:shadow-[0_6px_24px_-4px_rgba(0,0,0,0.4)] hover:shadow-md dark:hover:shadow-[0_16px_36px_-6px_rgba(0,0,0,0.6)] hover:border-[#B80C09]/40 transition-all duration-300"
             >
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+              <div className="flex flex-col gap-4">
                 {/* Review Author Header */}
-                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '12px' }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                <div className="flex items-center justify-between gap-3">
+                  <div className="flex items-center gap-3">
                     <div
-                      style={{
-                        width: '42px',
-                        height: '42px',
-                        borderRadius: '50%',
-                        backgroundColor: review.avatarBg,
-                        color: '#FFFFFF',
-                        fontWeight: 700,
-                        fontSize: '16px',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
-                      }}
+                      className="w-11 h-11 rounded-full overflow-hidden flex items-center justify-center text-white font-bold text-base ring-2 ring-[#e6d5e2] dark:ring-white/15 shrink-0 shadow-xs"
+                      style={{ backgroundColor: review.avatarBg }}
                     >
                       {review.avatarLetter}
                     </div>
-                    <div style={{ display: 'flex', flexDirection: 'column' }}>
-                      <span style={{ fontSize: '15px', fontWeight: 700, color: 'var(--text-main)', lineHeight: 1.2 }}>
+                    <div className="flex flex-col">
+                      <span className="text-base text-[#231123] dark:text-[#FAF5F8] font-bold leading-snug">
                         {review.author}
                       </span>
-                      <span
-                        style={{
-                          display: 'inline-flex',
-                          alignItems: 'center',
-                          gap: '4px',
-                          fontSize: '12px',
-                          fontWeight: 600,
-                          color: 'var(--badge-text)',
-                        }}
-                      >
+                      <span className="inline-flex items-center gap-1 text-xs text-[#5c1d5e] dark:text-pink-200 font-semibold">
                         <span
-                          className="material-symbols-outlined"
-                          style={{ fontSize: '14px', color: review.badgeColor, fontVariationSettings: "'FILL' 1" }}
+                          className={`material-symbols-outlined text-[13px] ${review.badgeColor}`}
+                          style={{ fontVariationSettings: "'FILL' 1" }}
                         >
                           {review.badgeIcon}
                         </span>
@@ -220,12 +125,12 @@ export const FeaturedReviews = () => {
                   </div>
 
                   {/* Rating Stars */}
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '2px', color: '#f59e0b' }}>
+                  <div className="flex items-center gap-0.5 text-amber-500">
                     {Array.from({ length: 5 }).map((_, i) => (
                       <span
                         key={i}
-                        className="material-symbols-outlined"
-                        style={{ fontSize: '18px', fontVariationSettings: "'FILL' 1" }}
+                        className="material-symbols-outlined text-[18px]"
+                        style={{ fontVariationSettings: "'FILL' 1" }}
                       >
                         {i < Math.floor(review.rating)
                           ? 'star'
@@ -238,42 +143,15 @@ export const FeaturedReviews = () => {
                 </div>
 
                 {/* Review Text Excerpt */}
-                <p
-                  style={{
-                    fontSize: '14.5px',
-                    color: 'var(--text-main)',
-                    lineHeight: 1.6,
-                    margin: 0,
-                  }}
-                >
+                <p className="text-sm sm:text-base text-[#231123]/90 dark:text-[#FAF5F8]/90 leading-relaxed">
                   {review.text}
                 </p>
 
                 {/* Album Reference Strip */}
-                <div
-                  style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '12px',
-                    padding: '10px 12px',
-                    borderRadius: '12px',
-                    backgroundColor: 'var(--badge-bg)',
-                    border: '1px solid var(--border-subtle)',
-                  }}
-                >
-                  <div
-                    style={{
-                      width: '46px',
-                      height: '46px',
-                      borderRadius: '8px',
-                      overflow: 'hidden',
-                      flexShrink: 0,
-                      backgroundColor: 'var(--bg-card)',
-                      border: '1px solid var(--border-subtle)',
-                    }}
-                  >
+                <div className="flex items-center gap-3 p-2.5 rounded-xl bg-[#fff7fa] dark:bg-[#231123]/80 border border-[#e6d5e2] dark:border-white/10 shadow-xs">
+                  <div className="w-12 h-12 rounded-lg overflow-hidden shrink-0 shadow-xs border border-white dark:border-white/10 bg-[#4B2840]">
                     <img
-                      style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                      className="w-full h-full object-cover"
                       alt={review.album.title}
                       src={review.album.cover}
                       onError={(e) => {
@@ -281,11 +159,11 @@ export const FeaturedReviews = () => {
                       }}
                     />
                   </div>
-                  <div style={{ display: 'flex', flexDirection: 'column', minWidth: 0 }}>
-                    <span style={{ fontSize: '13.5px', fontWeight: 700, color: 'var(--text-main)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                  <div className="flex flex-col min-w-0">
+                    <span className="text-sm text-[#231123] dark:text-[#FAF5F8] font-bold truncate">
                       {review.album.title}
                     </span>
-                    <span style={{ fontSize: '12px', color: 'var(--text-secondary)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                    <span className="text-xs text-[#5c435a] dark:text-[#B89CB0] truncate">
                       {review.album.artist}
                     </span>
                   </div>
@@ -293,35 +171,20 @@ export const FeaturedReviews = () => {
               </div>
 
               {/* Card Footer Metadata */}
-              <div
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'space-between',
-                  paddingTop: '16px',
-                  marginTop: '16px',
-                  borderTop: '1px solid var(--border-subtle)',
-                  fontSize: '12px',
-                  color: 'var(--text-muted)',
-                }}
-              >
-                <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
-                  <button
-                    style={{ display: 'flex', alignItems: 'center', gap: '4px', cursor: 'pointer', color: 'var(--text-muted)' }}
-                    type="button"
-                  >
-                    <span className="material-symbols-outlined" style={{ fontSize: '16px', color: '#B80C09' }}>favorite</span>
+              <div className="flex items-center justify-between pt-4 mt-4 border-t border-[#e6d5e2]/70 dark:border-white/10">
+                <div className="flex items-center gap-4 text-[#5c435a] dark:text-[#B89CB0] text-xs font-medium">
+                  <button className="flex items-center gap-1 hover:text-[#B80C09] transition-colors cursor-pointer" type="button">
+                    <span className="material-symbols-outlined text-[16px] text-[#B80C09]">favorite</span>
                     <span>{review.likes} likes</span>
                   </button>
-                  <button
-                    style={{ display: 'flex', alignItems: 'center', gap: '4px', cursor: 'pointer', color: 'var(--text-muted)' }}
-                    type="button"
-                  >
-                    <span className="material-symbols-outlined" style={{ fontSize: '16px' }}>chat_bubble</span>
+                  <button className="flex items-center gap-1 hover:text-[#231123] dark:hover:text-[#FAF5F8] transition-colors cursor-pointer" type="button">
+                    <span className="material-symbols-outlined text-[16px]">chat_bubble</span>
                     <span>{review.comments} comentarios</span>
                   </button>
                 </div>
-                <span>{review.timeAgo}</span>
+                <span className="text-xs text-[#81737e] dark:text-[#B89CB0]/70">
+                  {review.timeAgo}
+                </span>
               </div>
             </motion.article>
           ))}
