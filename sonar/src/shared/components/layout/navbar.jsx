@@ -24,40 +24,17 @@ export const Navbar = ({
   };
 
   return (
-    <header
-      style={{
-        position: 'sticky',
-        top: 0,
-        zIndex: 50,
-        width: '100%',
-        backgroundColor: 'var(--bg-navbar)',
-        borderBottom: '1px solid var(--border-subtle)',
-        backdropFilter: 'blur(16px)',
-        WebkitBackdropFilter: 'blur(16px)',
-        transition: 'background-color 0.25s ease, border-color 0.25s ease',
-      }}
-    >
-      <div
-        style={{
-          maxWidth: '1440px',
-          margin: '0 auto',
-          padding: '0 24px',
-          height: '68px',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-          gap: '16px',
-        }}
-      >
+    <header className="sticky top-0 z-50 w-full bg-white/95 dark:bg-[#231123]/95 border-b border-[#e6d5e2] dark:border-white/10 backdrop-blur-md transition-colors duration-300 shadow-xs">
+      <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-10 h-[68px] flex items-center justify-between gap-4">
         {/* Izquierda: AnimatedLogo interactivo */}
-        <div style={{ display: 'flex', alignItems: 'center' }}>
+        <div className="flex items-center">
           <AnimatedLogo />
         </div>
 
         {/* Derecha: Enlaces, Botón de Tema (Blanco/Negro) & Mock Avatar */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+        <div className="flex items-center gap-3 sm:gap-4">
           {/* Enlaces de navegación */}
-          <nav style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+          <nav className="flex items-center gap-1.5 sm:gap-2">
             {links.map((link) => {
               const isActive = activeTab === link.id;
               return (
@@ -66,18 +43,11 @@ export const Navbar = ({
                   onClick={() => handleNavClick(link.id)}
                   whileHover={{ y: -1 }}
                   whileTap={{ scale: 0.95 }}
-                  style={{
-                    position: 'relative',
-                    padding: '8px 16px',
-                    fontSize: '14px',
-                    fontWeight: 600,
-                    color: isActive ? 'var(--text-main)' : 'var(--text-secondary)',
-                    background: 'transparent',
-                    border: 'none',
-                    borderRadius: '8px',
-                    cursor: 'pointer',
-                    transition: 'color 0.2s ease',
-                  }}
+                  className={`relative px-3 sm:px-4 py-2 text-xs sm:text-sm font-semibold rounded-xl cursor-pointer transition-colors duration-200 ${
+                    isActive
+                      ? 'text-[#231123] dark:text-white'
+                      : 'text-[#5c435a] hover:text-[#231123] dark:text-[#B89CB0] dark:hover:text-white'
+                  }`}
                 >
                   {link.label}
 
@@ -85,14 +55,7 @@ export const Navbar = ({
                   {isActive && (
                     <motion.div
                       layoutId="navbar-active-pill"
-                      style={{
-                        position: 'absolute',
-                        inset: 0,
-                        backgroundColor: 'var(--badge-bg)',
-                        border: '1px solid var(--border-subtle)',
-                        borderRadius: '8px',
-                        zIndex: -1,
-                      }}
+                      className="absolute inset-0 bg-[#f8e9f6] dark:bg-[#4B2840] border border-[#e6d5e2] dark:border-white/10 rounded-xl -z-10 shadow-2xs"
                       transition={{ type: 'spring', stiffness: 380, damping: 30 }}
                     />
                   )}
@@ -108,19 +71,7 @@ export const Navbar = ({
             onClick={toggleTheme}
             aria-label="Cambiar tema"
             title={isDark ? 'Cambiar a Modo Blanco' : 'Cambiar a Modo Negro'}
-            style={{
-              width: '38px',
-              height: '38px',
-              borderRadius: '12px',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              backgroundColor: 'var(--badge-bg)',
-              color: 'var(--text-main)',
-              border: '1px solid var(--border-subtle)',
-              cursor: 'pointer',
-              transition: 'all 0.25s ease',
-            }}
+            className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl flex items-center justify-center bg-[#f8e9f6] dark:bg-[#4B2840] text-[#231123] dark:text-[#FAF5F8] border border-[#e6d5e2] dark:border-white/10 hover:border-[#B80C09] dark:hover:border-[#B80C09] hover:text-[#B80C09] dark:hover:text-[#B80C09] transition-all cursor-pointer shadow-xs"
           >
             <motion.span
               key={isDark ? 'dark' : 'light'}
@@ -128,51 +79,27 @@ export const Navbar = ({
               animate={{ rotate: 0, opacity: 1 }}
               exit={{ rotate: 90, opacity: 0 }}
               transition={{ duration: 0.2 }}
-              className="material-symbols-outlined"
-              style={{ fontSize: '20px' }}
+              className="material-symbols-outlined text-[19px] sm:text-[21px]"
             >
               {isDark ? 'light_mode' : 'dark_mode'}
             </motion.span>
           </motion.button>
 
           {/* Separador vertical */}
-          <div
-            style={{
-              width: '1px',
-              height: '24px',
-              backgroundColor: 'var(--border-subtle)',
-              transition: 'background-color 0.25s ease',
-            }}
-          />
+          <div className="w-[1px] h-6 bg-[#e6d5e2] dark:bg-white/10 transition-colors hidden xs:block" />
 
           {/* Mock Avatar del usuario */}
           <motion.div
-            whileHover={{ scale: 1.04 }}
-            whileTap={{ scale: 0.96 }}
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: '10px',
-              padding: '4px 12px 4px 4px',
-              borderRadius: '24px',
-              backgroundColor: 'var(--badge-bg)',
-              border: '1px solid var(--border-subtle)',
-              cursor: 'pointer',
-              transition: 'all 0.25s ease',
-            }}
+            whileHover={{ scale: 1.03 }}
+            whileTap={{ scale: 0.97 }}
+            className="flex items-center gap-2.5 p-1 pr-3 sm:pr-3.5 rounded-full bg-[#f8e9f6] dark:bg-[#4B2840] border border-[#e6d5e2] dark:border-white/10 cursor-pointer transition-all shadow-xs"
           >
             <Avatar
               src={user?.avatarUrl}
               name={user?.name || 'Mateo Rivaes'}
               size="sm"
             />
-            <span
-              style={{
-                fontSize: '13px',
-                fontWeight: 600,
-                color: 'var(--text-main)',
-              }}
-            >
+            <span className="text-xs sm:text-sm font-bold text-[#231123] dark:text-[#FAF5F8] hidden sm:inline-block">
               {user?.name || 'Mi Perfil'}
             </span>
           </motion.div>

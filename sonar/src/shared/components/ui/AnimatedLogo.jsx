@@ -85,6 +85,7 @@ export const AnimatedLogo = ({ className = '', onClick }) => {
       {/* Texto Central "SONAR" con Fade-in y Scale */}
       <motion.span
         variants={textVariants}
+        className="text-[#231123] dark:text-[#FAF5F8]"
         style={{
           overflow: 'hidden',
           whiteSpace: 'nowrap',
@@ -94,7 +95,6 @@ export const AnimatedLogo = ({ className = '', onClick }) => {
           fontWeight: 800,
           fontSize: '18px',
           letterSpacing: '2.5px',
-          color: 'var(--text-main, #231123)',
           textShadow: '0 0 12px rgba(184, 12, 9, 0.35)',
           margin: '0 6px',
         }}
