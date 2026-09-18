@@ -1,6 +1,18 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 
+const getStatusSymbol = (status) => {
+  switch (status) {
+    case 'Aprobado':
+      return '✓';
+    case 'Rechazado':
+      return '✗';
+    case 'Pendiente':
+    default:
+      return '⏳';
+  }
+};
+
 const mockReports = [
   {
     id: 1,
@@ -14,6 +26,7 @@ const mockReports = [
       album: 'OK Computer — Radiohead',
       excerpt: 'El final de No Surprises revela literalmente el clímax trágico de la narrativa conceptual y...',
     },
+    status: 'Pendiente',
     reason: 'Posible Spoiler sin etiqueta',
     confidence: '98% Certeza IA',
     severity: 'warning',
@@ -30,6 +43,7 @@ const mockReports = [
       album: 'Discovery — Daft Punk',
       excerpt: 'Visita este enlace externo bit.ly/sonar-leaks para descargar stems en alta resolución gratis...',
     },
+    status: 'Pendiente',
     reason: 'Enlace externo sospechoso / Spam',
     confidence: '94% Certeza IA',
     severity: 'danger',
@@ -46,6 +60,7 @@ const mockReports = [
       album: 'Untrue — Burial',
       excerpt: 'La calidad del prensaje en esta edición es una basura inútil y estafadora...',
     },
+    status: 'Pendiente',
     reason: 'Lenguaje potencialmente agresivo',
     confidence: '86% Certeza IA',
     severity: 'warning',
@@ -126,11 +141,12 @@ export const ModerationTable = ({
                     </div>
                   </td>
 
-                  {/* Columna Motivo (IA) */}
+                  {/* Columna Motivo (IA) / Estado */}
                   <td className="py-4 px-6 align-top">
                     <div className="flex flex-col gap-1">
                       <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold bg-amber-50 dark:bg-amber-950/40 text-amber-700 dark:text-amber-300 border border-amber-200 dark:border-amber-800/50 self-start">
                         <span className="w-1.5 h-1.5 rounded-full bg-amber-500" />
+                        <span aria-hidden="true">{getStatusSymbol(item.status || 'Pendiente')}</span>
                         {item.reason}
                       </span>
                       <span className="text-[11px] font-semibold text-[#81737e] dark:text-[#B89CB0]">
