@@ -70,7 +70,7 @@ export const Footer = () => {
         {/* Copyright Bar */}
         <div className="mt-10 pt-6 border-t border-[#e6d5e2] dark:border-white/10 flex flex-col sm:flex-row items-center justify-between gap-3 text-center sm:text-left">
           <p className="text-xs text-[#81737e] dark:text-[#B89CB0]">
-            © 2024 Sonar Audio Media Inc. Todos los derechos reservados.
+            © 2026 Sonar Audio Media Inc. Todos los derechos reservados.
           </p>
           <div className="flex items-center gap-2 text-xs text-[#81737e] dark:text-[#B89CB0] font-medium">
             <span className="w-2 h-2 rounded-full bg-emerald-500 inline-block" />

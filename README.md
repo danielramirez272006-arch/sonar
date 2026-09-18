@@ -79,4 +79,4 @@ npm run build
 
 ---
 
-© 2024 Sonar Audio Media Inc. Todos los derechos reservados.
+© 2026 Sonar Audio Media Inc. Todos los derechos reservados.
