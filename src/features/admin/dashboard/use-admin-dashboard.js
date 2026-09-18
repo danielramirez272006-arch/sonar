@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { getUsers, getReviews } from '../../../shared/services/api-client.js'
 
 export function useAdminDashboard() {
@@ -12,8 +12,12 @@ export function useAdminDashboard() {
   })
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState(null)
+  const latestRequest = useRef(0)
+  const pendingRequests = useRef(0)
 
   const loadMetrics = useCallback(async () => {
+    const requestId = ++latestRequest.current
+    pendingRequests.current += 1
     setError(null)
     setIsLoading(true)
 
@@ -30,16 +34,18 @@ export function useAdminDashboard() {
         flaggedReviews: reviews.filter(review => review?.aiFlagged === true).length,
       }
 
-      setMetrics(updatedMetrics)
+      // Una respuesta antigua no debe reemplazar la carga más reciente.
+      if (requestId === latestRequest.current) setMetrics(updatedMetrics)
       return updatedMetrics
     } catch (cause) {
       const metricsError = cause instanceof Error
         ? cause
         : new Error('No se pudieron cargar las métricas del panel administrativo.')
-      setError(metricsError.message)
+      if (requestId === latestRequest.current) setError(metricsError.message)
       throw metricsError
     } finally {
-      setIsLoading(false)
+      pendingRequests.current -= 1
+      setIsLoading(pendingRequests.current > 0)
     }
   }, [])
 

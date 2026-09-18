@@ -13,7 +13,10 @@
         "reviewsCount": 86,
         "followers": 420
       },
-      "preferences": ["Art Rock", "Electrónica"]
+      "preferences": [
+        "Art Rock",
+        "Electrónica"
+      ]
     },
     {
       "id": "admin-1",
@@ -39,15 +42,6 @@
       "rating": 4.7,
       "content": "Obra cumbre del pop psicodélico.",
       "status": "pending_moderation",
-      "aiFlagged": false
-    },
-    {
-      "id": "102",
-      "userId": "1",
-      "albumId": "album_02",
-      "rating": 4,
-      "content": "Una producción envolvente y melodías memorables.",
-      "status": "approved",
       "aiFlagged": false
     }
   ]
