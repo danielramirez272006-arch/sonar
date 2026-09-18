@@ -117,7 +117,7 @@ export const DeezerPlayer = ({
               onClick={handleToggle}
               type="button"
               className="w-8 h-8 rounded-full bg-[#B80C09] text-white flex items-center justify-center shadow-md hover:bg-[#9c0a07] transition-all cursor-pointer"
-              aria-label={isPlaying ? 'Pausar' : 'Reproducir'}
+              aria-label={isPlaying ? 'Pausar pista' : 'Reproducir pista'}
             >
               {isPlaying ? (
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
