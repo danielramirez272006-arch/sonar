@@ -1,0 +1,3 @@
+export function EditorialGuide() {
+  return <section className="editorial-guide"><span className="eyebrow">EL CRITERIO ES HUMANO</span><h2>Escuchar.<br />Comprender.<br /><em>Después, decidir.</em></h2><p>Cuidamos un espacio donde las opiniones distintas puedan sonar juntas.</p><details><summary>Criterios editoriales <span>↗</span></summary><ul><li><strong>Escucha atenta.</strong> Valora los argumentos sobre la música.</li><li><strong>Autoría original.</strong> Favorece experiencias y opiniones propias.</li><li><strong>Pasión y respeto.</strong> La crítica es bienvenida; los ataques personales no.</li></ul></details><span className="guide-rings" aria-hidden="true" /></section>
+}
