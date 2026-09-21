@@ -62,3 +62,49 @@ export function updateReview(reviewId, changes) {
     body: JSON.stringify(changes),
   })
 }
+
+export class ApiClient {
+  constructor(baseUrl = API_BASE_URL) {
+    this.baseUrl = baseUrl
+  }
+
+  async request(endpoint, options = {}) {
+    return apiRequest(endpoint, options)
+  }
+
+  get(endpoint, options = {}) {
+    return this.request(endpoint, { ...options, method: 'GET' })
+  }
+
+  post(endpoint, data, options = {}) {
+    return this.request(endpoint, {
+      ...options,
+      method: 'POST',
+      body: JSON.stringify(data),
+    })
+  }
+
+  put(endpoint, data, options = {}) {
+    return this.request(endpoint, {
+      ...options,
+      method: 'PUT',
+      body: JSON.stringify(data),
+    })
+  }
+
+  patch(endpoint, data, options = {}) {
+    return this.request(endpoint, {
+      ...options,
+      method: 'PATCH',
+      body: JSON.stringify(data),
+    })
+  }
+
+  delete(endpoint, options = {}) {
+    return this.request(endpoint, { ...options, method: 'DELETE' })
+  }
+}
+
+export const apiClient = new ApiClient()
+export default apiClient
+

@@ -24,3 +24,27 @@ export async function sendReviewToModeration(review) {
 export async function notifyReviewCreated(review) {
   return sendReviewToModeration(review)
 }
+
+export const triggerNewReviewWebhook = async (reviewData = {}) => {
+  console.log(
+    '%c[n8n Webhook] Disparo simulado hacia n8n workflow:',
+    'color: #B80C09; font-weight: bold;',
+    {
+      payload: reviewData,
+      timestamp: new Date().toISOString(),
+    }
+  )
+
+  return {
+    success: true,
+    message: 'Webhook recibido y encolado en n8n.',
+    simulated: true,
+  }
+}
+
+export default {
+  sendReviewToModeration,
+  notifyReviewCreated,
+  triggerNewReviewWebhook,
+}
+

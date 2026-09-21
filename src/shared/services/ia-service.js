@@ -58,7 +58,7 @@ export async function getLyricalContext(albumName, artist) {
 export async function analyzeReview(review) {
   await delay(500)
 
-  const content = typeof review?.content === 'string' ? review.content : ''
+  const content = typeof review === 'string' ? review : (typeof review?.content === 'string' ? review.content : '')
   const words = content.toLowerCase().match(/[\p{L}\p{N}]+/gu) ?? []
   // Lista mínima de ejemplo; no constituye un sistema real de moderación.
   const offensiveWords = ['idiota', 'idiotas', 'imbécil', 'imbecil', 'mierda']
@@ -72,3 +72,11 @@ export async function analyzeReview(review) {
       : null,
   }
 }
+
+export default {
+  analyzeReview,
+  getRecommendations,
+  getLyricalContext,
+}
+
+
