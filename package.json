@@ -12,12 +12,18 @@
     "test": "vitest run"
   },
   "dependencies": {
+    "framer-motion": "^13.4.0",
+    "lucide-react": "^1.47.0",
     "react": "^19.2.8",
     "react-dom": "^19.2.8"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
+<<<<<<< HEAD:package.json
     "@testing-library/react": "^16.3.3",
+=======
+    "@tailwindcss/vite": "^4.3.3",
+>>>>>>> ea33e508a0ab0cd4cb83946f54ff08868d7fd2bb:sonar/package.json
     "@types/react": "^19.2.18",
     "@types/react-dom": "^19.2.7",
     "@vitejs/plugin-react": "^6.1.1",
@@ -25,9 +31,14 @@
     "eslint-plugin-react-hooks": "^7.1.1",
     "eslint-plugin-react-refresh": "^0.5.6",
     "globals": "^17.12.0",
+<<<<<<< HEAD:package.json
     "jsdom": "^29.1.1",
     "json-server": "^0.17.4",
     "vite": "^8.3.0",
     "vitest": "^5.0.1"
+=======
+    "tailwindcss": "^4.3.3",
+    "vite": "^8.3.0"
+>>>>>>> ea33e508a0ab0cd4cb83946f54ff08868d7fd2bb:sonar/package.json
   }
 }
