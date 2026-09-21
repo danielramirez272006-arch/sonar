@@ -1,23 +1,3 @@
-<<<<<<< HEAD
-# sonar
-
-# React + Vite
-
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
-
-Currently, two official plugins are available:
-
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
-
-## React Compiler
-
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
-
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
-=======
 # 🎵 Sonar — Plataforma Social de Reseñas Musicales Inmersiva
 
 **Sonar** es una experiencia web frontend de alta resolución diseñada para audiófilos, melómanos y coleccionistas de vinilo. La plataforma combina crítica musical, análisis lírico contextual impulsado por IA, bitácora de escucha y un feed comunitario interactivo.
@@ -100,4 +80,3 @@ npm run build
 ---
 
 © 2026 Sonar Audio Media Inc. Todos los derechos reservados.
->>>>>>> ea33e508a0ab0cd4cb83946f54ff08868d7fd2bb
