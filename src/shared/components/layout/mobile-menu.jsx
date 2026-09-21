@@ -1,6 +1,5 @@
 import React from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
-import { Link } from 'react-router-dom';
 
 /**
  * MobileMenu Component
@@ -68,14 +67,14 @@ export const MobileMenu = ({
             {/* Lista de enlaces de navegación */}
             <nav className="flex flex-col gap-4">
               {links.map((link, index) => (
-                <Link
+                <a
                   key={index}
-                  to={link.path || '#'}
+                  href={link.path || '#'}
                   onClick={onClose}
                   className="text-black dark:text-white hover:text-[#B80C09] dark:hover:text-[#B80C09] font-medium text-lg transition-colors py-2 px-3 rounded-lg hover:bg-gray-100 dark:hover:bg-white/5"
                 >
-                  {link.name}
-                </Link>
+                  {link.name || link.label}
+                </a>
               ))}
             </nav>
           </motion.div>
