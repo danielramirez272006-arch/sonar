@@ -31,31 +31,114 @@ Sonar implementa un sistema de temas dual armonizado que conmuta dinámicamente 
 
 ---
 
-## 🧱 Estructura Modular (Feature-Sliced Design)
+## 🧱 Estructura del Proyecto
 
-El proyecto sigue una arquitectura modular escalable que separa responsabilidades y simplifica la colaboración:
+El proyecto sigue una arquitectura modular y escalable organizada por características de negocio y componentes compartidos:
 
 ```text
-src/
-├── assets/                    # Recursos estáticos locales
-├── features/                  # Módulos encapsulados por dominio de negocio
-│   ├── admin/                 # Métricas KPI y cola de moderación IA
-│   │   ├── dashboard/components/
-│   │   └── moderation/components/
-│   ├── albums/                # Reproductor Deezer y componentes de discos
-│   ├── auth/                  # Formularios de inicio de sesión y registro
-│   ├── home/                  # Hero con vinilo interactivo, trending y reviews
-│   ├── profile/               # Encabezado de perfil y estadísticas de usuario
-│   └── reviews/               # StarRating, formularios y feed comunitario
-├── pages/                     # Vistas y orquestadores de ruta
-│   ├── admin/                 # Panel de administración
-│   ├── public/                # Inicio, login, comunidad, detalle de álbum, 404
-│   └── user/                  # Dashboard y perfil de usuario
-└── shared/                    # Recursos transversales y reutilizables
-    ├── components/
-    │   ├── layout/            # Navbar animada y Footer
-    │   └── ui/                # Avatar, AnimatedLogo, Loader (Skeleton), StarRating, Toast
-    └── context/               # ThemeContext (gestión global de tema)
+├── db.json
+├── jsconfig.json
+├── public/
+│   ├── logo-sonar.svg
+│   └── avatars/
+│       ├── default-teal.png
+│       ├── default-violet.png
+│       └── default-crimson.png
+└── src/
+    ├── shared/
+    │   ├── components/
+    │   │   ├── ui/
+    │   │   │   ├── button.jsx
+    │   │   │   ├── card.jsx
+    │   │   │   ├── modal.jsx
+    │   │   │   ├── input.jsx
+    │   │   │   ├── star-rating.jsx
+    │   │   │   ├── badge.jsx
+    │   │   │   ├── loader.jsx
+    │   │   │   └── avatar.jsx
+    │   │   └── layout/
+    │   │       ├── navbar.jsx
+    │   │       ├── footer.jsx
+    │   │       └── admin-sidebar.jsx
+    │   ├── context/
+    │   │   ├── auth-context.jsx
+    │   │   └── theme-context.jsx
+    │   ├── services/
+    │   │   ├── api-client.js
+    │   │   ├── deezer-service.js
+    │   │   ├── ia-service.js
+    │   │   └── n8n-webhooks.js
+    │   ├── routing/
+    │   │   ├── app-router.jsx
+    │   │   ├── private-route.jsx
+    │   │   └── admin-route.jsx
+    │   └── index.js
+    ├── pages/
+    │   ├── public/
+    │   │   ├── home-page.jsx
+    │   │   ├── login-page.jsx
+    │   │   ├── register-page.jsx
+    │   │   ├── album-detail-page.jsx
+    │   │   ├── about-page.jsx
+    │   │   └── terms-page.jsx
+    │   ├── user/
+    │   │   ├── user-dashboard-page.jsx
+    │   │   ├── my-reviews-page.jsx
+    │   │   ├── saved-albums-page.jsx
+    │   │   └── profile-settings-page.jsx
+    │   └── admin/
+    │       ├── admin-dashboard-page.jsx
+    │       ├── moderation-page.jsx
+    │       ├── users-page.jsx
+    │       └── settings-page.jsx
+    └── features/
+        ├── profile/
+        │   ├── index.js
+        │   ├── use-profile.js
+        │   └── components/
+        │       ├── profile-header.jsx
+        │       └── edit-profile-form.jsx
+        ├── home/
+        │   ├── index.js
+        │   └── components/
+        │       ├── hero-search.jsx
+        │       ├── album-of-the-week.jsx
+        │       ├── featured-reviews.jsx
+        │       └── trending-grid.jsx
+        ├── auth/
+        │   ├── index.js
+        │   ├── use-auth.js
+        │   └── components/
+        │       ├── login-form.jsx
+        │       └── register-form.jsx
+        ├── albums/
+        │   ├── index.js
+        │   ├── use-album-details.js
+        │   └── components/
+        │       ├── album-cover-large.jsx
+        │       ├── deezer-player.jsx
+        │       ├── lyrical-context.jsx
+        │       └── favorite-button.jsx
+        ├── reviews/
+        │   ├── index.js
+        │   ├── use-reviews.js
+        │   └── components/
+        │       ├── review-form.jsx
+        │       ├── review-list.jsx
+        │       └── review-card.jsx
+        └── admin/
+            ├── dashboard/
+            │   ├── index.js
+            │   └── components/
+            │       ├── kpi-cards.jsx
+            │       └── activity-chart.jsx
+            └── moderation/
+                ├── index.js
+                ├── use-moderation.js
+                └── components/
+                    ├── moderation-table.jsx
+                    ├── explicit-content-flag.jsx
+                    └── approve-reject-buttons.jsx
 ```
 
 ---
