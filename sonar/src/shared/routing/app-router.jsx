@@ -2,14 +2,19 @@ import React, { useState, useEffect, createContext, useContext } from 'react';
 import { AnimatePresence } from 'framer-motion';
 import PageTransition from '../components/ui/page-transition';
 
-// Páginas del Proyecto Sonar
+// Páginas Públicas
 import HomePage from '../../pages/public/home-page';
 import LoginPage from '../../pages/public/login-page';
+import RegisterPage from '../../pages/public/register-page';
 import CommunityPage from '../../pages/public/community-page';
 import AlbumDetailPage from '../../pages/public/album-detail-page';
-import UserDashboardPage from '../../pages/user/user-dashboard-page';
-import AdminDashboardPage from '../../pages/admin/admin-dashboard-page';
+import AboutPage from '../../pages/public/about-page';
+import TermsPage from '../../pages/public/terms-page';
 import NotFoundPage from '../../pages/public/not-found-page';
+
+// Páginas de Usuario y Administración
+import UserDashboardPage from '../../pages/user/user-dashboard-page';
+import { AdminConsole } from '../../App';
 
 // Contexto de Navegación Liviano
 const RouterContext = createContext({
@@ -21,14 +26,13 @@ export const useRouter = () => useContext(RouterContext);
 
 export const AppRouter = () => {
   const [currentPath, setCurrentPath] = useState(() => {
-    // Soporte tanto para hash routing como para path routing
-    const hash = window.location.hash.replace('#', '');
+    const hash = window.location.hash.replace(/^#/, '');
     return hash || window.location.pathname || '/';
   });
 
   useEffect(() => {
     const handleLocationChange = () => {
-      const hash = window.location.hash.replace('#', '');
+      const hash = window.location.hash.replace(/^#/, '');
       setCurrentPath(hash || window.location.pathname || '/');
     };
 
@@ -45,33 +49,42 @@ export const AppRouter = () => {
     if (path.startsWith('#')) {
       window.location.hash = path;
     } else {
-      window.history.pushState({}, '', path);
+      window.location.hash = `#${path.replace(/^\//, '')}`;
     }
-    setCurrentPath(path.replace('#', ''));
+    setCurrentPath(path.replace(/^[#/]/, ''));
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   // Selector dinámico de componentes por ruta
   const renderCurrentPage = () => {
-    const normalizedPath = currentPath.toLowerCase();
+    const rawPath = currentPath.toLowerCase().replace(/^\//, '');
 
-    if (normalizedPath === '/' || normalizedPath === '' || normalizedPath === 'explore' || normalizedPath === '/explore') {
+    if (rawPath === '' || rawPath === 'explore' || rawPath === 'home') {
       return <HomePage />;
     }
-    if (normalizedPath === '/login' || normalizedPath === 'login') {
+    if (rawPath === 'login') {
       return <LoginPage />;
     }
-    if (normalizedPath === '/community' || normalizedPath === 'community') {
+    if (rawPath === 'register') {
+      return <RegisterPage />;
+    }
+    if (rawPath === 'community') {
       return <CommunityPage />;
     }
-    if (normalizedPath.startsWith('/album') || normalizedPath.startsWith('album')) {
+    if (rawPath.startsWith('album')) {
       return <AlbumDetailPage />;
     }
-    if (normalizedPath === '/dashboard' || normalizedPath === 'dashboard' || normalizedPath === '/profile' || normalizedPath === 'profile') {
+    if (rawPath === 'about') {
+      return <AboutPage />;
+    }
+    if (rawPath === 'terms') {
+      return <TermsPage />;
+    }
+    if (rawPath === 'profile' || rawPath === 'user-dashboard' || rawPath === 'saved') {
       return <UserDashboardPage />;
     }
-    if (normalizedPath === '/admin' || normalizedPath === 'admin') {
-      return <AdminDashboardPage />;
+    if (rawPath === 'admin' || rawPath === 'dashboard' || rawPath === 'moderacion') {
+      return <AdminConsole />;
     }
 
     return <NotFoundPage />;
