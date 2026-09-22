@@ -1,5 +1,5 @@
 import { createContext, useContext, useMemo, useState } from 'react'
-import { getUserByEmail } from '../services/api-client.js'
+import { getUserByEmail, createUser } from '../services/api-client.js'
 
 // El contexto y el hook se exportan juntos como API de este módulo.
 // eslint-disable-next-line react-refresh/only-export-components
@@ -52,6 +52,81 @@ export function AuthProvider({ children }) {
       }
     }
 
+    async function register({ username, email, password, preferences, avatarBg, bio }) {
+      setIsLoading(true)
+      setError(null)
+      try {
+        let existingUser = null
+        try {
+          existingUser = await getUserByEmail(email.trim().toLowerCase())
+        } catch {
+          // Fallback
+        }
+
+        if (existingUser) {
+          throw new Error('Ya existe una cuenta con este correo electrónico.')
+        }
+
+        const emailStr = email.trim().toLowerCase();
+        let hash = 0;
+        for (let i = 0; i < emailStr.length; i++) {
+          hash = (hash * 31 + emailStr.charCodeAt(i)) % 10000;
+        }
+        const genreList = [
+          'Art Rock', 'Electrónica', 'Psicodelia', 'Jazz & Fusion',
+          'Post-Punk', 'Synthwave', 'Ambient & Drone', 'Dream Pop',
+          'Hip-Hop Experimental', 'Folk Acústico', 'IDM / Techno', 'Neo-Soul'
+        ];
+        const g1 = genreList[hash % genreList.length];
+        const g2 = genreList[(hash + 3) % genreList.length];
+        const initialPreferences = preferences && preferences.length > 0 ? preferences : [g1, g2];
+
+        const avatarColors = ['#B80C09', '#5c1d5e', '#4B2840', '#0284c7', '#059669', '#d97706', '#7c3aed'];
+        const selectedAvatarBg = avatarBg || avatarColors[hash % avatarColors.length];
+
+        const newUser = {
+          id: `user-${Date.now()}`,
+          username: username.trim(),
+          email: email.trim().toLowerCase(),
+          password: password,
+          role: 'user',
+          avatarUrl: '',
+          avatarBg: selectedAvatarBg,
+          bio: bio || 'Nuevo melómano explorando vinilos y texturas acústicas en Sonar.',
+          stats: {
+            savedAlbums: 0,
+            reviewsCount: 0,
+            followers: 0,
+            following: 0,
+          },
+          preferences: initialPreferences,
+        }
+
+        try {
+          await createUser(newUser)
+        } catch {
+          // json-server mock fallback
+        }
+
+        setUser(newUser)
+        try {
+          if (typeof window !== 'undefined') {
+            window.localStorage?.setItem('sonar_auth_user', JSON.stringify(newUser))
+          }
+        } catch {}
+
+        return newUser
+      } catch (cause) {
+        const regError = cause instanceof Error
+          ? cause
+          : new Error('No se pudo completar el registro.')
+        setError(regError.message)
+        throw regError
+      } finally {
+        setIsLoading(false)
+      }
+    }
+
     function logout() {
       setUser(null)
       setError(null)
@@ -60,6 +135,19 @@ export function AuthProvider({ children }) {
           window.localStorage?.removeItem('sonar_auth_user')
         }
       } catch {}
+    }
+
+    function updateUser(changes) {
+      setUser((prev) => {
+        const updated = { ...(prev || {}), ...changes }
+        try {
+          if (typeof window !== 'undefined') {
+            window.localStorage?.setItem('sonar_auth_user', JSON.stringify(updated))
+          }
+          createUser(updated).catch(() => {})
+        } catch {}
+        return updated
+      })
     }
 
     function hasRole(role) {
@@ -72,7 +160,9 @@ export function AuthProvider({ children }) {
       isLoading,
       error,
       login,
+      register,
       logout,
+      updateUser,
       hasRole,
       isAdmin: hasRole('admin'),
       isUser: hasRole('user'),

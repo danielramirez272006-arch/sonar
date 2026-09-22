@@ -24,17 +24,84 @@ export async function apiRequest(endpoint, options = {}) {
   return body.trim() ? JSON.parse(body) : null
 }
 
-export function getUsers() {
-  return apiRequest('/users')
+const LOCAL_USERS_KEY = 'sonar_registered_users'
+
+function getLocalRegisteredUsers() {
+  try {
+    if (typeof window === 'undefined') return []
+    const raw = window.localStorage?.getItem(LOCAL_USERS_KEY)
+    return raw ? JSON.parse(raw) : []
+  } catch {
+    return []
+  }
 }
 
-export function getUserById(userId) {
-  return apiRequest(`/users/${encodeURIComponent(userId)}`)
+function saveLocalRegisteredUser(user) {
+  try {
+    if (typeof window === 'undefined') return
+    const current = getLocalRegisteredUsers()
+    const index = current.findIndex(
+      (u) => u.email?.toLowerCase() === user.email?.toLowerCase() || u.id === user.id,
+    )
+    if (index >= 0) {
+      current[index] = { ...current[index], ...user }
+    } else {
+      current.push(user)
+    }
+    window.localStorage?.setItem(LOCAL_USERS_KEY, JSON.stringify(current))
+  } catch {}
+}
+
+export async function getUsers() {
+  try {
+    const apiUsers = (await apiRequest('/users')) || []
+    const localUsers = getLocalRegisteredUsers()
+    const merged = [...apiUsers]
+    for (const u of localUsers) {
+      if (!merged.some((m) => m.email?.toLowerCase() === u.email?.toLowerCase())) {
+        merged.push(u)
+      }
+    }
+    return merged
+  } catch {
+    return getLocalRegisteredUsers()
+  }
+}
+
+export async function getUserById(userId) {
+  try {
+    return await apiRequest(`/users/${encodeURIComponent(userId)}`)
+  } catch {
+    const local = getLocalRegisteredUsers().find((u) => String(u.id) === String(userId))
+    return local ?? null
+  }
 }
 
 export async function getUserByEmail(email) {
-  const users = await apiRequest(`/users?${new URLSearchParams({ email })}`)
-  return users[0] ?? null
+  const normEmail = String(email || '').trim().toLowerCase()
+  try {
+    const users = await apiRequest(`/users?${new URLSearchParams({ email: normEmail })}`)
+    if (users && users.length > 0) return users[0]
+  } catch {
+    // Continúa a buscar en el almacén local
+  }
+
+  const local = getLocalRegisteredUsers().find(
+    (u) => String(u.email || '').trim().toLowerCase() === normEmail,
+  )
+  return local ?? null
+}
+
+export async function createUser(user) {
+  saveLocalRegisteredUser(user)
+  try {
+    return await apiRequest('/users', {
+      method: 'POST',
+      body: JSON.stringify(user),
+    })
+  } catch {
+    return user
+  }
 }
 
 export function getReviews() {

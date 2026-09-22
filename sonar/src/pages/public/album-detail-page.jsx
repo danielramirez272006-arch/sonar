@@ -1,9 +1,14 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import Navbar from '../../shared/components/layout/navbar';
 import Footer from '../../shared/components/layout/footer';
 import StarRating from '../../shared/components/ui/star-rating';
 import ReviewForm from '../../features/reviews/components/review-form';
+import ReviewFeedCard from '../../features/reviews/components/review-feed-card';
+import Toast from '../../shared/components/ui/toast';
+import { useAuth } from '../../shared/context/auth-context';
+import { usePlayer } from '../../shared/context/player-context';
+import { interactionsService } from '../../shared/services/interactions-service';
 
 const mockAlbum = {
   id: 'in-rainbows',
@@ -15,11 +20,88 @@ const mockAlbum = {
   rating: 4.8,
   totalReviews: '24,812 calificaciones',
   cover: 'https://cdn-images.dzcdn.net/images/cover/a175af9b7d329bc678cb4d26fc13d6de/1000x1000-000000-80-0-0.jpg',
+  previewUrl: 'https://cdns-preview-d.dzcdn.net/stream/c-d64e83c6d1d4d12bdfd0ef48e2448ca3-3.mp3',
   lyricContext:
     'Exploración introspectiva de la vulnerabilidad humana, la obsesión y la redención en la era digital. Cada composición entrelaza texturas acústicas con meticulosas capas de sintetizadores modulares, creando una atmósfera sonora cálida pero desgarradora. El concepto lírico profundiza en la finitud, el amor obsesivo y la disolución de la identidad.',
 };
 
 export const AlbumDetailPage = () => {
+  const { user } = useAuth();
+  const { playTrack, isPlaying, currentTrack } = usePlayer();
+  const userId = user?.id || null;
+
+  const [isSaved, setIsSaved] = useState(false);
+  const [toastMessage, setToastMessage] = useState(null);
+  const [albumReviews, setAlbumReviews] = useState([
+    {
+      id: 1,
+      userName: 'Sofía Sound',
+      userHandle: '@sofia_sound',
+      avatarLetter: 'S',
+      avatarBg: '#5c1d5e',
+      date: 'Hace 2 horas',
+      rating: 5,
+      albumTitle: 'In Rainbows',
+      artist: 'Radiohead',
+      cover: mockAlbum.cover,
+      content:
+        'Una obra maestra que equilibra con elegancia la experimentación electrónica y la calidez acústica. "Reckoner" sigue siendo una de las piezas mejor mezcladas en la historia de la música moderna.',
+      likesCount: 142,
+      commentsCount: 18,
+    },
+  ]);
+
+  useEffect(() => {
+    setIsSaved(interactionsService.isAlbumSaved(userId, mockAlbum.title));
+  }, [userId]);
+
+  const handleToggleSave = () => {
+    if (!user) {
+      window.location.hash = '#login';
+      return;
+    }
+    const res = interactionsService.toggleSaveAlbum(userId, {
+      id: mockAlbum.id,
+      title: mockAlbum.title,
+      artist: mockAlbum.artist,
+      cover: mockAlbum.cover,
+      year: mockAlbum.year,
+      genre: mockAlbum.genre,
+      rating: mockAlbum.rating,
+    });
+    setIsSaved(res.isSaved);
+    setToastMessage(
+      res.isSaved
+        ? `¡${mockAlbum.title} agregado a tus álbumes guardados!`
+        : `Eliminado de tus colecciones.`
+    );
+  };
+
+  const handleReviewSubmit = (reviewData) => {
+    if (!user) {
+      window.location.hash = '#login';
+      return;
+    }
+    const newReview = {
+      id: Date.now(),
+      userName: user?.username || 'Usuario Sonar',
+      userHandle: user?.username ? `@${user.username.toLowerCase().replace(/\s+/g, '_')}` : '@usuario',
+      avatarLetter: (user?.username || 'U').charAt(0).toUpperCase(),
+      avatarBg: user?.avatarBg || '#B80C09',
+      date: 'Ahora mismo',
+      rating: reviewData.rating || 5,
+      albumTitle: mockAlbum.title,
+      artist: mockAlbum.artist,
+      cover: mockAlbum.cover,
+      content: reviewData.reviewText,
+      likesCount: 0,
+      commentsCount: 0,
+    };
+
+    setAlbumReviews((prev) => [newReview, ...prev]);
+    setToastMessage(`¡Tu reseña de ${mockAlbum.title} fue publicada con éxito!`);
+  };
+
   return (
     <div className="min-h-screen flex flex-col bg-gray-50 dark:bg-[#231123] text-[#231123] dark:text-[#FAF5F8] transition-colors duration-300">
       {/* Barra de Navegación Fija */}
@@ -48,10 +130,30 @@ export const AlbumDetailPage = () => {
             </motion.div>
 
             {/* Metadatos y Puntuación */}
-            <div className="flex flex-col gap-2.5 text-center sm:text-left">
-              <div className="inline-flex items-center gap-2 self-center sm:self-start px-3 py-1 rounded-full bg-white/10 border border-white/15 text-pink-200 text-xs font-bold uppercase tracking-wider backdrop-blur-md">
-                <span className="w-2 h-2 rounded-full bg-[#B80C09] animate-pulse" />
-                <span>{mockAlbum.genre}</span>
+            <div className="flex flex-col gap-2.5 text-center sm:text-left flex-1">
+              <div className="flex flex-wrap items-center justify-center sm:justify-start gap-2">
+                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 border border-white/15 text-pink-200 text-xs font-bold uppercase tracking-wider backdrop-blur-md">
+                  <span className="w-2 h-2 rounded-full bg-[#B80C09] animate-pulse" />
+                  <span>{mockAlbum.genre}</span>
+                </div>
+
+                <button
+                  type="button"
+                  onClick={handleToggleSave}
+                  className={`inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full text-xs font-bold transition-colors cursor-pointer ${
+                    isSaved
+                      ? 'bg-[#B80C09] text-white'
+                      : 'bg-white/15 hover:bg-white/25 text-white border border-white/20'
+                  }`}
+                >
+                  <span
+                    className="material-symbols-outlined text-[16px]"
+                    style={{ fontVariationSettings: isSaved ? "'FILL' 1" : "'FILL' 0" }}
+                  >
+                    bookmark
+                  </span>
+                  <span>{isSaved ? 'En Tu Colección' : 'Guardar en Colección'}</span>
+                </button>
               </div>
 
               <h1 className="text-3xl sm:text-4xl lg:text-5xl font-black tracking-tight text-white leading-tight">
@@ -112,7 +214,23 @@ export const AlbumDetailPage = () => {
               </article>
 
               {/* Formulario de Calificación y Reseña */}
-              <ReviewForm albumTitle={mockAlbum.title} artistName={mockAlbum.artist} />
+              <ReviewForm
+                albumTitle={mockAlbum.title}
+                artistName={mockAlbum.artist}
+                onSubmit={handleReviewSubmit}
+              />
+
+              {/* Reseñas de la Comunidad para este Álbum */}
+              <div className="flex flex-col gap-4">
+                <h3 className="text-xl font-extrabold text-[#231123] dark:text-white tracking-tight">
+                  Críticas y Apreciaciones de la Comunidad ({albumReviews.length})
+                </h3>
+                <div className="flex flex-col gap-5">
+                  {albumReviews.map((rev) => (
+                    <ReviewFeedCard key={rev.id} review={rev} />
+                  ))}
+                </div>
+              </div>
             </div>
 
             {/* Columna Lateral (1 espacio): Simulador de Reproductor Deezer */}
@@ -139,6 +257,16 @@ export const AlbumDetailPage = () => {
                   <motion.button
                     whileHover={{ scale: 1.12 }}
                     whileTap={{ scale: 0.92 }}
+                    onClick={() =>
+                      playTrack({
+                        id: mockAlbum.id,
+                        title: '15 Step',
+                        artist: mockAlbum.artist,
+                        album: mockAlbum.title,
+                        cover: mockAlbum.cover,
+                        preview: mockAlbum.previewUrl,
+                      })
+                    }
                     aria-label="Reproducir muestra de Deezer"
                     className="w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-[#B80C09] text-white flex items-center justify-center shadow-[0_10px_30px_rgba(184,12,9,0.5)] cursor-pointer group-hover:bg-[#9c0a07] transition-all"
                   >
@@ -172,6 +300,14 @@ export const AlbumDetailPage = () => {
         </section>
       </main>
 
+      {toastMessage && (
+        <Toast
+          message={toastMessage}
+          type="success"
+          onClose={() => setToastMessage(null)}
+        />
+      )}
+
       {/* Footer */}
       <Footer />
     </div>
@@ -179,3 +315,4 @@ export const AlbumDetailPage = () => {
 };
 
 export default AlbumDetailPage;
+

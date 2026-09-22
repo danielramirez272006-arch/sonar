@@ -61,22 +61,29 @@ export const TrendingGrid = () => {
             </h2>
           </div>
 
-          {/* Filter Tabs con forma de cápsula y paleta oficial */}
-          <div className="inline-flex items-center p-1 sm:p-1.5 rounded-full bg-[#f4ebf2] dark:bg-[#4B2840] border border-[#e6d5e2] dark:border-white/10 self-start md:self-auto gap-1 shadow-inner transition-colors">
+          {/* Filter Tabs con bordes fluidos y animación con Framer Motion */}
+          <div className="inline-flex items-center p-1 rounded-full bg-[#ede0eb] dark:bg-[#1f1020] border border-[#e2cedf] dark:border-white/10 self-start md:self-auto gap-0.5 shadow-inner transition-colors">
             {tabs.map((tab) => {
               const isActive = activeTab === tab.id;
               return (
                 <button
                   key={tab.id}
                   onClick={() => setActiveTab(tab.id)}
-                  className={`relative px-4 sm:px-5 py-2 rounded-full text-xs sm:text-sm font-bold transition-all duration-200 cursor-pointer select-none ${
+                  className={`relative px-4 sm:px-5 py-2 rounded-full text-xs sm:text-sm font-bold transition-colors duration-200 cursor-pointer select-none z-10 ${
                     isActive
-                      ? 'bg-[#003844] text-[#DCDCDD] shadow-md'
-                      : 'text-[#5c435a] hover:text-[#231123] dark:text-[#DCDCDD]/75 dark:hover:text-white'
+                      ? 'text-white'
+                      : 'text-[#5c435a] dark:text-[#B89CB0] hover:text-[#231123] dark:hover:text-white'
                   }`}
                   type="button"
                 >
-                  {tab.label}
+                  {isActive && (
+                    <motion.div
+                      layoutId="active-trending-pill"
+                      className="absolute inset-0 bg-[#B80C09] rounded-full shadow-[0_2px_10px_rgba(184,12,9,0.4)]"
+                      transition={{ type: 'spring', stiffness: 500, damping: 35 }}
+                    />
+                  )}
+                  <span className="relative z-10">{tab.label}</span>
                 </button>
               );
             })}

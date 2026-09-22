@@ -14,6 +14,7 @@ import NotFoundPage from '../../pages/public/not-found-page';
 
 // Páginas de Usuario y Administración
 import UserDashboardPage from '../../pages/user/user-dashboard-page';
+import ProfileSettingsPage from '../../pages/user/profile-settings-page';
 import { AdminConsole } from '../../App';
 import PrivateRoute from './private-route';
 import AdminRoute from './admin-route';
@@ -81,6 +82,18 @@ export const AppRouter = () => {
     }
     if (rawPath === 'terms') {
       return <TermsPage />;
+    }
+    if (
+      rawPath === 'profile-settings' ||
+      rawPath === 'perfil/configuracion' ||
+      rawPath === 'configuracion' ||
+      rawPath === 'ajustes'
+    ) {
+      return (
+        <PrivateRoute fallback={<LoginPage />}>
+          <ProfileSettingsPage />
+        </PrivateRoute>
+      );
     }
     if (rawPath === 'usuario' || rawPath === 'profile' || rawPath === 'user-dashboard' || rawPath === 'saved') {
       return (
