@@ -1,114 +1,32 @@
-import React, { useState } from 'react';
-import { motion } from 'framer-motion';
+import { useState } from 'react';
+import { ArrowRight, Eye, EyeOff, Headphones, Music2 } from 'lucide-react';
+import { useAuth } from '../../../shared/context/auth-context';
+import { GoogleIcon, SpotifyIcon } from './social-provider-icon';
+import { RotatingReview } from './rotating-review';
 
-export const LoginForm = ({ onSubmit = (e) => e.preventDefault() }) => {
-  const [formData, setFormData] = useState({
-    email: '',
-    password: '',
-  });
-
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
-  };
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    onSubmit(formData);
-  };
-
-  return (
-    <div className="w-full max-w-md p-8 sm:p-10 rounded-3xl bg-white dark:bg-[#4B2840] border border-[#e6d5e2] dark:border-white/10 shadow-[0_10px_35px_-5px_rgba(75,40,64,0.08)] dark:shadow-[0_15px_40px_-5px_rgba(0,0,0,0.5)] transition-colors duration-300">
-      {/* Header del Formulario */}
-      <div className="text-center mb-8">
-        <h2 className="text-2xl sm:text-3xl font-extrabold text-[#231123] dark:text-white tracking-tight">
-          Iniciar Sesión
-        </h2>
-        <p className="text-sm text-[#5c435a] dark:text-[#B89CB0] mt-2">
-          Bienvenido de nuevo a la comunidad de Sonar
-        </p>
-      </div>
-
-      {/* Formulario */}
-      <form onSubmit={handleSubmit} className="flex flex-col gap-5">
-        {/* Campo Email */}
-        <div className="flex flex-col gap-1.5 text-left">
-          <label
-            htmlFor="email"
-            className="text-xs font-bold uppercase tracking-wider text-[#231123] dark:text-gray-200"
-          >
-            Correo Electrónico
-          </label>
-          <input
-            id="email"
-            name="email"
-            type="email"
-            autoComplete="email"
-            required
-            value={formData.email}
-            onChange={handleChange}
-            placeholder="audiophile@sonar.audio"
-            className="w-full px-4 py-3.5 rounded-xl bg-gray-50 dark:bg-[#231123] border border-[#e6d5e2] dark:border-white/10 text-sm text-[#231123] dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500 transition-all duration-200 outline-none focus:border-[#B80C09] focus:ring-2 focus:ring-[#B80C09]/20"
-          />
-        </div>
-
-        {/* Campo Contraseña */}
-        <div className="flex flex-col gap-1.5 text-left">
-          <div className="flex items-center justify-between">
-            <label
-              htmlFor="password"
-              className="text-xs font-bold uppercase tracking-wider text-[#231123] dark:text-gray-200"
-            >
-              Contraseña
-            </label>
-            <a
-              href="#forgot-password"
-              className="text-xs font-semibold text-[#5c1d5e] dark:text-pink-300 hover:text-[#B80C09] dark:hover:text-[#B80C09] transition-colors"
-            >
-              ¿Olvidaste tu contraseña?
-            </a>
-          </div>
-          <input
-            id="password"
-            name="password"
-            type="password"
-            autoComplete="current-password"
-            required
-            value={formData.password}
-            onChange={handleChange}
-            placeholder="••••••••••••"
-            className="w-full px-4 py-3.5 rounded-xl bg-gray-50 dark:bg-[#231123] border border-[#e6d5e2] dark:border-white/10 text-sm text-[#231123] dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500 transition-all duration-200 outline-none focus:border-[#B80C09] focus:ring-2 focus:ring-[#B80C09]/20"
-          />
-        </div>
-
-        {/* Botón Entrar */}
-        <motion.button
-          type="submit"
-          whileHover={{ scale: 1.02 }}
-          whileTap={{ scale: 0.98 }}
-          className="w-full mt-2 py-3.5 px-6 rounded-xl bg-[#B80C09] text-white text-sm font-bold uppercase tracking-wider shadow-[0_8px_20px_-4px_rgba(184,12,9,0.35)] hover:bg-[#9c0a07] transition-all cursor-pointer"
-        >
-          Entrar
-        </motion.button>
-      </form>
-
-      {/* Footer del Formulario */}
-      <div className="mt-8 text-center border-t border-[#e6d5e2]/80 dark:border-white/10 pt-6">
-        <p className="text-xs text-[#5c435a] dark:text-[#B89CB0]">
-          ¿No tienes una cuenta?{' '}
-          <a
-            href="#register"
-            className="font-bold text-[#5c1d5e] dark:text-pink-300 hover:text-[#B80C09] dark:hover:text-[#B80C09] transition-colors"
-          >
-            Regístrate aquí
-          </a>
-        </p>
-      </div>
+const EditorialPanel = () => (
+  <aside className="auth-editorial" aria-label="Comunidad editorial de audio">
+    <div className="auth-editorial__copy">
+      <p className="auth-eyebrow"><span /> Comunidad editorial de audio</p>
+      <h1><span>Vuelve a la</span><span>conversación musical.</span></h1>
+      <p>Califica vinilos, analiza letras con inteligencia artificial y sincroniza tus hallazgos con una comunidad audiófila global.</p>
     </div>
-  );
+    <RotatingReview />
+    <div className="auth-editorial__stats"><span><Music2 size={14} />64,280 críticas registradas este mes</span><span>28,400 álbumes catalogados</span></div>
+  </aside>
+);
+
+export const LoginForm = () => {
+  const { login, isLoading } = useAuth();
+  const [formData, setFormData] = useState({ email: '', password: '' });
+  const [showPassword, setShowPassword] = useState(false);
+  const [message, setMessage] = useState('');
+  const handleSubmit = async (event) => {
+    event.preventDefault(); setMessage('');
+    try { const account = await login(formData.email.trim(), formData.password); window.location.hash = account.role === 'admin' ? '#admin' : '#usuario'; }
+    catch (error) { setMessage(error.message); }
+  };
+  return <div className="auth-shell"><EditorialPanel /><section className="auth-form-area" aria-labelledby="login-title"><div className="auth-form-wrap"><div className="auth-mobile-brand"><Headphones size={19} /> SONAR</div><header className="auth-heading"><h2 id="login-title">Inicia sesión en Sonar</h2><p>Tu diario sonoro te estaba esperando.</p></header><div className="auth-socials" aria-label="Acceso con servicios externos"><button type="button"><SpotifyIcon />Continuar con Spotify</button><button type="button"><GoogleIcon />Continuar con Google</button></div><p className="auth-divider"><span />o inicia sesión con tu correo<span /></p><form onSubmit={handleSubmit} className="auth-form"><label htmlFor="email">Correo electrónico</label><input id="email" type="email" autoComplete="email" required placeholder="tu@ejemplo.com" value={formData.email} onChange={(event) => setFormData({ ...formData, email: event.target.value })} /><div className="auth-label-row"><label htmlFor="password">Contraseña</label><a href="#forgot-password">¿Olvidaste tu contraseña?</a></div><div className="auth-password"><input id="password" type={showPassword ? 'text' : 'password'} autoComplete="current-password" required placeholder="Mínimo 8 caracteres" value={formData.password} onChange={(event) => setFormData({ ...formData, password: event.target.value })} /><button type="button" onClick={() => setShowPassword(!showPassword)} aria-label={showPassword ? 'Ocultar contraseña' : 'Mostrar contraseña'}>{showPassword ? <EyeOff size={17} /> : <Eye size={17} />}</button></div>{message && <p className="auth-error" role="alert">{message}</p>}<button className="auth-submit" type="submit" disabled={isLoading}>{isLoading ? 'Ingresando…' : <>Entrar a Sonar <ArrowRight size={18} /></>}</button></form><p className="auth-switch">¿Aún no tienes cuenta? <a href="#register">Crea tu cuenta</a></p><p className="auth-legal">Al ingresar aceptas las Condiciones de Servicio y la Política de Privacidad de Sonar.</p></div></section></div>;
 };
 
 export default LoginForm;

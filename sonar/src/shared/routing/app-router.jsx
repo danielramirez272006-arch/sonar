@@ -16,6 +16,8 @@ import NotFoundPage from '../../pages/public/not-found-page';
 import UserDashboardPage from '../../pages/user/user-dashboard-page';
 import AdminDashboardPage from '../../pages/admin/admin-dashboard-page.jsx';
 import { AdminConsole } from '../../App';
+import PrivateRoute from './private-route';
+import AdminRoute from './admin-route';
 
 // Contexto de Navegación Liviano
 const RouterContext = createContext({
@@ -81,10 +83,22 @@ export const AppRouter = () => {
     if (rawPath === 'terms') {
       return <TermsPage />;
     }
-    if (rawPath === 'profile' || rawPath === 'user-dashboard' || rawPath === 'saved') {
-      return <UserDashboardPage />;
+    if (rawPath === 'usuario' || rawPath === 'profile' || rawPath === 'user-dashboard' || rawPath === 'saved') {
+      return (
+        <PrivateRoute fallback={<LoginPage />}>
+          <UserDashboardPage />
+        </PrivateRoute>
+      );
     }
-    if (rawPath === '' || rawPath === 'admin' || rawPath === 'dashboard' || rawPath === 'moderacion') {
+    if (rawPath === 'admin') {
+      return (
+        <AdminRoute fallback={<LoginPage />}>
+          <AdminConsole />
+        </AdminRoute>
+      );
+    }
+    // Se conserva la entrada histórica de la consola para no romper enlaces existentes.
+    if (rawPath === '' || rawPath === 'dashboard' || rawPath === 'moderacion') {
       return <AdminConsole />;
     }
 
