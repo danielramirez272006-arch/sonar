@@ -16,6 +16,7 @@ import NotFoundPage from '../../pages/public/not-found-page';
 import UserDashboardPage from '../../pages/user/user-dashboard-page';
 import AdminDashboardPage from '../../pages/admin/admin-dashboard-page.jsx';
 import { AdminConsole } from '../../App';
+import AdminRoute from './admin-route';
 
 // Contexto de Navegación Liviano
 const RouterContext = createContext({
@@ -60,7 +61,7 @@ export const AppRouter = () => {
   const renderCurrentPage = () => {
     const rawPath = currentPath.toLowerCase().replace(/^\//, '');
 
-    if (rawPath === 'explore' || rawPath === 'home') {
+    if (rawPath === '' || rawPath === 'explore' || rawPath === 'home') {
       return <HomePage />;
     }
     if (rawPath === 'login') {
@@ -84,8 +85,12 @@ export const AppRouter = () => {
     if (rawPath === 'profile' || rawPath === 'user-dashboard' || rawPath === 'saved') {
       return <UserDashboardPage />;
     }
-    if (rawPath === '' || rawPath === 'admin' || rawPath === 'dashboard' || rawPath === 'moderacion') {
-      return <AdminConsole />;
+    if (rawPath.startsWith('admin') || rawPath.startsWith('dashboard') || rawPath.startsWith('moderacion')) {
+      return (
+        <AdminRoute>
+          <AdminConsole />
+        </AdminRoute>
+      );
     }
 
     return <NotFoundPage />;

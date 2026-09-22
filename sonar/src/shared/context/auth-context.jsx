@@ -6,7 +6,14 @@ import { getUserByEmail } from '../services/api-client.js'
 export const AuthContext = createContext(undefined)
 
 export function AuthProvider({ children }) {
-  const [user, setUser] = useState(null)
+  const [user, setUser] = useState(() => {
+    try {
+      const saved = typeof window !== 'undefined' ? window.localStorage?.getItem('sonar_auth_user') : null
+      return saved ? JSON.parse(saved) : null
+    } catch {
+      return null
+    }
+  })
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState(null)
 
@@ -28,6 +35,11 @@ export function AuthProvider({ children }) {
         }
 
         setUser(foundUser)
+        try {
+          if (typeof window !== 'undefined') {
+            window.localStorage?.setItem('sonar_auth_user', JSON.stringify(foundUser))
+          }
+        } catch {}
         return foundUser
       } catch (cause) {
         const loginError = cause instanceof Error
@@ -43,6 +55,11 @@ export function AuthProvider({ children }) {
     function logout() {
       setUser(null)
       setError(null)
+      try {
+        if (typeof window !== 'undefined') {
+          window.localStorage?.removeItem('sonar_auth_user')
+        }
+      } catch {}
     }
 
     function hasRole(role) {

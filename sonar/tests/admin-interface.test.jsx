@@ -10,11 +10,12 @@ vi.mock('../src/shared/services/api-client.js', () => ({
 
 beforeEach(() => {
   vi.resetAllMocks()
-  window.history.replaceState(null, '', '/')
+  window.localStorage.setItem('sonar_auth_user', JSON.stringify({ id: '1', username: 'Mateo', role: 'admin' }))
+  window.history.replaceState(null, '', '/#admin')
   const reviews = [{ id: '101', userId: '1', albumId: 'album_01', rating: 4.7, content: 'Una gran escucha.', status: 'pending_moderation', aiFlagged: false }]
   getReviews.mockImplementation(async () => reviews.map(review => ({ ...review })))
   getPendingReviews.mockImplementation(async () => reviews.filter(review => review.status === 'pending_moderation').map(review => ({ ...review })))
-  getUsers.mockResolvedValue([{ id: '1', username: 'Mateo', role: 'user' }])
+  getUsers.mockResolvedValue([{ id: '1', username: 'Mateo', role: 'admin' }])
   updateReview.mockImplementation(async (id, changes) => {
     const review = reviews.find(item => item.id === id)
     Object.assign(review, changes)
