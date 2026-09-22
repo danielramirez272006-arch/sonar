@@ -1,8 +1,13 @@
 import { useState } from 'react';
-import { ArrowRight, Eye, EyeOff, Headphones, Music2 } from 'lucide-react';
+import { ArrowRight, Eye, EyeOff, Headphones, Music2, ShieldCheck, UserRound } from 'lucide-react';
 import { useAuth } from '../../../shared/context/auth-context';
 import { GoogleIcon, SpotifyIcon } from './social-provider-icon';
 import { RotatingReview } from './rotating-review';
+
+const demoAccounts = {
+  user: { email: 'mateo@email.com', password: 'hashed_password_mock', label: 'Entrar como usuario' },
+  admin: { email: 'admin@sonar.local', password: 'admin_mock_password', label: 'Entrar como administrador' },
+};
 
 const EditorialPanel = () => (
   <aside className="auth-editorial" aria-label="Comunidad editorial de audio">
@@ -21,12 +26,66 @@ export const LoginForm = () => {
   const [formData, setFormData] = useState({ email: '', password: '' });
   const [showPassword, setShowPassword] = useState(false);
   const [message, setMessage] = useState('');
-  const handleSubmit = async (event) => {
-    event.preventDefault(); setMessage('');
-    try { const account = await login(formData.email.trim(), formData.password); window.location.hash = account.role === 'admin' ? '#admin' : '#usuario'; }
-    catch (error) { setMessage(error.message); }
+
+  const redirectForRole = (account) => {
+    window.location.hash = account.role === 'admin' ? '#admin' : '#usuario';
   };
-  return <div className="auth-shell"><EditorialPanel /><section className="auth-form-area" aria-labelledby="login-title"><div className="auth-form-wrap"><div className="auth-mobile-brand"><Headphones size={19} /> SONAR</div><header className="auth-heading"><h2 id="login-title">Inicia sesión en Sonar</h2><p>Tu diario sonoro te estaba esperando.</p></header><div className="auth-socials" aria-label="Acceso con servicios externos"><button type="button"><SpotifyIcon />Continuar con Spotify</button><button type="button"><GoogleIcon />Continuar con Google</button></div><p className="auth-divider"><span />o inicia sesión con tu correo<span /></p><form onSubmit={handleSubmit} className="auth-form"><label htmlFor="email">Correo electrónico</label><input id="email" type="email" autoComplete="email" required placeholder="tu@ejemplo.com" value={formData.email} onChange={(event) => setFormData({ ...formData, email: event.target.value })} /><div className="auth-label-row"><label htmlFor="password">Contraseña</label><a href="#forgot-password">¿Olvidaste tu contraseña?</a></div><div className="auth-password"><input id="password" type={showPassword ? 'text' : 'password'} autoComplete="current-password" required placeholder="Mínimo 8 caracteres" value={formData.password} onChange={(event) => setFormData({ ...formData, password: event.target.value })} /><button type="button" onClick={() => setShowPassword(!showPassword)} aria-label={showPassword ? 'Ocultar contraseña' : 'Mostrar contraseña'}>{showPassword ? <EyeOff size={17} /> : <Eye size={17} />}</button></div>{message && <p className="auth-error" role="alert">{message}</p>}<button className="auth-submit" type="submit" disabled={isLoading}>{isLoading ? 'Ingresando…' : <>Entrar a Sonar <ArrowRight size={18} /></>}</button></form><p className="auth-switch">¿Aún no tienes cuenta? <a href="#register">Crea tu cuenta</a></p><p className="auth-legal">Al ingresar aceptas las Condiciones de Servicio y la Política de Privacidad de Sonar.</p></div></section></div>;
+
+  const signIn = async (credentials) => {
+    setMessage('');
+    const account = await login(credentials.email.trim(), credentials.password);
+    redirectForRole(account);
+  };
+
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    try {
+      await signIn(formData);
+    } catch (error) {
+      setMessage(error.message);
+    }
+  };
+
+  const handleDemoLogin = async (accountType) => {
+    const credentials = demoAccounts[accountType];
+    setFormData({ email: credentials.email, password: credentials.password });
+    try {
+      await signIn(credentials);
+    } catch (error) {
+      setMessage(error.message);
+    }
+  };
+
+  return (
+    <div className="auth-shell">
+      <EditorialPanel />
+      <section className="auth-form-area" aria-labelledby="login-title">
+        <div className="auth-form-wrap">
+          <div className="auth-mobile-brand"><Headphones size={19} /> SONAR</div>
+          <header className="auth-heading"><h2 id="login-title">Inicia sesión en Sonar</h2><p>Tu diario sonoro te estaba esperando.</p></header>
+          <div className="auth-demo-access" aria-label="Accesos de demostración">
+            <p>Acceso de demostración</p>
+            <div>
+              <button type="button" onClick={() => handleDemoLogin('user')} disabled={isLoading}><UserRound size={15} />{demoAccounts.user.label}</button>
+              <button type="button" onClick={() => handleDemoLogin('admin')} disabled={isLoading}><ShieldCheck size={15} />{demoAccounts.admin.label}</button>
+            </div>
+          </div>
+          <div className="auth-socials" aria-label="Acceso con servicios externos"><button type="button"><SpotifyIcon />Continuar con Spotify</button><button type="button"><GoogleIcon />Continuar con Google</button></div>
+          <p className="auth-divider"><span />o inicia sesión con tu correo<span /></p>
+          <form onSubmit={handleSubmit} className="auth-form">
+            <label htmlFor="email">Correo electrónico</label>
+            <input id="email" type="email" autoComplete="email" required placeholder="tu@ejemplo.com" value={formData.email} onChange={(event) => setFormData({ ...formData, email: event.target.value })} />
+            <div className="auth-label-row"><label htmlFor="password">Contraseña</label><a href="#forgot-password">¿Olvidaste tu contraseña?</a></div>
+            <div className="auth-password"><input id="password" type={showPassword ? 'text' : 'password'} autoComplete="current-password" required placeholder="Mínimo 8 caracteres" value={formData.password} onChange={(event) => setFormData({ ...formData, password: event.target.value })} /><button type="button" onClick={() => setShowPassword(!showPassword)} aria-label={showPassword ? 'Ocultar contraseña' : 'Mostrar contraseña'}>{showPassword ? <EyeOff size={17} /> : <Eye size={17} />}</button></div>
+            {message && <p className="auth-error" role="alert">{message}</p>}
+            <button className="auth-submit" type="submit" disabled={isLoading}>{isLoading ? 'Ingresando…' : <>Entrar a Sonar <ArrowRight size={18} /></>}</button>
+          </form>
+          <p className="auth-switch">¿Aún no tienes cuenta? <a href="#register">Crea tu cuenta</a></p>
+          <p className="auth-legal">Al ingresar aceptas las Condiciones de Servicio y la Política de Privacidad de Sonar.</p>
+        </div>
+      </section>
+    </div>
+  );
 };
 
 export default LoginForm;
