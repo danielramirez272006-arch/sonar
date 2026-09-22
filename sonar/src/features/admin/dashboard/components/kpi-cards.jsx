@@ -1,50 +1,28 @@
-const cards = [
-  ['totalUsers', 'Usuarios totales', '◎', 'Comunidad Sonar'],
-  ['totalReviews', 'Reseñas acumuladas', '▤', 'Voces que construyen criterio'],
-  ['pendingReviews', 'Pendientes', '◷', 'Esperando tu revisión'],
-  ['approvedReviews', 'Aprobadas', '✓', 'Listas para compartir'],
-  ['rejectedReviews', 'Rechazadas', '⊘', 'Fuera de los criterios'],
-  ['flaggedReviews', 'Marcadas por IA', '✧', 'Requieren una segunda mirada'],
-]
+const primaryCards = [
+  ['pendingReviews', 'En espera', 'Reseñas por decidir', 'Prioridad'],
+  ['flaggedReviews', 'Señales de IA', 'Requieren una segunda escucha', 'Atención'],
+  ['totalReviews', 'Nuevas voces', 'Reseñas en el archivo', 'Esta semana'],
+];
 
 export function KpiCards({ metrics, busy, error }) {
   return (
-    <section
-      className="w-full grid grid-cols-2 md:grid-cols-3 xl:grid-cols-6 gap-4"
-      aria-label="Métricas administrativas"
-      aria-busy={busy}
-    >
-      {cards.map(([key, title, icon, caption]) => {
-        const isActive = key === 'pendingReviews'
-        return (
-          <article
-            className={`flex flex-col p-4 rounded-xl shadow-sm border min-w-0 overflow-hidden transition-colors duration-300 ${
-              isActive 
-                ? 'bg-white dark:bg-sonar-surface border-red-500 dark:border-sonar-alert text-gray-900 dark:text-sonar-text' 
-                : 'bg-gray-50 dark:bg-transparent border-gray-100 dark:border-sonar-surface text-gray-500 dark:text-sonar-text/70'
-            }`}
-            key={key}
-          >
-            <div className="kpi-top flex items-center justify-between text-gray-500 dark:text-sonar-text/70">
-              <span aria-hidden="true">{icon}</span>
-              <span className="eyebrow text-xs uppercase font-semibold">{title}</span>
-            </div>
-            <strong className={`text-3xl font-bold my-2 ${isActive ? 'text-[#B80C09] dark:text-[#ff7875]' : 'text-gray-900 dark:text-sonar-text'}`}>
-              {error ? '—' : busy ? '…' : metrics[key]?.toLocaleString('es') ?? '0'}
-            </strong>
-            <p className="text-xs whitespace-normal break-words leading-tight">
-              {caption}
-            </p>
-            {isActive && (
-              <a href="#moderacion" className="mt-2 text-xs font-semibold text-[#B80C09] dark:text-[#ff7875] hover:underline">
-                Moderar ahora ↗
-              </a>
-            )}
+    <section className="dashboard-metrics" aria-label="Resumen operativo" aria-busy={busy}>
+      <div className="dashboard-metrics__primary">
+        {primaryCards.map(([key, title, description, tag], index) => (
+          <article className={`dashboard-metric dashboard-metric--${key}`} key={key} style={{ '--enter-delay': `${index * 90}ms` }}>
+            <div className="dashboard-metric__top"><span>{tag}</span><i aria-hidden="true" /></div>
+            <strong>{error ? '—' : busy ? '…' : metrics[key]?.toLocaleString('es') ?? '0'}</strong>
+            <div><h2>{title}</h2><p>{description}</p></div>
           </article>
-        )
-      })}
+        ))}
+      </div>
+      <div className="dashboard-metrics__secondary" aria-label="Métricas secundarias">
+        <span><b>{error ? '—' : metrics?.totalUsers ?? 0}</b> miembros</span>
+        <span><b>{error ? '—' : metrics?.approvedReviews ?? 0}</b> aprobadas</span>
+        <span><b>{error ? '—' : metrics?.rejectedReviews ?? 0}</b> rechazadas</span>
+      </div>
     </section>
-  )
+  );
 }
 
-export default KpiCards
+export default KpiCards;

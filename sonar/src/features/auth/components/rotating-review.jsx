@@ -1,13 +1,15 @@
 import { useEffect, useState } from 'react';
 import { motion, useReducedMotion } from 'framer-motion';
+import { BlobatarAvatar } from '../../../shared/components/ui/blobatar-avatar';
 
 const reviews = [
-  { user: 'Mara R.', album: 'Heaven or Las Vegas', artist: 'Cocteau Twins', comment: 'Una escucha que convierte cada detalle en una pequeña constelación.', initials: ['MR', 'CT'] },
-  { user: 'Leo A.', album: 'Vespertine', artist: 'Björk', comment: 'Íntimo y enorme a la vez; justo el tipo de hallazgo que quiero guardar.', initials: ['LA', 'BJ'] },
-  { user: 'Inés V.', album: 'To Pimp a Butterfly', artist: 'Kendrick Lamar', comment: 'La comunidad encontró capas que no había escuchado en años de volver al álbum.', initials: ['IV', 'KL'] },
+  { username: 'clara_sound', artist: 'Radiohead', album: 'In Rainbows', rating: 5, comment: 'La producción analógica y el ritmo de Reckoner alcanzan una dimensión cósmica en vinilo de 180g.' },
+  { username: 'marcos_vinyl', artist: 'Evanescence', album: 'Fallen', rating: 5, comment: 'Un disco que sigue sonando increíble después de tantos años.' },
+  { username: 'luna_records', artist: 'Arctic Monkeys', album: 'AM', rating: 4, comment: 'Una producción elegante con una identidad sonora muy marcada.' },
 ];
 
 const positionInStack = (index, activeIndex) => (index - activeIndex + reviews.length) % reviews.length;
+const starsForRating = (rating) => '★'.repeat(rating) + '☆'.repeat(5 - rating);
 
 export const RotatingReview = () => {
   const [activeIndex, setActiveIndex] = useState(0);
@@ -26,12 +28,15 @@ export const RotatingReview = () => {
         {reviews.map((review, index) => {
           const position = positionInStack(index, activeIndex);
           const isActive = position === 0;
-          return <motion.article key={review.album} className="auth-review__card" aria-hidden={!isActive}
+          return <motion.article key={review.username} className="auth-review__card" aria-hidden={!isActive}
             animate={{ y: position === 0 ? 0 : position === 1 ? 16 : -19, scale: position === 0 ? 1 : position === 1 ? 0.955 : 0.91, opacity: position === 0 ? 1 : position === 1 ? 0.7 : 0.42, rotate: position === 0 ? -3 : position === 1 ? -1.7 : -4.2, zIndex: reviews.length - position }}
             initial={false} transition={reduceMotion ? { duration: 0 } : { duration: 0.72, ease: [0.22, 0.72, 0.24, 1] }}>
-            <div className="auth-review__content"><div className="auth-review__avatars" aria-hidden="true">{review.initials.map((initial) => <span key={initial}>{initial}</span>)}</div><div><b>{review.user}</b><small>{review.artist} · {review.album}</small></div><strong aria-label="Cinco de cinco estrellas">★★★★★</strong><p>“{review.comment}”</p></div>
+            <div className="auth-review__content"><div className="auth-review__avatars"><BlobatarAvatar name={review.username} active={isActive} size={50} /></div><div><b>{review.username}</b><small>{review.artist} · {review.album}</small></div><strong aria-label={`${review.rating} de 5 estrellas`}>{starsForRating(review.rating)}</strong><p>“{review.comment}”</p></div>
           </motion.article>;
         })}
+      </div>
+      <div className="auth-review__dots" aria-label={`Comentario ${activeIndex + 1} de ${reviews.length}`}>
+        {reviews.map((review, index) => <i key={review.username} className={index === activeIndex ? 'active' : ''} aria-hidden="true" />)}
       </div>
     </section>
   );
