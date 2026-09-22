@@ -36,7 +36,7 @@ export const AnimatedLogo = ({ className = '', onClick, showText = true, size = 
       {/* Logotipo Tipográfico "SONAR" */}
       {showText && (
         <motion.span
-          className={`font-black uppercase text-[#231123] dark:text-[#FAF5F8] group-hover:text-[#B80C09] dark:group-hover:text-[#ff6b68] transition-colors duration-200 ${textSize}`}
+          className={`font-black uppercase text-[#231123] dark:text-[#DCDCDD] group-hover:text-[#B80C09] dark:group-hover:text-[#ff4d4a] transition-colors duration-200 ${textSize}`}
           style={{
             fontFamily: "'Syne', 'Plus Jakarta Sans', system-ui, sans-serif",
           }}

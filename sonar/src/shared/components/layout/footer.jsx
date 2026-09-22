@@ -1,13 +1,16 @@
 import React from 'react';
+import { AnimatedLogo } from '../ui/AnimatedLogo';
 
 export const Footer = () => {
   return (
     <footer className="bg-white dark:bg-sonar-base border-t border-gray-200 dark:border-sonar-surface pt-12 pb-8 transition-colors duration-300">
       <div className="w-full max-w-[1440px] mx-auto px-4 lg:px-10">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8">
-          {/* Brand Summary con Logo Público */}
+          {/* Brand Summary con Logo Animado */}
           <div className="lg:col-span-2 flex flex-col gap-2">
-            <img src="/logo-sonar.svg" alt="Sonar Logo" className="h-8 w-auto mb-4" />
+            <div className="mb-3">
+              <AnimatedLogo size="sm" onClick={() => { window.location.hash = '#explore'; }} />
+            </div>
             <p className="text-gray-500 dark:text-sonar-text/80 max-w-sm leading-relaxed text-sm">
               Un espacio para escuchar con atención. Y compartir con criterio. Plataforma dedicada a la crítica musical inmersiva y archivos de vinilo de alta fidelidad.
             </p>

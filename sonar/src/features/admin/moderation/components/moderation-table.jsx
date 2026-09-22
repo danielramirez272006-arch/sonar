@@ -30,7 +30,7 @@ export function ModerationTable({ reviews, users, query, busy, onAction, analyse
               onClick={() => setFilter(value)}
               className={`px-3.5 py-1.5 rounded-full text-xs font-semibold transition-colors duration-200 cursor-pointer ${
                 isSelected
-                  ? 'bg-gray-900 text-white dark:bg-sonar-accent dark:text-sonar-text dark:border dark:border-sonar-accent shadow-xs'
+                  ? 'bg-[#4B2840] text-white dark:bg-sonar-surface dark:text-sonar-text border border-[#B80C09]/50 shadow-xs'
                   : 'bg-transparent text-gray-600 dark:text-sonar-text/70 hover:bg-gray-100 dark:hover:bg-sonar-surface/60'
               }`}
             >
@@ -46,7 +46,7 @@ export function ModerationTable({ reviews, users, query, busy, onAction, analyse
       </div>
       {visible.length === 0 && (
         <div className="empty-state p-12 text-center rounded-xl border border-dashed border-gray-300 dark:border-sonar-surface bg-white dark:bg-sonar-surface text-gray-700 dark:text-sonar-text">
-          <span aria-hidden="true" className="text-3xl block mb-3 text-gray-400 dark:text-sonar-text/50">◎</span>
+          <span aria-hidden="true" className="text-3xl block mb-3 text-[#B80C09] dark:text-[#ff4d4a]">◎</span>
           <h3 className="text-lg font-serif dark:text-sonar-text">
             {busy ? 'Afinando la selección…' : error ? 'No se pudieron cargar las reseñas' : query || filter !== 'all' ? 'No hay coincidencias' : 'Todo en armonía'}
           </h3>
@@ -65,32 +65,32 @@ export function ModerationTable({ reviews, users, query, busy, onAction, analyse
             <article
               className={`review-card rounded-xl p-6 border transition-colors duration-200 ${
                 isEven
-                  ? 'bg-white dark:bg-sonar-surface border-gray-200 dark:border-sonar-surface'
-                  : 'bg-gray-50/50 dark:bg-sonar-surface/70 border-gray-200 dark:border-sonar-surface'
+                  ? 'bg-white dark:bg-[#4B2840] border-gray-200 dark:border-white/10'
+                  : 'bg-gray-50/50 dark:bg-[#4B2840] border-gray-200 dark:border-white/10'
               }`}
               key={review.id}
             >
-              <div className="review-meta flex items-center justify-between gap-3 pb-4 border-b border-gray-100 dark:border-sonar-surface">
+              <div className="review-meta flex items-center justify-between gap-3 pb-4 border-b border-gray-100 dark:border-white/10">
                 <div className="review-author flex items-center gap-3">
-                  <span className="avatar w-9 h-9 rounded-full bg-purple-100 dark:bg-sonar-accent text-purple-950 dark:text-sonar-text flex items-center justify-center font-serif text-sm font-bold">
+                  <span className="avatar w-9 h-9 rounded-full bg-gray-200 dark:bg-[#231123] text-gray-800 dark:text-[#DCDCDD] flex items-center justify-center font-serif text-sm font-bold border border-gray-300 dark:border-white/15">
                     {name.slice(0, 1).toUpperCase()}
                   </span>
                   <div>
-                    <strong className="text-sm font-bold text-gray-900 dark:text-sonar-text block">
+                    <strong className="text-sm font-bold text-gray-900 dark:text-[#DCDCDD] block">
                       {name}
                     </strong>
-                    <small className="text-[11px] text-gray-500 dark:text-sonar-text/70 block">
-                      COMUNIDAD SONAR <span className="text-gray-400 dark:text-sonar-text/50">· Reseña #{review.id}</span>
+                    <small className="text-[11px] text-gray-500 dark:text-[#DCDCDD]/70 block">
+                      COMUNIDAD SONAR <span className="text-gray-400 dark:text-[#DCDCDD]/50">· Reseña #{review.id}</span>
                     </small>
                   </div>
                 </div>
                 <span
                   className={`badge px-2.5 py-1 rounded-full text-xs font-bold ${
                     review.aiFlagged
-                      ? 'bg-red-50 dark:bg-sonar-alert/20 text-[#B80C09] dark:text-sonar-alert border border-red-200 dark:border-sonar-alert/40'
+                      ? 'bg-red-50 dark:bg-[#B80C09]/20 text-[#B80C09] dark:text-[#ff4d4a] border border-red-200 dark:border-[#B80C09]/40'
                       : review.status === 'approved'
-                      ? 'bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800/40'
-                      : 'bg-gray-100 dark:bg-sonar-base text-gray-700 dark:text-sonar-text border border-gray-200 dark:border-sonar-surface'
+                      ? 'bg-emerald-50 dark:bg-emerald-950/50 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800/50'
+                      : 'bg-gray-100 dark:bg-[#231123] text-gray-700 dark:text-[#DCDCDD] border border-gray-200 dark:border-white/15'
                   }`}
                 >
                   {review.aiFlagged ? '✧ Marcada por IA' : statuses[review.status] || review.status}
@@ -102,17 +102,17 @@ export function ModerationTable({ reviews, users, query, busy, onAction, analyse
                   <div className="record-sleeve"><span>SONAR<br />COLLECTION</span><i /><small>33⅓ RPM</small></div>
                 </div>
                 <div className="review-copy min-w-0">
-                  <div className="eyebrow text-[10px] tracking-wider uppercase font-semibold text-gray-500 dark:text-sonar-text/70">
+                  <div className="eyebrow text-[10px] tracking-wider uppercase font-semibold text-gray-500 dark:text-[#DCDCDD]/70">
                     DEL ARCHIVO SONORO
                   </div>
-                  <h3 className="text-lg font-bold text-gray-900 dark:text-sonar-text mt-1 mb-2">
-                    Álbum <span className="font-serif italic text-purple-900 dark:text-pink-300">{review.albumId}</span>
+                  <h3 className="text-lg font-bold text-gray-900 dark:text-[#DCDCDD] mt-1 mb-2">
+                    Álbum <span className="font-serif italic text-[#B80C09] dark:text-[#ff4d4a]">{review.albumId}</span>
                   </h3>
-                  <div className="rating flex items-center gap-1 text-sm font-bold text-gray-800 dark:text-sonar-text">
+                  <div className="rating flex items-center gap-1 text-sm font-bold text-gray-800 dark:text-[#DCDCDD]">
                     <span aria-hidden="true" className="text-amber-500">★</span> {review.rating}{' '}
-                    <small className="text-xs font-normal text-gray-500 dark:text-sonar-text/70">/ 5 · Calificación del oyente</small>
+                    <small className="text-xs font-normal text-gray-500 dark:text-[#DCDCDD]/70">/ 5 · Calificación del oyente</small>
                   </div>
-                  <blockquote className="mt-3 font-serif italic text-gray-700 dark:text-sonar-text/90 text-sm leading-relaxed">
+                  <blockquote className="mt-3 font-serif italic text-gray-700 dark:text-[#DCDCDD]/90 text-sm leading-relaxed">
                     “{review.content}”
                   </blockquote>
                 </div>
@@ -121,16 +121,16 @@ export function ModerationTable({ reviews, users, query, busy, onAction, analyse
                 <div
                   className={`analysis-box p-4 rounded-xl flex gap-3 mb-4 ${
                     review.aiFlagged
-                      ? 'bg-red-50/60 dark:bg-sonar-alert/15 border border-red-200 dark:border-sonar-alert/30 text-red-950 dark:text-sonar-text'
-                      : 'bg-gray-50 dark:bg-sonar-base border border-gray-200 dark:border-sonar-surface text-gray-800 dark:text-sonar-text'
+                      ? 'bg-red-50/60 dark:bg-[#B80C09]/15 border border-red-200 dark:border-[#B80C09]/30 text-red-950 dark:text-[#DCDCDD]'
+                      : 'bg-gray-50 dark:bg-[#231123] border border-gray-200 dark:border-white/10 text-gray-800 dark:text-[#DCDCDD]'
                   }`}
                 >
-                  <span aria-hidden="true" className="text-lg text-purple-900 dark:text-pink-300">✧</span>
+                  <span aria-hidden="true" className="text-lg text-[#B80C09] dark:text-[#ff4d4a]">✧</span>
                   <div>
-                    <strong className="text-xs tracking-wider uppercase block text-gray-900 dark:text-sonar-text">
-                      LECTURA ASISTIDA <span className="text-[10px] text-gray-500 dark:text-sonar-text/60 ml-2 pl-2 border-l border-gray-300 dark:border-sonar-surface">MOCK LOCAL</span>
+                    <strong className="text-xs tracking-wider uppercase block text-gray-900 dark:text-[#DCDCDD]">
+                      LECTURA ASISTIDA <span className="text-[10px] text-gray-500 dark:text-[#DCDCDD]/60 ml-2 pl-2 border-l border-gray-300 dark:border-white/15">MOCK LOCAL</span>
                     </strong>
-                    <p className="text-xs text-gray-600 dark:text-sonar-text/80 mt-1 leading-relaxed">
+                    <p className="text-xs text-gray-600 dark:text-[#DCDCDD]/80 mt-1 leading-relaxed">
                       {analysis
                         ? analysis.reason || 'No se detectaron palabras de la lista ofensiva. La decisión final es tuya.'
                         : review.aiFlagged
@@ -141,12 +141,12 @@ export function ModerationTable({ reviews, users, query, busy, onAction, analyse
                 </div>
               )}
               {review.status === 'pending_moderation' && (
-                <div className="review-actions flex flex-wrap items-center gap-3 pt-4 border-t border-gray-100 dark:border-sonar-surface">
+                <div className="review-actions flex flex-wrap items-center gap-3 pt-4 border-t border-gray-100 dark:border-white/10">
                   {rejectId === review.id ? (
                     <>
-                      <span className="text-xs font-semibold text-red-600 dark:text-sonar-alert">¿Rechazar esta reseña?</span>
+                      <span className="text-xs font-semibold text-red-600 dark:text-[#ff4d4a]">¿Rechazar esta reseña?</span>
                       <button
-                        className="px-3 py-1.5 rounded-lg bg-red-600 dark:bg-sonar-alert hover:bg-red-700 dark:hover:bg-red-800 text-white font-semibold text-xs transition-colors cursor-pointer"
+                        className="px-3 py-1.5 rounded-lg bg-[#B80C09] hover:bg-[#9c0a07] text-white font-semibold text-xs transition-colors cursor-pointer border-transparent"
                         disabled={busy}
                         onClick={async () => {
                           if (await onAction('reject', review)) setRejectId(null)
@@ -155,7 +155,7 @@ export function ModerationTable({ reviews, users, query, busy, onAction, analyse
                         Confirmar rechazo
                       </button>
                       <button
-                        className="px-3 py-1.5 rounded-lg bg-gray-100 dark:bg-sonar-surface hover:bg-gray-200 dark:hover:bg-sonar-surface/80 text-gray-700 dark:text-sonar-text font-semibold text-xs transition-colors cursor-pointer border border-gray-200 dark:border-sonar-surface"
+                        className="px-3 py-1.5 rounded-lg bg-gray-100 dark:bg-[#231123] hover:bg-gray-200 dark:hover:bg-white/10 text-gray-700 dark:text-[#DCDCDD] font-semibold text-xs transition-colors cursor-pointer border border-gray-200 dark:border-white/15"
                         disabled={busy}
                         onClick={() => setRejectId(null)}
                       >
@@ -165,21 +165,21 @@ export function ModerationTable({ reviews, users, query, busy, onAction, analyse
                   ) : (
                     <>
                       <button
-                        className="px-3.5 py-2 rounded-lg bg-[#003844] dark:bg-sonar-accent hover:bg-[#002830] dark:hover:bg-[#002830] text-white dark:text-sonar-text font-semibold text-xs transition-colors cursor-pointer border border-transparent dark:border-sonar-accent"
+                        className="px-3.5 py-2 rounded-lg bg-[#B80C09] hover:bg-[#9c0a07] text-white font-semibold text-xs transition-colors cursor-pointer border border-transparent shadow-xs"
                         disabled={busy}
                         onClick={() => onAction('approve', review)}
                       >
                         ✓ Aprobar reseña
                       </button>
                       <button
-                        className="px-3.5 py-2 rounded-lg bg-gray-100 dark:bg-sonar-surface hover:bg-gray-200 dark:hover:bg-sonar-surface/80 text-gray-700 dark:text-sonar-text font-semibold text-xs transition-colors cursor-pointer border border-gray-200 dark:border-sonar-surface"
+                        className="px-3.5 py-2 rounded-lg bg-gray-100 dark:bg-[#231123] hover:bg-gray-200 dark:hover:bg-white/10 text-gray-700 dark:text-[#DCDCDD] font-semibold text-xs transition-colors cursor-pointer border border-gray-200 dark:border-white/15"
                         disabled={busy}
                         onClick={() => setRejectId(review.id)}
                       >
                         Rechazar
                       </button>
                       <button
-                        className="px-3.5 py-2 rounded-lg text-purple-900 dark:text-pink-300 hover:bg-purple-50 dark:hover:bg-sonar-surface font-semibold text-xs transition-colors cursor-pointer ml-auto"
+                        className="px-3.5 py-2 rounded-lg bg-transparent hover:bg-[#B80C09]/10 dark:hover:bg-white/5 text-[#B80C09] dark:text-[#ff4d4a] font-semibold text-xs transition-colors cursor-pointer border border-gray-200 dark:border-white/15 ml-auto"
                         disabled={busy}
                         onClick={() => onAction('analyze', review)}
                       >

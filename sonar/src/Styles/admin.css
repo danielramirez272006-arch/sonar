@@ -1,16 +1,16 @@
 /* Identidad y estructura compartida de la consola SONAR. */
-:root { font-family: Inter, 'Segoe UI', Arial, sans-serif; color: #231123; background: #fffafd; font-synthesis: none; text-rendering: optimizeLegibility; -webkit-font-smoothing: antialiased; --plum: #5c1d5e; --ink: #231123; --muted: #766575; --line: #ecdfea; --paper: #fffafd; --red: #b80c09; --teal: #003844; }
+:root { font-family: Inter, 'Segoe UI', Arial, sans-serif; color: #231123; background: #fffafd; font-synthesis: none; text-rendering: optimizeLegibility; -webkit-font-smoothing: antialiased; --plum: #4B2840; --ink: #231123; --muted: #766575; --line: #ecdfea; --paper: #fffafd; --red: #b80c09; --teal: #003844; }
 * { box-sizing: border-box; }
 body { margin: 0; }
 button, input { font: inherit; }
 button, a, input, summary { -webkit-tap-highlight-color: transparent; }
-button, .primary-button { min-height: 42px; border: 1px solid var(--line); border-radius: 7px; padding: 11px 17px; background: white; color: var(--plum); font-size: 12px; font-weight: 650; cursor: pointer; text-decoration: none; display: inline-flex; align-items: center; justify-content: center; gap: 12px; transition: background .18s, border-color .18s, transform .18s; }
+button, .primary-button { min-height: 42px; border: 1px solid var(--line); border-radius: 7px; padding: 11px 17px; background: white; color: var(--ink); font-size: 12px; font-weight: 650; cursor: pointer; text-decoration: none; display: inline-flex; align-items: center; justify-content: center; gap: 12px; transition: background .18s, border-color .18s, transform .18s; }
 button:hover:not(:disabled) { background: #f7edf5; border-color: #cfa8c9; }
 button:disabled { opacity: .55; cursor: wait; }
 a { color: inherit; }
-:focus-visible { outline: 3px solid #ac5ba2; outline-offset: 4px; }
-.primary-button { background: var(--plum); color: white; border-color: var(--plum); }
-.primary-button:hover:not(:disabled) { background: #421344; border-color: #421344; }
+:focus-visible { outline: 3px solid #b80c09; outline-offset: 4px; }
+.primary-button { background: var(--red); color: white; border-color: var(--red); }
+.primary-button:hover:not(:disabled) { background: #9c0a07; border-color: #9c0a07; }
 .danger-button { background: var(--red); color: white; }
 .text-button { background: transparent; border-color: transparent; }
 h1, h2, h3, p { margin: 0; }
@@ -93,25 +93,59 @@ h1 em { color: var(--plum); }
 /* Dark mode CSS overrides */
 html.dark .console-header { background: #231123; border-color: #4B2840; }
 html.dark .topbar { background: #231123; }
-html.dark .global-search { background: #4B2840; border-color: rgba(255,255,255,0.1); }
+html.dark .global-search { background: #4B2840; border-color: rgba(220,220,221,0.15); }
 html.dark .global-search input { color: #DCDCDD; }
-html.dark .nav-row { background: #231123; border-color: rgba(255,255,255,0.1); }
-html.dark .nav-row a.active { background: #003844; color: #DCDCDD; }
-html.dark .nav-row a:hover { background: #4B2840; }
-html.dark .panel { background: #4B2840; border-color: rgba(255,255,255,0.1); color: #DCDCDD; }
-html.dark .editorial-guide { background: #4B2840; border-color: rgba(255,255,255,0.1); color: #DCDCDD; }
-html.dark .editorial-guide p { color: #DCDCDD; }
-html.dark .editorial-guide ul { color: #DCDCDD; }
-html.dark .profile-card { background: #4B2840; border-color: rgba(255,255,255,0.1); }
-html.dark .queue-banner { background: #4B2840; border-color: rgba(255,255,255,0.1); color: #DCDCDD; }
-html.dark .console-footer { background: #231123; border-color: #4B2840; }
-html.dark .review-card { background: #4B2840; border-color: rgba(255,255,255,0.1); }
-html.dark .review-meta, html.dark .review-actions { border-color: rgba(255,255,255,0.1); }
+html.dark .global-search input::placeholder { color: rgba(220,220,221,0.5); }
+html.dark .nav-row { background: #231123; border-color: rgba(220,220,221,0.1); }
+html.dark .nav-row a { color: rgba(220,220,221,0.7); }
+html.dark .nav-row a.active { background: #4B2840; color: #DCDCDD; border: 1px solid rgba(184, 12, 9, 0.4); }
+html.dark .nav-row a:hover { background: #4B2840; color: #ffffff; }
+html.dark .panel { background: #4B2840; border-color: rgba(220,220,221,0.15); color: #DCDCDD; }
+html.dark .editorial-guide { background: #4B2840; border-color: rgba(220,220,221,0.15); color: #DCDCDD; }
+html.dark .editorial-guide h2 { color: #DCDCDD; }
+html.dark .editorial-guide h2 em { color: #ff4d4a; }
+html.dark .editorial-guide p { color: rgba(220,220,221,0.85); }
+html.dark .editorial-guide summary { color: #DCDCDD; border-color: rgba(220,220,221,0.15); }
+html.dark .editorial-guide ul { color: rgba(220,220,221,0.85); }
+html.dark .editorial-guide li { color: rgba(220,220,221,0.85); }
+html.dark .profile-card { background: #4B2840; border-color: rgba(220,220,221,0.15); color: #DCDCDD; }
+html.dark .profile-card strong { color: #DCDCDD; }
+html.dark .profile-card small, html.dark .profile-card div > span { color: rgba(220,220,221,0.7); }
+html.dark .queue-banner { background: #4B2840; border-color: rgba(220,220,221,0.15); color: #DCDCDD; }
+html.dark .console-footer { background: #231123; border-color: #4B2840; color: #DCDCDD; }
+html.dark .console-footer strong { color: #DCDCDD; }
+html.dark .console-footer p { color: rgba(220,220,221,0.7); }
+html.dark .console-footer a { color: #DCDCDD; }
+html.dark .review-card { background: #4B2840; border-color: rgba(220,220,221,0.15); color: #DCDCDD; }
+html.dark .review-meta, html.dark .review-actions { border-color: rgba(220,220,221,0.12); }
 html.dark .review-copy blockquote { color: #DCDCDD; }
-html.dark .analysis-box { background: #231123; border-color: #4B2840; }
-html.dark .empty-state { background: #4B2840; border-color: rgba(255,255,255,0.2); }
-html.dark .moderation-intro { background: #4B2840; border-color: rgba(255,255,255,0.1); }
-html.dark .listening-bar { background: #4B2840; border-color: rgba(255,255,255,0.1); }
+html.dark .review-copy h3 { color: #DCDCDD; }
+html.dark .review-copy h3 > span { color: #ff4d4a; }
+html.dark .review-author strong { color: #DCDCDD; }
+html.dark .review-author small { color: rgba(220,220,221,0.7); }
+html.dark .analysis-box { background: #231123; border-color: rgba(220,220,221,0.15); color: #DCDCDD; }
+html.dark .analysis-box strong { color: #DCDCDD; }
+html.dark .analysis-box strong span { color: rgba(220,220,221,0.6); border-left-color: rgba(220,220,221,0.2); }
+html.dark .analysis-box p { color: rgba(220,220,221,0.85); }
+html.dark .empty-state { background: #4B2840; border-color: rgba(220,220,221,0.2); color: #DCDCDD; }
+html.dark .empty-state h3 { color: #DCDCDD; }
+html.dark .empty-state p { color: rgba(220,220,221,0.7); }
+html.dark .moderation-intro { background: #4B2840; border-color: rgba(220,220,221,0.15); color: #DCDCDD; }
+html.dark .moderation-intro strong { color: #DCDCDD; }
+html.dark .moderation-intro p { color: rgba(220,220,221,0.85); }
+html.dark .moderation-intro > .eyebrow { color: rgba(220,220,221,0.7); }
+html.dark .moderation-intro > span:first-child { color: #B80C09; }
+html.dark .listening-bar { background: #4B2840; border-color: rgba(220,220,221,0.15); color: #DCDCDD; }
+html.dark .listening-bar strong { color: #DCDCDD; }
+html.dark .listening-bar > span:last-child { color: rgba(220,220,221,0.7); }
+html.dark .avatar { background: #231123; color: #DCDCDD; border: 1px solid rgba(220,220,221,0.2); }
+html.dark .avatar.small { background: #231123; color: #DCDCDD; border-color: rgba(220,220,221,0.2); }
+html.dark .badge { background: #231123; color: #DCDCDD; border-color: rgba(220,220,221,0.2); }
+html.dark .badge-alert { background: rgba(184, 12, 9, 0.2); color: #ff4d4a; border-color: rgba(184, 12, 9, 0.4); }
+html.dark .badge-success { background: rgba(40, 100, 86, 0.25); color: #81c7b5; border-color: rgba(40, 100, 86, 0.4); }
+html.dark button:not(.primary-button):not(.danger-button) { background: #231123; color: #DCDCDD; border-color: rgba(220,220,221,0.2); }
+html.dark button:not(.primary-button):not(.danger-button):hover:not(:disabled) { background: #33182b; border-color: rgba(220,220,221,0.35); color: #ffffff; }
+html.dark .text-button { background: transparent !important; border-color: transparent !important; }
 
 @media (min-width: 1500px) { .main-content { padding-top: 36px; } }
 @media (max-width: 1050px) { .shell { width: calc(100% - 48px); } .topbar { gap: 24px; } .console-mode { display: none; } .workspace-grid { grid-template-columns: minmax(0, 1fr) 270px; gap: 20px; } .profile-card { display: none !important; } }

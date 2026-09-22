@@ -60,7 +60,7 @@ export const AppRouter = () => {
   const renderCurrentPage = () => {
     const rawPath = currentPath.toLowerCase().replace(/^\//, '');
 
-    if (rawPath === '' || rawPath === 'explore' || rawPath === 'home') {
+    if (rawPath === 'explore' || rawPath === 'home') {
       return <HomePage />;
     }
     if (rawPath === 'login') {
@@ -84,7 +84,7 @@ export const AppRouter = () => {
     if (rawPath === 'profile' || rawPath === 'user-dashboard' || rawPath === 'saved') {
       return <UserDashboardPage />;
     }
-    if (rawPath === 'admin' || rawPath === 'dashboard' || rawPath === 'moderacion') {
+    if (rawPath === '' || rawPath === 'admin' || rawPath === 'dashboard' || rawPath === 'moderacion') {
       return <AdminConsole />;
     }
 

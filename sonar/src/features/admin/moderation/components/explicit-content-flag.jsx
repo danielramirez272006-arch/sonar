@@ -5,7 +5,7 @@ export const ExplicitContentFlag = ({ flagged = false, reason = 'Lenguaje inapro
 
   return (
     <span
-      style={{ backgroundColor: '#4B2840', color: '#DCDCDD', borderColor: '#003844' }}
+      style={{ backgroundColor: '#4B2840', color: '#DCDCDD', borderColor: 'rgba(184, 12, 9, 0.4)' }}
       className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold border shadow-xs"
     >
       <span style={{ backgroundColor: '#B80C09' }} className="w-1.5 h-1.5 rounded-full" />

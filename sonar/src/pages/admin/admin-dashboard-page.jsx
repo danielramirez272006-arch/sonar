@@ -15,7 +15,7 @@ export function AdminDashboardPage({ metrics, reviews, users, onRefresh, onExpor
           <p className="dark:text-sonar-text/70">Una mirada al pulso de Sonar. Cada opinión cuenta, cada reseña importa.</p>
         </div>
         <div className="profile-card dark:bg-sonar-surface dark:border-white/10">
-          <span className="avatar profile-avatar dark:bg-sonar-accent dark:text-sonar-text">S</span>
+          <span className="avatar profile-avatar bg-[#4B2840] dark:bg-sonar-surface text-white dark:text-sonar-text border border-white/10">S</span>
           <div>
             <small className="dark:text-sonar-text/70">ESPACIO DE CURADURÍA</small>
             <strong className="dark:text-sonar-text">Consola administrativa</strong>
@@ -33,9 +33,9 @@ export function AdminDashboardPage({ metrics, reviews, users, onRefresh, onExpor
       <KpiCards metrics={metrics} busy={feedProps.busy} error={currentError} />
 
       <section className="queue-banner dark:bg-sonar-surface dark:border-white/10">
-        <div className="queue-symbol dark:bg-sonar-base dark:border-white/10 dark:text-sonar-text" aria-hidden="true">≋</div>
+        <div className="queue-symbol dark:bg-sonar-base dark:border-white/10 text-[#B80C09] dark:text-[#ff4d4a]" aria-hidden="true">≋</div>
         <div>
-          <span className="eyebrow dark:text-pink-300">TU CRITERIO HACE LA DIFERENCIA</span>
+          <span className="eyebrow text-[#B80C09] dark:text-[#ff4d4a]">TU CRITERIO HACE LA DIFERENCIA</span>
           <h2 className="dark:text-sonar-text">
             {currentError
               ? 'La comunidad merece una buena escucha.'
@@ -43,7 +43,7 @@ export function AdminDashboardPage({ metrics, reviews, users, onRefresh, onExpor
           </h2>
           <p className="dark:text-sonar-text/70">Ayuda a que las buenas conversaciones encuentren su lugar.</p>
         </div>
-        <a className="primary-button dark:bg-sonar-accent dark:border-sonar-accent dark:hover:bg-[#002830]" href="#moderacion">Ir a moderación <span>↗</span></a>
+        <a className="primary-button bg-[#B80C09] hover:bg-[#9c0a07] text-white border-transparent" href="#moderacion">Ir a moderación <span>↗</span></a>
       </section>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -67,7 +67,7 @@ export function AdminDashboardPage({ metrics, reviews, users, onRefresh, onExpor
                   const count = (reviews || []).filter(review => Math.round(review.rating) === rating).length
                   return (
                     <div key={rating}>
-                      <span className="dark:text-sonar-text">{rating} <b className="dark:text-pink-300">★</b></span>
+                      <span className="dark:text-sonar-text">{rating} <b className="text-[#B80C09] dark:text-[#ff4d4a]">★</b></span>
                       <meter min="0" max={Math.max((reviews || []).length, 1)} value={count} aria-label={`${rating} estrellas: ${count} reseñas`} />
                       <small className="dark:text-sonar-text/70 font-semibold">{count}</small>
                     </div>
@@ -87,14 +87,14 @@ export function AdminDashboardPage({ metrics, reviews, users, onRefresh, onExpor
               <button
                 onClick={onExport}
                 disabled={feedProps.busy || !!currentError}
-                className="flex items-center justify-between p-4 w-full bg-white dark:bg-sonar-surface border border-gray-200 dark:border-sonar-surface rounded-lg text-sm font-medium text-gray-800 dark:text-sonar-text hover:bg-gray-50 dark:hover:bg-sonar-accent transition-colors"
+                className="flex items-center justify-between p-4 w-full bg-white dark:bg-sonar-surface border border-gray-200 dark:border-white/10 rounded-lg text-sm font-medium text-gray-800 dark:text-sonar-text hover:bg-gray-50 dark:hover:bg-white/5 transition-colors cursor-pointer"
               >
                 <span>↓ Descargar reseñas en CSV</span> <span>↗</span>
               </button>
               <button
                 onClick={onRefresh}
                 disabled={feedProps.busy}
-                className="flex items-center justify-between p-4 w-full bg-white dark:bg-sonar-surface border border-gray-200 dark:border-sonar-surface rounded-lg text-sm font-medium text-gray-800 dark:text-sonar-text hover:bg-gray-50 dark:hover:bg-sonar-accent transition-colors"
+                className="flex items-center justify-between p-4 w-full bg-white dark:bg-sonar-surface border border-gray-200 dark:border-white/10 rounded-lg text-sm font-medium text-gray-800 dark:text-sonar-text hover:bg-gray-50 dark:hover:bg-white/5 transition-colors cursor-pointer"
               >
                 <span>↻ Actualizar información</span> <span>↗</span>
               </button>

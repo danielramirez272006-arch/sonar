@@ -48,19 +48,19 @@
 .moderation-intro p { font-size: 11px; line-height: 1.8; color: var(--muted); }
 .moderation-intro strong { display: block; color: var(--plum); font-size: 12px; }
 .moderation-intro > .eyebrow { margin-left: auto; white-space: nowrap; font-size: 8px; }
-.engine-panel { background: var(--teal); color: #f4f3e8; padding: 26px; border-radius: 12px; }
-.engine-panel .eyebrow { color: #b6d3ca; font-size: 8px; }
-.engine-panel .badge { color: #c1dacd; background: #ffffff0a; border-color: #497069; font-size: 7px; }
+.engine-panel { background: #4B2840; border: 1px solid rgba(220, 220, 221, 0.15); color: #DCDCDD; padding: 26px; border-radius: 12px; }
+.engine-panel .eyebrow { color: #DCDCDD; opacity: 0.85; font-size: 8px; }
+.engine-panel .badge { color: #DCDCDD; background: rgba(0, 56, 68, 0.5); border-color: rgba(220, 220, 221, 0.2); font-size: 7px; }
 .engine-panel h2 { font-size: 33px; line-height: 1.1; margin-block: 28px 17px; }
-.engine-panel h2 em { color: #c7d8be; }
-.engine-panel p { font-size: 11px; line-height: 1.9; color: #b8cfc8; }
+.engine-panel h2 em { color: #ff4d4a; }
+.engine-panel p { font-size: 11px; line-height: 1.9; color: #DCDCDD; opacity: 0.8; }
 .signal-bars { display: flex; align-items: center; justify-content: space-between; height: 70px; margin-block: 20px; gap: 4px; }
-.signal-bars i { background: #8aad97; width: 3px; height: 20%; border-radius: 2px; }
+.signal-bars i { background: #B80C09; width: 3px; height: 20%; border-radius: 2px; }
 .signal-bars i:nth-child(3n) { height: 65%; }
 .signal-bars i:nth-child(4n) { height: 90%; }
 .signal-bars i:nth-child(5n) { height: 45%; }
-.engine-facts { border-top: 1px solid #42645e; padding-top: 18px; display: flex; justify-content: space-between; font-size: 7px; letter-spacing: 1px; color: #aec8be; }
-.engine-facts strong { display: block; margin-top: 7px; font-size: 14px; color: #eef3e9; letter-spacing: 0; }
+.engine-facts { border-top: 1px solid rgba(220, 220, 221, 0.15); padding-top: 18px; display: flex; justify-content: space-between; font-size: 7px; letter-spacing: 1px; color: #DCDCDD; opacity: 0.85; }
+.engine-facts strong { display: block; margin-top: 7px; font-size: 14px; color: #DCDCDD; letter-spacing: 0; }
 .side-note { display: flex; gap: 13px; padding: 5px 10px; color: var(--muted); }
 .side-note p { font-size: 11px; line-height: 1.8; }
 .listening-bar { border: 1px solid var(--line); background: #fff; border-radius: 10px; padding: 18px 25px; display: flex; gap: 19px; align-items: center; margin-top: 35px; }

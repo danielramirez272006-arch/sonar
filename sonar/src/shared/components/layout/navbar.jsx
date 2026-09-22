@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Avatar } from '../ui/avatar';
+import { AnimatedLogo } from '../ui/AnimatedLogo';
 import { useTheme } from '../../context/theme-context';
 
 export const Navbar = ({
@@ -41,32 +42,12 @@ export const Navbar = ({
   return (
     <header className="sticky top-0 z-50 w-full bg-white/95 dark:bg-[#180c18]/95 border-b border-[#e6d5e2] dark:border-white/10 backdrop-blur-md transition-colors duration-300 shadow-xs">
       <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-10 h-[68px] flex items-center justify-between gap-4">
-        {/* Izquierda: Logo principal original intacto sin filtros que alteren los colores */}
-        <div
-          className="inline-flex items-center gap-2.5 cursor-pointer select-none group"
-          onClick={() => { window.location.hash = '#explore'; }}
-        >
-          <motion.div
-            className="relative w-9 h-9 sm:w-10 sm:h-10 shrink-0 flex items-center justify-center"
-            whileHover={{ rotate: 15, scale: 1.08 }}
-            whileTap={{ scale: 0.95 }}
-            transition={{ type: 'spring', stiffness: 260, damping: 18 }}
-          >
-            <img
-              src="/logo-sonar.svg"
-              alt="Sonar Logo"
-              className="w-full h-full object-contain transition-all duration-200 drop-shadow-[0_4px_12px_rgba(184,12,9,0.3)]"
-            />
-          </motion.div>
-          <span
-            className="font-black uppercase text-[#231123] dark:text-[#FAF5F8] group-hover:text-[#B80C09] dark:group-hover:text-[#ff6b68] transition-colors duration-200 text-lg sm:text-xl tracking-[0.22em]"
-            style={{
-              fontFamily: "'Syne', 'Plus Jakarta Sans', system-ui, sans-serif",
-            }}
-          >
-            SONAR
-          </span>
-        </div>
+        {/* Izquierda: Logo principal animado */}
+        <AnimatedLogo
+          onClick={() => {
+            window.location.hash = '#explore';
+          }}
+        />
 
         {/* Derecha: Enlaces, Botón de Tema & Avatar */}
         <div className="flex items-center gap-3 sm:gap-4">
