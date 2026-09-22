@@ -14,7 +14,6 @@ import NotFoundPage from '../../pages/public/not-found-page';
 
 // Páginas de Usuario y Administración
 import UserDashboardPage from '../../pages/user/user-dashboard-page';
-import AdminDashboardPage from '../../pages/admin/admin-dashboard-page.jsx';
 import { AdminConsole } from '../../App';
 import PrivateRoute from './private-route';
 import AdminRoute from './admin-route';
@@ -62,7 +61,7 @@ export const AppRouter = () => {
   const renderCurrentPage = () => {
     const rawPath = currentPath.toLowerCase().replace(/^\//, '');
 
-    if (rawPath === 'explore' || rawPath === 'home') {
+    if (rawPath === '' || rawPath === 'explore' || rawPath === 'home') {
       return <HomePage />;
     }
     if (rawPath === 'login') {
@@ -90,16 +89,13 @@ export const AppRouter = () => {
         </PrivateRoute>
       );
     }
-    if (rawPath === 'admin') {
+    // Se conserva la entrada histórica de la consola para no romper enlaces existentes.
+    if (rawPath.startsWith('admin') || rawPath.startsWith('dashboard') || rawPath.startsWith('moderacion')) {
       return (
         <AdminRoute fallback={<LoginPage />}>
           <AdminConsole />
         </AdminRoute>
       );
-    }
-    // Se conserva la entrada histórica de la consola para no romper enlaces existentes.
-    if (rawPath === '' || rawPath === 'dashboard' || rawPath === 'moderacion') {
-      return <AdminConsole />;
     }
 
     return <NotFoundPage />;

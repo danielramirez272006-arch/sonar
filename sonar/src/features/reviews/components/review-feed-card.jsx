@@ -21,7 +21,7 @@ export const ReviewFeedCard = ({
     rating: 5,
     albumTitle: 'In Rainbows',
     artist: 'Radiohead',
-    cover: 'https://images.unsplash.com/photo-1614613535308-eb5fbd3d2c17?w=300&auto=format&fit=crop&q=80',
+    cover: 'https://cdn-images.dzcdn.net/images/cover/a175af9b7d329bc678cb4d26fc13d6de/500x500-000000-80-0-0.jpg',
     content:
       'Una obra maestra que equilibra con elegancia la experimentación electrónica y la calidez acústica. "Reckoner" sigue siendo una de las piezas mejor mezcladas en la historia de la música moderna.',
     likesCount: 142,

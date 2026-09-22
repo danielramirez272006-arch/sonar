@@ -1,5 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
+import { usePlayer } from '../../../shared/context/player-context';
 
 const albumVariants = {
   hidden: { opacity: 0, y: 30 },
@@ -14,6 +15,18 @@ const albumVariants = {
 };
 
 export const AlbumOfTheWeek = () => {
+  const { playTrack, toggleTrack, currentTrack, isPlaying, openReviewModal } = usePlayer();
+
+  const inRainbowsTrack = {
+    id: 138546803,
+    title: '15 Step',
+    artist: 'Radiohead',
+    album: 'In Rainbows',
+    cover: 'https://cdn-images.dzcdn.net/images/cover/a175af9b7d329bc678cb4d26fc13d6de/500x500-000000-80-0-0.jpg',
+    preview: 'https://cdnt-preview.dzcdn.net/api/1/1/5/3/f/0/53faff1741bb65b8ddbc11780555c546.mp3',
+  };
+
+  const isCurrentPlaying = currentTrack?.id === inRainbowsTrack.id && isPlaying;
   return (
     <motion.section
       variants={albumVariants}
@@ -56,7 +69,7 @@ export const AlbumOfTheWeek = () => {
               <img
                 className="w-full h-full object-cover"
                 alt="In Rainbows by Radiohead"
-                src="https://images.unsplash.com/photo-1614613535308-eb5fbd3d2c17?w=800&auto=format&fit=crop&q=80"
+                src="https://cdn-images.dzcdn.net/images/cover/a175af9b7d329bc678cb4d26fc13d6de/1000x1000-000000-80-0-0.jpg"
                 onError={(e) => {
                   e.target.style.display = 'none';
                 }}
@@ -163,17 +176,19 @@ export const AlbumOfTheWeek = () => {
             <motion.button
               whileHover={{ scale: 1.03, y: -2 }}
               whileTap={{ scale: 0.97 }}
+              onClick={() => toggleTrack(inRainbowsTrack)}
               className="flex items-center gap-1.5 sm:gap-2 px-4 sm:px-6 py-2.5 sm:py-3.5 rounded-xl bg-[#B80C09] text-white text-xs sm:text-sm uppercase tracking-wider shadow-[0_8px_24px_-4px_rgba(184,12,9,0.35)] hover:bg-[#9c0a07] transition-all font-bold cursor-pointer"
               type="button"
             >
               <span className="material-symbols-outlined text-[18px] sm:text-[20px]" style={{ fontVariationSettings: "'FILL' 1" }}>
-                play_arrow
+                {isCurrentPlaying ? 'pause' : 'play_arrow'}
               </span>
-              <span>Escuchar Ahora</span>
+              <span>{isCurrentPlaying ? 'Pausar Muestra' : 'Escuchar Ahora (30s)'}</span>
             </motion.button>
             <motion.button
               whileHover={{ scale: 1.03, y: -2 }}
               whileTap={{ scale: 0.97 }}
+              onClick={() => openReviewModal({ title: 'In Rainbows', artist: 'Radiohead' })}
               className="flex items-center gap-1.5 sm:gap-2 px-4 sm:px-6 py-2.5 sm:py-3.5 rounded-xl bg-white dark:bg-[#4B2840] border border-[#e6d5e2] dark:border-white/10 text-[#4B2840] dark:text-white text-xs sm:text-sm uppercase tracking-wider shadow-xs hover:bg-[#f8e9f6] dark:hover:bg-[#5d3350] transition-all font-semibold cursor-pointer"
               type="button"
             >

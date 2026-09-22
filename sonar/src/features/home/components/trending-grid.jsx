@@ -1,80 +1,9 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
+import { DEFAULT_DEEZER_ALBUMS, getAlbumTracks } from '../../../shared/services/deezer-service';
+import { usePlayer } from '../../../shared/context/player-context';
 
-const trendingAlbums = [
-  {
-    id: 1,
-    title: 'Currents',
-    artist: 'Tame Impala',
-    year: '2015',
-    genre: 'Psychedelic Pop',
-    rating: 4.6,
-    cover: 'https://images.unsplash.com/photo-1508700115892-45ecd05ae2ad?w=500&auto=format&fit=crop&q=80',
-  },
-  {
-    id: 2,
-    title: 'To Pimp a Butterfly',
-    artist: 'Kendrick Lamar',
-    year: '2015',
-    genre: 'Hip Hop / Jazz',
-    rating: 4.9,
-    cover: 'https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=500&auto=format&fit=crop&q=80',
-  },
-  {
-    id: 3,
-    title: 'Vespertine',
-    artist: 'Björk',
-    year: '2001',
-    genre: 'Glitch Pop / Ambient',
-    rating: 4.8,
-    cover: 'https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=500&auto=format&fit=crop&q=80',
-  },
-  {
-    id: 4,
-    title: 'Kid A',
-    artist: 'Radiohead',
-    year: '2000',
-    genre: 'Electronic Rock',
-    rating: 4.8,
-    cover: 'https://images.unsplash.com/photo-1518609878373-06d740f60d8b?w=500&auto=format&fit=crop&q=80',
-  },
-  {
-    id: 5,
-    title: 'Blonde',
-    artist: 'Frank Ocean',
-    year: '2016',
-    genre: 'R&B / Neo-Soul',
-    rating: 4.7,
-    cover: 'https://images.unsplash.com/photo-1483412033650-1015ddeb83d1?w=500&auto=format&fit=crop&q=80',
-  },
-  {
-    id: 6,
-    title: 'Discovery',
-    artist: 'Daft Punk',
-    year: '2001',
-    genre: 'French House / Disco',
-    rating: 4.8,
-    cover: 'https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=500&auto=format&fit=crop&q=80',
-  },
-  {
-    id: 7,
-    title: 'Abbey Road',
-    artist: 'The Beatles',
-    year: '1969',
-    genre: 'Classic Rock',
-    rating: 4.9,
-    cover: 'https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=500&auto=format&fit=crop&q=80',
-  },
-  {
-    id: 8,
-    title: 'Melodrama',
-    artist: 'Lorde',
-    year: '2017',
-    genre: 'Art Pop',
-    rating: 4.6,
-    cover: 'https://images.unsplash.com/photo-1501386761578-eac5c94b800a?w=500&auto=format&fit=crop&q=80',
-  },
-];
+const trendingAlbums = DEFAULT_DEEZER_ALBUMS;
 
 const tabs = [
   { id: 'week', label: 'Esta semana' },
@@ -85,6 +14,38 @@ const tabs = [
 
 export const TrendingGrid = () => {
   const [activeTab, setActiveTab] = useState('week');
+  const { playTrack, currentTrack, isPlaying, toggleTrack, openReviewModal } = usePlayer();
+
+  const handlePlayAlbum = async (album) => {
+    if (album.topTrack?.preview) {
+      toggleTrack({
+        id: album.id,
+        title: album.topTrack.title || album.title,
+        artist: album.artist,
+        album: album.title,
+        cover: album.cover,
+        preview: album.topTrack.preview,
+      });
+      return;
+    }
+
+    try {
+      const tracks = await getAlbumTracks(album.id);
+      const playable = tracks.find((t) => t.preview) || tracks[0];
+      if (playable && playable.preview) {
+        playTrack({
+          id: playable.id,
+          title: playable.title,
+          artist: album.artist,
+          album: album.title,
+          cover: album.cover,
+          preview: playable.preview,
+        });
+      }
+    } catch (err) {
+      console.error('Error al reproducir preview de álbum:', err);
+    }
+  };
 
   return (
     <section className="w-full px-4 sm:px-6 lg:px-10 py-12 sm:py-16 bg-[#fff7fa] dark:bg-[#231123] transition-colors duration-300">
@@ -100,18 +61,18 @@ export const TrendingGrid = () => {
             </h2>
           </div>
 
-          {/* Filter Tabs */}
-          <div className="inline-flex items-center p-1 rounded-xl bg-white dark:bg-[#4B2840] border border-[#e6d5e2] dark:border-white/10 self-start md:self-auto gap-1 shadow-xs transition-colors">
+          {/* Filter Tabs con forma de cápsula y paleta oficial */}
+          <div className="inline-flex items-center p-1 sm:p-1.5 rounded-full bg-[#f4ebf2] dark:bg-[#4B2840] border border-[#e6d5e2] dark:border-white/10 self-start md:self-auto gap-1 shadow-inner transition-colors">
             {tabs.map((tab) => {
               const isActive = activeTab === tab.id;
               return (
                 <button
                   key={tab.id}
                   onClick={() => setActiveTab(tab.id)}
-                  className={`px-4 py-2 rounded-lg text-xs sm:text-sm font-bold transition-all cursor-pointer ${
+                  className={`relative px-4 sm:px-5 py-2 rounded-full text-xs sm:text-sm font-bold transition-all duration-200 cursor-pointer select-none ${
                     isActive
-                      ? 'bg-[#B80C09] text-white shadow-xs'
-                      : 'text-[#5c435a] hover:text-[#231123] dark:text-[#B89CB0] dark:hover:text-[#FAF5F8]'
+                      ? 'bg-[#003844] text-[#DCDCDD] shadow-md'
+                      : 'text-[#5c435a] hover:text-[#231123] dark:text-[#DCDCDD]/75 dark:hover:text-white'
                   }`}
                   type="button"
                 >
@@ -141,20 +102,28 @@ export const TrendingGrid = () => {
                     e.target.style.display = 'none';
                   }}
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end justify-between p-3">
+                <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end justify-between p-3">
                   <button
-                    className="px-3 py-1.5 rounded-lg bg-[#B80C09] text-white text-xs uppercase font-bold flex items-center gap-1 shadow-md hover:bg-[#9c0a07] transition-colors cursor-pointer"
+                    onClick={() => openReviewModal(album)}
+                    className="px-3 py-1.5 rounded-lg bg-white/20 hover:bg-[#B80C09] text-white text-xs uppercase font-bold flex items-center gap-1 shadow-md backdrop-blur-md transition-colors cursor-pointer"
                     type="button"
+                    title="Escribir crítica"
                   >
-                    <span className="material-symbols-outlined text-[16px]">bookmark_add</span>
-                    <span>Guardar</span>
+                    <span className="material-symbols-outlined text-[16px]">rate_review</span>
+                    <span>Criticar</span>
                   </button>
                   <button
-                    aria-label="Reproducir muestra"
-                    className="w-8 h-8 rounded-full bg-white text-[#231123] flex items-center justify-center hover:scale-105 transition-transform shadow-md cursor-pointer"
+                    onClick={() => handlePlayAlbum(album)}
+                    aria-label={`Reproducir muestra de ${album.title}`}
+                    title={currentTrack?.album === album.title && isPlaying ? 'Pausar' : 'Escuchar muestra de 30s'}
+                    className={`w-9 h-9 rounded-full ${
+                      currentTrack?.album === album.title && isPlaying ? 'bg-[#B80C09] text-white' : 'bg-white text-[#231123]'
+                    } flex items-center justify-center hover:scale-110 transition-transform shadow-md cursor-pointer`}
                     type="button"
                   >
-                    <span className="material-symbols-outlined text-[18px]">play_arrow</span>
+                    <span className="material-symbols-outlined text-[20px]">
+                      {currentTrack?.album === album.title && isPlaying ? 'pause' : 'play_arrow'}
+                    </span>
                   </button>
                 </div>
               </div>

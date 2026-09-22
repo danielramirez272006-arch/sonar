@@ -7,6 +7,8 @@ import FeaturedReviews from '../../features/home/components/featured-reviews';
 import TrendingGrid from '../../features/home/components/trending-grid';
 import Footer from '../../shared/components/layout/footer';
 import Skeleton from '../../shared/components/ui/loader';
+import { searchAlbums, getAlbumTracks } from '../../shared/services/deezer-service';
+import { usePlayer } from '../../shared/context/player-context';
 
 const pageContainerVariants = {
   hidden: { opacity: 0 },
@@ -63,6 +65,10 @@ const HomePageSkeleton = () => {
 
 export const HomePage = () => {
   const [isLoading, setIsLoading] = useState(true);
+  const [searchResults, setSearchResults] = useState([]);
+  const [isSearching, setIsSearching] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
+  const { playTrack, currentTrack, isPlaying, toggleTrack, openReviewModal } = usePlayer();
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -71,6 +77,44 @@ export const HomePage = () => {
 
     return () => clearTimeout(timer);
   }, []);
+
+  const handleSearch = async (query) => {
+    setSearchQuery(query);
+    if (!query || !query.trim()) {
+      setSearchResults([]);
+      setIsSearching(false);
+      return;
+    }
+
+    setIsSearching(true);
+    try {
+      const results = await searchAlbums(query);
+      setSearchResults(results);
+    } catch (err) {
+      console.error('Error buscando álbumes en Deezer:', err);
+    } finally {
+      setIsSearching(false);
+    }
+  };
+
+  const handlePlaySearchResult = async (album) => {
+    try {
+      const tracks = await getAlbumTracks(album.id);
+      const playable = tracks.find((t) => t.preview) || tracks[0];
+      if (playable && playable.preview) {
+        playTrack({
+          id: playable.id,
+          title: playable.title,
+          artist: album.artist,
+          album: album.title,
+          cover: album.cover,
+          preview: playable.preview,
+        });
+      }
+    } catch (err) {
+      console.error('Error al reproducir resultado de búsqueda:', err);
+    }
+  };
 
   return (
     <div className="min-h-screen bg-[#fff7fa] dark:bg-[#231123] text-[#231123] dark:text-[#FAF5F8] flex flex-col transition-colors duration-300">
@@ -101,7 +145,79 @@ export const HomePage = () => {
               <AlbumOfTheWeek />
 
               {/* Buscador Principal */}
-              <HeroSearch />
+              <HeroSearch onSearch={handleSearch} onSubmit={handleSearch} />
+
+              {/* Resultados de Búsqueda Deezer en Vivo */}
+              {searchQuery && (
+                <section className="w-full max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-10 py-6">
+                  <div className="flex items-center justify-between gap-4 mb-6 border-b border-[#e6d5e2] dark:border-white/10 pb-3">
+                    <div className="flex items-center gap-2">
+                      <span className="w-2.5 h-2.5 rounded-full bg-[#B80C09] animate-pulse" />
+                      <h3 className="text-xl sm:text-2xl font-extrabold text-[#231123] dark:text-[#FAF5F8]">
+                        Resultados de Deezer para &ldquo;{searchQuery}&rdquo;
+                      </h3>
+                    </div>
+                    <span className="text-xs text-[#5c435a] dark:text-[#B89CB0] font-semibold">
+                      {searchResults.length} álbumes encontrados
+                    </span>
+                  </div>
+
+                  {isSearching ? (
+                    <div className="flex items-center justify-center py-12 text-[#5c435a] dark:text-[#B89CB0]">
+                      <span className="material-symbols-outlined animate-spin text-[32px] text-[#B80C09] mr-2">
+                        progress_activity
+                      </span>
+                      <span>Buscando en la biblioteca de Deezer...</span>
+                    </div>
+                  ) : searchResults.length === 0 ? (
+                    <div className="text-center py-10 text-[#5c435a] dark:text-[#B89CB0]">
+                      No se encontraron álbumes en Deezer para &ldquo;{searchQuery}&rdquo;.
+                    </div>
+                  ) : (
+                    <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4 sm:gap-5">
+                      {searchResults.slice(0, 12).map((album) => (
+                        <motion.div
+                          key={album.id}
+                          whileHover={{ y: -4 }}
+                          className="group flex flex-col p-3 rounded-2xl bg-white dark:bg-[#4B2840] border border-[#e6d5e2] dark:border-white/10 shadow-xs hover:shadow-md transition-all"
+                        >
+                          <div className="relative aspect-square rounded-xl overflow-hidden mb-2.5 bg-black/10">
+                            <img
+                              src={album.cover}
+                              alt={album.title}
+                              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                            />
+                            <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2 p-2">
+                              <button
+                                onClick={() => handlePlaySearchResult(album)}
+                                className="w-9 h-9 rounded-full bg-[#B80C09] text-white flex items-center justify-center shadow-md hover:scale-110 transition-transform cursor-pointer"
+                                title="Escuchar muestra (30s)"
+                              >
+                                <span className="material-symbols-outlined text-[20px]">
+                                  {currentTrack?.album === album.title && isPlaying ? 'pause' : 'play_arrow'}
+                                </span>
+                              </button>
+                              <button
+                                onClick={() => openReviewModal(album)}
+                                className="w-9 h-9 rounded-full bg-white text-[#231123] flex items-center justify-center shadow-md hover:scale-110 transition-transform cursor-pointer"
+                                title="Escribir crítica"
+                              >
+                                <span className="material-symbols-outlined text-[18px]">rate_review</span>
+                              </button>
+                            </div>
+                          </div>
+                          <span className="text-xs sm:text-sm font-bold text-[#231123] dark:text-[#FAF5F8] truncate">
+                            {album.title}
+                          </span>
+                          <span className="text-[11px] text-[#5c435a] dark:text-[#B89CB0] truncate">
+                            {album.artist}
+                          </span>
+                        </motion.div>
+                      ))}
+                    </div>
+                  )}
+                </section>
+              )}
 
               {/* Reseñas Destacadas */}
               <FeaturedReviews />

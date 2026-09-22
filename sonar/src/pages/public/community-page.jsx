@@ -14,7 +14,7 @@ const mockFeedReviews = [
     rating: 5,
     albumTitle: 'In Rainbows',
     artist: 'Radiohead',
-    cover: 'https://images.unsplash.com/photo-1614613535308-eb5fbd3d2c17?w=300&auto=format&fit=crop&q=80',
+    cover: 'https://cdn-images.dzcdn.net/images/cover/a175af9b7d329bc678cb4d26fc13d6de/500x500-000000-80-0-0.jpg',
     content:
       'Una obra maestra que equilibra con elegancia la experimentación electrónica y la calidez acústica. "Reckoner" sigue siendo una de las piezas mejor mezcladas en la historia de la música moderna.',
     likesCount: 142,
@@ -28,9 +28,9 @@ const mockFeedReviews = [
     avatarBg: '#B80C09',
     date: 'Hace 1 hora',
     rating: 4.5,
-    albumTitle: 'Random Access Memories',
+    albumTitle: 'Discovery',
     artist: 'Daft Punk',
-    cover: 'https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=300&auto=format&fit=crop&q=80',
+    cover: 'https://cdn-images.dzcdn.net/images/cover/5718f7c81c27e0b2417e2a4c45224f8a/500x500-000000-80-0-0.jpg',
     content:
       'El trabajo de compresión y dinámica en pista analógica es demoledor. Giorgio by Moroder es un homenaje absoluto a la historia de los sintetizadores modulares.',
     likesCount: 98,
@@ -44,9 +44,9 @@ const mockFeedReviews = [
     avatarBg: '#75527b',
     date: 'Hace 3 horas',
     rating: 5,
-    albumTitle: 'Untrue',
-    artist: 'Burial',
-    cover: 'https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=300&auto=format&fit=crop&q=80',
+    albumTitle: 'Vespertine',
+    artist: 'Björk',
+    cover: 'https://cdn-images.dzcdn.net/images/cover/4bd6b0232c2092faf145101453cb1051/500x500-000000-80-0-0.jpg',
     content:
       'Melancolía nocturna capturada en vinilo craquelado. La textura de las voces sampleadas crea una atmósfera lluviosa e íntima difícil de replicar.',
     likesCount: 76,
@@ -62,7 +62,7 @@ const mockFeedReviews = [
     rating: 4.8,
     albumTitle: 'Currents',
     artist: 'Tame Impala',
-    cover: 'https://images.unsplash.com/photo-1508700115892-45ecd05ae2ad?w=300&auto=format&fit=crop&q=80',
+    cover: 'https://cdn-images.dzcdn.net/images/cover/de5b9b704cd4ec36f8bf49beb3e17ba2/500x500-000000-80-0-0.jpg',
     content:
       'Un renacimiento psicodélico impecable. Los bajos envolventes de "Let It Happen" demuestran un estándar de masterización asombroso para la era digital.',
     likesCount: 64,

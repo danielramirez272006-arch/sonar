@@ -8,7 +8,6 @@ export const Navbar = ({
   links = [
     { id: 'explore', label: 'Explorar', path: '#explore' },
     { id: 'community', label: 'Comunidad', path: '#community' },
-    { id: 'admin', label: 'Admin', path: '#admin' },
   ],
   user = {
     name: 'Mateo Rivaes',

@@ -12,7 +12,7 @@ export const DeezerPlayer = ({
   track = {
     title: '15 Step',
     artist: 'Radiohead · In Rainbows',
-    cover: 'https://images.unsplash.com/photo-1614613535308-eb5fbd3d2c17?w=300&auto=format&fit=crop&q=80',
+    cover: 'https://cdn-images.dzcdn.net/images/cover/a175af9b7d329bc678cb4d26fc13d6de/500x500-000000-80-0-0.jpg',
     duration: '3:57',
     currentTime: '1:24',
   },

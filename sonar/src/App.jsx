@@ -1,11 +1,16 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
+import { BrowserRouter } from 'react-router-dom'
 import { getReviews, getUsers } from './shared/services/api-client.js'
 import { analyzeReview } from './shared/services/ia-service.js'
 import { useAdminDashboard, useModeration } from './features/admin/index.js'
 import { AdminDashboardPage } from './pages/admin/admin-dashboard-page.jsx'
 import { ModerationPage } from './pages/admin/moderation-page.jsx'
 import { AnimatedLogo } from './shared/components/ui/AnimatedLogo.jsx'
+import { AuthProvider } from './shared/context/auth-context.jsx'
 import { ThemeProvider, useTheme } from './shared/context/theme-context.jsx'
+import { PlayerProvider } from './shared/context/player-context.jsx'
+import { GlobalAudioPlayer } from './shared/components/layout/global-audio-player.jsx'
+import { ReviewModal } from './shared/components/layout/review-modal.jsx'
 import AppRouter from './shared/routing/app-router.jsx'
 import "./Styles/App.css";
 import './Styles/admin.css'
@@ -195,8 +200,16 @@ export function AdminConsole() {
 
 export default function App() {
   return (
-    <ThemeProvider>
-      <AppRouter />
-    </ThemeProvider>
+    <BrowserRouter>
+      <AuthProvider>
+        <ThemeProvider>
+          <PlayerProvider>
+            <AppRouter />
+            <GlobalAudioPlayer />
+            <ReviewModal />
+          </PlayerProvider>
+        </ThemeProvider>
+      </AuthProvider>
+    </BrowserRouter>
   )
 }
