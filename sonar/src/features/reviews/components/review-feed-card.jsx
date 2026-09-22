@@ -1,5 +1,9 @@
-import React, { useState } from 'react';
-import { motion } from 'framer-motion';
+import React, { useState, useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { useAuth } from '../../../shared/context/auth-context';
+import { interactionsService } from '../../../shared/services/interactions-service';
+import CommentSection from './comment-section';
+import LikeButton from '../../../shared/components/ui/like-button';
 
 const cardVariants = {
   hidden: { opacity: 0, y: 20 },
@@ -28,12 +32,48 @@ export const ReviewFeedCard = ({
     commentsCount: 18,
   },
 }) => {
+  const { user } = useAuth();
+  const userId = user?.id || null;
+
   const [likes, setLikes] = useState(review.likesCount || 0);
   const [isLiked, setIsLiked] = useState(false);
+  const [showComments, setShowComments] = useState(false);
+  const [commentsCount, setCommentsCount] = useState(review.commentsCount || 0);
+  const [isSavedInCollection, setIsSavedInCollection] = useState(false);
+
+  useEffect(() => {
+    const likedIds = interactionsService.getLikedReviewIds(userId);
+    setIsLiked(likedIds.includes(review.id));
+    const isSaved = interactionsService.isAlbumSaved(userId, review.albumTitle);
+    setIsSavedInCollection(isSaved);
+    const existingComments = interactionsService.getCommentsForReview(review.id);
+    if (existingComments.length > 0) {
+      setCommentsCount(existingComments.length);
+    }
+  }, [review.id, review.albumTitle, userId]);
 
   const handleLike = () => {
-    setIsLiked(!isLiked);
-    setLikes((prev) => (isLiked ? prev - 1 : prev + 1));
+    if (!user) {
+      window.location.hash = '#login';
+      return;
+    }
+    const nextState = interactionsService.toggleReviewLike(review.id, userId);
+    setIsLiked(nextState);
+    setLikes((prev) => (nextState ? prev + 1 : Math.max(0, prev - 1)));
+  };
+
+  const handleToggleSave = () => {
+    if (!user) {
+      window.location.hash = '#login';
+      return;
+    }
+    const res = interactionsService.toggleSaveAlbum(userId, {
+      title: review.albumTitle,
+      artist: review.artist,
+      cover: review.cover,
+      rating: review.rating,
+    });
+    setIsSavedInCollection(res.isSaved);
   };
 
   return (
@@ -72,9 +112,9 @@ export const ReviewFeedCard = ({
       </div>
 
       {/* Cuerpo: Cuadro con carátula y reseña */}
-      <div className="flex flex-col sm:flex-row gap-4 p-3.5 sm:p-4 rounded-xl sm:rounded-2xl bg-gray-50 dark:bg-[#231123]/70 border border-[#e6d5e2] dark:border-white/10">
+      <div className="flex flex-col sm:flex-row gap-4 p-3.5 sm:p-4 rounded-xl sm:rounded-2xl bg-gray-50 dark:bg-[#231123]/70 border border-[#e6d5e2] dark:border-white/10 relative group">
         {/* Carátula */}
-        <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-xl overflow-hidden shrink-0 bg-gray-200 dark:bg-[#180e1a] shadow-xs">
+        <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-xl overflow-hidden shrink-0 bg-gray-200 dark:bg-[#180e1a] shadow-xs relative">
           <img
             src={review.cover}
             alt={review.albumTitle}
@@ -87,14 +127,36 @@ export const ReviewFeedCard = ({
 
         {/* Título de Álbum y Texto de la Reseña */}
         <div className="flex flex-col justify-center gap-1 min-w-0 flex-1">
-          <div className="flex items-baseline gap-1.5 truncate">
-            <h4 className="text-sm sm:text-base font-bold text-[#231123] dark:text-white truncate">
-              {review.albumTitle}
-            </h4>
-            <span className="text-xs text-[#5c435a] dark:text-[#B89CB0] truncate">
-              — {review.artist}
-            </span>
+          <div className="flex items-baseline justify-between gap-2">
+            <div className="flex items-baseline gap-1.5 truncate">
+              <h4 className="text-sm sm:text-base font-bold text-[#231123] dark:text-white truncate">
+                {review.albumTitle}
+              </h4>
+              <span className="text-xs text-[#5c435a] dark:text-[#B89CB0] truncate">
+                — {review.artist}
+              </span>
+            </div>
+
+            {/* Botón Guardar en Colección Propia */}
+            <button
+              type="button"
+              onClick={handleToggleSave}
+              title={isSavedInCollection ? 'En tu colección' : 'Guardar en tu colección'}
+              className={`p-1.5 rounded-lg text-xs font-semibold flex items-center gap-1 cursor-pointer transition-colors ${
+                isSavedInCollection
+                  ? 'text-[#B80C09] bg-[#B80C09]/10'
+                  : 'text-[#5c435a] dark:text-[#B89CB0] hover:text-[#B80C09] hover:bg-gray-200 dark:hover:bg-white/10'
+              }`}
+            >
+              <span
+                className="material-symbols-outlined text-[18px]"
+                style={{ fontVariationSettings: isSavedInCollection ? "'FILL' 1" : "'FILL' 0" }}
+              >
+                bookmark
+              </span>
+            </button>
           </div>
+
           <p className="text-xs sm:text-sm text-[#231123]/90 dark:text-gray-200 leading-relaxed line-clamp-3">
             “{review.content}”
           </p>
@@ -103,32 +165,19 @@ export const ReviewFeedCard = ({
 
       {/* Pie: Acciones Me gusta y Comentar */}
       <div className="flex items-center gap-6 pt-2 border-t border-[#e6d5e2]/60 dark:border-white/10 text-xs font-semibold text-[#5c435a] dark:text-[#B89CB0]">
-        <button
-          type="button"
-          onClick={handleLike}
-          className={`flex items-center gap-1.5 transition-colors cursor-pointer ${
-            isLiked ? 'text-[#B80C09] font-bold' : 'hover:text-[#B80C09]'
-          }`}
-        >
-          <svg
-            width="18"
-            height="18"
-            viewBox="0 0 24 24"
-            fill={isLiked ? '#B80C09' : 'none'}
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            className={isLiked ? 'text-[#B80C09]' : ''}
-          >
-            <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z" />
-          </svg>
-          <span>{likes}</span>
-        </button>
+        <LikeButton
+          isLiked={isLiked}
+          likesCount={likes}
+          onToggleLike={handleLike}
+          size="md"
+        />
 
         <button
           type="button"
-          className="flex items-center gap-1.5 hover:text-[#B80C09] transition-colors cursor-pointer"
+          onClick={() => setShowComments(!showComments)}
+          className={`flex items-center gap-1.5 transition-colors cursor-pointer ${
+            showComments ? 'text-[#B80C09] font-bold' : 'hover:text-[#B80C09]'
+          }`}
         >
           <svg
             width="18"
@@ -142,9 +191,19 @@ export const ReviewFeedCard = ({
           >
             <path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z" />
           </svg>
-          <span>{review.commentsCount} comentarios</span>
+          <span>{commentsCount} comentarios</span>
         </button>
       </div>
+
+      {/* Sección Expandible de Comentarios */}
+      <AnimatePresence>
+        {showComments && (
+          <CommentSection
+            reviewId={review.id}
+            onCommentCountChange={(newCount) => setCommentsCount(newCount)}
+          />
+        )}
+      </AnimatePresence>
     </motion.article>
   );
 };

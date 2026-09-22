@@ -1,10 +1,15 @@
-import React from 'react';
-import { motion } from 'framer-motion';
+import React, { useState, useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { useAuth } from '../../../shared/context/auth-context';
+import { interactionsService } from '../../../shared/services/interactions-service';
+import CommentSection from '../../reviews/components/comment-section';
+import LikeButton from '../../../shared/components/ui/like-button';
 
-const reviewsData = [
+const initialReviewsData = [
   {
     id: 1,
     author: '@sofia_sound',
+    userName: 'Sofía Sound',
     badge: 'Crítica Verificada',
     badgeIcon: 'verified',
     badgeColor: 'text-[#B80C09]',
@@ -24,6 +29,7 @@ const reviewsData = [
   {
     id: 2,
     author: '@marcos_vinyl',
+    userName: 'Marcos Vinyl',
     badge: 'Top Reseñador',
     badgeIcon: 'award_star',
     badgeColor: 'text-amber-500',
@@ -43,6 +49,7 @@ const reviewsData = [
   {
     id: 3,
     author: '@elena_analog',
+    userName: 'Elena Analog',
     badge: 'Curadora',
     badgeIcon: 'auto_awesome',
     badgeColor: 'text-[#5c1d5e] dark:text-pink-300',
@@ -60,6 +67,187 @@ const reviewsData = [
     timeAgo: 'Hace 1 día',
   },
 ];
+
+const FeaturedReviewCard = ({ review }) => {
+  const { user } = useAuth();
+  const userId = user?.id || null;
+
+  const [likes, setLikes] = useState(review.likes);
+  const [isLiked, setIsLiked] = useState(false);
+  const [showComments, setShowComments] = useState(false);
+  const [commentsCount, setCommentsCount] = useState(review.comments);
+  const [isSavedInCollection, setIsSavedInCollection] = useState(false);
+
+  useEffect(() => {
+    const likedIds = interactionsService.getLikedReviewIds(userId);
+    setIsLiked(likedIds.includes(review.id));
+    setIsSavedInCollection(interactionsService.isAlbumSaved(userId, review.album.title));
+    const comments = interactionsService.getCommentsForReview(review.id);
+    if (comments.length > 0) {
+      setCommentsCount(comments.length);
+    }
+  }, [review.id, review.album.title, userId]);
+
+  const handleLike = () => {
+    if (!user) {
+      window.location.hash = '#login';
+      return;
+    }
+    const nextLiked = interactionsService.toggleReviewLike(review.id, userId);
+    setIsLiked(nextLiked);
+    setLikes((prev) => (nextLiked ? prev + 1 : Math.max(0, prev - 1)));
+  };
+
+  const handleToggleSave = () => {
+    if (!user) {
+      window.location.hash = '#login';
+      return;
+    }
+    const res = interactionsService.toggleSaveAlbum(userId, {
+      title: review.album.title,
+      artist: review.album.artist,
+      cover: review.album.cover,
+      rating: review.rating,
+    });
+    setIsSavedInCollection(res.isSaved);
+  };
+
+  return (
+    <motion.article
+      whileHover={{ y: -4 }}
+      transition={{ duration: 0.25 }}
+      className="flex flex-col justify-between p-6 rounded-2xl bg-white dark:bg-[#4B2840] border border-[#e6d5e2] dark:border-white/10 shadow-[0_6px_24px_-4px_rgba(75,40,64,0.06)] dark:shadow-[0_6px_24px_-4px_rgba(0,0,0,0.4)] hover:shadow-md dark:hover:shadow-[0_16px_36px_-6px_rgba(0,0,0,0.6)] hover:border-[#B80C09]/40 transition-all duration-300"
+    >
+      <div className="flex flex-col gap-4">
+        {/* Review Author Header */}
+        <div className="flex items-center justify-between gap-3">
+          <div className="flex items-center gap-3">
+            <div
+              className="w-11 h-11 rounded-full overflow-hidden flex items-center justify-center text-white font-bold text-base ring-2 ring-[#e6d5e2] dark:ring-white/15 shrink-0 shadow-xs"
+              style={{ backgroundColor: review.avatarBg }}
+            >
+              {review.avatarLetter}
+            </div>
+            <div className="flex flex-col">
+              <span className="text-base text-[#231123] dark:text-[#FAF5F8] font-bold leading-snug">
+                {review.author}
+              </span>
+              <span className="inline-flex items-center gap-1 text-xs text-[#5c1d5e] dark:text-pink-200 font-semibold">
+                <span
+                  className={`material-symbols-outlined text-[13px] ${review.badgeColor}`}
+                  style={{ fontVariationSettings: "'FILL' 1" }}
+                >
+                  {review.badgeIcon}
+                </span>
+                <span>{review.badge}</span>
+              </span>
+            </div>
+          </div>
+
+          {/* Rating Stars */}
+          <div className="flex items-center gap-0.5 text-amber-500">
+            {Array.from({ length: 5 }).map((_, i) => (
+              <span
+                key={i}
+                className="material-symbols-outlined text-[18px]"
+                style={{ fontVariationSettings: "'FILL' 1" }}
+              >
+                {i < Math.floor(review.rating)
+                  ? 'star'
+                  : review.rating % 1 !== 0 && i === Math.floor(review.rating)
+                  ? 'star_half'
+                  : 'star'}
+              </span>
+            ))}
+          </div>
+        </div>
+
+        {/* Review Text Excerpt */}
+        <p className="text-sm sm:text-base text-[#231123]/90 dark:text-[#FAF5F8]/90 leading-relaxed">
+          {review.text}
+        </p>
+
+        {/* Album Reference Strip */}
+        <div className="flex items-center justify-between gap-3 p-2.5 rounded-xl bg-[#fff7fa] dark:bg-[#231123]/80 border border-[#e6d5e2] dark:border-white/10 shadow-xs">
+          <div className="flex items-center gap-3 min-w-0">
+            <div className="w-12 h-12 rounded-lg overflow-hidden shrink-0 shadow-xs border border-white dark:border-white/10 bg-[#4B2840]">
+              <img
+                className="w-full h-full object-cover"
+                alt={review.album.title}
+                src={review.album.cover}
+                onError={(e) => {
+                  e.target.style.display = 'none';
+                }}
+              />
+            </div>
+            <div className="flex flex-col min-w-0">
+              <span className="text-sm text-[#231123] dark:text-[#FAF5F8] font-bold truncate">
+                {review.album.title}
+              </span>
+              <span className="text-xs text-[#5c435a] dark:text-[#B89CB0] truncate">
+                {review.album.artist}
+              </span>
+            </div>
+          </div>
+
+          <button
+            type="button"
+            onClick={handleToggleSave}
+            title={isSavedInCollection ? 'En tu colección' : 'Guardar en tu colección'}
+            className={`p-1.5 rounded-lg text-xs font-semibold cursor-pointer transition-colors ${
+              isSavedInCollection
+                ? 'text-[#B80C09] bg-[#B80C09]/10'
+                : 'text-[#5c435a] dark:text-[#B89CB0] hover:text-[#B80C09]'
+            }`}
+          >
+            <span
+              className="material-symbols-outlined text-[18px]"
+              style={{ fontVariationSettings: isSavedInCollection ? "'FILL' 1" : "'FILL' 0" }}
+            >
+              bookmark
+            </span>
+          </button>
+        </div>
+      </div>
+
+      {/* Card Footer Metadata */}
+      <div className="flex items-center justify-between pt-4 mt-4 border-t border-[#e6d5e2]/70 dark:border-white/10">
+        <div className="flex items-center gap-4 text-[#5c435a] dark:text-[#B89CB0] text-xs font-medium">
+          <LikeButton
+            isLiked={isLiked}
+            likesCount={likes}
+            onToggleLike={handleLike}
+            size="md"
+          />
+
+          <button
+            className={`flex items-center gap-1 transition-colors cursor-pointer ${
+              showComments ? 'text-[#B80C09] font-bold' : 'hover:text-[#231123] dark:hover:text-[#FAF5F8]'
+            }`}
+            type="button"
+            onClick={() => setShowComments(!showComments)}
+          >
+            <span className="material-symbols-outlined text-[16px]">chat_bubble</span>
+            <span>{commentsCount} comentarios</span>
+          </button>
+        </div>
+        <span className="text-xs text-[#81737e] dark:text-[#B89CB0]/70">
+          {review.timeAgo}
+        </span>
+      </div>
+
+      {/* Sección Expandible de Comentarios */}
+      <AnimatePresence>
+        {showComments && (
+          <CommentSection
+            reviewId={review.id}
+            onCommentCountChange={(newCount) => setCommentsCount(newCount)}
+          />
+        )}
+      </AnimatePresence>
+    </motion.article>
+  );
+};
 
 export const FeaturedReviews = () => {
   return (
@@ -80,9 +268,9 @@ export const FeaturedReviews = () => {
           </div>
           <a
             className="inline-flex items-center gap-1.5 text-sm font-bold text-[#5c1d5e] dark:text-pink-300 hover:text-[#B80C09] dark:hover:text-[#B80C09] transition-colors group cursor-pointer"
-            href="#reviews"
+            href="#community"
           >
-            <span>Ver todas (1.2k)</span>
+            <span>Ver todas las reseñas</span>
             <span className="material-symbols-outlined text-[18px] group-hover:translate-x-1 transition-transform">
               arrow_forward
             </span>
@@ -91,102 +279,8 @@ export const FeaturedReviews = () => {
 
         {/* 3 Featured Critique Cards Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {reviewsData.map((review) => (
-            <motion.article
-              key={review.id}
-              whileHover={{ y: -4 }}
-              transition={{ duration: 0.25 }}
-              className="flex flex-col justify-between p-6 rounded-2xl bg-white dark:bg-[#4B2840] border border-[#e6d5e2] dark:border-white/10 shadow-[0_6px_24px_-4px_rgba(75,40,64,0.06)] dark:shadow-[0_6px_24px_-4px_rgba(0,0,0,0.4)] hover:shadow-md dark:hover:shadow-[0_16px_36px_-6px_rgba(0,0,0,0.6)] hover:border-[#B80C09]/40 transition-all duration-300"
-            >
-              <div className="flex flex-col gap-4">
-                {/* Review Author Header */}
-                <div className="flex items-center justify-between gap-3">
-                  <div className="flex items-center gap-3">
-                    <div
-                      className="w-11 h-11 rounded-full overflow-hidden flex items-center justify-center text-white font-bold text-base ring-2 ring-[#e6d5e2] dark:ring-white/15 shrink-0 shadow-xs"
-                      style={{ backgroundColor: review.avatarBg }}
-                    >
-                      {review.avatarLetter}
-                    </div>
-                    <div className="flex flex-col">
-                      <span className="text-base text-[#231123] dark:text-[#FAF5F8] font-bold leading-snug">
-                        {review.author}
-                      </span>
-                      <span className="inline-flex items-center gap-1 text-xs text-[#5c1d5e] dark:text-pink-200 font-semibold">
-                        <span
-                          className={`material-symbols-outlined text-[13px] ${review.badgeColor}`}
-                          style={{ fontVariationSettings: "'FILL' 1" }}
-                        >
-                          {review.badgeIcon}
-                        </span>
-                        <span>{review.badge}</span>
-                      </span>
-                    </div>
-                  </div>
-
-                  {/* Rating Stars */}
-                  <div className="flex items-center gap-0.5 text-amber-500">
-                    {Array.from({ length: 5 }).map((_, i) => (
-                      <span
-                        key={i}
-                        className="material-symbols-outlined text-[18px]"
-                        style={{ fontVariationSettings: "'FILL' 1" }}
-                      >
-                        {i < Math.floor(review.rating)
-                          ? 'star'
-                          : review.rating % 1 !== 0 && i === Math.floor(review.rating)
-                          ? 'star_half'
-                          : 'star'}
-                      </span>
-                    ))}
-                  </div>
-                </div>
-
-                {/* Review Text Excerpt */}
-                <p className="text-sm sm:text-base text-[#231123]/90 dark:text-[#FAF5F8]/90 leading-relaxed">
-                  {review.text}
-                </p>
-
-                {/* Album Reference Strip */}
-                <div className="flex items-center gap-3 p-2.5 rounded-xl bg-[#fff7fa] dark:bg-[#231123]/80 border border-[#e6d5e2] dark:border-white/10 shadow-xs">
-                  <div className="w-12 h-12 rounded-lg overflow-hidden shrink-0 shadow-xs border border-white dark:border-white/10 bg-[#4B2840]">
-                    <img
-                      className="w-full h-full object-cover"
-                      alt={review.album.title}
-                      src={review.album.cover}
-                      onError={(e) => {
-                        e.target.style.display = 'none';
-                      }}
-                    />
-                  </div>
-                  <div className="flex flex-col min-w-0">
-                    <span className="text-sm text-[#231123] dark:text-[#FAF5F8] font-bold truncate">
-                      {review.album.title}
-                    </span>
-                    <span className="text-xs text-[#5c435a] dark:text-[#B89CB0] truncate">
-                      {review.album.artist}
-                    </span>
-                  </div>
-                </div>
-              </div>
-
-              {/* Card Footer Metadata */}
-              <div className="flex items-center justify-between pt-4 mt-4 border-t border-[#e6d5e2]/70 dark:border-white/10">
-                <div className="flex items-center gap-4 text-[#5c435a] dark:text-[#B89CB0] text-xs font-medium">
-                  <button className="flex items-center gap-1 hover:text-[#B80C09] transition-colors cursor-pointer" type="button">
-                    <span className="material-symbols-outlined text-[16px] text-[#B80C09]">favorite</span>
-                    <span>{review.likes} likes</span>
-                  </button>
-                  <button className="flex items-center gap-1 hover:text-[#231123] dark:hover:text-[#FAF5F8] transition-colors cursor-pointer" type="button">
-                    <span className="material-symbols-outlined text-[16px]">chat_bubble</span>
-                    <span>{review.comments} comentarios</span>
-                  </button>
-                </div>
-                <span className="text-xs text-[#81737e] dark:text-[#B89CB0]/70">
-                  {review.timeAgo}
-                </span>
-              </div>
-            </motion.article>
+          {initialReviewsData.map((review) => (
+            <FeaturedReviewCard key={review.id} review={review} />
           ))}
         </div>
       </div>
@@ -195,3 +289,4 @@ export const FeaturedReviews = () => {
 };
 
 export default FeaturedReviews;
+
