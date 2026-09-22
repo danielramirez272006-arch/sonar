@@ -87,14 +87,14 @@ export function AdminDashboardPage({ metrics, reviews, users, onRefresh, onExpor
               <button
                 onClick={onExport}
                 disabled={feedProps.busy || !!currentError}
-                className="flex items-center justify-between p-4 bg-white dark:bg-sonar-surface border border-gray-200 dark:border-sonar-surface rounded-lg text-gray-800 dark:text-sonar-text hover:bg-gray-50 dark:hover:bg-sonar-accent transition-colors"
+                className="flex items-center justify-between p-4 w-full bg-white dark:bg-sonar-surface border border-gray-200 dark:border-sonar-surface rounded-lg text-sm font-medium text-gray-800 dark:text-sonar-text hover:bg-gray-50 dark:hover:bg-sonar-accent transition-colors"
               >
                 <span>↓ Descargar reseñas en CSV</span> <span>↗</span>
               </button>
               <button
                 onClick={onRefresh}
                 disabled={feedProps.busy}
-                className="flex items-center justify-between p-4 bg-white dark:bg-sonar-surface border border-gray-200 dark:border-sonar-surface rounded-lg text-gray-800 dark:text-sonar-text hover:bg-gray-50 dark:hover:bg-sonar-accent transition-colors"
+                className="flex items-center justify-between p-4 w-full bg-white dark:bg-sonar-surface border border-gray-200 dark:border-sonar-surface rounded-lg text-sm font-medium text-gray-800 dark:text-sonar-text hover:bg-gray-50 dark:hover:bg-sonar-accent transition-colors"
               >
                 <span>↻ Actualizar información</span> <span>↗</span>
               </button>

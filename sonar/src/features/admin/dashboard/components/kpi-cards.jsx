@@ -18,7 +18,7 @@ export function KpiCards({ metrics, busy, error }) {
         const isActive = key === 'pendingReviews'
         return (
           <article
-            className={`flex flex-col p-4 rounded-xl shadow-sm border min-w-0 overflow-hidden ${
+            className={`flex flex-col p-4 rounded-xl shadow-sm border min-w-0 overflow-hidden transition-colors duration-300 ${
               isActive 
                 ? 'bg-white dark:bg-sonar-surface border-red-500 dark:border-sonar-alert text-gray-900 dark:text-sonar-text' 
                 : 'bg-gray-50 dark:bg-transparent border-gray-100 dark:border-sonar-surface text-gray-500 dark:text-sonar-text/70'

@@ -122,7 +122,7 @@ export function AdminConsole() {
             <img src="/logo-sonar.svg" alt="Sonar Logo" className="w-8 h-8 object-contain transition-all" />
             <span>
               <strong className="text-gray-900 dark:text-sonar-text">
-                SONAR • <span className="text-purple-900 dark:text-purple-300 font-light tracking-widest">CONSOLE</span>
+                SONAR • <span className="text-purple-900 dark:text-purple-300 font-light tracking-widest text-lg transition-colors">CONSOLE</span>
               </strong>
               <small className="dark:text-[#B89CB0]">AUDIOPHILE CURATION HUB</small>
             </span>
@@ -143,7 +143,7 @@ export function AdminConsole() {
             <span className="status-dot" /> <span className="dark:text-sonar-text">Entorno de prueba</span> <span className="avatar small">S</span>
             <button
               onClick={toggleTheme}
-              className="p-2 rounded-md bg-gray-100 dark:bg-sonar-surface text-gray-800 dark:text-sonar-text border border-transparent dark:border-gray-700 hover:bg-gray-200 dark:hover:bg-sonar-accent transition-colors"
+              className="p-2 rounded-md bg-gray-100 dark:bg-sonar-surface text-gray-800 dark:text-sonar-text border border-transparent dark:border-gray-700 hover:bg-gray-200 dark:hover:bg-sonar-accent transition-colors flex-shrink-0"
               aria-label="Alternar modo oscuro"
               title={isDark ? "Cambiar a Modo Blanco" : "Cambiar a Modo Oscuro"}
             >
@@ -153,17 +153,17 @@ export function AdminConsole() {
             </button>
           </div>
         </div>
-        <div className="nav-row shell dark:bg-sonar-base dark:border-white/10">
+        <div className="nav-row shell dark:bg-sonar-base dark:border-sonar-surface">
           <nav aria-label="Administración">
             <a
-              className={`${page === 'dashboard' ? 'active dark:bg-sonar-accent dark:text-sonar-text dark:border-white/15' : 'dark:text-sonar-text dark:hover:bg-sonar-surface/60'}`}
+              className={`${page === 'dashboard' ? 'active dark:bg-sonar-accent dark:text-sonar-text dark:border-sonar-accent' : 'dark:text-sonar-text dark:hover:bg-sonar-surface/60'}`}
               aria-current={page === 'dashboard' ? 'page' : undefined}
               href="#dashboard"
             >
               ◫ <span>Dashboard</span>
             </a>
             <a
-              className={`${page === 'moderacion' ? 'active dark:bg-sonar-accent dark:text-sonar-text dark:border-white/15' : 'dark:text-sonar-text dark:hover:bg-sonar-surface/60'}`}
+              className={`${page === 'moderacion' ? 'active dark:bg-sonar-accent dark:text-sonar-text dark:border-sonar-accent' : 'dark:text-sonar-text dark:hover:bg-sonar-surface/60'}`}
               aria-current={page === 'moderacion' ? 'page' : undefined}
               href="#moderacion"
             >
@@ -174,7 +174,7 @@ export function AdminConsole() {
             </a>
             <a href="#explore" className="dark:text-sonar-text dark:hover:bg-sonar-surface/60">← <span>Ir al Portal Público</span></a>
           </nav>
-          <span className="nav-caption dark:text-[#B89CB0]">BUEN CRITERIO. MEJOR MÚSICA.</span>
+          <span className="nav-caption dark:text-sonar-text/70">BUEN CRITERIO. MEJOR MÚSICA.</span>
         </div>
       </header>
       <main id="contenido" tabIndex={-1} className="shell main-content transition-colors duration-300 dark:bg-sonar-base dark:text-sonar-text">

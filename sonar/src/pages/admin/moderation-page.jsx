@@ -6,9 +6,9 @@ export function ModerationPage({ onRefresh, ...props }) {
     <>
       <div className="page-heading">
         <div>
-          <span className="eyebrow dark:text-[#B89CB0]">CURADURÍA CON ATENCIÓN, COMUNIDAD CON RESPETO.</span>
+          <span className="eyebrow dark:text-sonar-text/70">CURADURÍA CON ATENCIÓN, COMUNIDAD CON RESPETO.</span>
           <h1 className="dark:text-sonar-text">Moderación <em className="dark:text-pink-300">de Reseñas</em></h1>
-          <p className="dark:text-[#B89CB0]">
+          <p className="dark:text-sonar-text/70">
             <i className="status-dot" /> {props.error ? 'Cola no disponible' : `${props.reviews.length} reseñas en la cola de revisión`} <span className="heading-separator">/</span> La última palabra siempre es humana.
           </p>
         </div>
@@ -17,45 +17,58 @@ export function ModerationPage({ onRefresh, ...props }) {
         </button>
       </div>
 
-      <div className="moderation-intro dark:bg-sonar-surface dark:border-white/10 dark:text-sonar-text">
+      <div className="moderation-intro dark:bg-sonar-surface dark:border-sonar-surface dark:text-sonar-text">
         <span aria-hidden="true" className="dark:text-pink-300">◎</span>
-        <p><strong className="dark:text-white">Más que moderar, cuidar la conversación.</strong> Lee, escucha el punto de vista y aplica los criterios de la comunidad.</p>
-        <span className="eyebrow dark:text-[#B89CB0]">SONAR EDITORIAL</span>
+        <p><strong className="dark:text-sonar-text">Más que moderar, cuidar la conversación.</strong> Lee, escucha el punto de vista y aplica los criterios de la comunidad.</p>
+        <span className="eyebrow dark:text-sonar-text/70">SONAR EDITORIAL</span>
       </div>
 
       <div className="workspace-grid">
         <ModerationTable {...props} />
         <aside className="side-stack">
-          <section className="engine-panel dark:bg-sonar-surface dark:border-white/10 dark:text-sonar-text">
-            <div className="panel-heading">
-              <span className="eyebrow dark:text-pink-300">✧ MOTOR IA SONAR</span>
-              <span className="badge dark:bg-sonar-base dark:border-white/10 dark:text-pink-200">MOCK</span>
+          {/* Tarjeta Motor IA Sonar con estilos en línea forzados */}
+          <div style={{ backgroundColor: '#4B2840', borderColor: '#003844' }} className="p-6 rounded-xl border shadow-md text-sonar-text">
+            <div className="panel-heading flex items-center justify-between gap-2 mb-4">
+              <span className="eyebrow text-xs font-bold tracking-wider text-pink-300">✧ MOTOR IA SONAR</span>
+              <button style={{ backgroundColor: '#003844', color: '#DCDCDD' }} className="px-3 py-1.5 text-xs font-medium rounded-md border border-sonar-surface transition-colors cursor-default">
+                MOCK
+              </button>
             </div>
-            <h2 className="dark:text-white">Una segunda<br /><em className="dark:text-pink-300">mirada.</em></h2>
-            <p className="dark:text-[#B89CB0]">Asistencia para detectar palabras ofensivas. Tú aportas el contexto.</p>
-            <div className="signal-bars" aria-hidden="true">
-              {Array.from({ length: 24 }, (_, index) => <i key={index} />)}
+            <h2 className="text-2xl font-bold text-white dark:text-sonar-text leading-tight mb-2">
+              Una segunda<br /><em className="font-serif italic text-pink-300">mirada.</em>
+            </h2>
+            <p className="text-xs text-gray-200 dark:text-sonar-text/80 mb-4 leading-relaxed">
+              Asistencia para detectar palabras ofensivas. Tú aportas el contexto.
+            </p>
+            <div className="signal-bars flex items-center justify-between h-14 my-4 gap-1" aria-hidden="true">
+              {Array.from({ length: 24 }, (_, index) => (
+                <i key={index} style={{ backgroundColor: '#DCDCDD', opacity: 0.35 }} className="w-1 rounded-sm" />
+              ))}
             </div>
-            <div className="engine-facts dark:border-white/10">
-              <span className="dark:text-[#B89CB0]">ANÁLISIS<strong className="dark:text-sonar-text">Local</strong></span>
-              <span className="dark:text-[#B89CB0]">DECISIÓN FINAL<strong className="dark:text-sonar-text">Humana</strong></span>
+            <div className="engine-facts pt-4 border-t border-white/10 dark:border-sonar-surface flex justify-between text-xs">
+              <span className="text-gray-300 dark:text-sonar-text/70">
+                ANÁLISIS<strong className="block text-white dark:text-sonar-text font-bold text-sm">Local</strong>
+              </span>
+              <span className="text-gray-300 dark:text-sonar-text/70">
+                DECISIÓN FINAL<strong className="block text-white dark:text-sonar-text font-bold text-sm">Humana</strong>
+              </span>
             </div>
-          </section>
+          </div>
           <EditorialGuide />
-          <div className="side-note dark:bg-sonar-surface dark:border-white/10 dark:text-[#B89CB0]">
+          <div className="side-note dark:bg-sonar-surface dark:border-sonar-surface dark:text-sonar-text/70">
             <span className="dark:text-pink-300">ⓘ</span>
             <p>Marcar una reseña no implica rechazarla. Revisa siempre el texto completo antes de decidir.</p>
           </div>
         </aside>
       </div>
 
-      <div className="listening-bar dark:bg-sonar-surface dark:border-white/10 dark:text-sonar-text">
+      <div className="listening-bar dark:bg-sonar-surface dark:border-sonar-surface dark:text-sonar-text">
         <span className="mini-record" aria-hidden="true" />
         <div>
           <span className="eyebrow dark:text-pink-300">ESCUCHA CON ATENCIÓN</span>
-          <strong className="dark:text-white">La música primero. El criterio, siempre.</strong>
+          <strong className="dark:text-sonar-text">La música primero. El criterio, siempre.</strong>
         </div>
-        <span className="dark:text-[#B89CB0]">Preescucha disponible cuando se conecte el catálogo de audio.</span>
+        <span className="dark:text-sonar-text/70">Preescucha disponible cuando se conecte el catálogo de audio.</span>
       </div>
     </>
   )

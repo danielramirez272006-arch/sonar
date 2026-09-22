@@ -2,7 +2,7 @@ import React from 'react';
 
 export const Footer = () => {
   return (
-    <footer className="bg-white dark:bg-sonar-base border-t border-gray-200 dark:border-sonar-surface pt-12 pb-8">
+    <footer className="bg-white dark:bg-sonar-base border-t border-gray-200 dark:border-sonar-surface pt-12 pb-8 transition-colors duration-300">
       <div className="w-full max-w-[1440px] mx-auto px-4 lg:px-10">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8">
           {/* Brand Summary con Logo Público */}

@@ -4,29 +4,33 @@ const ThemeContext = createContext();
 
 export const ThemeProvider = ({ children }) => {
   const [theme, setTheme] = useState(() => {
-    const saved = localStorage.getItem('sonar-theme');
+    const saved = localStorage.getItem('theme') || localStorage.getItem('sonar-theme');
     if (saved) return saved;
-    return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+    return window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
   });
 
+  const isDarkMode = theme === 'dark';
+
   useEffect(() => {
-    const root = document.documentElement;
-    if (theme === 'dark') {
-      root.classList.add('dark');
-      root.classList.remove('light');
+    if (isDarkMode) {
+      document.documentElement.classList.add('dark');
+      document.documentElement.classList.remove('light');
+      localStorage.setItem('theme', 'dark');
+      localStorage.setItem('sonar-theme', 'dark');
     } else {
-      root.classList.remove('dark');
-      root.classList.add('light');
+      document.documentElement.classList.remove('dark');
+      document.documentElement.classList.add('light');
+      localStorage.setItem('theme', 'light');
+      localStorage.setItem('sonar-theme', 'light');
     }
-    localStorage.setItem('sonar-theme', theme);
-  }, [theme]);
+  }, [isDarkMode]);
 
   const toggleTheme = () => {
     setTheme((prev) => (prev === 'dark' ? 'light' : 'dark'));
   };
 
   return (
-    <ThemeContext.Provider value={{ theme, isDark: theme === 'dark', toggleTheme, setTheme }}>
+    <ThemeContext.Provider value={{ theme, isDark: isDarkMode, isDarkMode, toggleTheme, setTheme }}>
       {children}
     </ThemeContext.Provider>
   );

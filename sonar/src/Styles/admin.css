@@ -91,17 +91,27 @@ h1 em { color: var(--plum); }
 .skip-link:focus { top: 12px; }
 
 /* Dark mode CSS overrides */
-html.dark .console-header { background: #1f2937; border-color: #374151; }
-html.dark .global-search { background: #1f2937; border-color: #374151; }
-html.dark .global-search input { color: #f9fafb; }
-html.dark .nav-row { border-color: #374151; }
-html.dark .nav-row a.active { background: #374151; color: #f9fafb; }
-html.dark .nav-row a:hover { background: #374151; }
-html.dark .panel { background: #1f2937; border-color: #374151; color: #f9fafb; }
-html.dark .editorial-guide { background: #1f2937; border-color: #374151; color: #f9fafb; }
-html.dark .profile-card { background: #1f2937; border-color: #374151; }
-html.dark .queue-banner { background: #1f2937; border-color: #374151; color: #f9fafb; }
-html.dark .console-footer { border-color: #374151; }
+html.dark .console-header { background: #231123; border-color: #4B2840; }
+html.dark .topbar { background: #231123; }
+html.dark .global-search { background: #4B2840; border-color: rgba(255,255,255,0.1); }
+html.dark .global-search input { color: #DCDCDD; }
+html.dark .nav-row { background: #231123; border-color: rgba(255,255,255,0.1); }
+html.dark .nav-row a.active { background: #003844; color: #DCDCDD; }
+html.dark .nav-row a:hover { background: #4B2840; }
+html.dark .panel { background: #4B2840; border-color: rgba(255,255,255,0.1); color: #DCDCDD; }
+html.dark .editorial-guide { background: #4B2840; border-color: rgba(255,255,255,0.1); color: #DCDCDD; }
+html.dark .editorial-guide p { color: #DCDCDD; }
+html.dark .editorial-guide ul { color: #DCDCDD; }
+html.dark .profile-card { background: #4B2840; border-color: rgba(255,255,255,0.1); }
+html.dark .queue-banner { background: #4B2840; border-color: rgba(255,255,255,0.1); color: #DCDCDD; }
+html.dark .console-footer { background: #231123; border-color: #4B2840; }
+html.dark .review-card { background: #4B2840; border-color: rgba(255,255,255,0.1); }
+html.dark .review-meta, html.dark .review-actions { border-color: rgba(255,255,255,0.1); }
+html.dark .review-copy blockquote { color: #DCDCDD; }
+html.dark .analysis-box { background: #231123; border-color: #4B2840; }
+html.dark .empty-state { background: #4B2840; border-color: rgba(255,255,255,0.2); }
+html.dark .moderation-intro { background: #4B2840; border-color: rgba(255,255,255,0.1); }
+html.dark .listening-bar { background: #4B2840; border-color: rgba(255,255,255,0.1); }
 
 @media (min-width: 1500px) { .main-content { padding-top: 36px; } }
 @media (max-width: 1050px) { .shell { width: calc(100% - 48px); } .topbar { gap: 24px; } .console-mode { display: none; } .workspace-grid { grid-template-columns: minmax(0, 1fr) 270px; gap: 20px; } .profile-card { display: none !important; } }
