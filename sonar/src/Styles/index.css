@@ -1,5 +1,13 @@
 @import "tailwindcss";
 
+@theme {
+  --color-sonar-base: #231123;
+  --color-sonar-surface: #4B2840;
+  --color-sonar-text: #DCDCDD;
+  --color-sonar-accent: #003844;
+  --color-sonar-alert: #B80C09;
+}
+
 @variant dark (&:where(.dark, .dark *));
 
 :root, html.light {
@@ -48,7 +56,7 @@ html.dark {
   --border-subtle: rgba(255, 255, 255, 0.1);
   --border-medium: rgba(255, 255, 255, 0.18);
   
-  --text-main: #FAF5F8;
+  --text-main: #DCDCDD;
   --text-secondary: #B89CB0;
   --text-muted: #7A5C74;
   

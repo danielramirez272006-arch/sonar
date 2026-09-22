@@ -15,7 +15,12 @@ import { AnimatePresence, motion } from 'framer-motion';
 export const MobileMenu = ({
   isOpen = false,
   onClose = () => {},
-  links = [],
+  links = [
+    { name: 'Explorar', path: '#explore' },
+    { name: 'Comunidad', path: '#community' },
+    { name: 'Admin', path: '#admin' },
+    { name: 'Mi Perfil', path: '#profile' },
+  ],
 }) => {
   return (
     <AnimatePresence>
@@ -64,18 +69,21 @@ export const MobileMenu = ({
               </button>
             </div>
 
-            {/* Lista de enlaces de navegación */}
+            {/* Lista de enlaces de navegación SPA */}
             <nav className="flex flex-col gap-4">
-              {links.map((link, index) => (
-                <a
-                  key={index}
-                  href={link.path || '#'}
-                  onClick={onClose}
-                  className="text-black dark:text-white hover:text-[#B80C09] dark:hover:text-[#B80C09] font-medium text-lg transition-colors py-2 px-3 rounded-lg hover:bg-gray-100 dark:hover:bg-white/5"
-                >
-                  {link.name || link.label}
-                </a>
-              ))}
+              {links.map((link, index) => {
+                const targetPath = link.path ? (link.path.startsWith('#') ? link.path : `#${link.path.replace(/^\//, '')}`) : '#explore';
+                return (
+                  <a
+                    key={index}
+                    href={targetPath}
+                    onClick={() => onClose()}
+                    className="text-black dark:text-white hover:text-[#B80C09] dark:hover:text-[#B80C09] font-medium text-lg transition-colors py-2 px-3 rounded-lg hover:bg-gray-100 dark:hover:bg-white/5 no-underline"
+                  >
+                    {link.name || link.label}
+                  </a>
+                );
+              })}
             </nav>
           </motion.div>
         </>

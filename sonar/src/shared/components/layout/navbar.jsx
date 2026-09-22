@@ -1,13 +1,13 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { AnimatedLogo } from '../ui/animated-logo';
 import { Avatar } from '../ui/avatar';
 import { useTheme } from '../../context/theme-context';
 
 export const Navbar = ({
   links = [
-    { id: 'explore', label: 'Explorar' },
-    { id: 'community', label: 'Comunidad' },
+    { id: 'explore', label: 'Explorar', path: '#explore' },
+    { id: 'community', label: 'Comunidad', path: '#community' },
+    { id: 'admin', label: 'Admin', path: '#admin' },
   ],
   user = {
     name: 'Mateo Rivaes',
@@ -15,47 +15,85 @@ export const Navbar = ({
   },
   onNavigate = () => {},
 }) => {
-  const [activeTab, setActiveTab] = useState('explore');
+  const [activeTab, setActiveTab] = useState(() => {
+    const hash = window.location.hash.replace(/^#/, '');
+    return hash || 'explore';
+  });
   const { isDark, toggleTheme } = useTheme();
 
-  const handleNavClick = (id) => {
-    setActiveTab(id);
-    onNavigate(id);
+  useEffect(() => {
+    const onHashChange = () => {
+      const hash = window.location.hash.replace(/^#/, '');
+      setActiveTab(hash || 'explore');
+    };
+    window.addEventListener('hashchange', onHashChange);
+    return () => window.removeEventListener('hashchange', onHashChange);
+  }, []);
+
+  const handleNavClick = (link) => {
+    setActiveTab(link.id);
+    if (link.path) {
+      window.location.hash = link.path.startsWith('#') ? link.path : `#${link.path.replace(/^\//, '')}`;
+    }
+    onNavigate(link.id);
   };
 
   return (
-    <header className="sticky top-0 z-50 w-full bg-white/95 dark:bg-[#231123]/95 border-b border-[#e6d5e2] dark:border-white/10 backdrop-blur-md transition-colors duration-300 shadow-xs">
+    <header className="sticky top-0 z-50 w-full bg-white/95 dark:bg-[#180c18]/95 border-b border-[#e6d5e2] dark:border-white/10 backdrop-blur-md transition-colors duration-300 shadow-xs">
       <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-10 h-[68px] flex items-center justify-between gap-4">
-        {/* Izquierda: AnimatedLogo interactivo */}
-        <div className="flex items-center">
-          <AnimatedLogo />
+        {/* Izquierda: Logo principal original intacto sin filtros que alteren los colores */}
+        <div
+          className="inline-flex items-center gap-2.5 cursor-pointer select-none group"
+          onClick={() => { window.location.hash = '#explore'; }}
+        >
+          <motion.div
+            className="relative w-9 h-9 sm:w-10 sm:h-10 shrink-0 flex items-center justify-center"
+            whileHover={{ rotate: 15, scale: 1.08 }}
+            whileTap={{ scale: 0.95 }}
+            transition={{ type: 'spring', stiffness: 260, damping: 18 }}
+          >
+            <img
+              src="/logo-sonar.svg"
+              alt="Sonar Logo"
+              className="w-full h-full object-contain transition-all duration-200 drop-shadow-[0_4px_12px_rgba(184,12,9,0.3)]"
+            />
+          </motion.div>
+          <span
+            className="font-black uppercase text-[#231123] dark:text-[#FAF5F8] group-hover:text-[#B80C09] dark:group-hover:text-[#ff6b68] transition-colors duration-200 text-lg sm:text-xl tracking-[0.22em]"
+            style={{
+              fontFamily: "'Syne', 'Plus Jakarta Sans', system-ui, sans-serif",
+            }}
+          >
+            SONAR
+          </span>
         </div>
 
-        {/* Derecha: Enlaces, Botón de Tema (Blanco/Negro) & Mock Avatar */}
+        {/* Derecha: Enlaces, Botón de Tema & Avatar */}
         <div className="flex items-center gap-3 sm:gap-4">
-          {/* Enlaces de navegación */}
+          {/* Enlaces de navegación con fondo transparente/translúcido en modo oscuro */}
           <nav className="flex items-center gap-1.5 sm:gap-2">
             {links.map((link) => {
               const isActive = activeTab === link.id;
               return (
                 <motion.button
                   key={link.id}
-                  onClick={() => handleNavClick(link.id)}
+                  type="button"
+                  onClick={() => handleNavClick(link)}
                   whileHover={{ y: -1 }}
                   whileTap={{ scale: 0.95 }}
                   className={`relative px-3 sm:px-4 py-2 text-xs sm:text-sm font-semibold rounded-xl cursor-pointer transition-colors duration-200 ${
                     isActive
                       ? 'text-[#231123] dark:text-white'
-                      : 'text-[#5c435a] hover:text-[#231123] dark:text-[#B89CB0] dark:hover:text-white'
+                      : 'text-[#5c435a] hover:text-[#231123] dark:text-gray-300 dark:hover:text-white dark:bg-transparent'
                   }`}
                 >
                   {link.label}
 
-                  {/* Indicador de tab activo animado */}
+                  {/* Indicador translúcido de tab activo */}
                   {isActive && (
                     <motion.div
                       layoutId="navbar-active-pill"
-                      className="absolute inset-0 bg-[#f8e9f6] dark:bg-[#4B2840] border border-[#e6d5e2] dark:border-white/10 rounded-xl -z-10 shadow-2xs"
+                      className="absolute inset-0 bg-[#f8e9f6] dark:bg-white/10 border border-[#e6d5e2] dark:border-white/15 rounded-xl -z-10 shadow-2xs"
                       transition={{ type: 'spring', stiffness: 380, damping: 30 }}
                     />
                   )}
@@ -64,14 +102,15 @@ export const Navbar = ({
             })}
           </nav>
 
-          {/* Botón Switch Modo Blanco / Modo Negro */}
+          {/* Botón Switch Modo Blanco / Modo Negro con fondo translúcido */}
           <motion.button
             whileHover={{ scale: 1.08 }}
             whileTap={{ scale: 0.92 }}
             onClick={toggleTheme}
+            type="button"
             aria-label="Cambiar tema"
             title={isDark ? 'Cambiar a Modo Blanco' : 'Cambiar a Modo Negro'}
-            className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl flex items-center justify-center bg-[#f8e9f6] dark:bg-[#4B2840] text-[#231123] dark:text-[#FAF5F8] border border-[#e6d5e2] dark:border-white/10 hover:border-[#B80C09] dark:hover:border-[#B80C09] hover:text-[#B80C09] dark:hover:text-[#B80C09] transition-all cursor-pointer shadow-xs"
+            className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl flex items-center justify-center bg-[#f8e9f6] dark:bg-white/5 text-[#231123] dark:text-gray-200 border border-[#e6d5e2] dark:border-white/10 hover:border-[#B80C09] dark:hover:border-white/20 hover:text-[#B80C09] dark:hover:text-[#ff6b68] dark:hover:bg-white/10 transition-all cursor-pointer shadow-xs"
           >
             <motion.span
               key={isDark ? 'dark' : 'light'}
@@ -86,13 +125,14 @@ export const Navbar = ({
           </motion.button>
 
           {/* Separador vertical */}
-          <div className="w-[1px] h-6 bg-[#e6d5e2] dark:bg-white/10 transition-colors hidden xs:block" />
+          <div className="w-[1px] h-6 bg-[#e6d5e2] dark:border-white/10 transition-colors hidden xs:block" />
 
-          {/* Mock Avatar del usuario */}
+          {/* Avatar del usuario con navegación al perfil */}
           <motion.div
             whileHover={{ scale: 1.03 }}
             whileTap={{ scale: 0.97 }}
-            className="flex items-center gap-2.5 p-1 pr-3 sm:pr-3.5 rounded-full bg-[#f8e9f6] dark:bg-[#4B2840] border border-[#e6d5e2] dark:border-white/10 cursor-pointer transition-all shadow-xs"
+            onClick={() => { window.location.hash = '#profile'; }}
+            className="flex items-center gap-2.5 p-1 pr-3 sm:pr-3.5 rounded-full bg-[#f8e9f6] dark:bg-white/5 border border-[#e6d5e2] dark:border-white/10 hover:dark:bg-white/10 cursor-pointer transition-all shadow-xs"
           >
             <Avatar
               src={user?.avatarUrl}

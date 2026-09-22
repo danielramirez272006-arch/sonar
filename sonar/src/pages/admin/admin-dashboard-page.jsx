@@ -10,16 +10,16 @@ export function AdminDashboardPage({ metrics, reviews, users, onRefresh, onExpor
     <div className="flex flex-col gap-8 w-full max-w-7xl mx-auto p-4 sm:p-6 lg:p-8">
       <div className="page-heading">
         <div>
-          <span className="eyebrow">LA MÚSICA NOS REÚNE. EL CRITERIO NOS DEFINE.</span>
-          <h1>Dashboard <em>Administrativo</em></h1>
-          <p>Una mirada al pulso de Sonar. Cada opinión cuenta, cada reseña importa.</p>
+          <span className="eyebrow dark:text-sonar-text/70">LA MÚSICA NOS REÚNE. EL CRITERIO NOS DEFINE.</span>
+          <h1 className="dark:text-sonar-text">Dashboard <em className="dark:text-pink-300">Administrativo</em></h1>
+          <p className="dark:text-sonar-text/70">Una mirada al pulso de Sonar. Cada opinión cuenta, cada reseña importa.</p>
         </div>
-        <div className="profile-card">
-          <span className="avatar profile-avatar">S</span>
+        <div className="profile-card dark:bg-sonar-surface dark:border-white/10">
+          <span className="avatar profile-avatar dark:bg-sonar-accent dark:text-sonar-text">S</span>
           <div>
-            <small>ESPACIO DE CURADURÍA</small>
-            <strong>Consola administrativa</strong>
-            <span><i className="status-dot" /> Vista de prueba</span>
+            <small className="dark:text-sonar-text/70">ESPACIO DE CURADURÍA</small>
+            <strong className="dark:text-sonar-text">Consola administrativa</strong>
+            <span className="dark:text-sonar-text/70"><i className="status-dot" /> Vista de prueba</span>
           </div>
         </div>
       </div>
@@ -30,22 +30,20 @@ export function AdminDashboardPage({ metrics, reviews, users, onRefresh, onExpor
         </div>
       )}
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-        <KpiCards metrics={metrics} busy={feedProps.busy} error={currentError} />
-      </div>
+      <KpiCards metrics={metrics} busy={feedProps.busy} error={currentError} />
 
-      <section className="queue-banner">
-        <div className="queue-symbol" aria-hidden="true">≋</div>
+      <section className="queue-banner dark:bg-sonar-surface dark:border-white/10">
+        <div className="queue-symbol dark:bg-sonar-base dark:border-white/10 dark:text-sonar-text" aria-hidden="true">≋</div>
         <div>
-          <span className="eyebrow">TU CRITERIO HACE LA DIFERENCIA</span>
-          <h2>
+          <span className="eyebrow dark:text-pink-300">TU CRITERIO HACE LA DIFERENCIA</span>
+          <h2 className="dark:text-sonar-text">
             {currentError
               ? 'La comunidad merece una buena escucha.'
               : `${metrics?.pendingReviews ?? 0} ${metrics?.pendingReviews === 1 ? 'reseña espera' : 'reseñas esperan'} tu próxima escucha.`}
           </h2>
-          <p>Ayuda a que las buenas conversaciones encuentren su lugar.</p>
+          <p className="dark:text-sonar-text/70">Ayuda a que las buenas conversaciones encuentren su lugar.</p>
         </div>
-        <a className="primary-button" href="#moderacion">Ir a moderación <span>↗</span></a>
+        <a className="primary-button dark:bg-sonar-accent dark:border-sonar-accent dark:hover:bg-[#002830]" href="#moderacion">Ir a moderación <span>↗</span></a>
       </section>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -54,39 +52,51 @@ export function AdminDashboardPage({ metrics, reviews, users, onRefresh, onExpor
         </div>
 
         <div className="lg:col-span-1 flex flex-col gap-6">
-          <RecentActivityFeed />
+          <RecentActivityFeed className="dark:bg-sonar-surface dark:border-white/10" />
           <aside className="side-stack flex flex-col gap-6">
-            <section className="panel distribution">
+            <section className="panel distribution dark:bg-sonar-surface dark:border-white/10 dark:text-sonar-text">
               <div className="panel-heading">
-                <h2>Cómo suena Sonar</h2>
-                <span>↗</span>
+                <h2 className="dark:text-sonar-text">Cómo suena Sonar</h2>
+                <span className="dark:text-sonar-text/70">↗</span>
               </div>
-              <p>Distribución de calificaciones</p>
+              <p className="text-sm font-medium text-gray-500 dark:text-sonar-text/70 uppercase tracking-wider">
+                Distribución de calificaciones
+              </p>
               <div className="rating-bars">
                 {[5, 4, 3, 2, 1].map(rating => {
                   const count = (reviews || []).filter(review => Math.round(review.rating) === rating).length
                   return (
                     <div key={rating}>
-                      <span>{rating} <b>★</b></span>
+                      <span className="dark:text-sonar-text">{rating} <b className="dark:text-pink-300">★</b></span>
                       <meter min="0" max={Math.max((reviews || []).length, 1)} value={count} aria-label={`${rating} estrellas: ${count} reseñas`} />
-                      <small>{count}</small>
+                      <small className="dark:text-sonar-text/70 font-semibold">{count}</small>
                     </div>
                   )
                 })}
               </div>
-              <div className="panel-bottom">
-                <span>RESEÑAS REGISTRADAS</span>
-                <strong>{reviews?.length ?? 0}</strong>
+              <div className="panel-bottom dark:border-white/10">
+                <span className="text-sm font-medium text-gray-500 dark:text-sonar-text/70 uppercase tracking-wider">
+                  RESEÑAS REGISTRADAS
+                </span>
+                <strong className="dark:text-sonar-text text-xl font-black">{reviews?.length ?? 0}</strong>
               </div>
             </section>
             <EditorialGuide />
-            <section className="panel tools-panel">
-              <span className="eyebrow">TU MESA DE TRABAJO</span>
-              <button onClick={onExport} disabled={feedProps.busy || !!currentError}>
-                ↓ Descargar reseñas en CSV <span>↗</span>
+            <section className="panel tools-panel dark:bg-sonar-surface dark:border-white/10 flex flex-col gap-3">
+              <span className="eyebrow dark:text-sonar-text/70">TU MESA DE TRABAJO</span>
+              <button
+                onClick={onExport}
+                disabled={feedProps.busy || !!currentError}
+                className="flex items-center justify-between p-4 bg-white dark:bg-sonar-surface border border-gray-200 dark:border-sonar-surface rounded-lg text-gray-800 dark:text-sonar-text hover:bg-gray-50 dark:hover:bg-sonar-accent transition-colors"
+              >
+                <span>↓ Descargar reseñas en CSV</span> <span>↗</span>
               </button>
-              <button onClick={onRefresh} disabled={feedProps.busy}>
-                ↻ Actualizar información <span>↗</span>
+              <button
+                onClick={onRefresh}
+                disabled={feedProps.busy}
+                className="flex items-center justify-between p-4 bg-white dark:bg-sonar-surface border border-gray-200 dark:border-sonar-surface rounded-lg text-gray-800 dark:text-sonar-text hover:bg-gray-50 dark:hover:bg-sonar-accent transition-colors"
+              >
+                <span>↻ Actualizar información</span> <span>↗</span>
               </button>
             </section>
           </aside>

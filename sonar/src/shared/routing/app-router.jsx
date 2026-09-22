@@ -14,6 +14,7 @@ import NotFoundPage from '../../pages/public/not-found-page';
 
 // Páginas de Usuario y Administración
 import UserDashboardPage from '../../pages/user/user-dashboard-page';
+import AdminDashboardPage from '../../pages/admin/admin-dashboard-page.jsx';
 import { AdminConsole } from '../../App';
 
 // Contexto de Navegación Liviano

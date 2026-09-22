@@ -4,7 +4,7 @@ import { analyzeReview } from './shared/services/ia-service.js'
 import { useAdminDashboard, useModeration } from './features/admin/index.js'
 import { AdminDashboardPage } from './pages/admin/admin-dashboard-page.jsx'
 import { ModerationPage } from './pages/admin/moderation-page.jsx'
-import { ThemeProvider } from './shared/context/theme-context.jsx'
+import { ThemeProvider, useTheme } from './shared/context/theme-context.jsx'
 import AppRouter from './shared/routing/app-router.jsx'
 import "./Styles/App.css";
 import './Styles/admin.css'
@@ -12,6 +12,7 @@ import './Styles/admin-dashboard.css'
 import './Styles/admin-moderation.css'
 
 export function AdminConsole() {
+  const { isDark, toggleTheme } = useTheme()
   const dashboard = useAdminDashboard()
   const moderation = useModeration()
   const [page, setPage] = useState(() => window.location.hash === '#moderacion' ? 'moderacion' : 'dashboard')
@@ -113,23 +114,80 @@ export function AdminConsole() {
   const currentError = error || dashboard.error || moderation.error
   const shared = { users: data.users, query, busy: loading, onAction: handleAction, analyses }
   return (
-    <div className="sonar-app">
+    <div className="sonar-app transition-colors duration-300 dark:bg-sonar-base dark:text-sonar-text min-h-screen">
       <a className="skip-link" href="#contenido">Saltar al contenido</a>
-      <header className="console-header">
-        <div className="topbar shell">
-          <a href="#explore" className="brand" aria-label="Sonar, ir al portal"><span className="sonar-mark" aria-hidden="true"><i /></span><span><strong>SONAR <span>• CONSOLE</span></strong><small>AUDIOPHILE CURATION HUB</small></span></a>
-          <div className="global-search"><span aria-hidden="true">⌕</span><input ref={searchRef} value={query} onChange={event => setQuery(event.target.value)} placeholder="Buscar por usuario o álbum…" aria-label="Buscar reseñas por usuario o álbum" />{query ? <button className="clear-search" aria-label="Limpiar búsqueda" onClick={() => { setQuery(''); searchRef.current?.focus() }}>×</button> : <kbd>Ctrl K</kbd>}</div>
-          <div className="console-mode"><span className="status-dot" /> Entorno de prueba <span className="avatar small">S</span></div>
+      <header className="console-header dark:bg-sonar-surface dark:border-white/10">
+        <div className="topbar shell dark:bg-sonar-surface dark:border-white/10">
+          <a href="#explore" className="brand flex items-center gap-2.5" aria-label="Sonar, ir al portal">
+            <img src="/logo-sonar.svg" alt="Sonar Logo" className="w-8 h-8 object-contain transition-all" />
+            <span>
+              <strong className="text-gray-900 dark:text-sonar-text">
+                SONAR • <span className="text-purple-900 dark:text-purple-300 font-light tracking-widest">CONSOLE</span>
+              </strong>
+              <small className="dark:text-[#B89CB0]">AUDIOPHILE CURATION HUB</small>
+            </span>
+          </a>
+          <div className="global-search dark:bg-sonar-base dark:border-sonar-surface">
+            <span aria-hidden="true" className="text-[#5c1d5e] dark:text-pink-300">⌕</span>
+            <input
+              ref={searchRef}
+              value={query}
+              onChange={event => setQuery(event.target.value)}
+              placeholder="Buscar por usuario o álbum…"
+              aria-label="Buscar reseñas por usuario o álbum"
+              className="dark:bg-sonar-base dark:text-sonar-text dark:placeholder-gray-400"
+            />
+            {query ? <button className="clear-search dark:text-sonar-text" aria-label="Limpiar búsqueda" onClick={() => { setQuery(''); searchRef.current?.focus() }}>×</button> : <kbd className="dark:border-white/10 dark:text-sonar-text">Ctrl K</kbd>}
+          </div>
+          <div className="console-mode flex items-center gap-3">
+            <span className="status-dot" /> <span className="dark:text-sonar-text">Entorno de prueba</span> <span className="avatar small">S</span>
+            <button
+              onClick={toggleTheme}
+              className="p-2 rounded-md bg-gray-100 dark:bg-sonar-surface text-gray-800 dark:text-sonar-text border border-transparent dark:border-gray-700 hover:bg-gray-200 dark:hover:bg-sonar-accent transition-colors"
+              aria-label="Alternar modo oscuro"
+              title={isDark ? "Cambiar a Modo Blanco" : "Cambiar a Modo Oscuro"}
+            >
+              <span className="material-symbols-outlined text-[18px]">
+                {isDark ? 'light_mode' : 'dark_mode'}
+              </span>
+            </button>
+          </div>
         </div>
-        <div className="nav-row shell"><nav aria-label="Administración"><a className={page === 'dashboard' ? 'active' : ''} aria-current={page === 'dashboard' ? 'page' : undefined} href="#dashboard">◫ <span>Dashboard</span></a><a className={page === 'moderacion' ? 'active' : ''} aria-current={page === 'moderacion' ? 'page' : undefined} href="#moderacion">≋ <span>Moderación</span><b>{dashboard.metrics.pendingReviews}</b></a><a href="#explore">← <span>Ir al Portal Público</span></a></nav><span className="nav-caption">BUEN CRITERIO. MEJOR MÚSICA.</span></div>
+        <div className="nav-row shell dark:bg-sonar-base dark:border-white/10">
+          <nav aria-label="Administración">
+            <a
+              className={`${page === 'dashboard' ? 'active dark:bg-sonar-accent dark:text-sonar-text dark:border-white/15' : 'dark:text-sonar-text dark:hover:bg-sonar-surface/60'}`}
+              aria-current={page === 'dashboard' ? 'page' : undefined}
+              href="#dashboard"
+            >
+              ◫ <span>Dashboard</span>
+            </a>
+            <a
+              className={`${page === 'moderacion' ? 'active dark:bg-sonar-accent dark:text-sonar-text dark:border-white/15' : 'dark:text-sonar-text dark:hover:bg-sonar-surface/60'}`}
+              aria-current={page === 'moderacion' ? 'page' : undefined}
+              href="#moderacion"
+            >
+              ≋ <span>Moderación</span>
+              <span className="ml-2 px-2 py-0.5 rounded-full text-xs font-semibold bg-gray-200 dark:bg-sonar-base text-gray-700 dark:text-sonar-text border border-transparent dark:border-sonar-surface">
+                {dashboard.metrics.pendingReviews}
+              </span>
+            </a>
+            <a href="#explore" className="dark:text-sonar-text dark:hover:bg-sonar-surface/60">← <span>Ir al Portal Público</span></a>
+          </nav>
+          <span className="nav-caption dark:text-[#B89CB0]">BUEN CRITERIO. MEJOR MÚSICA.</span>
+        </div>
       </header>
-      <main id="contenido" tabIndex={-1} className="shell main-content">
-        <div className="breadcrumb">Administración <span>/</span> Centro de control <span>/</span> <strong>{page === 'dashboard' ? 'Dashboard' : 'Moderación'}</strong></div>
+      <main id="contenido" tabIndex={-1} className="shell main-content transition-colors duration-300 dark:bg-sonar-base dark:text-sonar-text">
+        <div className="breadcrumb text-gray-600 dark:text-[#B89CB0]">Administración <span>/</span> Centro de control <span>/</span> <strong className="text-gray-900 dark:text-sonar-text">{page === 'dashboard' ? 'Dashboard' : 'Moderación'}</strong></div>
         {currentError && <div className="error-banner" role="alert"><div><strong>No pudimos completar la consulta.</strong><p>{currentError} Comprueba que la API local esté disponible.</p></div><button onClick={refresh} disabled={loading}>Reintentar</button></div>}
         <div className="live-notice" role="status">{notice}</div>
         {page === 'dashboard' ? <AdminDashboardPage {...shared} reviews={data.reviews} metrics={dashboard.metrics} onRefresh={refresh} onExport={exportCsv} error={currentError} /> : <ModerationPage {...shared} reviews={moderation.reviews} onRefresh={refresh} error={currentError} />}
       </main>
-      <footer className="console-footer shell"><div><strong>SONAR<span className="red-dot"> •</span></strong><p>Un espacio para escuchar con atención.<br />Y compartir con criterio.</p></div><div><a href="#dashboard">Centro de control</a><a href="#moderacion">Moderación de reseñas</a><a href="#explore">Portal Público</a></div><span className="edition">CURADO CON CRITERIO<br /><b>EDICIÓN AUDIÓFILA</b><small>© {new Date().getFullYear()} SONAR</small></span></footer>
+      <footer className="console-footer shell dark:bg-sonar-surface dark:border-white/10">
+        <div><strong>SONAR<span className="red-dot"> •</span></strong><p className="dark:text-[#B89CB0]">Un espacio para escuchar con atención.<br />Y compartir con criterio.</p></div>
+        <div><a href="#dashboard" className="dark:text-sonar-text">Centro de control</a><a href="#moderacion" className="dark:text-sonar-text">Moderación de reseñas</a><a href="#explore" className="dark:text-sonar-text">Portal Público</a></div>
+        <span className="edition dark:text-[#B89CB0]">CURADO CON CRITERIO<br /><b className="dark:text-pink-300">EDICIÓN AUDIÓFILA</b><small className="dark:text-[#887082]">© {new Date().getFullYear()} SONAR</small></span>
+      </footer>
     </div>
   )
 }
