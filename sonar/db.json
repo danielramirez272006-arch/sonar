@@ -1124,6 +1124,88 @@
         "Ambient & Drone",
         "IDM / Techno"
       ]
+    },
+    {
+      "id": "user-1790195537847",
+      "username": "Daniel Ramirez",
+      "email": "daniel_1790195537782@sonar.local",
+      "password": "password123",
+      "role": "user",
+      "avatarUrl": "",
+      "avatarBg": "#d97706",
+      "bio": "Nuevo melómano explorando vinilos y texturas acústicas en Sonar.",
+      "stats": {
+        "savedAlbums": 0,
+        "reviewsCount": 0,
+        "followers": 0,
+        "following": 0
+      },
+      "preferences": [
+        "Art Rock",
+        "Jazz & Fusion"
+      ]
+    },
+    {
+      "id": "user-1790195537928",
+      "username": "Elena Jazz",
+      "email": "audiophile_1790195537893@sonar.local",
+      "password": "password123",
+      "role": "user",
+      "avatarUrl": "",
+      "avatarBg": "#059669",
+      "bio": "Exploradora de sintetizadores analógicos.",
+      "stats": {
+        "savedAlbums": 0,
+        "reviewsCount": 0,
+        "followers": 0,
+        "following": 0
+      },
+      "preferences": [
+        "Synthwave",
+        "Ambient & Drone",
+        "IDM / Techno"
+      ]
+    },
+    {
+      "id": "user-1790195639938",
+      "username": "Daniel Ramirez",
+      "email": "daniel_1790195639866@sonar.local",
+      "password": "password123",
+      "role": "user",
+      "avatarUrl": "",
+      "avatarBg": "#5c1d5e",
+      "bio": "Nuevo melómano explorando vinilos y texturas acústicas en Sonar.",
+      "stats": {
+        "savedAlbums": 0,
+        "reviewsCount": 0,
+        "followers": 0,
+        "following": 0
+      },
+      "preferences": [
+        "Art Rock",
+        "Jazz & Fusion"
+      ]
+    },
+    {
+      "id": "user-1790195640023",
+      "username": "Elena Jazz",
+      "email": "audiophile_1790195639989@sonar.local",
+      "password": "password123",
+      "role": "user",
+      "avatarUrl": "",
+      "avatarBg": "#4B2840",
+      "bio": "Exploradora de sintetizadores analógicos.",
+      "stats": {
+        "savedAlbums": 0,
+        "reviewsCount": 0,
+        "followers": 0,
+        "following": 0
+      },
+      "preferences": [
+        "Synthwave",
+        "Ambient & Drone",
+        "IDM / Techno"
+      ]
     }
   ],
   "reviews": [

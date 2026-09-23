@@ -73,6 +73,49 @@ describe('Interactions Service (Likes, Comentarios y Colecciones)', () => {
     expect(unsaveRes.isSaved).toBe(false);
     expect(interactionsService.isAlbumSaved(userId, 'Random Access Memories')).toBe(false);
   });
+
+  it('debe guardar canciones y álbumes por igual en favoritos distinguiendo su tipo', () => {
+    const userId = 'user-fav-songs-albums';
+    const testSong = {
+      id: 'track-456',
+      trackId: 'track-456',
+      title: 'Get Lucky',
+      artist: 'Daft Punk',
+      album: 'Random Access Memories',
+      type: 'track',
+      preview: 'https://preview.url/get-lucky.mp3',
+    };
+
+    const testAlbum = {
+      id: 'alb-789',
+      title: 'Discovery',
+      artist: 'Daft Punk',
+      year: '2001',
+      type: 'album',
+    };
+
+    // Guardar canción
+    const songRes = interactionsService.toggleSaveAlbum(userId, testSong, 'Favoritos');
+    expect(songRes.isSaved).toBe(true);
+    expect(interactionsService.isAlbumSaved(userId, 'track-456')).toBe(true);
+    expect(interactionsService.isAlbumSaved(userId, 'Get Lucky')).toBe(true);
+
+    // Guardar álbum
+    const albumRes = interactionsService.toggleSaveAlbum(userId, testAlbum, 'Colección Vinilo');
+    expect(albumRes.isSaved).toBe(true);
+    expect(interactionsService.isAlbumSaved(userId, 'Discovery')).toBe(true);
+
+    const saved = interactionsService.getUserSavedAlbums(userId);
+    expect(saved.length).toBe(2);
+
+    const savedSongs = saved.filter((i) => i.type === 'track' || Boolean(i.trackId));
+    const savedAlbums = saved.filter((i) => i.type !== 'track' && !i.trackId);
+
+    expect(savedSongs.length).toBe(1);
+    expect(savedSongs[0].title).toBe('Get Lucky');
+    expect(savedAlbums.length).toBe(1);
+    expect(savedAlbums[0].title).toBe('Discovery');
+  });
 });
 
 describe('Recommendations Service (Recomendaciones Personalizadas por Usuario)', () => {

@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { usePlayer } from '../../context/player-context';
+import { useAuth } from '../../context/auth-context';
 import { getTracksForAlbum } from '../../services/deezer-service';
+import { interactionsService } from '../../services/interactions-service';
 
 export const GlobalAudioPlayer = () => {
   const {
@@ -17,9 +19,39 @@ export const GlobalAudioPlayer = () => {
     openReviewModal,
   } = usePlayer();
 
+  const { user } = useAuth();
+  const userId = user?.id || null;
+
   const [showTracklist, setShowTracklist] = useState(false);
   const [albumTracks, setAlbumTracks] = useState([]);
   const [isLoadingTracks, setIsLoadingTracks] = useState(false);
+  const [savedMap, setSavedMap] = useState({});
+
+  // Cargar estado de guardados
+  const refreshSavedMap = () => {
+    if (!userId) {
+      setSavedMap({});
+      return;
+    }
+    const saved = interactionsService.getUserSavedAlbums(userId);
+    const map = {};
+    saved.forEach((item) => {
+      const idKey = String(item.id);
+      const trackIdKey = String(item.trackId || '');
+      const titleKey = item.title.toLowerCase();
+      map[idKey] = true;
+      if (trackIdKey) map[trackIdKey] = true;
+      map[titleKey] = true;
+    });
+    setSavedMap(map);
+  };
+
+  useEffect(() => {
+    refreshSavedMap();
+    const handleCollectionChange = () => refreshSavedMap();
+    window.addEventListener('sonar:collection-changed', handleCollectionChange);
+    return () => window.removeEventListener('sonar:collection-changed', handleCollectionChange);
+  }, [userId]);
 
   // Cargar las canciones del álbum actual cuando cambie la pista
   useEffect(() => {
@@ -55,6 +87,38 @@ export const GlobalAudioPlayer = () => {
 
   if (!currentTrack) return null;
 
+  const isCurrentTrackSaved = Boolean(
+    savedMap[String(currentTrack.id)] ||
+    savedMap[String(currentTrack.trackId || '')] ||
+    savedMap[currentTrack.title?.toLowerCase()]
+  );
+
+  const handleToggleSaveCurrent = (e) => {
+    e?.stopPropagation();
+    if (!user) {
+      window.location.hash = '#login';
+      return;
+    }
+    interactionsService.toggleSaveAlbum(userId, currentTrack, 'Favoritos');
+    refreshSavedMap();
+  };
+
+  const handleToggleSaveItem = (item, e) => {
+    e?.stopPropagation();
+    if (!user) {
+      window.location.hash = '#login';
+      return;
+    }
+    interactionsService.toggleSaveAlbum(userId, {
+      ...item,
+      album: currentTrack.album || currentTrack.title,
+      artist: item.artist || currentTrack.artist,
+      cover: item.cover || currentTrack.cover,
+      type: 'track',
+    }, 'Favoritos');
+    refreshSavedMap();
+  };
+
   const progressPercent = duration > 0 ? Math.min(100, Math.max(0, (currentTime / duration) * 100)) : 0;
 
   const formatTime = (secs) => {
@@ -70,7 +134,7 @@ export const GlobalAudioPlayer = () => {
         animate={{ y: 0, opacity: 1, scale: 1 }}
         exit={{ y: 60, opacity: 0, scale: 0.95 }}
         transition={{ type: 'spring', stiffness: 380, damping: 30 }}
-        className="fixed bottom-5 left-4 sm:left-6 z-50 w-[calc(100%-2rem)] sm:w-auto sm:max-w-[480px] md:max-w-[520px] flex flex-col gap-2.5 p-3 select-none backdrop-blur-2xl"
+        className="fixed bottom-5 left-4 sm:left-6 z-50 w-[calc(100%-2rem)] sm:w-auto sm:max-w-[480px] md:max-w-[540px] flex flex-col gap-2.5 p-3 select-none backdrop-blur-2xl"
         style={{
           backgroundColor: '#1c0d1cee', /* Midnight Violet oscuro translúcido */
           color: '#DCDCDD',              /* Alabaster Grey */
@@ -145,8 +209,28 @@ export const GlobalAudioPlayer = () => {
             </div>
           </div>
 
-          {/* Controles: Selector de Canciones + Play/Pausa + Botón Criticar + Cerrar */}
+          {/* Controles: Guardar Favorito + Selector de Canciones + Play/Pausa + Botón Criticar + Cerrar */}
           <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
+            {/* Botón Favorito / Guardar Pista o Álbum Actual */}
+            <motion.button
+              whileHover={{ scale: 1.1 }}
+              whileTap={{ scale: 0.9 }}
+              onClick={handleToggleSaveCurrent}
+              className={`p-1.5 rounded-xl transition-colors cursor-pointer flex items-center justify-center ${
+                isCurrentTrackSaved
+                  ? 'text-[#B80C09] bg-[#B80C09]/15'
+                  : 'text-gray-400 hover:text-white hover:bg-white/10'
+              }`}
+              title={isCurrentTrackSaved ? 'En tus favoritos' : 'Guardar en favoritos'}
+            >
+              <span
+                className="material-symbols-outlined text-[18px]"
+                style={{ fontVariationSettings: isCurrentTrackSaved ? "'FILL' 1" : "'FILL' 0" }}
+              >
+                bookmark
+              </span>
+            </motion.button>
+
             {/* Botón Selector de Canciones del Álbum */}
             <motion.button
               whileHover={{ scale: 1.05 }}
@@ -248,6 +332,11 @@ export const GlobalAudioPlayer = () => {
                   albumTracks.map((track, idx) => {
                     const isCurrentSelected = currentTrack.title === track.title || currentTrack.id === track.id;
                     const isTrackPlaying = isCurrentSelected && isPlaying;
+                    const isTrackSaved = Boolean(
+                      savedMap[String(track.id)] ||
+                      savedMap[String(track.trackId || '')] ||
+                      savedMap[track.title?.toLowerCase()]
+                    );
 
                     return (
                       <div
@@ -291,6 +380,25 @@ export const GlobalAudioPlayer = () => {
                           <span className="text-[10px] font-mono opacity-60 text-gray-400 hidden sm:inline">
                             {formatTime(track.duration || 180)}
                           </span>
+
+                          {/* Botón favorito / guardar canción */}
+                          <button
+                            type="button"
+                            onClick={(e) => handleToggleSaveItem(track, e)}
+                            className={`p-1 rounded-lg transition-colors cursor-pointer ${
+                              isTrackSaved
+                                ? 'text-[#B80C09] bg-[#B80C09]/15'
+                                : 'text-gray-400 hover:text-white hover:bg-white/10'
+                            }`}
+                            title={isTrackSaved ? 'Canción en favoritos' : 'Guardar canción en favoritos'}
+                          >
+                            <span
+                              className="material-symbols-outlined text-[16px]"
+                              style={{ fontVariationSettings: isTrackSaved ? "'FILL' 1" : "'FILL' 0" }}
+                            >
+                              bookmark
+                            </span>
+                          </button>
 
                           {/* Botón reproducir esta canción */}
                           <button

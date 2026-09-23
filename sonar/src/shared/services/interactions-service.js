@@ -316,10 +316,12 @@ export const interactionsService = {
     }
     const collections = getStorage(STORAGE_KEYS.USER_COLLECTIONS, {});
     const currentSaved = this.getUserSavedAlbums(userId);
-    const albumIdStr = String(album.id || album.title);
+    const itemIdStr = String(album.id || album.trackId || album.title);
     const existingIndex = currentSaved.findIndex(
-      (a) => String(a.id || a.title) === albumIdStr || a.title === album.title
+      (a) => String(a.id || a.trackId || a.title) === itemIdStr || a.title === album.title
     );
+
+    const isTrack = album.type === 'track' || Boolean(album.trackId) || Boolean(album.album && album.album !== album.title);
 
     let updated;
     let isSaved;
@@ -327,18 +329,25 @@ export const interactionsService = {
       updated = currentSaved.filter((_, idx) => idx !== existingIndex);
       isSaved = false;
     } else {
-      const newAlbum = {
-        id: album.id || `album-${Date.now()}`,
-        title: album.title || album.album || 'Álbum',
+      const newItem = {
+        id: album.id || `item-${Date.now()}`,
+        trackId: album.trackId || (isTrack ? album.id : null),
+        deezerId: album.deezerId || album.id,
+        title: album.title || album.album || 'Canción',
+        album: album.album || album.albumTitle || album.title || 'Álbum',
         artist: album.artist || 'Artista',
         year: album.year || '2024',
         genre: album.genre || 'Música',
-        cover: album.cover || 'https://cdn-images.dzcdn.net/images/cover/a175af9b7d329bc678cb4d26fc13d6de/500x500-000000-80-0-0.jpg',
+        cover: album.cover || album.cover_medium || 'https://cdn-images.dzcdn.net/images/cover/a175af9b7d329bc678cb4d26fc13d6de/500x500-000000-80-0-0.jpg',
         rating: album.rating || 5,
+        duration: album.duration || 180,
+        preview: album.preview || album.previewUrl,
+        previewUrl: album.previewUrl || album.preview,
+        type: isTrack ? 'track' : (album.type || 'album'),
         collectionTag,
         addedAt: new Date().toISOString().split('T')[0],
       };
-      updated = [newAlbum, ...currentSaved];
+      updated = [newItem, ...currentSaved];
       isSaved = true;
     }
 
@@ -347,15 +356,24 @@ export const interactionsService = {
       savedAlbums: updated,
     };
     setStorage(STORAGE_KEYS.USER_COLLECTIONS, collections);
+
+    if (typeof window !== 'undefined') {
+      window.dispatchEvent(
+        new CustomEvent('sonar:collection-changed', {
+          detail: { userId, item: album, isSaved, collection: updated },
+        })
+      );
+    }
+
     return { isSaved, savedAlbums: updated };
   },
 
   isAlbumSaved(userId, albumIdentifier) {
-    if (!userId || userId === 'guest' || userId === 'default') return false;
+    if (!userId || userId === 'guest' || userId === 'default' || !albumIdentifier) return false;
     const saved = this.getUserSavedAlbums(userId);
     const query = String(albumIdentifier).toLowerCase();
     return saved.some(
-      (a) => String(a.id).toLowerCase() === query || a.title.toLowerCase() === query
+      (a) => String(a.id).toLowerCase() === query || String(a.trackId || '').toLowerCase() === query || (a.title && a.title.toLowerCase() === query)
     );
   },
 };

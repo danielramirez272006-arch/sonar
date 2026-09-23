@@ -74,10 +74,15 @@ export const UserDashboardPage = () => {
     window.addEventListener('sonar:follow-artist-changed', handleArtistChange);
     window.addEventListener('sonar:follow-user-changed', handleUserChange);
     window.addEventListener('sonar:review-created', handleReviewCreated);
+    const handleCollectionChange = () => {
+      setSavedAlbums(interactionsService.getUserSavedAlbums(userId));
+    };
+    window.addEventListener('sonar:collection-changed', handleCollectionChange);
     return () => {
       window.removeEventListener('sonar:follow-artist-changed', handleArtistChange);
       window.removeEventListener('sonar:follow-user-changed', handleUserChange);
       window.removeEventListener('sonar:review-created', handleReviewCreated);
+      window.removeEventListener('sonar:collection-changed', handleCollectionChange);
     };
   }, [user, userId, genreFilter]);
 
@@ -110,12 +115,14 @@ export const UserDashboardPage = () => {
     setSavedAlbums(res.savedAlbums);
   };
 
+  const collectionTags = ['Todos', '🎵 Canciones', '💿 Álbumes', 'Favoritos', 'Colección Vinilo', 'Por Escuchar'];
+
   const filteredSavedAlbums = savedAlbums.filter((album) => {
     if (collectionFilter === 'Todos') return true;
+    if (collectionFilter === '🎵 Canciones') return album.type === 'track' || album.trackId;
+    if (collectionFilter === '💿 Álbumes') return album.type !== 'track' && !album.trackId;
     return album.collectionTag === collectionFilter;
   });
-
-  const collectionTags = ['Todos', 'Favoritos', 'Colección Vinilo', 'Por Escuchar'];
 
   return (
     <div className="min-h-screen flex flex-col bg-gray-50 dark:bg-[#231123] text-[#231123] dark:text-[#FAF5F8] transition-colors duration-300">
@@ -433,9 +440,20 @@ export const UserDashboardPage = () => {
                             e.currentTarget.src = DEFAULT_FALLBACK_COVER;
                           }}
                         />
-                        {/* Tag de Colección */}
-                        <div className="absolute top-2 left-2 px-2 py-0.5 rounded-md bg-black/80 backdrop-blur-xs text-white text-[10px] font-extrabold shadow-xs">
-                          {album.collectionTag || 'Colección'}
+                        {/* Badges de Tipo y Colección */}
+                        <div className="absolute top-2 left-2 flex flex-wrap items-center gap-1 z-10">
+                          <span className={`px-2 py-0.5 rounded-md text-[10px] font-black uppercase shadow-xs ${
+                            album.type === 'track' || album.trackId
+                              ? 'bg-[#B80C09] text-white'
+                              : 'bg-purple-900/90 text-purple-200 border border-purple-400/30'
+                          }`}>
+                            {album.type === 'track' || album.trackId ? '🎵 Canción' : '💿 Álbum'}
+                          </span>
+                          {album.collectionTag && album.collectionTag !== 'Favoritos' && (
+                            <span className="px-1.5 py-0.5 rounded-md bg-black/80 text-white text-[9px] font-bold shadow-xs">
+                              {album.collectionTag}
+                            </span>
+                          )}
                         </div>
 
                         {/* Botón Reproducir */}
@@ -464,12 +482,24 @@ export const UserDashboardPage = () => {
 
                       {/* Título y Artista */}
                       <div className="flex flex-col gap-0.5 min-w-0">
-                        <h3 className="text-sm sm:text-base font-bold text-[#231123] dark:text-white truncate">
+                        <h3 className="text-sm sm:text-base font-bold text-[#231123] dark:text-white truncate" title={album.title}>
                           {album.title}
                         </h3>
                         <p className="text-xs text-[#5c435a] dark:text-[#B89CB0] truncate font-medium">
-                          {album.artist} · {album.year}
+                          {album.artist} {album.album && album.album !== album.title ? `· ${album.album}` : (album.year ? `· ${album.year}` : '')}
                         </p>
+                      </div>
+
+                      {/* Botón de acción rápida: Escribir reseña */}
+                      <div className="flex items-center justify-between gap-2 pt-2 mt-2 border-t border-[#e6d5e2]/60 dark:border-white/10">
+                        <button
+                          type="button"
+                          onClick={() => openReviewModal(album)}
+                          className="w-full py-1 px-2 rounded-lg text-xs font-bold bg-gray-100 dark:bg-[#231123] text-[#231123] dark:text-gray-200 hover:bg-[#B80C09] hover:text-white dark:hover:bg-[#B80C09] dark:hover:text-white transition-colors flex items-center justify-center gap-1 cursor-pointer"
+                        >
+                          <span className="material-symbols-outlined text-[14px]">rate_review</span>
+                          <span>Criticar</span>
+                        </button>
                       </div>
                     </motion.article>
                   ))}

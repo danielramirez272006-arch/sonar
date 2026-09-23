@@ -9,6 +9,8 @@ import Footer from '../../shared/components/layout/footer';
 import Skeleton from '../../shared/components/ui/loader';
 import { searchAlbums, getAlbumTracks } from '../../shared/services/deezer-service';
 import { usePlayer } from '../../shared/context/player-context';
+import { useAuth } from '../../shared/context/auth-context';
+import { interactionsService } from '../../shared/services/interactions-service';
 
 const pageContainerVariants = {
   hidden: { opacity: 0 },
@@ -64,12 +66,28 @@ const HomePageSkeleton = () => {
 };
 
 export const HomePage = () => {
+  const { user } = useAuth();
+  const userId = user?.id || '1';
   const [isLoading, setIsLoading] = useState(true);
   const [searchResults, setSearchResults] = useState([]);
   const [isSearching, setIsSearching] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
+  const [savedCollection, setSavedCollection] = useState([]);
   const resultsRef = React.useRef(null);
   const { playTrack, currentTrack, isPlaying, toggleTrack, openReviewModal } = usePlayer();
+
+  useEffect(() => {
+    const loadSaved = () => {
+      setSavedCollection(interactionsService.getUserSavedAlbums(userId));
+    };
+    loadSaved();
+
+    const handleCollectionChange = () => {
+      loadSaved();
+    };
+    window.addEventListener('sonar:collection-changed', handleCollectionChange);
+    return () => window.removeEventListener('sonar:collection-changed', handleCollectionChange);
+  }, [userId]);
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -78,6 +96,22 @@ export const HomePage = () => {
 
     return () => clearTimeout(timer);
   }, []);
+
+  const handleToggleFavorite = (song, e) => {
+    e?.stopPropagation?.();
+    interactionsService.toggleSaveAlbum(userId, {
+      id: song.id,
+      trackId: song.id,
+      deezerId: song.deezerId || song.id,
+      title: song.title,
+      artist: song.artist,
+      album: song.album || song.albumTitle || song.title,
+      cover: song.cover,
+      preview: song.preview,
+      previewUrl: song.preview,
+      type: 'track',
+    });
+  };
 
   const handleSearch = async (query) => {
     setSearchQuery(query);
@@ -191,50 +225,75 @@ export const HomePage = () => {
                     </div>
                   ) : (
                     <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4 sm:gap-5">
-                      {searchResults.slice(0, 12).map((song) => (
-                        <motion.div
-                          key={song.id}
-                          whileHover={{ y: -4 }}
-                          className="group flex flex-col p-3 rounded-2xl bg-white dark:bg-[#4B2840] border border-[#e6d5e2] dark:border-white/10 shadow-xs hover:shadow-md transition-all"
-                        >
-                          <div className="relative aspect-square rounded-xl overflow-hidden mb-2.5 bg-black/10">
-                            <img
-                              src={song.cover}
-                              alt={song.title}
-                              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                            />
-                            <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2 p-2">
-                              <button
-                                onClick={() => handlePlaySearchResult(song)}
-                                className="w-9 h-9 rounded-full bg-[#B80C09] text-white flex items-center justify-center shadow-md hover:scale-110 transition-transform cursor-pointer"
-                                title="Escuchar muestra (30s)"
-                              >
-                                <span className="material-symbols-outlined text-[20px]">
-                                  {(currentTrack?.id === song.id || currentTrack?.title === song.title) && isPlaying ? 'pause' : 'play_arrow'}
-                                </span>
-                              </button>
-                              <button
-                                onClick={() => openReviewModal(song)}
-                                className="w-9 h-9 rounded-full bg-white text-[#231123] flex items-center justify-center shadow-md hover:scale-110 transition-transform cursor-pointer"
-                                title="Escribir crítica"
-                              >
-                                <span className="material-symbols-outlined text-[18px]">rate_review</span>
-                              </button>
+                      {searchResults.slice(0, 12).map((song) => {
+                        const isSaved = savedCollection.some(
+                          (a) =>
+                            String(a.id) === String(song.id) ||
+                            String(a.trackId || '') === String(song.id) ||
+                            (a.title && a.title.toLowerCase() === song.title.toLowerCase())
+                        );
+
+                        return (
+                          <motion.div
+                            key={song.id}
+                            whileHover={{ y: -4 }}
+                            className="group flex flex-col p-3 rounded-2xl bg-white dark:bg-[#4B2840] border border-[#e6d5e2] dark:border-white/10 shadow-xs hover:shadow-md transition-all relative"
+                          >
+                            <div className="relative aspect-square rounded-xl overflow-hidden mb-2.5 bg-black/10">
+                              <img
+                                src={song.cover}
+                                alt={song.title}
+                                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                              />
+                              {isSaved && (
+                                <div className="absolute top-2 right-2 w-6 h-6 rounded-full bg-[#B80C09] text-white flex items-center justify-center shadow-xs z-10">
+                                  <span className="material-symbols-outlined text-[14px]">bookmark</span>
+                                </div>
+                              )}
+                              <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2 p-2">
+                                <button
+                                  onClick={() => handlePlaySearchResult(song)}
+                                  className="w-9 h-9 rounded-full bg-[#B80C09] text-white flex items-center justify-center shadow-md hover:scale-110 transition-transform cursor-pointer"
+                                  title="Escuchar muestra (30s)"
+                                >
+                                  <span className="material-symbols-outlined text-[20px]">
+                                    {(currentTrack?.id === song.id || currentTrack?.title === song.title) && isPlaying ? 'pause' : 'play_arrow'}
+                                  </span>
+                                </button>
+                                <button
+                                  onClick={() => openReviewModal(song)}
+                                  className="w-9 h-9 rounded-full bg-white text-[#231123] flex items-center justify-center shadow-md hover:scale-110 transition-transform cursor-pointer"
+                                  title="Escribir crítica"
+                                >
+                                  <span className="material-symbols-outlined text-[18px]">rate_review</span>
+                                </button>
+                                <button
+                                  onClick={(e) => handleToggleFavorite(song, e)}
+                                  className={`w-9 h-9 rounded-full flex items-center justify-center shadow-md hover:scale-110 transition-transform cursor-pointer ${
+                                    isSaved ? 'bg-[#B80C09] text-white' : 'bg-white text-[#231123]'
+                                  }`}
+                                  title={isSaved ? 'Quitar de favoritos' : 'Guardar canción en favoritos'}
+                                >
+                                  <span className="material-symbols-outlined text-[18px]">
+                                    {isSaved ? 'bookmark_added' : 'bookmark_add'}
+                                  </span>
+                                </button>
+                              </div>
                             </div>
-                          </div>
-                          <span className="text-xs sm:text-sm font-bold text-[#231123] dark:text-[#FAF5F8] truncate" title={song.title}>
-                            {song.title}
-                          </span>
-                          <span className="text-[11px] text-[#5c435a] dark:text-[#B89CB0] truncate" title={song.artist}>
-                            {song.artist}
-                          </span>
-                          {song.album && song.album !== song.title && (
-                            <span className="text-[10px] text-gray-400 dark:text-gray-400 truncate mt-0.5">
-                              {song.album}
+                            <span className="text-xs sm:text-sm font-bold text-[#231123] dark:text-[#FAF5F8] truncate" title={song.title}>
+                              {song.title}
                             </span>
-                          )}
-                        </motion.div>
-                      ))}
+                            <span className="text-[11px] text-[#5c435a] dark:text-[#B89CB0] truncate" title={song.artist}>
+                              {song.artist}
+                            </span>
+                            {song.album && song.album !== song.title && (
+                              <span className="text-[10px] text-gray-400 dark:text-gray-400 truncate mt-0.5">
+                                {song.album}
+                              </span>
+                            )}
+                          </motion.div>
+                        );
+                      })}
                     </div>
                   )}
                 </section>
