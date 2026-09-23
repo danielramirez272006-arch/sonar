@@ -168,13 +168,14 @@ export const interactionsService = {
 
   // RESEÑAS PROPIAS DEL USUARIO
   getUserReviews(userId) {
-    if (!userId || userId === 'guest' || userId === 'default') return [];
+    if (!userId) return [];
+    const uidStr = String(userId);
     const reviewsStore = getStorage('sonar_user_reviews', {});
-    if (reviewsStore[userId]) {
-      return reviewsStore[userId];
+    if (reviewsStore[uidStr] && Array.isArray(reviewsStore[uidStr])) {
+      return reviewsStore[uidStr];
     }
-    // Solo el usuario demo 1 (Mateo) tiene reseñas históricas precargadas
-    if (userId === '1') {
+    // Solo el usuario demo 1 (Mateo) tiene reseñas históricas precargadas si no hay nada guardado
+    if (uidStr === '1' || uidStr === 'mateo') {
       return [
         {
           id: 101,
@@ -214,28 +215,40 @@ export const interactionsService = {
   },
 
   addUserReview(userId, reviewData) {
-    if (!userId || userId === 'guest') return null;
+    if (!userId) return null;
+    const uidStr = String(userId);
     const reviewsStore = getStorage('sonar_user_reviews', {});
-    const current = this.getUserReviews(userId);
+    const current = this.getUserReviews(uidStr);
     const newRev = {
       id: Date.now(),
-      userId,
+      userId: uidStr,
       userName: reviewData.userName || 'Usuario Sonar',
       userHandle: reviewData.userHandle || '@usuario',
-      avatarLetter: reviewData.avatarLetter || 'U',
+      avatarLetter: reviewData.avatarLetter || reviewData.userName?.charAt(0).toUpperCase() || 'U',
       avatarBg: reviewData.avatarBg || '#B80C09',
       date: 'Ahora mismo',
-      rating: reviewData.rating || 5,
+      rating: Number(reviewData.rating) || 5,
       albumTitle: reviewData.albumTitle || 'Álbum',
       artist: reviewData.artist || 'Artista',
       cover: reviewData.cover || 'https://cdn-images.dzcdn.net/images/cover/a175af9b7d329bc678cb4d26fc13d6de/500x500-000000-80-0-0.jpg',
       content: reviewData.content || reviewData.reviewText || '',
       likesCount: 0,
       commentsCount: 0,
+      hasSpoilers: !!reviewData.hasSpoilers,
+      createdAt: new Date().toISOString(),
     };
     const updated = [newRev, ...current];
-    reviewsStore[userId] = updated;
+    reviewsStore[uidStr] = updated;
     setStorage('sonar_user_reviews', reviewsStore);
+
+    if (typeof window !== 'undefined') {
+      window.dispatchEvent(
+        new CustomEvent('sonar:review-created', {
+          detail: newRev,
+        })
+      );
+    }
+
     return newRev;
   },
 

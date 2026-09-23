@@ -1,19 +1,69 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { usePlayer } from '../../context/player-context';
+import { useAuth } from '../../context/auth-context';
 import ReviewForm from '../../../features/reviews/components/review-form';
 import Toast from '../ui/toast';
+import { interactionsService } from '../../services/interactions-service';
+import { createReview } from '../../services/api-client';
 
 export const ReviewModal = () => {
   const { reviewModalAlbum, closeReviewModal } = usePlayer();
+  const { user } = useAuth() || {};
   const [toastMessage, setToastMessage] = useState(null);
 
   if (!reviewModalAlbum) return null;
 
   const albumTitle = reviewModalAlbum.album || reviewModalAlbum.title || 'Álbum';
   const artistName = reviewModalAlbum.artist || 'Artista';
+  const cover = reviewModalAlbum.cover || reviewModalAlbum.cover_medium || 'https://cdn-images.dzcdn.net/images/cover/a175af9b7d329bc678cb4d26fc13d6de/500x500-000000-80-0-0.jpg';
+  const deezerId = reviewModalAlbum.deezerId || reviewModalAlbum.id;
 
-  const handleReviewSubmit = (reviewData) => {
+  const handleReviewSubmit = async (reviewData) => {
+    const effectiveUserId = user?.id ? String(user.id) : '1';
+    const effectiveUserName = user?.name || user?.username || 'Mateo Rivaes';
+    const effectiveUserHandle = user?.username ? `@${user.username}` : '@mateorivaes';
+
+    // 1. Guardar en interactionsService (LocalStorage / Store para el perfil de usuario activo)
+    const newLocalReview = interactionsService.addUserReview(effectiveUserId, {
+      albumTitle,
+      artist: artistName,
+      cover,
+      rating: reviewData.rating,
+      content: reviewData.reviewText,
+      userName: effectiveUserName,
+      userHandle: effectiveUserHandle,
+      avatarLetter: effectiveUserName.charAt(0).toUpperCase(),
+      hasSpoilers: reviewData.hasSpoilers,
+    });
+
+    // 2. Sincronizar con API backend
+    try {
+      await createReview({
+        id: `rev-${Date.now()}`,
+        userId: effectiveUserId,
+        albumId: deezerId ? String(deezerId) : `album_${Date.now()}`,
+        albumTitle,
+        artist: artistName,
+        rating: reviewData.rating,
+        content: reviewData.reviewText,
+        status: 'approved',
+        aiFlagged: false,
+        createdAt: new Date().toISOString(),
+      });
+    } catch (e) {
+      console.warn('Backend API no disponible (guardado en almacenamiento local):', e);
+    }
+
+    // 3. Emitir evento para actualizar toda la interfaz en tiempo real
+    if (typeof window !== 'undefined') {
+      window.dispatchEvent(
+        new CustomEvent('sonar:review-created', {
+          detail: newLocalReview,
+        })
+      );
+    }
+
     // Éxito al publicar crítica
     setToastMessage(`¡Crítica publicada para ${albumTitle}! Calificación: ${reviewData.rating} estrellas.`);
     setTimeout(() => {

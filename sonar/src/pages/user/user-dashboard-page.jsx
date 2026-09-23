@@ -67,12 +67,17 @@ export const UserDashboardPage = () => {
     const handleUserChange = () => {
       setFollowedUsers(socialService.getFollowedUsers(currentId));
     };
+    const handleReviewCreated = () => {
+      setUserReviews(interactionsService.getUserReviews(userId));
+    };
 
     window.addEventListener('sonar:follow-artist-changed', handleArtistChange);
     window.addEventListener('sonar:follow-user-changed', handleUserChange);
+    window.addEventListener('sonar:review-created', handleReviewCreated);
     return () => {
       window.removeEventListener('sonar:follow-artist-changed', handleArtistChange);
       window.removeEventListener('sonar:follow-user-changed', handleUserChange);
+      window.removeEventListener('sonar:review-created', handleReviewCreated);
     };
   }, [user, userId, genreFilter]);
 

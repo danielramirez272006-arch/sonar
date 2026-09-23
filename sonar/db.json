@@ -653,6 +653,47 @@
         "Folk Acústico",
         "Art Rock"
       ]
+    },
+    {
+      "id": "user-1790191855378",
+      "username": "Daniel Ramirez",
+      "email": "daniel_1790191855263@sonar.local",
+      "password": "password123",
+      "role": "user",
+      "avatarUrl": "",
+      "avatarBg": "#0284c7",
+      "bio": "Nuevo melómano explorando vinilos y texturas acústicas en Sonar.",
+      "stats": {
+        "savedAlbums": 0,
+        "reviewsCount": 0,
+        "followers": 0,
+        "following": 0
+      },
+      "preferences": [
+        "Jazz & Fusion",
+        "Ambient & Drone"
+      ]
+    },
+    {
+      "id": "user-1790191855496",
+      "username": "Elena Jazz",
+      "email": "audiophile_1790191855458@sonar.local",
+      "password": "password123",
+      "role": "user",
+      "avatarUrl": "",
+      "avatarBg": "#4B2840",
+      "bio": "Exploradora de sintetizadores analógicos.",
+      "stats": {
+        "savedAlbums": 0,
+        "reviewsCount": 0,
+        "followers": 0,
+        "following": 0
+      },
+      "preferences": [
+        "Synthwave",
+        "Ambient & Drone",
+        "IDM / Techno"
+      ]
     }
   ],
   "reviews": [
@@ -673,6 +714,18 @@
       "content": "Una producción envolvente y melodías memorables.",
       "status": "approved",
       "aiFlagged": false
+    },
+    {
+      "id": "rev-1790191860549",
+      "userId": "user-1790191385832",
+      "albumId": "14880659",
+      "albumTitle": "In Rainbows",
+      "artist": "Radiohead",
+      "rating": 0,
+      "content": "m m",
+      "status": "approved",
+      "aiFlagged": false,
+      "createdAt": "2026-09-23T19:31:00.549Z"
     }
   ]
 }
