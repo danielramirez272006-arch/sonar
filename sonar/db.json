@@ -1083,6 +1083,47 @@
         "Ambient & Drone",
         "IDM / Techno"
       ]
+    },
+    {
+      "id": "user-1790195177791",
+      "username": "Daniel Ramirez",
+      "email": "daniel_1790195177731@sonar.local",
+      "password": "password123",
+      "role": "user",
+      "avatarUrl": "",
+      "avatarBg": "#B80C09",
+      "bio": "Nuevo melómano explorando vinilos y texturas acústicas en Sonar.",
+      "stats": {
+        "savedAlbums": 0,
+        "reviewsCount": 0,
+        "followers": 0,
+        "following": 0
+      },
+      "preferences": [
+        "Art Rock",
+        "Jazz & Fusion"
+      ]
+    },
+    {
+      "id": "user-1790195177859",
+      "username": "Elena Jazz",
+      "email": "audiophile_1790195177838@sonar.local",
+      "password": "password123",
+      "role": "user",
+      "avatarUrl": "",
+      "avatarBg": "#7c3aed",
+      "bio": "Exploradora de sintetizadores analógicos.",
+      "stats": {
+        "savedAlbums": 0,
+        "reviewsCount": 0,
+        "followers": 0,
+        "following": 0
+      },
+      "preferences": [
+        "Synthwave",
+        "Ambient & Drone",
+        "IDM / Techno"
+      ]
     }
   ],
   "reviews": [
@@ -1129,6 +1170,21 @@
       "status": "approved",
       "aiFlagged": false,
       "createdAt": "2026-09-23T20:04:07.556Z"
+    },
+    {
+      "id": "rev-1790195238883",
+      "userId": "user-1790194466385",
+      "albumId": "97206060",
+      "albumTitle": "To Pimp a Butterfly",
+      "type": "album",
+      "trackTitle": "",
+      "artist": "Kendrick Lamar",
+      "rating": 0,
+      "content": "musica para negros",
+      "avatarBg": "#5c1d5e",
+      "status": "approved",
+      "aiFlagged": false,
+      "createdAt": "2026-09-23T20:27:18.883Z"
     }
   ]
 }
