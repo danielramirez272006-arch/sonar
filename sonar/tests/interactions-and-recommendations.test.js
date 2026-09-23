@@ -54,6 +54,46 @@ describe('Interactions Service (Likes, Comentarios y Colecciones)', () => {
     expect(commentsAfter[0].userName).toBe('Carlos Beats');
   });
 
+  it('debe permitir a los usuarios responder a comentarios existentes', () => {
+    const reviewId = 777;
+    const comment = interactionsService.addCommentToReview(reviewId, {
+      userName: 'Sofía Sound',
+      userHandle: '@sofia_sound',
+      content: '¿Alguien sabe qué sintetizador usaron en la pista 3?',
+    });
+
+    const replyRes = interactionsService.addReplyToComment(reviewId, comment.id, {
+      userName: 'Mateo Rivaes',
+      userHandle: '@mateorivaes',
+      content: 'Usaron un Roland Juno-106 con chorus activado.',
+    });
+
+    expect(replyRes.newReply.id).toBeDefined();
+    expect(replyRes.newReply.content).toBe('Usaron un Roland Juno-106 con chorus activado.');
+    
+    const comments = interactionsService.getCommentsForReview(reviewId);
+    expect(comments[0].replies.length).toBe(1);
+    expect(comments[0].replies[0].userName).toBe('Mateo Rivaes');
+  });
+
+  it('debe permitir reportar comentarios inapropiados y registrar el motivo', () => {
+    const userId = 'user-reporter-1';
+    const commentId = 'c-inapropiado-99';
+
+    expect(interactionsService.getReportedCommentIds(userId)).toEqual([]);
+
+    const reported = interactionsService.reportComment(userId, {
+      commentId,
+      commentText: 'comentario ofensivo',
+      commentUser: 'Hater',
+      reason: 'Lenguaje ofensivo o subido de tono',
+      details: 'Insultos directos en la reseña',
+    });
+
+    expect(reported).toBe(true);
+    expect(interactionsService.getReportedCommentIds(userId)).toContain(commentId);
+  });
+
   it('debe guardar y remover álbumes de las colecciones del usuario', () => {
     const userId = 'user-collector';
     const testAlbum = {

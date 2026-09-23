@@ -5,6 +5,7 @@ const STORAGE_KEYS = {
   LIKED_COMMENTS: 'sonar_liked_comments',
   COMMENTS_STORE: 'sonar_review_comments',
   USER_COLLECTIONS: 'sonar_user_collections',
+  REPORTED_COMMENTS: 'sonar_reported_comments',
 };
 
 // Comentarios iniciales enriquecidos para las reseñas
@@ -20,6 +21,19 @@ const INITIAL_MOCK_COMMENTS = {
       content: 'Totalmente de acuerdo con "Reckoner". El paneo de la batería de Phil Selway en audífonos de estudio es una locura.',
       timestamp: 'Hace 45 min',
       likes: 12,
+      replies: [
+        {
+          id: 'r-1-1-1',
+          commentId: 'c-1-1',
+          userName: 'Elena Analog',
+          userHandle: '@elena_analog',
+          avatarLetter: 'E',
+          avatarBg: '#75527b',
+          content: '¡Exacto! Y la reverb en la voz de Thom Yorke le da esa atmósfera única.',
+          timestamp: 'Hace 30 min',
+          likes: 4,
+        },
+      ],
     },
     {
       id: 'c-1-2',
@@ -31,6 +45,7 @@ const INITIAL_MOCK_COMMENTS = {
       content: 'La calidez de las cuerdas en "Faust Arp" complementa perfecto la mezcla. Mi disco favorito de la década.',
       timestamp: 'Hace 1 hora',
       likes: 8,
+      replies: [],
     },
   ],
   2: [
@@ -44,6 +59,7 @@ const INITIAL_MOCK_COMMENTS = {
       content: 'El solo de sintetizador modular de "Digital Love" sigue siendo inigualable.',
       timestamp: 'Hace 30 min',
       likes: 15,
+      replies: [],
     },
   ],
   3: [
@@ -57,6 +73,7 @@ const INITIAL_MOCK_COMMENTS = {
       content: 'Vespertine es una lección de producción con micro-sonidos orgánicos.',
       timestamp: 'Hace 2 horas',
       likes: 6,
+      replies: [],
     },
   ],
   4: [
@@ -70,6 +87,7 @@ const INITIAL_MOCK_COMMENTS = {
       content: 'El bajo con compresión agresiva en Let It Happen es legendario.',
       timestamp: 'Hace 3 horas',
       likes: 9,
+      replies: [],
     },
   ],
 };
@@ -159,11 +177,87 @@ export const interactionsService = {
       content: commentData.content,
       timestamp: 'Ahora mismo',
       likes: 0,
+      replies: [],
       createdAt: new Date().toISOString(),
     };
     store[reviewId] = [newComment, ...current];
     setStorage(STORAGE_KEYS.COMMENTS_STORE, store);
     return newComment;
+  },
+
+  addReplyToComment(reviewId, commentId, replyData) {
+    const store = getStorage(STORAGE_KEYS.COMMENTS_STORE, INITIAL_MOCK_COMMENTS);
+    const current = store[reviewId] || [];
+    const newReply = {
+      id: `r-${commentId}-${Date.now()}`,
+      commentId,
+      userName: replyData.userName || 'Usuario Sonar',
+      userHandle: replyData.userHandle || '@usuario',
+      avatarLetter: replyData.avatarLetter || replyData.userName?.charAt(0) || 'U',
+      avatarBg: replyData.avatarBg || '#5c1d5e',
+      content: replyData.content,
+      timestamp: 'Ahora mismo',
+      likes: 0,
+      createdAt: new Date().toISOString(),
+    };
+
+    const updated = current.map((c) => {
+      if (c.id === commentId) {
+        return {
+          ...c,
+          replies: [...(c.replies || []), newReply],
+        };
+      }
+      return c;
+    });
+
+    store[reviewId] = updated;
+    setStorage(STORAGE_KEYS.COMMENTS_STORE, store);
+    return { newReply, comments: updated };
+  },
+
+  // REPORTES DE COMENTARIOS
+  getReportedCommentIds(userId) {
+    if (!userId || userId === 'guest' || userId === 'default') return [];
+    const all = getStorage(STORAGE_KEYS.REPORTED_COMMENTS, {});
+    return all[userId] || [];
+  },
+
+  reportComment(userId, reportPayload) {
+    if (!userId || userId === 'guest' || userId === 'default') return false;
+    const all = getStorage(STORAGE_KEYS.REPORTED_COMMENTS, {});
+    const userReports = all[userId] || [];
+    const commentId = reportPayload.commentId;
+
+    if (!userReports.includes(commentId)) {
+      all[userId] = [...userReports, commentId];
+      setStorage(STORAGE_KEYS.REPORTED_COMMENTS, all);
+    }
+
+    // Guardar en bitácora de reportes para administración/auditoría
+    const reportsLog = getStorage('sonar_reports_log', []);
+    const newReportEntry = {
+      id: `rep-${Date.now()}`,
+      reportedBy: userId,
+      commentId: reportPayload.commentId,
+      commentText: reportPayload.commentText || '',
+      commentUser: reportPayload.commentUser || '',
+      reason: reportPayload.reason || 'Lenguaje inapropiado o subido de tono',
+      details: reportPayload.details || '',
+      timestamp: new Date().toISOString(),
+      status: 'pending_review',
+    };
+    setStorage('sonar_reports_log', [newReportEntry, ...reportsLog]);
+
+    if (typeof window !== 'undefined') {
+      window.dispatchEvent(
+        new CustomEvent('sonar:comment-reported', {
+          detail: newReportEntry,
+        })
+      );
+    }
+
+    return true;
   },
 
   // RESEÑAS PROPIAS DEL USUARIO
