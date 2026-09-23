@@ -510,6 +510,149 @@
         "Neo-Soul",
         "Psicodelia"
       ]
+    },
+    {
+      "id": "user-1790190408899",
+      "username": "Daniel Ramirez",
+      "email": "daniel_1790190408804@sonar.local",
+      "password": "password123",
+      "role": "user",
+      "avatarUrl": "",
+      "avatarBg": "#7c3aed",
+      "bio": "Nuevo melómano explorando vinilos y texturas acústicas en Sonar.",
+      "stats": {
+        "savedAlbums": 0,
+        "reviewsCount": 0,
+        "followers": 0,
+        "following": 0
+      },
+      "preferences": [
+        "Jazz & Fusion",
+        "Ambient & Drone"
+      ]
+    },
+    {
+      "id": "user-1790190408961",
+      "username": "Elena Jazz",
+      "email": "audiophile_1790190408930@sonar.local",
+      "password": "password123",
+      "role": "user",
+      "avatarUrl": "",
+      "avatarBg": "#5c1d5e",
+      "bio": "Exploradora de sintetizadores analógicos.",
+      "stats": {
+        "savedAlbums": 0,
+        "reviewsCount": 0,
+        "followers": 0,
+        "following": 0
+      },
+      "preferences": [
+        "Synthwave",
+        "Ambient & Drone",
+        "IDM / Techno"
+      ]
+    },
+    {
+      "id": "user-1790190626177",
+      "username": "Daniel Ramirez",
+      "email": "daniel_1790190626090@sonar.local",
+      "password": "password123",
+      "role": "user",
+      "avatarUrl": "",
+      "avatarBg": "#7c3aed",
+      "bio": "Nuevo melómano explorando vinilos y texturas acústicas en Sonar.",
+      "stats": {
+        "savedAlbums": 0,
+        "reviewsCount": 0,
+        "followers": 0,
+        "following": 0
+      },
+      "preferences": [
+        "Post-Punk",
+        "Dream Pop"
+      ]
+    },
+    {
+      "id": "user-1790190626269",
+      "username": "Elena Jazz",
+      "email": "audiophile_1790190626231@sonar.local",
+      "password": "password123",
+      "role": "user",
+      "avatarUrl": "",
+      "avatarBg": "#d97706",
+      "bio": "Exploradora de sintetizadores analógicos.",
+      "stats": {
+        "savedAlbums": 0,
+        "reviewsCount": 0,
+        "followers": 0,
+        "following": 0
+      },
+      "preferences": [
+        "Synthwave",
+        "Ambient & Drone",
+        "IDM / Techno"
+      ]
+    },
+    {
+      "id": "user-1790190836275",
+      "username": "Daniel Ramirez",
+      "email": "daniel_1790190836186@sonar.local",
+      "password": "password123",
+      "role": "user",
+      "avatarUrl": "",
+      "avatarBg": "#0284c7",
+      "bio": "Nuevo melómano explorando vinilos y texturas acústicas en Sonar.",
+      "stats": {
+        "savedAlbums": 0,
+        "reviewsCount": 0,
+        "followers": 0,
+        "following": 0
+      },
+      "preferences": [
+        "Jazz & Fusion",
+        "Ambient & Drone"
+      ]
+    },
+    {
+      "id": "user-1790190836353",
+      "username": "Elena Jazz",
+      "email": "audiophile_1790190836320@sonar.local",
+      "password": "password123",
+      "role": "user",
+      "avatarUrl": "",
+      "avatarBg": "#d97706",
+      "bio": "Exploradora de sintetizadores analógicos.",
+      "stats": {
+        "savedAlbums": 0,
+        "reviewsCount": 0,
+        "followers": 0,
+        "following": 0
+      },
+      "preferences": [
+        "Synthwave",
+        "Ambient & Drone",
+        "IDM / Techno"
+      ]
+    },
+    {
+      "id": "user-1790191385832",
+      "username": "google_listener_498",
+      "email": "google_user_498@sonar.local",
+      "password": "social_mock_login_123",
+      "role": "user",
+      "avatarUrl": "",
+      "avatarBg": "#B80C09",
+      "bio": "Nuevo melómano explorando vinilos y texturas acústicas en Sonar.",
+      "stats": {
+        "savedAlbums": 0,
+        "reviewsCount": 0,
+        "followers": 0,
+        "following": 0
+      },
+      "preferences": [
+        "Folk Acústico",
+        "Art Rock"
+      ]
     }
   ],
   "reviews": [

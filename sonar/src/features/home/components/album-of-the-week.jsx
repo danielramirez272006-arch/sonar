@@ -199,19 +199,13 @@ export const AlbumOfTheWeek = () => {
       )}
 
       <div className="max-w-[1380px] mx-auto flex flex-col gap-6">
-        {/* Cabecera Superior con Insignia de Personalización */}
+        {/* Cabecera Superior Editorial */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-[#e6d5e2] dark:border-white/10 pb-4">
           <div className="flex items-center gap-2.5">
             <span className="w-2.5 h-2.5 rounded-full bg-[#B80C09] animate-pulse" />
             <span className="text-xs uppercase tracking-widest text-[#5c1d5e] dark:text-pink-300 font-black">
-              {user ? `FRECUENCIA PERSONALIZADA · @${user.username?.split(' ')[0] || user.username}` : 'VITRINA EDITORIAL AUDIÓFILA'}
+              VITRINA EDITORIAL AUDIÓFILA
             </span>
-            {user && (
-              <span className="hidden md:inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-[#ede0eb] dark:bg-white/10 text-[11px] font-bold text-[#5c1d5e] dark:text-pink-200">
-                <span>Tus gustos:</span>
-                <span className="text-[#B80C09] dark:text-pink-300 font-extrabold">{userPreferences.join(', ')}</span>
-              </span>
-            )}
           </div>
 
           <button
@@ -316,19 +310,12 @@ export const AlbumOfTheWeek = () => {
 
             {/* Información Editorial & Metadatos */}
             <div className="w-full lg:col-span-6 flex flex-col gap-3.5 sm:gap-4 lg:pl-2 text-left">
-              {/* Badge de Afinidad o Destacado */}
+              {/* Badge Destacado */}
               <div className="flex flex-wrap items-center gap-2">
-                {isUserGenreMatch ? (
-                  <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800 text-emerald-700 dark:text-emerald-300 text-xs font-bold shadow-xs">
-                    <span className="material-symbols-outlined text-[14px]">auto_awesome</span>
-                    <span>Recomendado por tu afinidad con {currentAlbum.genre}</span>
-                  </span>
-                ) : (
-                  <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#f8e9f6] dark:bg-[#4B2840] border border-[#e6d5e2] dark:border-white/10 text-[#5c1d5e] dark:text-pink-200 text-xs font-bold shadow-xs">
-                    <span className="material-symbols-outlined text-[14px] text-[#B80C09]">star</span>
-                    <span>Álbum Destacado de la Semana</span>
-                  </span>
-                )}
+                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#f8e9f6] dark:bg-[#4B2840] border border-[#e6d5e2] dark:border-white/10 text-[#5c1d5e] dark:text-pink-200 text-xs font-bold shadow-xs">
+                  <span className="material-symbols-outlined text-[14px] text-[#B80C09]">star</span>
+                  <span>Álbum Destacado de la Semana</span>
+                </span>
                 <span className="px-2.5 py-1 rounded-full bg-white dark:bg-white/10 border border-[#e6d5e2] dark:border-white/10 text-[#5c435a] dark:text-gray-300 text-[11px] font-bold">
                   {currentAlbum.genre}
                 </span>

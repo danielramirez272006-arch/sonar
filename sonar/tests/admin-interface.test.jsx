@@ -37,13 +37,13 @@ it('saltar al contenido conserva la pantalla de moderación', async () => {
 
 it('limpia la búsqueda y devuelve el foco al campo', async () => {
   render(<App />)
-  await screen.findByText('Mateo')
+  await screen.findAllByText('Mateo')
   const search = screen.getByRole('textbox', { name: /Buscar reseñas/ })
   fireEvent.change(search, { target: { value: 'sin coincidencias' } })
   fireEvent.click(screen.getByRole('button', { name: 'Limpiar búsqueda' }))
   expect(search.value).toBe('')
   expect(document.activeElement).toBe(search)
-  expect(screen.getByText('Mateo')).toBeTruthy()
+  expect(screen.getAllByText('Mateo').length).toBeGreaterThan(0)
 })
 
 it('conserva la confirmación si el rechazo falla y permite reintentarlo', async () => {
@@ -75,12 +75,12 @@ it('analiza una reseña normal sin aprobarla ni rechazarla', async () => {
 
 it('muestra los datos y permite filtrar las reseñas con la búsqueda', async () => {
   render(<App />)
-  expect(await screen.findByText('Mateo')).toBeTruthy()
+  expect((await screen.findAllByText('Mateo')).length).toBeGreaterThan(0)
   const search = screen.getByRole('textbox', { name: /Buscar reseñas/ })
   fireEvent.change(search, { target: { value: 'sin coincidencias' } })
   expect(screen.getByText('No hay coincidencias')).toBeTruthy()
   fireEvent.change(search, { target: { value: 'Mateo' } })
-  expect(screen.getByText('Mateo')).toBeTruthy()
+  expect(screen.getAllByText('Mateo').length).toBeGreaterThan(0)
 })
 
 it('aprueba una reseña desde la cola y refleja su desaparición', async () => {
@@ -114,5 +114,5 @@ it('muestra el error y permite reintentar la carga', async () => {
   await waitFor(() => expect(retry.disabled).toBe(false))
   fireEvent.click(retry)
   await waitFor(() => expect(screen.queryByRole('alert')).toBeNull())
-  expect(await screen.findByText('Mateo')).toBeTruthy()
+  expect((await screen.findAllByText('Mateo')).length).toBeGreaterThan(0)
 })

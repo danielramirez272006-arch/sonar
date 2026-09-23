@@ -22,7 +22,7 @@ export const TrendingGrid = () => {
 
   const tabs = useMemo(() => {
     const list = [
-      { id: 'for-you', label: '✦ Para ti (Personalizado)' },
+      { id: 'for-you', label: 'Para ti' },
       { id: 'week', label: 'Esta semana' },
       { id: 'acclaimed', label: 'Más aclamados' },
       { id: 'news', label: 'Novedades' },
@@ -178,9 +178,7 @@ export const TrendingGrid = () => {
               RADAR MUSICAL · EXPLORACIÓN
             </span>
             <h2 className="text-2xl sm:text-3xl lg:text-4xl text-[#231123] dark:text-[#FAF5F8] font-extrabold">
-              {activeTab === 'for-you' && user
-                ? `Frecuencia Recomendada para ${user.username?.split(' ')[0] || user.username}`
-                : 'Álbumes en Tendencia'}
+              Álbumes en Tendencia
             </h2>
           </div>
 
@@ -229,7 +227,7 @@ export const TrendingGrid = () => {
                 className="px-3 py-1.5 rounded-xl bg-white dark:bg-[#4B2840] border border-[#e6d5e2] dark:border-white/10 text-xs font-bold text-[#231123] dark:text-gray-200 cursor-pointer shadow-xs focus:outline-none"
               >
                 <option value="rating">⭐ Calificación</option>
-                <option value="trending">🔥 Afinidad</option>
+                <option value="trending">🔥 Popularidad</option>
                 <option value="year">📅 Año</option>
               </select>
 
@@ -282,14 +280,6 @@ export const TrendingGrid = () => {
                         e.target.style.display = 'none';
                       }}
                     />
-
-                    {/* Tag de afinidad para el usuario */}
-                    {album.isUserMatch && (
-                      <div className="absolute top-2 left-2 px-2.5 py-0.5 rounded-full bg-emerald-600/90 backdrop-blur-md text-white text-[10px] font-extrabold shadow-sm flex items-center gap-1">
-                        <span className="material-symbols-outlined text-[11px]">favorite</span>
-                        <span>{album.affinityPercentage}% Afinidad</span>
-                      </div>
-                    )}
 
                     {/* Botón Guardar en esquina superior */}
                     <button
@@ -394,11 +384,6 @@ export const TrendingGrid = () => {
                         <span className="px-2 py-0.5 rounded-md bg-[#f8e9f6] dark:bg-[#231123] text-[#5c1d5e] dark:text-pink-200 text-[10px] font-extrabold uppercase">
                           {album.genre}
                         </span>
-                        {album.isUserMatch && (
-                          <span className="text-[10px] text-emerald-600 dark:text-emerald-400 font-extrabold hidden sm:inline">
-                            · {album.affinityPercentage}% afinidad
-                          </span>
-                        )}
                       </div>
                       <span className="text-xs text-[#5c435a] dark:text-[#B89CB0] truncate">
                         {album.artist} · {album.year}

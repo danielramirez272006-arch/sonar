@@ -11,6 +11,16 @@ import AlbumDetailPage from '../../pages/public/album-detail-page';
 import AboutPage from '../../pages/public/about-page';
 import TermsPage from '../../pages/public/terms-page';
 import NotFoundPage from '../../pages/public/not-found-page';
+import ReviewsFeedPage from '../../pages/public/reviews-feed-page';
+import CuratedListsPage from '../../pages/public/curated-lists-page';
+import VinylCollectionsPage from '../../pages/public/vinyl-collections-page';
+import DeveloperApiPage from '../../pages/public/developer-api-page';
+import BlogPage from '../../pages/public/blog-page';
+import RecordLabelsPage from '../../pages/public/record-labels-page';
+import EditorialGuidelinesPage from '../../pages/public/editorial-guidelines-page';
+import PodcastsPage from '../../pages/public/podcasts-page';
+import VinylModePage from '../../pages/public/vinyl-mode-page';
+import RssPage from '../../pages/public/rss-page';
 
 // Páginas de Usuario y Administración
 import UserDashboardPage from '../../pages/user/user-dashboard-page';
@@ -74,8 +84,42 @@ export const AppRouter = () => {
     if (rawPath === 'community') {
       return <CommunityPage />;
     }
-    if (rawPath.startsWith('album')) {
+    if (rawPath === 'reviews' || rawPath === 'criticas') {
+      return <ReviewsFeedPage />;
+    }
+    if (rawPath === 'lists' || rawPath === 'listas') {
+      return <CuratedListsPage />;
+    }
+    if (rawPath === 'collections' || rawPath === 'colecciones') {
+      return <VinylCollectionsPage />;
+    }
+    if (rawPath === 'api' || rawPath === 'developers') {
+      return (
+        <AdminRoute fallback={<LoginPage />}>
+          <DeveloperApiPage />
+        </AdminRoute>
+      );
+    }
+    if (rawPath === 'blog') {
+      return <BlogPage />;
+    }
+    if (rawPath === 'labels' || rawPath === 'sellos') {
+      return <RecordLabelsPage />;
+    }
+    if (rawPath === 'guidelines' || rawPath === 'pautas') {
+      return <EditorialGuidelinesPage />;
+    }
+    if (rawPath === 'podcasts' || rawPath === 'podcast') {
+      return <PodcastsPage />;
+    }
+    if (rawPath === 'album' || rawPath === 'vinyl' || rawPath === 'tocadiscos') {
+      return <VinylModePage />;
+    }
+    if (rawPath.startsWith('album/')) {
       return <AlbumDetailPage />;
+    }
+    if (rawPath === 'rss_feed' || rawPath === 'rss' || rawPath === 'feed') {
+      return <RssPage />;
     }
     if (rawPath === 'about') {
       return <AboutPage />;
