@@ -90,7 +90,6 @@ export const RegisterForm = () => {
         preferences: formData.preferences,
         avatarBg: formData.avatarBg,
       });
-      // Redirigir al dashboard personal de usuario
       window.location.hash = '#usuario';
     } catch (err) {
       setErrorMessage(err.message || 'No se pudo completar el registro. Inténtalo de nuevo.');

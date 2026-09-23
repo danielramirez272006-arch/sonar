@@ -12,6 +12,9 @@
     "test": "vitest run"
   },
   "dependencies": {
+    "@blobatar/react": "^2.7.0",
+    "blobatar": "^2.7.0",
+    "db": "^6.0.3",
     "framer-motion": "^13.4.0",
     "lucide-react": "^1.47.0",
     "react": "^19.2.8",

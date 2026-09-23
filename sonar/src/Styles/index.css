@@ -138,7 +138,7 @@ html, body {
 .auth-editorial h1 span + span { animation-delay:.12s; }
 .auth-editorial__copy > p:last-child { animation:auth-fade-up .55s .27s cubic-bezier(.2,.75,.25,1) both; }
 
-.auth-review { height:165px; padding:0; background:transparent; box-shadow:none; transform:none; animation:none; }
+.auth-review { height:194px; padding:0; background:transparent; box-shadow:none; transform:none; animation:none; }
 .auth-review__stack { position:relative; height:165px; }
 .auth-review__card { position:absolute; inset:0; padding:1.15rem 1.2rem 1rem; border-radius:.85rem; background:rgba(255,255,255,.92); box-shadow:0 22px 35px rgba(100,50,92,.18); will-change:transform,opacity; }
 .auth-review__content { animation:none; }
@@ -146,6 +146,10 @@ html, body {
 .auth-review__dots button { width:.3rem; height:.3rem; padding:0; border:0; border-radius:50%; background:#d9c4d7; cursor:pointer; transition:width .3s ease, background .3s ease, transform .3s ease; }
 .auth-review__dots button.active { width:.9rem; background:#5c1d5e; }
 .auth-review__dots button:focus-visible { outline:2px solid #5c1d5e; outline-offset:3px; }
+.auth-review__avatars { width:50px; height:50px; align-self:start; }
+.auth-review__avatars > .blobatar-avatar { display:inline-flex; width:50px !important; height:50px !important; margin:0; overflow:hidden; border:2px solid #fff; border-radius:50%; background:#f8e9f6; box-shadow:0 4px 10px rgba(92,29,94,.12); }
+.auth-review__avatars > .blobatar-avatar svg { display:block; width:100%; height:100%; }
+.blobatar-avatar { display:inline-flex; align-items:center; justify-content:center; overflow:hidden; border-radius:50%; flex:0 0 auto; }
 
 .auth-socials button { transition:background .2s ease, transform .2s ease, box-shadow .2s ease; }
 .auth-socials button:hover { transform:scale(1.02); box-shadow:0 6px 14px rgba(92,29,94,.08); }

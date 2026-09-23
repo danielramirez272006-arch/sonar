@@ -6,6 +6,7 @@ export * from './components/ui/badge';
 export * from './components/ui/star-rating';
 export * from './components/ui/loader';
 export * from './components/ui/avatar';
+export * from './components/ui/blobatar-avatar';
 export * from './components/layout/navbar';
 export * from './components/layout/footer';
 export * from './components/layout/admin-sidebar';

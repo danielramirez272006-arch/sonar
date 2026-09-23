@@ -77,6 +77,13 @@ export async function getUserById(userId) {
   }
 }
 
+export function updateUser(userId, changes) {
+  return apiRequest(`/users/${encodeURIComponent(userId)}`, {
+    method: 'PATCH',
+    body: JSON.stringify(changes),
+  })
+}
+
 export async function getUserByEmail(email) {
   const normEmail = String(email || '').trim().toLowerCase()
   try {

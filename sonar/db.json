@@ -16,7 +16,9 @@
       "preferences": [
         "Art Rock",
         "Electrónica"
-      ]
+      ],
+      "mutedUntil": null,
+      "status": null
     },
     {
       "id": "admin-1",
@@ -403,6 +405,90 @@
         "Jazz & Fusion",
         "Post-Punk"
       ]
+    },
+    {
+      "id": "demo-ana",
+      "username": "Ana Calderon",
+      "email": "ana.demo@sonar.local",
+      "password": "demo_password_ana",
+      "role": "user",
+      "avatarUrl": "/avatars/default-teal.png",
+      "bio": "Coleccionista de dream pop y discos que suenan mejor de noche.",
+      "stats": {
+        "savedAlbums": 38,
+        "reviewsCount": 12,
+        "followers": 74
+      },
+      "preferences": [
+        "Dream Pop",
+        "Shoegaze",
+        "Vinilos"
+      ],
+      "status": "active",
+      "mutedUntil": null
+    },
+    {
+      "id": "demo-bruno",
+      "username": "Bruno Soria",
+      "email": "bruno.demo@sonar.local",
+      "password": "demo_password_bruno",
+      "role": "user",
+      "avatarUrl": "/avatars/default-teal.png",
+      "bio": "Exploro electronica experimental, ambient y nuevas formas de escuchar.",
+      "stats": {
+        "savedAlbums": 91,
+        "reviewsCount": 27,
+        "followers": 143
+      },
+      "preferences": [
+        "Electronica",
+        "Ambient",
+        "IDM"
+      ],
+      "status": "active",
+      "mutedUntil": null
+    },
+    {
+      "id": "demo-camila",
+      "username": "Camila Torres",
+      "email": "camila.demo@sonar.local",
+      "password": "demo_password_camila",
+      "role": "user",
+      "avatarUrl": "/avatars/default-teal.png",
+      "bio": "Cantautora aficionada a las letras intimas y las armonias vocales.",
+      "stats": {
+        "savedAlbums": 24,
+        "reviewsCount": 8,
+        "followers": 51
+      },
+      "preferences": [
+        "Folk",
+        "Indie",
+        "Songwriting"
+      ],
+      "status": "active",
+      "mutedUntil": null
+    },
+    {
+      "id": "demo-diego",
+      "username": "Diego Mendez",
+      "email": "diego.demo@sonar.local",
+      "password": "demo_password_diego",
+      "role": "user",
+      "avatarUrl": "/avatars/default-teal.png",
+      "bio": "Fan del post-rock y de las conversaciones apasionadas sobre produccion.",
+      "stats": {
+        "savedAlbums": 67,
+        "reviewsCount": 19,
+        "followers": 36
+      },
+      "preferences": [
+        "Post-rock",
+        "Metal",
+        "Produccion"
+      ],
+      "status": "active",
+      "mutedUntil": null
     }
   ],
   "reviews": [
@@ -412,7 +498,7 @@
       "albumId": "album_01",
       "rating": 4.7,
       "content": "Obra cumbre del pop psicodélico.",
-      "status": "pending_moderation",
+      "status": "approved",
       "aiFlagged": false
     },
     {
