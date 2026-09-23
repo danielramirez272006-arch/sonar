@@ -156,7 +156,7 @@ export const Navbar = ({
               </span>
               <input
                 type="text"
-                placeholder="Buscar en Sonar..."
+                placeholder="Buscar canciones o artistas en Sonar..."
                 value={navSearch}
                 onChange={handleNavSearchChange}
                 onFocus={() => {
@@ -196,40 +196,40 @@ export const Navbar = ({
                 className="absolute top-full left-0 right-0 mt-1.5 p-1.5 rounded-2xl bg-white/95 dark:bg-[#221022]/95 backdrop-blur-2xl border border-[#e6d5e2] dark:border-white/10 shadow-[0_15px_35px_rgba(0,0,0,0.3)] z-50 flex flex-col gap-1"
               >
                 <div className="px-2 py-1 text-[10px] font-black uppercase tracking-wider text-[#5c435a] dark:text-gray-400 border-b border-gray-100 dark:border-white/5 flex items-center justify-between">
-                  <span>MÚSICA EN DEEZER</span>
+                  <span>CANCIONES EN DEEZER</span>
                   <button
                     type="button"
                     onClick={handleNavSearchSubmit}
                     className="text-[9px] font-bold text-[#B80C09] hover:underline cursor-pointer flex items-center gap-0.5"
-                    title="Ver todos los resultados"
+                    title="Ver todas las canciones"
                   >
                     <span>ENTER PARA VER MÁS</span>
                     <span className="material-symbols-outlined text-[11px]">arrow_forward</span>
                   </button>
                 </div>
 
-                {navResults.map((album) => {
-                  const isItemPlaying = (currentTrack?.id === album.id || currentTrack?.title === album.title) && isPlaying;
+                {navResults.map((song) => {
+                  const isItemPlaying = (currentTrack?.id === song.id || currentTrack?.title === song.title) && isPlaying;
                   return (
                     <div
-                      key={album.id}
+                      key={song.id}
                       className="group flex items-center justify-between p-1.5 rounded-xl hover:bg-[#fff0f4] dark:hover:bg-white/10 transition-colors"
                     >
                       <div
-                        onClick={() => handleSelectNavAlbum(album)}
+                        onClick={() => handleSelectNavAlbum(song)}
                         className="flex items-center gap-2 min-w-0 flex-1 cursor-pointer"
                       >
                         <img
-                          src={album.cover}
-                          alt={album.title}
+                          src={song.cover}
+                          alt={song.title}
                           className="w-8 h-8 rounded-lg object-cover shadow-2xs shrink-0"
                         />
                         <div className="flex flex-col min-w-0">
                           <span className="text-xs font-bold text-[#231123] dark:text-white truncate group-hover:text-[#B80C09] transition-colors">
-                            {album.title}
+                            {song.title}
                           </span>
                           <span className="text-[10px] text-[#5c435a] dark:text-[#B89CB0] truncate">
-                            {album.artist}
+                            {song.artist} {song.album && song.album !== song.title ? `· ${song.album}` : ''}
                           </span>
                         </div>
                       </div>
@@ -240,12 +240,14 @@ export const Navbar = ({
                         onClick={(e) => {
                           e.stopPropagation();
                           toggleTrack({
-                            id: album.id,
-                            deezerId: album.id,
-                            title: album.title,
-                            artist: album.artist,
-                            album: album.title,
-                            cover: album.cover,
+                            id: song.id,
+                            trackId: song.id,
+                            deezerId: song.id,
+                            title: song.title,
+                            artist: song.artist,
+                            album: song.album || song.title,
+                            cover: song.cover,
+                            preview: song.preview,
                           });
                         }}
                         className="w-6 h-6 rounded-full bg-[#B80C09] text-white flex items-center justify-center shrink-0 shadow-2xs hover:scale-110 transition-transform cursor-pointer ml-1"
@@ -259,14 +261,14 @@ export const Navbar = ({
                   );
                 })}
 
-                {/* Botón inferior: Ver todos los resultados */}
+                {/* Botón inferior: Ver todas las canciones */}
                 <button
                   type="button"
                   onClick={handleNavSearchSubmit}
                   className="w-full mt-1 p-2 rounded-xl bg-gray-100 dark:bg-white/10 hover:bg-[#B80C09] hover:text-white dark:hover:bg-[#B80C09] dark:hover:text-white text-xs font-bold text-center transition-all cursor-pointer flex items-center justify-center gap-1.5 text-gray-800 dark:text-gray-200 shadow-xs"
                 >
                   <span className="material-symbols-outlined text-[15px]">search</span>
-                  <span>Ver todos los resultados para &ldquo;{navSearch}&rdquo;</span>
+                  <span>Ver todas las canciones para &ldquo;{navSearch}&rdquo;</span>
                   <span className="material-symbols-outlined text-[13px]">arrow_forward</span>
                 </button>
               </motion.div>

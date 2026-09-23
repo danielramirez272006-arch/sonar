@@ -118,15 +118,17 @@ export const HomePage = () => {
     return () => window.removeEventListener('sonar:search', handleGlobalSearch);
   }, []);
 
-  const handlePlaySearchResult = (album) => {
-    if (!album) return;
+  const handlePlaySearchResult = (item) => {
+    if (!item) return;
     playTrack({
-      id: album.id,
-      deezerId: album.id,
-      title: album.title,
-      artist: album.artist,
-      album: album.title,
-      cover: album.cover,
+      id: item.id,
+      deezerId: item.deezerId || item.id,
+      trackId: item.id,
+      title: item.title,
+      artist: item.artist,
+      album: item.album || item.albumTitle || item.title,
+      cover: item.cover,
+      preview: item.preview,
     });
   };
 
@@ -168,11 +170,11 @@ export const HomePage = () => {
                     <div className="flex items-center gap-2">
                       <span className="w-2.5 h-2.5 rounded-full bg-[#B80C09] animate-pulse" />
                       <h3 className="text-xl sm:text-2xl font-extrabold text-[#231123] dark:text-[#FAF5F8]">
-                        Resultados de Deezer para &ldquo;{searchQuery}&rdquo;
+                        Canciones en Deezer para &ldquo;{searchQuery}&rdquo;
                       </h3>
                     </div>
                     <span className="text-xs text-[#5c435a] dark:text-[#B89CB0] font-semibold">
-                      {searchResults.length} álbumes encontrados
+                      {searchResults.length} canciones encontradas
                     </span>
                   </div>
 
@@ -181,38 +183,38 @@ export const HomePage = () => {
                       <span className="material-symbols-outlined animate-spin text-[32px] text-[#B80C09] mr-2">
                         progress_activity
                       </span>
-                      <span>Buscando en la biblioteca de Deezer...</span>
+                      <span>Buscando canciones en la biblioteca de Deezer...</span>
                     </div>
                   ) : searchResults.length === 0 ? (
                     <div className="text-center py-10 text-[#5c435a] dark:text-[#B89CB0]">
-                      No se encontraron álbumes en Deezer para &ldquo;{searchQuery}&rdquo;.
+                      No se encontraron canciones en Deezer para &ldquo;{searchQuery}&rdquo;.
                     </div>
                   ) : (
                     <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4 sm:gap-5">
-                      {searchResults.slice(0, 12).map((album) => (
+                      {searchResults.slice(0, 12).map((song) => (
                         <motion.div
-                          key={album.id}
+                          key={song.id}
                           whileHover={{ y: -4 }}
                           className="group flex flex-col p-3 rounded-2xl bg-white dark:bg-[#4B2840] border border-[#e6d5e2] dark:border-white/10 shadow-xs hover:shadow-md transition-all"
                         >
                           <div className="relative aspect-square rounded-xl overflow-hidden mb-2.5 bg-black/10">
                             <img
-                              src={album.cover}
-                              alt={album.title}
+                              src={song.cover}
+                              alt={song.title}
                               className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                             />
                             <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2 p-2">
                               <button
-                                onClick={() => handlePlaySearchResult(album)}
+                                onClick={() => handlePlaySearchResult(song)}
                                 className="w-9 h-9 rounded-full bg-[#B80C09] text-white flex items-center justify-center shadow-md hover:scale-110 transition-transform cursor-pointer"
                                 title="Escuchar muestra (30s)"
                               >
                                 <span className="material-symbols-outlined text-[20px]">
-                                  {currentTrack?.album === album.title && isPlaying ? 'pause' : 'play_arrow'}
+                                  {(currentTrack?.id === song.id || currentTrack?.title === song.title) && isPlaying ? 'pause' : 'play_arrow'}
                                 </span>
                               </button>
                               <button
-                                onClick={() => openReviewModal(album)}
+                                onClick={() => openReviewModal(song)}
                                 className="w-9 h-9 rounded-full bg-white text-[#231123] flex items-center justify-center shadow-md hover:scale-110 transition-transform cursor-pointer"
                                 title="Escribir crítica"
                               >
@@ -220,12 +222,17 @@ export const HomePage = () => {
                               </button>
                             </div>
                           </div>
-                          <span className="text-xs sm:text-sm font-bold text-[#231123] dark:text-[#FAF5F8] truncate">
-                            {album.title}
+                          <span className="text-xs sm:text-sm font-bold text-[#231123] dark:text-[#FAF5F8] truncate" title={song.title}>
+                            {song.title}
                           </span>
-                          <span className="text-[11px] text-[#5c435a] dark:text-[#B89CB0] truncate">
-                            {album.artist}
+                          <span className="text-[11px] text-[#5c435a] dark:text-[#B89CB0] truncate" title={song.artist}>
+                            {song.artist}
                           </span>
+                          {song.album && song.album !== song.title && (
+                            <span className="text-[10px] text-gray-400 dark:text-gray-400 truncate mt-0.5">
+                              {song.album}
+                            </span>
+                          )}
                         </motion.div>
                       ))}
                     </div>

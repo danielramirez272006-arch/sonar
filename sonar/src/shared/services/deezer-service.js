@@ -164,50 +164,47 @@ export const formatDeezerAlbum = (album) => {
 };
 
 /**
- * Busca álbumes en la API de Deezer
+ * Busca canciones y pistas en la API de Deezer
  * @param {string} query - Término de búsqueda
- * @returns {Promise<Array>} Lista de álbumes
+ * @returns {Promise<Array>} Lista de canciones normalizadas con preview y carátula
  */
 export const searchAlbums = async (query) => {
   if (!query || !query.trim()) return [];
   
   const cleanQuery = query.trim();
   try {
-    // 1. Intentar búsqueda directa de álbum
-    let response = await fetch(`${BASE_URL}/search/album?q=${encodeURIComponent(cleanQuery)}`);
+    // 1. Búsqueda directa de canciones/pistas en Deezer (/search?q=...)
+    let response = await fetch(`${BASE_URL}/search?q=${encodeURIComponent(cleanQuery)}`);
     
+    if (response.ok) {
+      const data = await response.json();
+      if (data.data && Array.isArray(data.data) && data.data.length > 0) {
+        return data.data.map((item) => ({
+          id: item.id,
+          title: item.title,
+          artist: item.artist?.name || 'Artista',
+          album: item.album?.title || item.title,
+          albumTitle: item.album?.title || item.title,
+          cover: item.album?.cover_big || item.album?.cover_medium || item.album?.cover || item.artist?.picture_big || '',
+          cover_xl: item.album?.cover_xl || item.album?.cover_big || '',
+          cover_medium: item.album?.cover_medium || item.album?.cover || '',
+          genre: 'Música',
+          year: item.album?.release_date ? item.album.release_date.substring(0, 4) : '2024',
+          rating: (4.5 + ((item.id % 5) * 0.1)).toFixed(1),
+          duration: item.duration,
+          preview: item.preview,
+          link: item.link,
+          type: 'track',
+        }));
+      }
+    }
+    
+    // 2. Fallback de búsqueda de álbumes si /search no trajo nada
+    response = await fetch(`${BASE_URL}/search/album?q=${encodeURIComponent(cleanQuery)}`);
     if (response.ok) {
       const data = await response.json();
       if (data.data && Array.isArray(data.data) && data.data.length > 0) {
         return data.data.map(formatDeezerAlbum);
-      }
-    }
-    
-    // 2. Si /search/album devolvió 0 resultados, intentar búsqueda global /search?q= (canciones/artistas y extraer álbumes únicos)
-    response = await fetch(`${BASE_URL}/search?q=${encodeURIComponent(cleanQuery)}`);
-    if (response.ok) {
-      const data = await response.json();
-      if (data.data && Array.isArray(data.data) && data.data.length > 0) {
-        const seenAlbumIds = new Set();
-        const albums = [];
-        for (const item of data.data) {
-          if (item.album && !seenAlbumIds.has(item.album.id)) {
-            seenAlbumIds.add(item.album.id);
-            albums.push({
-              id: item.album.id,
-              title: item.album.title,
-              artist: item.artist?.name || 'Artista',
-              cover: item.album.cover_big || item.album.cover_medium || item.album.cover || '',
-              cover_xl: item.album.cover_xl || item.album.cover_big || '',
-              cover_medium: item.album.cover_medium || item.album.cover || '',
-              genre: 'Música',
-              year: '2024',
-              rating: (4.4 + ((item.album.id % 6) * 0.1)).toFixed(1),
-              link: `https://www.deezer.com/album/${item.album.id}`,
-            });
-          }
-        }
-        if (albums.length > 0) return albums;
       }
     }
 
@@ -215,11 +212,27 @@ export const searchAlbums = async (query) => {
     const words = cleanQuery.split(' ').filter(w => w.length > 2);
     if (words.length > 1) {
       const fallbackQuery = words[0];
-      response = await fetch(`${BASE_URL}/search/album?q=${encodeURIComponent(fallbackQuery)}`);
+      response = await fetch(`${BASE_URL}/search?q=${encodeURIComponent(fallbackQuery)}`);
       if (response.ok) {
         const data = await response.json();
         if (data.data && Array.isArray(data.data) && data.data.length > 0) {
-          return data.data.map(formatDeezerAlbum);
+          return data.data.map((item) => ({
+            id: item.id,
+            title: item.title,
+            artist: item.artist?.name || 'Artista',
+            album: item.album?.title || item.title,
+            albumTitle: item.album?.title || item.title,
+            cover: item.album?.cover_big || item.album?.cover_medium || item.album?.cover || '',
+            cover_xl: item.album?.cover_xl || item.album?.cover_big || '',
+            cover_medium: item.album?.cover_medium || item.album?.cover || '',
+            genre: 'Música',
+            year: '2024',
+            rating: (4.5 + ((item.id % 5) * 0.1)).toFixed(1),
+            duration: item.duration,
+            preview: item.preview,
+            link: item.link,
+            type: 'track',
+          }));
         }
       }
     }

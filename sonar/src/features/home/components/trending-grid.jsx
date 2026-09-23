@@ -178,7 +178,7 @@ export const TrendingGrid = () => {
               RADAR MUSICAL · EXPLORACIÓN
             </span>
             <h2 className="text-2xl sm:text-3xl lg:text-4xl text-[#231123] dark:text-[#FAF5F8] font-extrabold">
-              Álbumes en Tendencia
+              Canciones en Tendencia
             </h2>
           </div>
 
