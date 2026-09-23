@@ -230,17 +230,17 @@ export const ReviewFeedCard = ({
               <button
                 type="button"
                 onClick={handleToggleFollowArtist}
-                className={`ml-1 px-2 py-0.5 rounded-md text-[10px] font-bold transition-all cursor-pointer flex items-center gap-0.5 ${
+                className={`ml-1 px-2 py-0.5 rounded-md text-[10px] font-bold transition-all cursor-pointer flex items-center gap-1 border ${
                   isFollowingArtist
-                    ? 'bg-rose-900/40 text-rose-300 border border-rose-400/30'
-                    : 'bg-gray-200 dark:bg-white/10 hover:bg-[#B80C09] hover:text-white text-[#5c435a] dark:text-gray-300'
+                    ? 'bg-rose-50 text-[#B80C09] border-rose-200 dark:bg-[#B80C09]/20 dark:text-rose-300 dark:border-[#B80C09]/40 shadow-xs'
+                    : 'bg-gray-100 dark:bg-white/10 text-gray-700 dark:text-gray-300 border-gray-200 dark:border-white/10 hover:bg-[#B80C09] hover:text-white dark:hover:bg-[#B80C09] dark:hover:text-white'
                 }`}
-                title={isFollowingArtist ? 'Sigues a este artista' : `Seguir a ${review.artist}`}
+                title={isFollowingArtist ? `Sigues a ${review.artist}` : `Seguir a ${review.artist}`}
               >
-                <span className="material-symbols-outlined text-[11px]">
+                <span className="material-symbols-outlined text-[12px]">
                   {isFollowingArtist ? 'done' : 'favorite'}
                 </span>
-                <span>{isFollowingArtist ? 'Siguiendo Artista' : 'Seguir Artista'}</span>
+                <span>{isFollowingArtist ? 'Siguiendo' : 'Seguir Artista'}</span>
               </button>
             </div>
 

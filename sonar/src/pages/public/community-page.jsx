@@ -834,10 +834,10 @@ export const CommunityPage = () => {
                       <button
                         type="button"
                         onClick={() => handleToggleFollowArtist(art.name, art)}
-                        className={`px-2.5 py-1 rounded-xl text-[11px] font-bold transition-all shrink-0 cursor-pointer flex items-center gap-1 ${
+                        className={`px-2.5 py-1 rounded-xl text-[11px] font-bold transition-all shrink-0 cursor-pointer flex items-center gap-1 border ${
                           isFollowingArtist
-                            ? 'bg-rose-900/40 text-rose-300 border border-rose-400/30'
-                            : 'border border-[#B80C09] text-[#B80C09] hover:bg-[#B80C09] hover:text-white'
+                            ? 'bg-rose-50 text-[#B80C09] border-rose-200 dark:bg-[#B80C09]/20 dark:text-rose-300 dark:border-[#B80C09]/40 shadow-xs'
+                            : 'border border-[#B80C09] text-[#B80C09] hover:bg-[#B80C09] hover:text-white dark:border-rose-400 dark:text-rose-300 dark:hover:bg-[#B80C09] dark:hover:text-white'
                         }`}
                       >
                         <span className="material-symbols-outlined text-[12px]">
