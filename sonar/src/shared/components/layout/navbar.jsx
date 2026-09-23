@@ -87,28 +87,49 @@ export const Navbar = ({
   };
 
   const handleNavSearchSubmit = (e) => {
-    e.preventDefault();
+    if (e) e.preventDefault();
     if (!navSearch.trim()) return;
     const term = navSearch.trim();
     setIsNavDropdownOpen(false);
+    
+    sessionStorage.setItem('sonar_pending_search', term);
+
     if (onSearch) {
       onSearch(term);
     }
     window.dispatchEvent(new CustomEvent('sonar:search', { detail: term }));
+    
     if (window.location.hash !== '#explore' && window.location.hash !== '') {
       window.location.hash = '#explore';
+    } else {
+      setTimeout(() => {
+        const resultsEl = document.getElementById('search-results');
+        if (resultsEl) {
+          resultsEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      }, 150);
     }
   };
 
   const handleSelectNavAlbum = (album) => {
     setIsNavDropdownOpen(false);
     setNavSearch(album.title);
+    sessionStorage.setItem('sonar_pending_search', album.title);
+
     if (onSearch) {
       onSearch(album.title);
     }
     window.dispatchEvent(new CustomEvent('sonar:search', { detail: album.title }));
+    
     if (window.location.hash !== '#explore' && window.location.hash !== '') {
       window.location.hash = '#explore';
+    } else {
+      setTimeout(() => {
+        const resultsEl = document.getElementById('search-results');
+        if (resultsEl) {
+          resultsEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      }, 150);
     }
   };
 
@@ -176,7 +197,15 @@ export const Navbar = ({
               >
                 <div className="px-2 py-1 text-[10px] font-black uppercase tracking-wider text-[#5c435a] dark:text-gray-400 border-b border-gray-100 dark:border-white/5 flex items-center justify-between">
                   <span>MÚSICA EN DEEZER</span>
-                  <span className="text-[9px] opacity-70">Enter para ver más</span>
+                  <button
+                    type="button"
+                    onClick={handleNavSearchSubmit}
+                    className="text-[9px] font-bold text-[#B80C09] hover:underline cursor-pointer flex items-center gap-0.5"
+                    title="Ver todos los resultados"
+                  >
+                    <span>ENTER PARA VER MÁS</span>
+                    <span className="material-symbols-outlined text-[11px]">arrow_forward</span>
+                  </button>
                 </div>
 
                 {navResults.map((album) => {
@@ -229,6 +258,17 @@ export const Navbar = ({
                     </div>
                   );
                 })}
+
+                {/* Botón inferior: Ver todos los resultados */}
+                <button
+                  type="button"
+                  onClick={handleNavSearchSubmit}
+                  className="w-full mt-1 p-2 rounded-xl bg-gray-100 dark:bg-white/10 hover:bg-[#B80C09] hover:text-white dark:hover:bg-[#B80C09] dark:hover:text-white text-xs font-bold text-center transition-all cursor-pointer flex items-center justify-center gap-1.5 text-gray-800 dark:text-gray-200 shadow-xs"
+                >
+                  <span className="material-symbols-outlined text-[15px]">search</span>
+                  <span>Ver todos los resultados para &ldquo;{navSearch}&rdquo;</span>
+                  <span className="material-symbols-outlined text-[13px]">arrow_forward</span>
+                </button>
               </motion.div>
             )}
           </AnimatePresence>

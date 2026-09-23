@@ -102,6 +102,13 @@ export const HomePage = () => {
   };
 
   useEffect(() => {
+    // Recuperar búsqueda pendiente si se envió desde otra página
+    const pendingSearch = sessionStorage.getItem('sonar_pending_search');
+    if (pendingSearch) {
+      sessionStorage.removeItem('sonar_pending_search');
+      handleSearch(pendingSearch);
+    }
+
     const handleGlobalSearch = (e) => {
       if (e.detail) {
         handleSearch(e.detail);
@@ -156,7 +163,7 @@ export const HomePage = () => {
 
               {/* Resultados de Búsqueda Deezer en Vivo */}
               {searchQuery && (
-                <section ref={resultsRef} className="w-full max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-10 py-6 scroll-mt-20">
+                <section id="search-results" ref={resultsRef} className="w-full max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-10 py-6 scroll-mt-20">
                   <div className="flex items-center justify-between gap-4 mb-6 border-b border-[#e6d5e2] dark:border-white/10 pb-3">
                     <div className="flex items-center gap-2">
                       <span className="w-2.5 h-2.5 rounded-full bg-[#B80C09] animate-pulse" />
