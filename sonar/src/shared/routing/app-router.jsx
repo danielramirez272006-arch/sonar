@@ -103,7 +103,7 @@ export const AppRouter = () => {
       );
     }
     // Se conserva la entrada histórica de la consola para no romper enlaces existentes.
-    if (rawPath.startsWith('admin') || rawPath.startsWith('dashboard') || rawPath.startsWith('moderacion')) {
+    if (rawPath.split('?')[0] === 'usuarios' || rawPath.startsWith('admin') || rawPath.startsWith('dashboard') || rawPath.startsWith('moderacion')) {
       return (
         <AdminRoute fallback={<LoginPage />}>
           <AdminConsole />

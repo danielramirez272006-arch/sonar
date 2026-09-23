@@ -71,3 +71,27 @@
 @media (max-width: 760px) { .moderation-intro > .eyebrow { display: none; } .listening-bar { flex-wrap: wrap; } .listening-bar > span:last-child { max-width: none; margin-left: 0; flex-basis: 100%; } }
 @media (max-width: 480px) { .feed-heading h2 { font-size: 18px; } .feed-heading .eyebrow { font-size: 8px; } .review-body { align-items: flex-start; flex-direction: column; } .review-meta { flex-wrap: wrap; } .review-card { padding: 18px; } .review-actions button { flex-grow: 1; } .review-copy blockquote { font-size: 17px; } }
 @media (pointer: coarse) { .filter-tabs button, .review-actions button { min-height: 44px; } }
+
+/* Album information and readable community cards in both themes. */
+.review-feed .review-album-cover, .review-album-placeholder { width: 144px; height: 144px; flex-shrink: 0; border-radius: 8px; object-fit: cover; box-shadow: 0 8px 24px #0002; }
+.review-album-placeholder { display: grid; place-items: center; background: #eee4ec; color: #63435a; font-size: 44px; }
+.review-feed .review-copy { flex: 1; }
+.review-feed .review-copy .eyebrow { font-size: 11px; letter-spacing: 1.2px; }
+.review-feed .review-copy h3 { font-size: clamp(22px, 3vw, 28px); line-height: 1.25; }
+.review-album-artist { color: #665362; font-size: 14px; margin-bottom: 12px; }
+.review-feed .rating { font-size: 16px; color: #4b2840; }
+.review-feed .rating small { font-size: 12px; }
+.review-feed .review-author strong { font-size: 14px; }
+.review-feed .review-author small { font-size: 10px; line-height: 1.6; }
+.review-feed .review-copy blockquote { font-size: 18px; line-height: 1.6; }
+.review-album-source { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 20px; margin-top: 18px; font-size: 12px; color: #665362; }
+.review-album-source a { color: #74314f; font-weight: 700; text-underline-offset: 4px; }
+.review-feed .filter-tabs button { font-size: 12px; min-height: 40px; }
+html.dark .review-feed .review-card { background: #24202a; border-color: #514353; color: #f5edf3; }
+html.dark .review-feed .review-copy h3, html.dark .review-feed .rating { color: #f5edf3; }
+html.dark .review-feed .rating > span { color: #f6c86b; }
+html.dark .review-feed .eyebrow, html.dark .review-feed .rating small, html.dark .review-album-artist, html.dark .review-album-source, html.dark .review-feed .review-author small, html.dark .review-feed .review-author small span { color: #cbbdcb; }
+html.dark .review-album-source a { color: #f2b9d5; }
+html.dark .review-album-placeholder { background: #382c3a; color: #e4c2d8; }
+html.dark .review-feed .filter-tabs { border-color: #514353; }
+html.dark .review-feed .filter-tabs button[aria-pressed='true'] { background: #68445e; color: #fff; border-color: #b98aa9; }

@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Avatar } from '../ui/avatar';
+import { BlobatarAvatar } from '../ui/blobatar-avatar';
 import { AnimatedLogo } from '../ui/AnimatedLogo';
 import { useTheme } from '../../context/theme-context';
 import { useAuth } from '../../context/auth-context';
@@ -116,11 +116,7 @@ export const Navbar = ({
                 onClick={() => { window.location.hash = authUser.role === 'admin' ? '#admin' : '#usuario'; }}
                 className="flex items-center gap-2.5 p-1 pr-3 sm:pr-3.5 rounded-full bg-[#f8e9f6] dark:bg-white/5 border border-[#e6d5e2] dark:border-white/10 hover:dark:bg-white/10 cursor-pointer transition-all shadow-xs"
               >
-                <Avatar
-                  src={authUser?.avatarUrl}
-                  name={displayName}
-                  size="sm"
-                />
+                <BlobatarAvatar name={authUser.username || displayName} size={36} hue={authUser.avatarHue} tone={authUser.avatarTone} />
                 <span className="text-xs sm:text-sm font-bold text-[#231123] dark:text-[#FAF5F8] hidden sm:inline-block max-w-[120px] truncate">
                   {displayName}
                 </span>
