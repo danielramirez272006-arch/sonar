@@ -147,6 +147,24 @@ html.dark button:not(.primary-button):not(.danger-button) { background: #231123;
 html.dark button:not(.primary-button):not(.danger-button):hover:not(:disabled) { background: #33182b; border-color: rgba(220,220,221,0.35); color: #ffffff; }
 html.dark .text-button { background: transparent !important; border-color: transparent !important; }
 
+/* Superficies oscuras con más contraste y menos dominante púrpura. */
+html.dark body { background:#17141b; color:#f5edf3; }
+html.dark .sonar-app { background:#17141b; }
+html.dark .console-header, html.dark .topbar, html.dark .nav-row, html.dark .console-footer { background:#1b1820; }
+html.dark .main-content { background:#17141b; }
+html.dark .admin-workspace__hero, html.dark .dashboard-metric, html.dark .priority-queue, html.dark .moderation-rhythm, html.dark .admin-tools, html.dark .admin-workspace__archive, html.dark .dashboard-detail, html.dark .user-management, html.dark .user-page { background:#24202a; border-color:#403544; color:#f5edf3; }
+html.dark .admin-workspace__hero { background:linear-gradient(120deg,#24202a,#2b2530); }
+html.dark .admin-workspace__hero h1, html.dark .dashboard-metric strong, html.dark .dashboard-metric h2, html.dark .priority-queue h2, html.dark .moderation-rhythm h2, html.dark .admin-tools h2, html.dark .dashboard-detail h2, html.dark .user-management h2, html.dark .user-page h1 { color:#f8f1f6; }
+html.dark .admin-workspace__hero p, html.dark .dashboard-metric p, html.dark .dashboard-detail header p, html.dark .user-management header p, html.dark .user-page header p { color:#c9bac7; }
+html.dark .dashboard-detail__list article, html.dark .user-page__head { background:#1d1a22; border-color:#403544; }
+html.dark .dashboard-detail__list article, html.dark .user-page__table article, html.dark .user-management__list article { border-color:#403544; }
+html.dark .dashboard-detail__list p { color:#e1d5df; }
+html.dark .user-management__search { border-color:#554656; background:#1d1a22; color:#c9bac7; }
+html.dark .user-management__search input { color:#f5edf3; }
+html.dark .user-management__avatar { background:#493447; color:#f4cbe8; }
+html.dark .user-role { background:#493447; color:#f4cbe8; } html.dark .user-role--admin { background:#512c31; color:#ffaaa4; }
+html.dark .user-page__head { color:#b9a8b7; }
+
 @media (min-width: 1500px) { .main-content { padding-top: 36px; } }
 @media (max-width: 1050px) { .shell { width: calc(100% - 48px); } .topbar { gap: 24px; } .console-mode { display: none; } .workspace-grid { grid-template-columns: minmax(0, 1fr) 270px; gap: 20px; } .profile-card { display: none !important; } }
 @media (max-width: 760px) { .shell { width: calc(100% - 32px); } .topbar { flex-wrap: wrap; padding-block: 22px 17px; gap: 20px; } .brand strong { font-size: 23px; } .global-search { flex-basis: 100%; max-width: none; } .nav-caption { display: none; } .nav-row nav { width: 100%; } .nav-row a { flex: 1; justify-content: center; } .workspace-grid { grid-template-columns: minmax(0, 1fr); } .side-stack { grid-template-columns: repeat(2, minmax(0, 1fr)); } .page-heading { align-items: flex-start; flex-direction: column; } h1 { font-size: 34px; } .breadcrumb { font-size: 9px; gap: 7px; margin-bottom: 25px; } .console-footer { flex-wrap: wrap; } .edition { text-align: left; } .error-banner { align-items: flex-start; flex-direction: column; } }

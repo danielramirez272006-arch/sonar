@@ -1,10 +1,11 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { BrowserRouter } from 'react-router-dom'
-import { getReviews, getUsers } from './shared/services/api-client.js'
+import { getReviews, getUsers, updateUser } from './shared/services/api-client.js'
 import { analyzeReview } from './shared/services/ia-service.js'
 import { useAdminDashboard, useModeration } from './features/admin/index.js'
 import { AdminDashboardPage } from './pages/admin/admin-dashboard-page.jsx'
 import { ModerationPage } from './pages/admin/moderation-page.jsx'
+import { UsersPage } from './pages/admin/users-page.jsx'
 import { AnimatedLogo } from './shared/components/ui/AnimatedLogo.jsx'
 import { AuthProvider } from './shared/context/auth-context.jsx'
 import { ThemeProvider, useTheme } from './shared/context/theme-context.jsx'
@@ -21,7 +22,7 @@ export function AdminConsole() {
   const { isDark, toggleTheme } = useTheme()
   const dashboard = useAdminDashboard()
   const moderation = useModeration()
-  const [page, setPage] = useState(() => window.location.hash === '#moderacion' ? 'moderacion' : 'dashboard')
+  const [page, setPage] = useState(() => window.location.hash === '#moderacion' ? 'moderacion' : window.location.hash === '#usuarios' ? 'usuarios' : 'dashboard')
   const [data, setData] = useState({ users: [], reviews: [] })
   const [query, setQuery] = useState('')
   const [error, setError] = useState(null)
@@ -41,8 +42,8 @@ export function AdminConsole() {
       if (!cancelled) return loadData()
     }).catch(cause => setError(cause.message))
     function onHashChange() {
-      if (!['#dashboard', '#moderacion', '#admin', ''].includes(window.location.hash)) return
-      setPage(window.location.hash === '#moderacion' ? 'moderacion' : 'dashboard')
+      if (!['#dashboard', '#moderacion', '#usuarios', '#admin', ''].includes(window.location.hash)) return
+      setPage(window.location.hash === '#moderacion' ? 'moderacion' : window.location.hash === '#usuarios' ? 'usuarios' : 'dashboard')
       setQuery('')
     }
     function onShortcut(event) {
@@ -75,6 +76,13 @@ export function AdminConsole() {
       actionLock.current = false
       setBusy(false)
     }
+  }
+
+  async function handleUserUpdate(userId, changes) {
+    const updatedUser = await updateUser(userId, changes)
+    setData(previous => ({ ...previous, users: previous.users.map(user => user.id === userId ? updatedUser : user) }))
+    setNotice('Perfil de usuario actualizado.')
+    return updatedUser
   }
 
   async function handleAction(action, review) {
@@ -118,7 +126,7 @@ export function AdminConsole() {
 
   const loading = busy || dashboard.isLoading || moderation.isLoading
   const currentError = error || dashboard.error || moderation.error
-  const shared = { users: data.users, query, busy: loading, onAction: handleAction, analyses }
+  const shared = { users: data.users, query, busy: loading, onAction: handleAction, analyses, onUserUpdate: handleUserUpdate }
   return (
     <div className="sonar-app transition-colors duration-300 dark:bg-sonar-base dark:text-sonar-text min-h-screen">
       <a className="skip-link" href="#contenido">Saltar al contenido</a>
@@ -184,10 +192,9 @@ export function AdminConsole() {
         </div>
       </header>
       <main id="contenido" tabIndex={-1} className="shell main-content transition-colors duration-300 dark:bg-sonar-base dark:text-sonar-text">
-        <div className="breadcrumb text-gray-600 dark:text-[#DCDCDD]/70">Administración <span>/</span> Centro de control <span>/</span> <strong className="text-gray-900 dark:text-sonar-text">{page === 'dashboard' ? 'Dashboard' : 'Moderación'}</strong></div>
         {currentError && <div className="error-banner" role="alert"><div><strong>No pudimos completar la consulta.</strong><p>{currentError} Comprueba que la API local esté disponible.</p></div><button onClick={refresh} disabled={loading}>Reintentar</button></div>}
         <div className="live-notice" role="status">{notice}</div>
-        {page === 'dashboard' ? <AdminDashboardPage {...shared} reviews={data.reviews} metrics={dashboard.metrics} onRefresh={refresh} onExport={exportCsv} error={currentError} /> : <ModerationPage {...shared} reviews={moderation.reviews} onRefresh={refresh} error={currentError} />}
+        {page === 'dashboard' ? <AdminDashboardPage {...shared} reviews={data.reviews} metrics={dashboard.metrics} onRefresh={refresh} onExport={exportCsv} error={currentError} /> : page === 'usuarios' ? <UsersPage users={data.users} onUserUpdate={handleUserUpdate} /> : <ModerationPage {...shared} reviews={moderation.reviews} onRefresh={refresh} error={currentError} />}
       </main>
       <footer className="console-footer shell dark:bg-sonar-surface dark:border-white/10">
         <div><strong>SONAR<span className="red-dot text-[#B80C09]"> •</span></strong><p className="dark:text-[#DCDCDD]/80">Un espacio para escuchar con atención.<br />Y compartir con criterio.</p></div>

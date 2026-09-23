@@ -4,16 +4,16 @@ const primaryCards = [
   ['totalReviews', 'Nuevas voces', 'Reseñas en el archivo', 'Esta semana'],
 ];
 
-export function KpiCards({ metrics, busy, error }) {
+export function KpiCards({ metrics, busy, error, onSelect }) {
   return (
     <section className="dashboard-metrics" aria-label="Resumen operativo" aria-busy={busy}>
       <div className="dashboard-metrics__primary">
         {primaryCards.map(([key, title, description, tag], index) => (
-          <article className={`dashboard-metric dashboard-metric--${key}`} key={key} style={{ '--enter-delay': `${index * 90}ms` }}>
+          <button className={`dashboard-metric dashboard-metric--${key}`} key={key} style={{ '--enter-delay': `${index * 90}ms` }} onClick={() => onSelect?.(key)} type="button" aria-label={`Ver detalle de ${tag}`}>
             <div className="dashboard-metric__top"><span>{tag}</span><i aria-hidden="true" /></div>
             <strong>{error ? '—' : busy ? '…' : metrics[key]?.toLocaleString('es') ?? '0'}</strong>
             <div><h2>{title}</h2><p>{description}</p></div>
-          </article>
+          </button>
         ))}
       </div>
       <div className="dashboard-metrics__secondary" aria-label="Métricas secundarias">
