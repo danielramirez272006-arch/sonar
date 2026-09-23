@@ -37,25 +37,25 @@ export const VinylModePage = () => {
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-[#140b16] text-white transition-colors duration-300 overflow-hidden">
+    <div className="min-h-screen flex flex-col bg-[#fff7fa] dark:bg-[#140b16] text-[#231123] dark:text-[#FAF5F8] transition-colors duration-300">
       <Navbar />
 
-      <main className="flex-1 max-w-[1380px] w-full mx-auto px-4 sm:px-6 lg:px-10 py-10 flex flex-col items-center justify-center">
+      <main className="flex-1 max-w-[1380px] w-full mx-auto px-4 sm:px-6 lg:px-10 py-12 sm:py-16 flex flex-col items-center justify-center">
         {/* Cabecera */}
-        <div className="text-center mb-8">
-          <span className="text-xs uppercase tracking-widest font-black text-[#B80C09] mb-1 block">
+        <div className="text-center mb-10 max-w-2xl">
+          <span className="text-xs uppercase tracking-widest font-black text-[#B80C09] dark:text-pink-300 mb-2 block">
             EXPERIENCIA AUDIÓFILA ANALÓGICA
           </span>
-          <h1 className="text-3xl sm:text-5xl font-black tracking-tight text-white">
+          <h1 className="text-3xl sm:text-5xl font-black tracking-tight text-[#231123] dark:text-white">
             Tocadiscos Sonar 33⅓ RPM
           </h1>
-          <p className="text-sm text-gray-400 mt-1">
+          <p className="text-sm text-[#5c435a] dark:text-gray-400 mt-2 leading-relaxed">
             Modo inmersivo de reproducción de vinilo con renderizado analógico y surcos en alta definición.
           </p>
         </div>
 
         {/* Chasis del Tocadiscos de Alta Fidelidad */}
-        <div className="relative w-full max-w-4xl p-8 sm:p-12 rounded-[40px] bg-gradient-to-b from-[#281628] via-[#1f0f20] to-[#120713] border border-white/10 shadow-[0_30px_100px_rgba(0,0,0,0.9)] flex flex-col lg:flex-row items-center justify-between gap-10">
+        <div className="relative w-full max-w-4xl p-8 sm:p-12 rounded-[40px] bg-gradient-to-b from-[#281628] via-[#1f0f20] to-[#120713] text-white border border-white/10 shadow-[0_20px_50px_rgba(0,0,0,0.3)] dark:shadow-[0_25px_60px_rgba(0,0,0,0.8)] flex flex-col lg:flex-row items-center justify-between gap-10 mb-16">
           {/* Plato Giratorio y Vinilo */}
           <div className="relative flex items-center justify-center">
             {/* Plato de Aluminio Pulido */}
