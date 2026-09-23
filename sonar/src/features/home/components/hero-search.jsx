@@ -779,7 +779,7 @@ export const HeroSearch = ({ onSearch = () => {}, onSubmit = () => {} }) => {
 
         {/* Fila Única de Micro-Chips Horizontales Minimalistas */}
         <div className="w-full mt-4 flex flex-col items-center">
-          <div className="w-full flex items-center justify-center gap-2 overflow-x-auto py-1 px-2 no-scrollbar">
+          <div className="w-full max-w-4xl mx-auto flex flex-wrap items-center justify-center gap-2 py-1.5 px-4">
             {/* Chip: Moods */}
             <button
               type="button"
