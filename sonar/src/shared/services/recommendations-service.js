@@ -18,13 +18,13 @@ export const GENRE_OPTIONS = [
 export const DEFAULT_FALLBACK_COVER =
   'https://cdn-images.dzcdn.net/images/cover/a175af9b7d329bc678cb4d26fc13d6de/500x500-000000-80-0-0.jpg';
 
-export const DEFAULT_FALLBACK_PREVIEW =
-  'https://cdnt-preview.dzcdn.net/api/1/1/5/3/f/0/53faff1741bb65b8ddbc11780555c546.mp3';
+export const DEFAULT_FALLBACK_PREVIEW = null;
 
 export const CATALOG_RECOMMENDATIONS = [
   // Art Rock
   {
     id: 'rec-1',
+    deezerId: 14880659,
     title: 'In Rainbows',
     artist: 'Radiohead',
     year: '2007',
@@ -32,10 +32,10 @@ export const CATALOG_RECOMMENDATIONS = [
     cover: 'https://cdn-images.dzcdn.net/images/cover/a175af9b7d329bc678cb4d26fc13d6de/500x500-000000-80-0-0.jpg',
     rating: 4.9,
     description: 'La cumbre de la espacialidad acústica y la calidez analógica.',
-    previewUrl: 'https://cdnt-preview.dzcdn.net/api/1/1/5/3/f/0/53faff1741bb65b8ddbc11780555c546.mp3',
   },
   {
     id: 'rec-3',
+    deezerId: 537883642,
     title: 'Vespertine',
     artist: 'Björk',
     year: '2001',
@@ -46,6 +46,7 @@ export const CATALOG_RECOMMENDATIONS = [
   },
   {
     id: 'rec-13',
+    deezerId: 12114240,
     title: 'The Dark Side of the Moon',
     artist: 'Pink Floyd',
     year: '1973',
@@ -56,6 +57,7 @@ export const CATALOG_RECOMMENDATIONS = [
   },
   {
     id: 'rec-14',
+    deezerId: 14880741,
     title: 'Kid A',
     artist: 'Radiohead',
     year: '2000',
@@ -68,6 +70,7 @@ export const CATALOG_RECOMMENDATIONS = [
   // Electrónica / IDM
   {
     id: 'rec-2',
+    deezerId: 302127,
     title: 'Discovery',
     artist: 'Daft Punk',
     year: '2001',
@@ -75,10 +78,10 @@ export const CATALOG_RECOMMENDATIONS = [
     cover: 'https://cdn-images.dzcdn.net/images/cover/5718f7c81c27e0b2417e2a4c45224f8a/500x500-000000-80-0-0.jpg',
     rating: 4.8,
     description: 'Obra maestra de compresión y sampleo analógico atemporal.',
-    previewUrl: 'https://cdns-preview-e.dzcdn.net/stream/c-e58f0cf41f021e1026600c3b53a812df-3.mp3',
   },
   {
     id: 'rec-6',
+    deezerId: 302127,
     title: 'Selected Ambient Works',
     artist: 'Aphex Twin',
     year: '1992',
@@ -89,6 +92,7 @@ export const CATALOG_RECOMMENDATIONS = [
   },
   {
     id: 'rec-15',
+    deezerId: 302867697,
     title: 'MOTOMAMI',
     artist: 'ROSALÍA',
     year: '2022',
@@ -99,6 +103,7 @@ export const CATALOG_RECOMMENDATIONS = [
   },
   {
     id: 'rec-16',
+    deezerId: 42886601,
     title: 'Melodrama',
     artist: 'Lorde',
     year: '2017',
@@ -111,6 +116,7 @@ export const CATALOG_RECOMMENDATIONS = [
   // Jazz & Fusion
   {
     id: 'rec-5',
+    deezerId: 118260,
     title: 'Kind of Blue',
     artist: 'Miles Davis',
     year: '1959',
@@ -121,6 +127,7 @@ export const CATALOG_RECOMMENDATIONS = [
   },
   {
     id: 'rec-17',
+    deezerId: 12047952,
     title: 'Abbey Road',
     artist: 'The Beatles',
     year: '1969',
@@ -133,6 +140,7 @@ export const CATALOG_RECOMMENDATIONS = [
   // Psicodelia
   {
     id: 'rec-4',
+    deezerId: 10709540,
     title: 'Currents',
     artist: 'Tame Impala',
     year: '2015',
@@ -145,6 +153,7 @@ export const CATALOG_RECOMMENDATIONS = [
   // Post-Punk
   {
     id: 'rec-7',
+    deezerId: 103248,
     title: 'Unknown Pleasures',
     artist: 'Joy Division',
     year: '1979',
@@ -157,6 +166,7 @@ export const CATALOG_RECOMMENDATIONS = [
   // Hip-Hop Experimental
   {
     id: 'rec-22',
+    deezerId: 9896728,
     title: 'To Pimp a Butterfly',
     artist: 'Kendrick Lamar',
     year: '2015',
@@ -169,6 +179,7 @@ export const CATALOG_RECOMMENDATIONS = [
   // R&B / Neo-Soul
   {
     id: 'rec-23',
+    deezerId: 344137457,
     title: 'Blonde',
     artist: 'Frank Ocean',
     year: '2016',

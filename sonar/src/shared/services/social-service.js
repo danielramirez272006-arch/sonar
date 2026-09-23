@@ -1,7 +1,8 @@
-// Servicio de Estadísticas Sociales y Comunidad por Usuario
+// Servicio de Estadísticas Sociales, Seguir Usuarios y Seguir Artistas (100% Dinámico y Real)
 
 const STORAGE_KEY_SOCIAL = 'sonar_user_social_stats';
 const STORAGE_KEY_FOLLOWS = 'sonar_user_following';
+const STORAGE_KEY_ARTIST_FOLLOWS = 'sonar_user_following_artists';
 
 function getStorage(key, fallback) {
   try {
@@ -23,68 +24,52 @@ function setStorage(key, value) {
   }
 }
 
-/**
- * Genera un número determinista y variado según la identidad del usuario.
- */
-function hashString(str = '') {
-  let hash = 0;
-  for (let i = 0; i < str.length; i++) {
-    hash = (hash * 31 + str.charCodeAt(i)) % 100000;
-  }
-  return Math.abs(hash);
-}
-
 export const socialService = {
   /**
-   * Obtiene estadísticas únicas de seguidores, siguiendo y reseñas para cualquier usuario.
+   * Obtiene estadísticas 100% reales de seguidores, siguiendo y reseñas.
    */
-  getUserStats(user, actualReviewsCount = 0) {
+  getUserStats(user, actualReviewsCount = undefined) {
     if (!user) {
-      return { reviews: 0, followers: 0, following: 0 };
+      return { reviews: 0, followers: 0, following: 0, artistsCount: 0 };
     }
 
     const userId = String(user.id || user.email || user.username || 'user');
-    const store = getStorage(STORAGE_KEY_SOCIAL, {});
+    const followedUsers = this.getFollowedUsers(userId);
+    const followedArtists = this.getFollowedArtists(userId);
+    const followersCount = this.getFollowersCount(userId);
 
-    if (userId === '1') {
-      if (store[userId]) {
-        return {
-          ...store[userId],
-          reviews: actualReviewsCount !== undefined ? actualReviewsCount : (store[userId].reviews || 86),
-        };
-      }
-      const demoStats = {
-        reviews: actualReviewsCount || 86,
-        followers: 420,
-        following: 142,
-      };
-      store[userId] = demoStats;
-      setStorage(STORAGE_KEY_SOCIAL, store);
-      return demoStats;
+    const totalFollowing = followedUsers.length + followedArtists.length;
+
+    let reviewsCount = 0;
+    if (actualReviewsCount !== undefined) {
+      reviewsCount = actualReviewsCount;
+    } else {
+      try {
+        const reviewsRaw = window.localStorage.getItem('sonar_user_reviews');
+        if (reviewsRaw) {
+          const allReviews = JSON.parse(reviewsRaw);
+          reviewsCount = Array.isArray(allReviews)
+            ? allReviews.filter((r) => String(r.userId) === userId).length
+            : 0;
+        }
+      } catch {}
     }
 
-    // Para cualquier usuario nuevo, comenzar limpio en 0 a menos que tenga interacción real
-    const newStats = {
-      reviews: actualReviewsCount !== undefined ? actualReviewsCount : (user.stats?.reviewsCount || 0),
-      followers: typeof user.stats?.followers === 'number' ? user.stats.followers : (store[userId]?.followers || 0),
-      following: typeof user.stats?.following === 'number' ? user.stats.following : (store[userId]?.following || 0),
+    return {
+      reviews: reviewsCount,
+      followers: followersCount,
+      following: totalFollowing,
+      artistsCount: followedArtists.length,
+      usersCount: followedUsers.length,
     };
-
-    store[userId] = newStats;
-    setStorage(STORAGE_KEY_SOCIAL, store);
-    return newStats;
   },
 
-  /**
-   * Da formato limpio al nombre de usuario y su handle (evita que se vea @correo.com).
-   */
   formatUserIdentity(user) {
     if (!user) {
       return { displayName: 'Audiófilo Sonar', handle: '@oyente' };
     }
 
     let raw = user.username || user.name || user.email || 'usuario';
-    // Si viene en formato email, extraer solo la parte previa al @
     let handleBase = raw.includes('@') ? raw.split('@')[0] : raw;
     handleBase = handleBase.toLowerCase().replace(/[^a-z0-9_]/g, '');
 
@@ -102,37 +87,112 @@ export const socialService = {
     };
   },
 
-  /**
-   * Permite seguir o dejar de seguir a otro usuario en la comunidad.
-   */
-  toggleFollow(currentUserId, targetUserId) {
-    if (!currentUserId || !targetUserId) return false;
+  // ===================== SEGUIR USUARIOS =====================
+
+  getFollowedUsers(currentUserId = 'guest') {
+    const allFollows = getStorage(STORAGE_KEY_FOLLOWS, {});
+    return allFollows[String(currentUserId)] || [];
+  },
+
+  getFollowersCount(targetUserId) {
+    if (!targetUserId) return 0;
+    const allFollows = getStorage(STORAGE_KEY_FOLLOWS, {});
+    const targetStr = String(targetUserId);
+    let count = 0;
+    Object.values(allFollows).forEach((list) => {
+      if (Array.isArray(list) && list.includes(targetStr)) {
+        count++;
+      }
+    });
+    return count;
+  },
+
+  isFollowingUser(currentUserId = 'guest', targetUserId) {
+    if (!targetUserId) return false;
+    const following = this.getFollowedUsers(currentUserId);
+    return following.includes(String(targetUserId));
+  },
+
+  toggleFollowUser(currentUserId = 'guest', targetUserId, targetUserData = null) {
+    if (!targetUserId) return false;
 
     const allFollows = getStorage(STORAGE_KEY_FOLLOWS, {});
-    const userFollowing = allFollows[currentUserId] || [];
-    const isFollowing = userFollowing.includes(targetUserId);
+    const key = String(currentUserId);
+    const userFollowing = allFollows[key] || [];
+    const isFollowing = userFollowing.includes(String(targetUserId));
 
     let updatedFollowing;
     if (isFollowing) {
-      updatedFollowing = userFollowing.filter((id) => id !== targetUserId);
+      updatedFollowing = userFollowing.filter((id) => id !== String(targetUserId));
     } else {
-      updatedFollowing = [...userFollowing, targetUserId];
+      updatedFollowing = [...userFollowing, String(targetUserId)];
     }
 
-    allFollows[currentUserId] = updatedFollowing;
+    allFollows[key] = updatedFollowing;
     setStorage(STORAGE_KEY_FOLLOWS, allFollows);
 
-    // Actualizar contadores en el almacenamiento
-    const socialStore = getStorage(STORAGE_KEY_SOCIAL, {});
-    if (socialStore[currentUserId]) {
-      socialStore[currentUserId].following = updatedFollowing.length;
+    if (typeof window !== 'undefined') {
+      window.dispatchEvent(
+        new CustomEvent('sonar:follow-user-changed', {
+          detail: { targetUserId: String(targetUserId), isFollowing: !isFollowing, targetUserData },
+        })
+      );
     }
-    if (socialStore[targetUserId]) {
-      socialStore[targetUserId].followers = isFollowing
-        ? Math.max(0, socialStore[targetUserId].followers - 1)
-        : socialStore[targetUserId].followers + 1;
+
+    return !isFollowing;
+  },
+
+  // ===================== SEGUIR ARTISTAS =====================
+
+  getFollowedArtists(currentUserId = 'guest') {
+    const allArtistFollows = getStorage(STORAGE_KEY_ARTIST_FOLLOWS, {});
+    return allArtistFollows[String(currentUserId)] || [];
+  },
+
+  isFollowingArtist(currentUserId = 'guest', artistName) {
+    if (!artistName) return false;
+    const clean = artistName.trim().toLowerCase();
+    const artists = this.getFollowedArtists(currentUserId);
+    return artists.some((a) => (typeof a === 'string' ? a.toLowerCase() === clean : a.name?.toLowerCase() === clean));
+  },
+
+  toggleFollowArtist(currentUserId = 'guest', artistName, artistData = {}) {
+    if (!artistName) return false;
+
+    const clean = artistName.trim();
+    const key = String(currentUserId);
+    const allArtistFollows = getStorage(STORAGE_KEY_ARTIST_FOLLOWS, {});
+    const currentArtists = allArtistFollows[key] || [];
+
+    const index = currentArtists.findIndex((a) =>
+      typeof a === 'string' ? a.toLowerCase() === clean.toLowerCase() : a.name?.toLowerCase() === clean.toLowerCase()
+    );
+
+    const isFollowing = index !== -1;
+    let updatedArtists;
+
+    if (isFollowing) {
+      updatedArtists = currentArtists.filter((_, idx) => idx !== index);
+    } else {
+      const newEntry = {
+        name: clean,
+        image: artistData.cover || artistData.image || 'https://cdn-images.dzcdn.net/images/cover/a175af9b7d329bc678cb4d26fc13d6de/250x250-000000-80-0-0.jpg',
+        genre: artistData.genre || 'Música',
+        followedAt: new Date().toISOString(),
+      };
+      updatedArtists = [...currentArtists, newEntry];
     }
-    setStorage(STORAGE_KEY_SOCIAL, socialStore);
+
+    allArtistFollows[key] = updatedArtists;
+    setStorage(STORAGE_KEY_ARTIST_FOLLOWS, allArtistFollows);
+
+    if (typeof window !== 'undefined') {
+      window.dispatchEvent(
+        new CustomEvent('sonar:follow-artist-changed', {
+          detail: { artistName: clean, isFollowing: !isFollowing, artistData },
+        })
+      );
+    }
 
     return !isFollowing;
   },

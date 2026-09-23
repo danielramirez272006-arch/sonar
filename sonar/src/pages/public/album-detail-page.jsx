@@ -11,7 +11,9 @@ import { usePlayer } from '../../shared/context/player-context';
 import { interactionsService } from '../../shared/services/interactions-service';
 
 const mockAlbum = {
-  id: 'in-rainbows',
+  id: 14880659,
+  deezerId: 14880659,
+  trackId: 138546803,
   title: 'In Rainbows',
   artist: 'Radiohead',
   year: '2007',
@@ -20,7 +22,6 @@ const mockAlbum = {
   rating: 4.8,
   totalReviews: '24,812 calificaciones',
   cover: 'https://cdn-images.dzcdn.net/images/cover/a175af9b7d329bc678cb4d26fc13d6de/1000x1000-000000-80-0-0.jpg',
-  previewUrl: 'https://cdns-preview-d.dzcdn.net/stream/c-d64e83c6d1d4d12bdfd0ef48e2448ca3-3.mp3',
   lyricContext:
     'Exploración introspectiva de la vulnerabilidad humana, la obsesión y la redención en la era digital. Cada composición entrelaza texturas acústicas con meticulosas capas de sintetizadores modulares, creando una atmósfera sonora cálida pero desgarradora. El concepto lírico profundiza en la finitud, el amor obsesivo y la disolución de la identidad.',
 };
@@ -123,8 +124,12 @@ export const AlbumDetailPage = () => {
               className="w-48 h-48 sm:w-60 sm:h-60 lg:w-72 lg:h-72 rounded-3xl overflow-hidden shrink-0 shadow-[0_20px_50px_-10px_rgba(0,0,0,0.7)] border border-white/15 bg-[#180e1a]"
             >
               <img
-                src={mockAlbum.cover}
+                src={mockAlbum.cover || 'https://cdn-images.dzcdn.net/images/cover/a175af9b7d329bc678cb4d26fc13d6de/500x500-000000-80-0-0.jpg'}
                 alt={mockAlbum.title}
+                onError={(e) => {
+                  e.currentTarget.onerror = null;
+                  e.currentTarget.src = 'https://cdn-images.dzcdn.net/images/cover/a175af9b7d329bc678cb4d26fc13d6de/500x500-000000-80-0-0.jpg';
+                }}
                 className="w-full h-full object-cover"
               />
             </motion.div>
@@ -259,12 +264,13 @@ export const AlbumDetailPage = () => {
                     whileTap={{ scale: 0.92 }}
                     onClick={() =>
                       playTrack({
-                        id: mockAlbum.id,
+                        id: mockAlbum.trackId,
+                        trackId: mockAlbum.trackId,
+                        deezerId: mockAlbum.deezerId,
                         title: '15 Step',
                         artist: mockAlbum.artist,
                         album: mockAlbum.title,
                         cover: mockAlbum.cover,
-                        preview: mockAlbum.previewUrl,
                       })
                     }
                     aria-label="Reproducir muestra de Deezer"

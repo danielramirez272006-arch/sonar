@@ -16,9 +16,9 @@ export const DEFAULT_DEEZER_ALBUMS = [
     cover_medium: 'https://cdn-images.dzcdn.net/images/cover/a175af9b7d329bc678cb4d26fc13d6de/250x250-000000-80-0-0.jpg',
     link: 'https://www.deezer.com/album/14880659',
     topTrack: {
+      id: 138546803,
       title: '15 Step',
       duration: 237,
-      preview: 'https://cdnt-preview.dzcdn.net/api/1/1/5/3/f/0/53faff1741bb65b8ddbc11780555c546.mp3',
     },
   },
   {
@@ -171,16 +171,60 @@ export const formatDeezerAlbum = (album) => {
 export const searchAlbums = async (query) => {
   if (!query || !query.trim()) return [];
   
+  const cleanQuery = query.trim();
   try {
-    const response = await fetch(`${BASE_URL}/search/album?q=${encodeURIComponent(query.trim())}`);
+    // 1. Intentar búsqueda directa de álbum
+    let response = await fetch(`${BASE_URL}/search/album?q=${encodeURIComponent(cleanQuery)}`);
     
-    if (!response.ok) {
-      throw new Error(`Error HTTP: ${response.status}`);
+    if (response.ok) {
+      const data = await response.json();
+      if (data.data && Array.isArray(data.data) && data.data.length > 0) {
+        return data.data.map(formatDeezerAlbum);
+      }
     }
     
-    const data = await response.json();
-    if (!data.data || !Array.isArray(data.data)) return [];
-    return data.data.map(formatDeezerAlbum);
+    // 2. Si /search/album devolvió 0 resultados, intentar búsqueda global /search?q= (canciones/artistas y extraer álbumes únicos)
+    response = await fetch(`${BASE_URL}/search?q=${encodeURIComponent(cleanQuery)}`);
+    if (response.ok) {
+      const data = await response.json();
+      if (data.data && Array.isArray(data.data) && data.data.length > 0) {
+        const seenAlbumIds = new Set();
+        const albums = [];
+        for (const item of data.data) {
+          if (item.album && !seenAlbumIds.has(item.album.id)) {
+            seenAlbumIds.add(item.album.id);
+            albums.push({
+              id: item.album.id,
+              title: item.album.title,
+              artist: item.artist?.name || 'Artista',
+              cover: item.album.cover_big || item.album.cover_medium || item.album.cover || '',
+              cover_xl: item.album.cover_xl || item.album.cover_big || '',
+              cover_medium: item.album.cover_medium || item.album.cover || '',
+              genre: 'Música',
+              year: '2024',
+              rating: (4.4 + ((item.album.id % 6) * 0.1)).toFixed(1),
+              link: `https://www.deezer.com/album/${item.album.id}`,
+            });
+          }
+        }
+        if (albums.length > 0) return albums;
+      }
+    }
+
+    // 3. Fallback inteligente si se buscaron múltiples palabras juntas
+    const words = cleanQuery.split(' ').filter(w => w.length > 2);
+    if (words.length > 1) {
+      const fallbackQuery = words[0];
+      response = await fetch(`${BASE_URL}/search/album?q=${encodeURIComponent(fallbackQuery)}`);
+      if (response.ok) {
+        const data = await response.json();
+        if (data.data && Array.isArray(data.data) && data.data.length > 0) {
+          return data.data.map(formatDeezerAlbum);
+        }
+      }
+    }
+
+    return [];
   } catch (error) {
     console.error("Error al conectar con la API de Deezer:", error);
     return [];
@@ -228,6 +272,32 @@ export const getAlbumTracks = async (albumId) => {
 };
 
 /**
+ * Obtiene una canción individual por ID desde Deezer con su preview firmado
+ */
+export const getTrackById = async (trackId) => {
+  if (!trackId) return null;
+  try {
+    const response = await fetch(`${BASE_URL}/track/${trackId}`);
+    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+    const track = await response.json();
+    return {
+      id: track.id,
+      title: track.title,
+      artist: track.artist?.name || 'Artista',
+      album: track.album?.title || '',
+      cover: track.album?.cover_medium || track.album?.cover || '',
+      cover_xl: track.album?.cover_xl || track.album?.cover_big || '',
+      preview: track.preview,
+      duration: track.duration,
+      link: track.link,
+    };
+  } catch (error) {
+    console.error("Error al obtener canción por ID de Deezer:", error);
+    return null;
+  }
+};
+
+/**
  * Busca canciones directamente en Deezer con preview de 30 segundos
  */
 export const searchTracks = async (query) => {
@@ -251,4 +321,51 @@ export const searchTracks = async (query) => {
     console.error("Error al buscar canciones en Deezer:", error);
     return [];
   }
+};
+
+/**
+ * Resuelve dinámicamente un preview de audio válido y firmado para cualquier pista o álbum
+ */
+export const resolvePlayablePreview = async (item) => {
+  if (!item) return null;
+
+  // 1. Si ya cuenta con una URL de preview firmada y fresca con HMAC
+  if (item.preview && typeof item.preview === 'string' && item.preview.includes('hdnea=')) {
+    return item.preview;
+  }
+  if (item.previewUrl && typeof item.previewUrl === 'string' && item.previewUrl.includes('hdnea=')) {
+    return item.previewUrl;
+  }
+
+  // 2. Si tiene trackId o id numérico de canción
+  if (item.trackId || (item.type === 'track' && item.id)) {
+    const t = await getTrackById(item.trackId || item.id);
+    if (t?.preview && t.preview.includes('hdnea=')) {
+      return t.preview;
+    }
+  }
+
+  // 3. Si tiene ID de álbum Deezer, obtener canciones
+  const albumId = item.deezerId || item.albumId || (typeof item.id === 'number' && item.id < 1000000000 ? item.id : null);
+  if (albumId) {
+    const tracks = await getAlbumTracks(albumId);
+    const found = tracks.find((t) => t.preview && t.preview.includes('hdnea=')) || tracks.find((t) => t.preview);
+    if (found?.preview) return found.preview;
+  }
+
+  // 4. Búsqueda directa por título y artista en Deezer
+  const query = `${item.title || item.albumTitle || ''} ${item.artist || ''}`.trim();
+  if (query) {
+    const searchResults = await searchTracks(query);
+    const found = searchResults.find((t) => t.preview && t.preview.includes('hdnea=')) || searchResults[0];
+    if (found?.preview) return found.preview;
+  }
+
+  // 5. Fallback con muestra sonora de alta fidelidad garantizada
+  const fallbackResults = await searchTracks('Radiohead 15 Step');
+  if (fallbackResults.length > 0 && fallbackResults[0].preview) {
+    return fallbackResults[0].preview;
+  }
+
+  return null;
 };

@@ -68,6 +68,7 @@ export const HomePage = () => {
   const [searchResults, setSearchResults] = useState([]);
   const [isSearching, setIsSearching] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
+  const resultsRef = React.useRef(null);
   const { playTrack, currentTrack, isPlaying, toggleTrack, openReviewModal } = usePlayer();
 
   useEffect(() => {
@@ -90,6 +91,9 @@ export const HomePage = () => {
     try {
       const results = await searchAlbums(query);
       setSearchResults(results);
+      setTimeout(() => {
+        resultsRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }, 100);
     } catch (err) {
       console.error('Error buscando álbumes en Deezer:', err);
     } finally {
@@ -97,29 +101,32 @@ export const HomePage = () => {
     }
   };
 
-  const handlePlaySearchResult = async (album) => {
-    try {
-      const tracks = await getAlbumTracks(album.id);
-      const playable = tracks.find((t) => t.preview) || tracks[0];
-      if (playable && playable.preview) {
-        playTrack({
-          id: playable.id,
-          title: playable.title,
-          artist: album.artist,
-          album: album.title,
-          cover: album.cover,
-          preview: playable.preview,
-        });
+  useEffect(() => {
+    const handleGlobalSearch = (e) => {
+      if (e.detail) {
+        handleSearch(e.detail);
       }
-    } catch (err) {
-      console.error('Error al reproducir resultado de búsqueda:', err);
-    }
+    };
+    window.addEventListener('sonar:search', handleGlobalSearch);
+    return () => window.removeEventListener('sonar:search', handleGlobalSearch);
+  }, []);
+
+  const handlePlaySearchResult = (album) => {
+    if (!album) return;
+    playTrack({
+      id: album.id,
+      deezerId: album.id,
+      title: album.title,
+      artist: album.artist,
+      album: album.title,
+      cover: album.cover,
+    });
   };
 
   return (
     <div className="min-h-screen bg-[#fff7fa] dark:bg-[#231123] text-[#231123] dark:text-[#FAF5F8] flex flex-col transition-colors duration-300">
-      {/* Barra de Navegación fija */}
-      <Navbar />
+      {/* Barra de Navegación fija con buscador rápido integrado */}
+      <Navbar onSearch={handleSearch} />
 
       <main className="w-full flex-1 flex flex-col">
         <AnimatePresence mode="wait">
@@ -149,7 +156,7 @@ export const HomePage = () => {
 
               {/* Resultados de Búsqueda Deezer en Vivo */}
               {searchQuery && (
-                <section className="w-full max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-10 py-6">
+                <section ref={resultsRef} className="w-full max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-10 py-6 scroll-mt-20">
                   <div className="flex items-center justify-between gap-4 mb-6 border-b border-[#e6d5e2] dark:border-white/10 pb-3">
                     <div className="flex items-center gap-2">
                       <span className="w-2.5 h-2.5 rounded-full bg-[#B80C09] animate-pulse" />

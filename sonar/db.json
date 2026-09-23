@@ -2,7 +2,7 @@
   "users": [
     {
       "id": "1",
-      "username": "Mateo Rivaes",
+      "username": "Mateo Rivae",
       "email": "mateo@email.com",
       "password": "hashed_password_mock",
       "role": "user",
@@ -18,7 +18,8 @@
         "Electrónica"
       ],
       "mutedUntil": null,
-      "status": null
+      "status": null,
+      "avatarBg": "#7c3aed"
     },
     {
       "id": "admin-1",
@@ -489,6 +490,26 @@
       ],
       "status": "active",
       "mutedUntil": null
+    },
+    {
+      "id": "user-1790172152834",
+      "username": "google_listener_816",
+      "email": "google_user_816@sonar.local",
+      "password": "social_mock_login_123",
+      "role": "user",
+      "avatarUrl": "",
+      "avatarBg": "#d97706",
+      "bio": "Nuevo melómano explorando vinilos y texturas acústicas en Sonar.",
+      "stats": {
+        "savedAlbums": 0,
+        "reviewsCount": 0,
+        "followers": 0,
+        "following": 0
+      },
+      "preferences": [
+        "Neo-Soul",
+        "Psicodelia"
+      ]
     }
   ],
   "reviews": [

@@ -77,11 +77,23 @@ export async function getUserById(userId) {
   }
 }
 
-export function updateUser(userId, changes) {
-  return apiRequest(`/users/${encodeURIComponent(userId)}`, {
-    method: 'PATCH',
-    body: JSON.stringify(changes),
-  })
+export async function updateUser(userId, changes) {
+  try {
+    const currentLocal = getLocalRegisteredUsers()
+    const idx = currentLocal.findIndex((u) => String(u.id) === String(userId))
+    if (idx >= 0) {
+      currentLocal[idx] = { ...currentLocal[idx], ...changes }
+      if (typeof window !== 'undefined') {
+        window.localStorage?.setItem(LOCAL_USERS_KEY, JSON.stringify(currentLocal))
+      }
+    }
+    return await apiRequest(`/users/${encodeURIComponent(userId)}`, {
+      method: 'PATCH',
+      body: JSON.stringify(changes),
+    })
+  } catch {
+    return { id: userId, ...changes }
+  }
 }
 
 export async function getUserByEmail(email) {

@@ -108,11 +108,12 @@ export const SavedAlbumsPage = () => {
                     onClick={() =>
                       playTrack({
                         id: album.id,
+                        deezerId: album.deezerId || album.id,
                         title: album.title,
                         artist: album.artist,
                         album: album.title,
                         cover: album.cover,
-                        preview: album.previewUrl || 'https://cdns-preview-d.dzcdn.net/stream/c-d64e83c6d1d4d12bdfd0ef48e2448ca3-3.mp3',
+                        preview: album.previewUrl || album.preview,
                       })
                     }
                     className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 flex items-center justify-center text-white transition-opacity cursor-pointer"

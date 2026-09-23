@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { usePlayer } from '../../context/player-context';
 
 export const GlobalAudioPlayer = () => {
-  const { currentTrack, isPlaying, currentTime, duration, toggleTrack, seek, closePlayer, openReviewModal } = usePlayer();
+  const { currentTrack, isPlaying, isLoading, currentTime, duration, toggleTrack, seek, closePlayer, openReviewModal } = usePlayer();
 
   if (!currentTrack) return null;
 
@@ -18,20 +18,20 @@ export const GlobalAudioPlayer = () => {
   return (
     <AnimatePresence>
       <motion.div
-        initial={{ y: 80, opacity: 0, scale: 0.98 }}
+        initial={{ y: 60, opacity: 0, scale: 0.95 }}
         animate={{ y: 0, opacity: 1, scale: 1 }}
-        exit={{ y: 80, opacity: 0, scale: 0.98 }}
-        transition={{ type: 'spring', stiffness: 350, damping: 28 }}
-        className="fixed bottom-4 left-3 right-3 sm:left-6 sm:right-6 max-w-3xl mx-auto z-50 flex flex-col gap-2.5 p-3 sm:p-4 select-none backdrop-blur-xl"
+        exit={{ y: 60, opacity: 0, scale: 0.95 }}
+        transition={{ type: 'spring', stiffness: 380, damping: 30 }}
+        className="fixed bottom-5 left-4 sm:left-6 z-50 w-[calc(100%-2rem)] sm:w-auto sm:max-w-[440px] md:max-w-[460px] flex flex-col gap-2 p-2.5 sm:p-3 select-none backdrop-blur-2xl"
         style={{
-          backgroundColor: '#231123ee', /* Midnight Violet con transparencia */
+          backgroundColor: '#1c0d1cee', /* Midnight Violet oscuro translúcido */
           color: '#DCDCDD',              /* Alabaster Grey */
-          borderRadius: '9999px',        /* Forma de cápsula */
-          border: '1px solid #4B2840',  /* Blackberry Cream */
-          boxShadow: '0 20px 40px -10px rgba(0, 0, 0, 0.7), 0 0 20px rgba(0, 56, 68, 0.25)',
+          borderRadius: '24px',          /* Cápsula moderna */
+          border: '1px solid rgba(255, 255, 255, 0.12)',
+          boxShadow: '0 20px 45px -10px rgba(0, 0, 0, 0.75), 0 0 25px rgba(184, 12, 9, 0.15)',
         }}
       >
-        {/* Barra de progreso de audio interactiva */}
+        {/* Barra de progreso de audio interactiva superior */}
         <div
           onClick={(e) => {
             const rect = e.currentTarget.getBoundingClientRect();
@@ -40,61 +40,62 @@ export const GlobalAudioPlayer = () => {
             seek(newPercent * duration);
           }}
           className="relative w-full h-1.5 rounded-full cursor-pointer overflow-hidden group"
-          style={{ backgroundColor: '#4B2840' }}
+          style={{ backgroundColor: 'rgba(255, 255, 255, 0.1)' }}
           title="Saltar en la muestra de audio"
         >
           <div
             className="h-full rounded-full transition-all duration-100"
             style={{
               width: `${progressPercent}%`,
-              background: 'linear-gradient(90deg, #003844 0%, #B80C09 100%)', /* Dark Teal a Brick Ember */
+              background: 'linear-gradient(90deg, #5c1d5e 0%, #B80C09 100%)',
             }}
           />
         </div>
 
         {/* Fila Principal de Controles y Metadatos */}
-        <div className="flex items-center justify-between gap-3 px-1 sm:px-2">
-          {/* Lado Izquierdo: Portada Deezer + Datos de Pista */}
-          <div className="flex items-center gap-3 min-w-0 flex-1">
+        <div className="flex items-center justify-between gap-2.5 px-0.5">
+          {/* Portada + Título + Artista */}
+          <div className="flex items-center gap-2.5 min-w-0 flex-1">
             <div
-              className="relative w-10 h-10 sm:w-11 sm:h-11 shrink-0 overflow-hidden shadow-md flex items-center justify-center"
-              style={{ borderRadius: '9999px', border: '1px solid #4B2840' }}
+              className="relative w-9 h-9 sm:w-10 sm:h-10 shrink-0 overflow-hidden shadow-md flex items-center justify-center rounded-xl"
+              style={{ border: '1px solid rgba(255, 255, 255, 0.15)' }}
             >
               <img
-                src={currentTrack.cover}
+                src={currentTrack.cover || 'https://cdn-images.dzcdn.net/images/cover/a175af9b7d329bc678cb4d26fc13d6de/500x500-000000-80-0-0.jpg'}
                 alt={currentTrack.title}
+                onError={(e) => {
+                  e.currentTarget.onerror = null;
+                  e.currentTarget.src = 'https://cdn-images.dzcdn.net/images/cover/a175af9b7d329bc678cb4d26fc13d6de/500x500-000000-80-0-0.jpg';
+                }}
                 className={`w-full h-full object-cover transition-transform duration-700 ${isPlaying ? 'rotate-180 scale-105' : ''}`}
               />
-              {isPlaying && (
-                <div className="absolute inset-0 bg-black/40 flex items-center justify-center gap-0.5">
-                  <span className="w-0.5 h-3 bg-[#B80C09] animate-pulse" />
-                  <span className="w-0.5 h-4 bg-[#003844] animate-bounce" />
-                  <span className="w-0.5 h-2 bg-[#DCDCDD] animate-pulse" />
+              {isPlaying && !isLoading && (
+                <div className="absolute inset-0 bg-black/45 flex items-center justify-center gap-0.5">
+                  <span className="w-0.5 h-2.5 bg-[#B80C09] animate-pulse" />
+                  <span className="w-0.5 h-3.5 bg-rose-400 animate-bounce" />
+                  <span className="w-0.5 h-2 bg-white animate-pulse" />
                 </div>
               )}
             </div>
 
             <div className="flex flex-col min-w-0">
-              <div className="flex items-center gap-2">
-                <span className="text-xs sm:text-sm font-bold truncate" style={{ color: '#DCDCDD' }}>
+              <div className="flex items-center gap-1.5">
+                <span className="text-xs sm:text-sm font-bold truncate text-white">
                   {currentTrack.title}
                 </span>
-                <span
-                  className="px-2 py-0.5 rounded-full text-[9px] font-black uppercase tracking-wider shrink-0"
-                  style={{ backgroundColor: '#4B2840', color: '#B80C09', border: '1px solid #B80C0933' }}
-                >
-                  30s Preview
+                <span className="px-1.5 py-0.2 rounded-md text-[8px] font-black uppercase tracking-wider bg-[#B80C09]/30 text-rose-300 border border-[#B80C09]/40 shrink-0">
+                  {isLoading ? 'Cargando...' : '30s'}
                 </span>
               </div>
-              <span className="text-[11px] truncate opacity-75" style={{ color: '#DCDCDD' }}>
-                {currentTrack.artist} {currentTrack.album ? `· ${currentTrack.album}` : ''}
+              <span className="text-[10px] sm:text-[11px] truncate opacity-75 text-gray-300">
+                {currentTrack.artist}
               </span>
             </div>
           </div>
 
-          {/* Centro: Tiempo y Botón Play / Pausa */}
-          <div className="flex items-center gap-2 sm:gap-3">
-            <span className="text-[10px] sm:text-[11px] font-mono opacity-60 hidden sm:inline-block" style={{ color: '#DCDCDD' }}>
+          {/* Controles: Play / Pausa + Botón Criticar + Cerrar */}
+          <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
+            <span className="text-[9px] sm:text-[10px] font-mono opacity-60 hidden xs:inline-block text-gray-300">
               {formatTime(currentTime)} / {formatTime(duration)}
             </span>
 
@@ -102,63 +103,38 @@ export const GlobalAudioPlayer = () => {
               whileHover={{ scale: 1.08 }}
               whileTap={{ scale: 0.92 }}
               onClick={() => toggleTrack(currentTrack)}
+              disabled={isLoading}
               aria-label={isPlaying ? 'Pausar' : 'Reproducir'}
-              className="flex items-center justify-center cursor-pointer transition-colors shadow-md"
-              style={{
-                width: '40px',
-                height: '40px',
-                borderRadius: '9999px',
-                backgroundColor: '#003844', /* Dark Teal */
-                color: '#DCDCDD',           /* Alabaster Grey */
-                border: 'none',
-              }}
+              className="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-[#B80C09] hover:bg-[#9c0a07] text-white flex items-center justify-center shadow-md cursor-pointer transition-colors disabled:opacity-60"
             >
-              <span className="material-symbols-outlined text-[22px]">
-                {isPlaying ? 'pause' : 'play_arrow'}
-              </span>
+              {isLoading ? (
+                <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+              ) : (
+                <span className="material-symbols-outlined text-[19px]">
+                  {isPlaying ? 'pause' : 'play_arrow'}
+                </span>
+              )}
             </motion.button>
-          </div>
 
-          {/* Lado Derecho: Botón "Criticar Álbum" & Botón Cerrar */}
-          <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
             <motion.button
-              whileHover={{ scale: 1.04 }}
-              whileTap={{ scale: 0.96 }}
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
               onClick={() => openReviewModal(currentTrack)}
-              className="flex items-center gap-1.5 cursor-pointer transition-all shadow-sm select-none"
-              style={{
-                padding: '0.45rem 0.9rem',
-                borderRadius: '9999px',
-                backgroundColor: '#4B2840',  /* Blackberry Cream */
-                color: '#DCDCDD',            /* Alabaster Grey */
-                border: '1px solid #003844', /* Dark Teal */
-                fontSize: '0.75rem',
-                fontWeight: 'bold',
-              }}
-              title="Escribir una crítica de este álbum"
+              className="px-2.5 py-1.5 rounded-xl bg-white/10 hover:bg-white/20 border border-white/10 text-white text-[11px] font-bold flex items-center gap-1 cursor-pointer transition-colors"
+              title="Escribir una crítica"
             >
-              <span className="material-symbols-outlined text-[15px]" style={{ color: '#ff4d4a' }}>
-                rate_review
-              </span>
-              <span>Criticar</span>
+              <span className="material-symbols-outlined text-[13px] text-rose-400">rate_review</span>
+              <span className="hidden sm:inline">Criticar</span>
             </motion.button>
 
             <motion.button
-              whileHover={{ scale: 1.1 }}
-              whileTap={{ scale: 0.9 }}
+              whileHover={{ scale: 1.15 }}
+              whileTap={{ scale: 0.85 }}
               onClick={() => closePlayer()}
-              className="flex items-center justify-center transition-colors cursor-pointer hover:bg-white/10"
-              style={{
-                width: '32px',
-                height: '32px',
-                borderRadius: '9999px',
-                backgroundColor: 'transparent',
-                color: '#DCDCDD',
-                border: 'none',
-              }}
+              className="w-7 h-7 rounded-full text-gray-400 hover:text-white hover:bg-white/10 flex items-center justify-center cursor-pointer transition-colors"
               title="Cerrar reproductor"
             >
-              <span className="material-symbols-outlined text-[19px]">close</span>
+              <span className="material-symbols-outlined text-[16px]">close</span>
             </motion.button>
           </div>
         </div>

@@ -1,7 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '../../../shared/context/auth-context';
+import { usePlayer } from '../../../shared/context/player-context';
 import { interactionsService } from '../../../shared/services/interactions-service';
+import { socialService } from '../../../shared/services/social-service';
+import { Avatar } from '../../../shared/components/ui/avatar';
 import CommentSection from './comment-section';
 import LikeButton from '../../../shared/components/ui/like-button';
 
@@ -17,10 +20,10 @@ const cardVariants = {
 export const ReviewFeedCard = ({
   review = {
     id: 1,
+    userId: '1',
     userName: 'Sofía Sound',
     userHandle: '@sofia_sound',
-    avatarLetter: 'S',
-    avatarBg: '#5c1d5e',
+    avatarUrl: '',
     date: 'Hace 2 horas',
     rating: 5,
     albumTitle: 'In Rainbows',
@@ -30,34 +33,61 @@ export const ReviewFeedCard = ({
       'Una obra maestra que equilibra con elegancia la experimentación electrónica y la calidez acústica. "Reckoner" sigue siendo una de las piezas mejor mezcladas en la historia de la música moderna.',
     likesCount: 142,
     commentsCount: 18,
+    tags: ['Art Rock', 'Hi-Fi'],
   },
 }) => {
   const { user } = useAuth();
-  const userId = user?.id || null;
+  const { playTrack } = usePlayer();
+  const currentUserId = user?.id || 'guest';
+
+  const authorId = String(review.userId || review.userHandle || review.userName || 'author');
+  const isSelf = user && String(user.id) === authorId;
 
   const [likes, setLikes] = useState(review.likesCount || 0);
   const [isLiked, setIsLiked] = useState(false);
   const [showComments, setShowComments] = useState(false);
   const [commentsCount, setCommentsCount] = useState(review.commentsCount || 0);
   const [isSavedInCollection, setIsSavedInCollection] = useState(false);
+  const [isFollowingUser, setIsFollowingUser] = useState(false);
+  const [isFollowingArtist, setIsFollowingArtist] = useState(false);
 
   useEffect(() => {
-    const likedIds = interactionsService.getLikedReviewIds(userId);
+    const likedIds = interactionsService.getLikedReviewIds(currentUserId);
     setIsLiked(likedIds.includes(review.id));
-    const isSaved = interactionsService.isAlbumSaved(userId, review.albumTitle);
+    const isSaved = interactionsService.isAlbumSaved(currentUserId, review.albumTitle);
     setIsSavedInCollection(isSaved);
     const existingComments = interactionsService.getCommentsForReview(review.id);
     if (existingComments.length > 0) {
       setCommentsCount(existingComments.length);
     }
-  }, [review.id, review.albumTitle, userId]);
+    setIsFollowingUser(socialService.isFollowingUser(currentUserId, authorId));
+    setIsFollowingArtist(socialService.isFollowingArtist(currentUserId, review.artist));
+
+    const handleUserFollowChange = (e) => {
+      if (e.detail?.targetUserId === authorId) {
+        setIsFollowingUser(e.detail.isFollowing);
+      }
+    };
+    const handleArtistFollowChange = (e) => {
+      if (e.detail?.artistName?.toLowerCase() === review.artist?.toLowerCase()) {
+        setIsFollowingArtist(e.detail.isFollowing);
+      }
+    };
+
+    window.addEventListener('sonar:follow-user-changed', handleUserFollowChange);
+    window.addEventListener('sonar:follow-artist-changed', handleArtistFollowChange);
+    return () => {
+      window.removeEventListener('sonar:follow-user-changed', handleUserFollowChange);
+      window.removeEventListener('sonar:follow-artist-changed', handleArtistFollowChange);
+    };
+  }, [review.id, review.albumTitle, review.artist, currentUserId, authorId]);
 
   const handleLike = () => {
     if (!user) {
       window.location.hash = '#login';
       return;
     }
-    const nextState = interactionsService.toggleReviewLike(review.id, userId);
+    const nextState = interactionsService.toggleReviewLike(review.id, currentUserId);
     setIsLiked(nextState);
     setLikes((prev) => (nextState ? prev + 1 : Math.max(0, prev - 1)));
   };
@@ -67,13 +97,50 @@ export const ReviewFeedCard = ({
       window.location.hash = '#login';
       return;
     }
-    const res = interactionsService.toggleSaveAlbum(userId, {
+    const res = interactionsService.toggleSaveAlbum(currentUserId, {
       title: review.albumTitle,
       artist: review.artist,
       cover: review.cover,
       rating: review.rating,
     });
     setIsSavedInCollection(res.isSaved);
+  };
+
+  const handleToggleFollowUser = () => {
+    if (!user) {
+      window.location.hash = '#login';
+      return;
+    }
+    const next = socialService.toggleFollowUser(currentUserId, authorId, {
+      name: review.userName,
+      handle: review.userHandle,
+      avatarUrl: review.avatarUrl,
+    });
+    setIsFollowingUser(next);
+  };
+
+  const handleToggleFollowArtist = () => {
+    if (!user) {
+      window.location.hash = '#login';
+      return;
+    }
+    const next = socialService.toggleFollowArtist(currentUserId, review.artist, {
+      cover: review.cover,
+      genre: review.tags?.[0] || 'Música',
+    });
+    setIsFollowingArtist(next);
+  };
+
+  const handlePlayReviewAlbum = () => {
+    playTrack({
+      id: review.id,
+      deezerId: review.deezerId,
+      title: review.albumTitle,
+      artist: review.artist,
+      album: review.albumTitle,
+      cover: review.cover,
+      preview: review.previewUrl || review.preview,
+    });
   };
 
   return (
@@ -83,21 +150,35 @@ export const ReviewFeedCard = ({
       transition={{ duration: 0.2 }}
       className="w-full p-5 sm:p-6 rounded-2xl sm:rounded-3xl bg-white dark:bg-[#4B2840] border border-[#e6d5e2] dark:border-white/10 shadow-[0_4px_20px_-2px_rgba(75,40,64,0.06)] dark:shadow-[0_6px_25px_-4px_rgba(0,0,0,0.4)] transition-colors duration-300 flex flex-col gap-4"
     >
-      {/* Cabecera: Avatar simple con inicial, Nombre y Fecha */}
+      {/* Cabecera: Avatar con nombre, fecha y botón Seguir Usuario */}
       <div className="flex items-center justify-between gap-3">
         <div className="flex items-center gap-3">
-          {/* Círculo simple con inicial */}
-          <div
-            className="w-10 h-10 rounded-full flex items-center justify-center text-white font-bold text-sm shrink-0 shadow-xs ring-2 ring-[#e6d5e2] dark:ring-white/15"
-            style={{ backgroundColor: review.avatarBg || '#5c1d5e' }}
-          >
-            {review.avatarLetter || review.userName?.charAt(0) || 'U'}
-          </div>
+          <Avatar
+            name={review.userName}
+            src={review.avatarUrl}
+            size="md"
+            className="w-10 h-10 ring-2 ring-[#e6d5e2]/60 dark:ring-white/15"
+          />
 
           <div className="flex flex-col">
-            <span className="text-sm sm:text-base font-bold text-[#231123] dark:text-white leading-tight">
-              {review.userName}
-            </span>
+            <div className="flex items-center gap-2">
+              <span className="text-sm sm:text-base font-bold text-[#231123] dark:text-white leading-tight">
+                {review.userName}
+              </span>
+              {!isSelf && (
+                <button
+                  type="button"
+                  onClick={handleToggleFollowUser}
+                  className={`px-2 py-0.5 rounded-full text-[10px] font-bold transition-all cursor-pointer ${
+                    isFollowingUser
+                      ? 'bg-emerald-600 text-white shadow-2xs'
+                      : 'border border-[#B80C09] text-[#B80C09] hover:bg-[#B80C09] hover:text-white'
+                  }`}
+                >
+                  {isFollowingUser ? '✓ Siguiendo' : '+ Seguir'}
+                </button>
+              )}
+            </div>
             <span className="text-xs text-[#5c435a] dark:text-[#B89CB0]">
               {review.userHandle} · {review.date}
             </span>
@@ -111,30 +192,56 @@ export const ReviewFeedCard = ({
         </div>
       </div>
 
-      {/* Cuerpo: Cuadro con carátula y reseña */}
+      {/* Cuerpo: Cuadro con carátula, artista y botón Seguir Artista */}
       <div className="flex flex-col sm:flex-row gap-4 p-3.5 sm:p-4 rounded-xl sm:rounded-2xl bg-gray-50 dark:bg-[#231123]/70 border border-[#e6d5e2] dark:border-white/10 relative group">
-        {/* Carátula */}
-        <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-xl overflow-hidden shrink-0 bg-gray-200 dark:bg-[#180e1a] shadow-xs relative">
+        {/* Carátula con botón de reproducción */}
+        <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-xl overflow-hidden shrink-0 bg-gray-200 dark:bg-[#180e1a] shadow-xs relative group/cover">
           <img
             src={review.cover}
             alt={review.albumTitle}
             className="w-full h-full object-cover"
             onError={(e) => {
-              e.target.style.display = 'none';
+              e.currentTarget.onerror = null;
+              e.currentTarget.src = 'https://cdn-images.dzcdn.net/images/cover/a175af9b7d329bc678cb4d26fc13d6de/500x500-000000-80-0-0.jpg';
             }}
           />
+          <button
+            type="button"
+            onClick={handlePlayReviewAlbum}
+            className="absolute inset-0 bg-black/50 opacity-0 group-hover/cover:opacity-100 flex items-center justify-center text-white transition-opacity cursor-pointer"
+            title="Escuchar muestra"
+          >
+            <span className="material-symbols-outlined text-[26px]">play_circle</span>
+          </button>
         </div>
 
-        {/* Título de Álbum y Texto de la Reseña */}
+        {/* Título de Álbum, Artista y Acciones */}
         <div className="flex flex-col justify-center gap-1 min-w-0 flex-1">
           <div className="flex items-baseline justify-between gap-2">
-            <div className="flex items-baseline gap-1.5 truncate">
+            <div className="flex flex-wrap items-center gap-1.5 min-w-0">
               <h4 className="text-sm sm:text-base font-bold text-[#231123] dark:text-white truncate">
                 {review.albumTitle}
               </h4>
               <span className="text-xs text-[#5c435a] dark:text-[#B89CB0] truncate">
                 — {review.artist}
               </span>
+
+              {/* Botón Seguir Artista */}
+              <button
+                type="button"
+                onClick={handleToggleFollowArtist}
+                className={`ml-1 px-2 py-0.5 rounded-md text-[10px] font-bold transition-all cursor-pointer flex items-center gap-0.5 ${
+                  isFollowingArtist
+                    ? 'bg-rose-900/40 text-rose-300 border border-rose-400/30'
+                    : 'bg-gray-200 dark:bg-white/10 hover:bg-[#B80C09] hover:text-white text-[#5c435a] dark:text-gray-300'
+                }`}
+                title={isFollowingArtist ? 'Sigues a este artista' : `Seguir a ${review.artist}`}
+              >
+                <span className="material-symbols-outlined text-[11px]">
+                  {isFollowingArtist ? 'done' : 'favorite'}
+                </span>
+                <span>{isFollowingArtist ? 'Siguiendo Artista' : 'Seguir Artista'}</span>
+              </button>
             </div>
 
             {/* Botón Guardar en Colección Propia */}
@@ -160,6 +267,20 @@ export const ReviewFeedCard = ({
           <p className="text-xs sm:text-sm text-[#231123]/90 dark:text-gray-200 leading-relaxed line-clamp-3">
             “{review.content}”
           </p>
+
+          {/* Tags de género / hashtags */}
+          {review.tags && review.tags.length > 0 && (
+            <div className="flex flex-wrap gap-1.5 mt-1">
+              {review.tags.map((tag) => (
+                <span
+                  key={tag}
+                  className="px-2 py-0.5 rounded-md bg-rose-50 dark:bg-pink-950/40 text-[#B80C09] dark:text-pink-300 text-[10px] font-bold"
+                >
+                  #{tag.replace(/\s+/g, '')}
+                </span>
+              ))}
+            </div>
+          )}
         </div>
       </div>
 
