@@ -34,21 +34,21 @@ export const ReviewModal = () => {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          className="fixed inset-0 z-50 bg-black/75 backdrop-blur-md flex items-center justify-center p-4"
+          className="fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex justify-center items-start p-4 overflow-y-auto"
           onClick={closeReviewModal}
         >
           <motion.div
             initial={{ scale: 0.92, opacity: 0, y: 15 }}
             animate={{ scale: 1, opacity: 1, y: 0 }}
             exit={{ scale: 0.92, opacity: 0, y: 15 }}
-            className="relative w-full max-w-md p-6 sm:p-8 rounded-3xl bg-white dark:bg-[#231123] text-[#231123] dark:text-[#FAF5F8] border border-gray-200 dark:border-white/10 shadow-2xl text-center flex flex-col items-center gap-4"
+            className="relative w-full max-w-md p-6 sm:p-8 my-auto rounded-3xl bg-white dark:bg-[#231123] text-[#231123] dark:text-[#FAF5F8] border border-gray-200 dark:border-white/10 shadow-2xl text-center flex flex-col items-center gap-4"
             onClick={(e) => e.stopPropagation()}
           >
             {/* Botón cerrar visible */}
             <button
               type="button"
               onClick={closeReviewModal}
-              className="absolute top-4 right-4 w-8 h-8 rounded-full bg-gray-100 hover:bg-[#B80C09] text-gray-700 hover:text-white dark:bg-white/10 dark:hover:bg-[#B80C09] dark:text-white flex items-center justify-center transition-colors cursor-pointer border border-gray-200 dark:border-white/10 shadow-xs"
+              className="absolute top-4 right-4 w-9 h-9 rounded-full bg-gray-100 hover:bg-[#B80C09] text-gray-700 hover:text-white dark:bg-white/10 dark:hover:bg-[#B80C09] dark:text-white flex items-center justify-center transition-colors cursor-pointer border border-gray-200 dark:border-white/10 shadow-xs"
               title="Cerrar (Esc)"
               aria-label="Cerrar ventana"
             >
@@ -185,7 +185,7 @@ export const ReviewModal = () => {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          className="fixed inset-0 z-50 bg-black/75 backdrop-blur-md flex items-center justify-center p-4 overflow-y-auto"
+          className="fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex justify-center items-start p-3 sm:p-6 overflow-y-auto"
           onClick={closeReviewModal}
         >
           <motion.div
@@ -193,7 +193,7 @@ export const ReviewModal = () => {
             animate={{ scale: 1, opacity: 1, y: 0 }}
             exit={{ scale: 0.95, opacity: 0, y: 20 }}
             transition={{ type: 'spring', stiffness: 350, damping: 30 }}
-            className="relative w-full max-w-2xl my-8"
+            className="relative w-full max-w-2xl my-auto py-4 sm:py-6"
             onClick={(e) => e.stopPropagation()}
           >
             <ReviewForm

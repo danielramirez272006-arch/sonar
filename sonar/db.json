@@ -1042,6 +1042,47 @@
         "Ambient & Drone",
         "IDM / Techno"
       ]
+    },
+    {
+      "id": "user-1790195039848",
+      "username": "Daniel Ramirez",
+      "email": "daniel_1790195039772@sonar.local",
+      "password": "password123",
+      "role": "user",
+      "avatarUrl": "",
+      "avatarBg": "#0284c7",
+      "bio": "Nuevo melómano explorando vinilos y texturas acústicas en Sonar.",
+      "stats": {
+        "savedAlbums": 0,
+        "reviewsCount": 0,
+        "followers": 0,
+        "following": 0
+      },
+      "preferences": [
+        "Hip-Hop Experimental",
+        "Neo-Soul"
+      ]
+    },
+    {
+      "id": "user-1790195039935",
+      "username": "Elena Jazz",
+      "email": "audiophile_1790195039896@sonar.local",
+      "password": "password123",
+      "role": "user",
+      "avatarUrl": "",
+      "avatarBg": "#B80C09",
+      "bio": "Exploradora de sintetizadores analógicos.",
+      "stats": {
+        "savedAlbums": 0,
+        "reviewsCount": 0,
+        "followers": 0,
+        "following": 0
+      },
+      "preferences": [
+        "Synthwave",
+        "Ambient & Drone",
+        "IDM / Techno"
+      ]
     }
   ],
   "reviews": [
