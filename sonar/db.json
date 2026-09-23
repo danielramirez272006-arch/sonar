@@ -18,7 +18,33 @@
         "Electrónica"
       ],
       "mutedUntil": null,
-      "status": null
+      "status": null,
+      "conductReports": [
+        {
+          "id": "181803c2-b9a9-4024-b1b4-05f94b22d93f",
+          "reason": "mala conducta",
+          "createdAt": "2026-09-23T14:31:03.517Z",
+          "status": "pending"
+        },
+        {
+          "id": "2e35a1a6-947d-4c16-97fa-ed9a0d2c14b2",
+          "reason": "jijijijij",
+          "createdAt": "2026-09-23T14:31:46.438Z",
+          "status": "pending"
+        },
+        {
+          "id": "b74950d6-c368-4f23-b6d2-c0f50b38bc23",
+          "reason": "sisi",
+          "createdAt": "2026-09-23T14:33:32.632Z",
+          "status": "pending"
+        },
+        {
+          "id": "ac8cd3e8-a43d-4e6a-bb6b-117fac4e3c65",
+          "reason": "hola",
+          "createdAt": "2026-09-23T14:33:37.458Z",
+          "status": "pending"
+        }
+      ]
     },
     {
       "id": "admin-1",
