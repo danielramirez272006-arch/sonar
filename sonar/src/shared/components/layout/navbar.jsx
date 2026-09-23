@@ -347,6 +347,7 @@ export const Navbar = ({
                 <Avatar
                   src={authUser?.avatarUrl}
                   name={displayName}
+                  avatarBg={authUser?.avatarBg || authUser?.avatarColor}
                   size="sm"
                 />
                 <span className="text-xs sm:text-sm font-bold text-[#231123] dark:text-[#FAF5F8] hidden sm:inline-block max-w-[120px] truncate">

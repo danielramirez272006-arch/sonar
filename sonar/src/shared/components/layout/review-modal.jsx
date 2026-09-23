@@ -133,6 +133,7 @@ export const ReviewModal = () => {
       userName: effectiveUserName,
       userHandle: effectiveUserHandle,
       avatarLetter: effectiveUserName.charAt(0).toUpperCase(),
+      avatarBg: user?.avatarBg || user?.avatarColor || '#B80C09',
       hasSpoilers: reviewData.hasSpoilers,
     });
 
@@ -148,6 +149,7 @@ export const ReviewModal = () => {
         artist: artistName,
         rating: reviewData.rating,
         content: reviewData.reviewText,
+        avatarBg: user?.avatarBg || user?.avatarColor || '#B80C09',
         status: 'approved',
         aiFlagged: false,
         createdAt: new Date().toISOString(),

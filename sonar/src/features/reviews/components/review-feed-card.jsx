@@ -156,6 +156,7 @@ export const ReviewFeedCard = ({
           <Avatar
             name={review.userName}
             src={review.avatarUrl}
+            avatarBg={review.avatarBg}
             size="md"
             className="w-10 h-10 ring-2 ring-[#e6d5e2]/60 dark:ring-white/15"
           />

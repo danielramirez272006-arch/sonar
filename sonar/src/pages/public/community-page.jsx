@@ -176,6 +176,7 @@ export const CommunityPage = () => {
               userName: r.userName || author?.username || 'Audiófilo Sonar',
               userHandle: author?.email ? `@${author.email.split('@')[0]}` : `@${r.userName?.toLowerCase().replace(/\s+/g, '_') || 'usuario'}`,
               avatarUrl: author?.avatarUrl || '',
+              avatarBg: author?.avatarBg || r.avatarBg || '#5c1d5e',
               date: r.date || 'Reciente',
               rating: Number(r.rating) || 5,
               albumTitle: r.albumTitle || r.album || 'Álbum',
@@ -207,6 +208,7 @@ export const CommunityPage = () => {
                 id: u.id,
                 name: u.username || 'Audiófilo',
                 handle: `@${u.username?.toLowerCase().replace(/\s+/g, '_') || 'listener'}`,
+                avatarBg: u.avatarBg || '#5c1d5e',
                 reviews: `${userReviewsCount} ${userReviewsCount === 1 ? 'reseña' : 'reseñas'}`,
                 followers,
               };
@@ -366,6 +368,7 @@ export const CommunityPage = () => {
       userName: user?.username || 'Melómano Sonar',
       userHandle: `@${user?.username?.toLowerCase().replace(/\s+/g, '_') || 'usuario'}`,
       avatarUrl: user?.avatarUrl || '',
+      avatarBg: user?.avatarBg || '#5c1d5e',
       date: 'Justo ahora',
       rating: Number(rating),
       albumTitle: selectedAlbum.title,
@@ -769,6 +772,7 @@ export const CommunityPage = () => {
                       <div className="flex items-center gap-3 min-w-0">
                         <Avatar
                           name={fUser.name}
+                          avatarBg={fUser.avatarBg}
                           size="md"
                           className="w-10 h-10 ring-2 ring-[#e6d5e2]/60 dark:ring-white/15"
                         />

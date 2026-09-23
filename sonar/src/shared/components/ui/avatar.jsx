@@ -13,14 +13,20 @@ const sizeMap = {
 
 export const Avatar = ({
   src,
-  name = 'Usuario',
+  name,
+  username,
+  avatarBg,
+  backgroundColor,
+  bg,
   size = 'md',
   className = '',
   onClick,
 }) => {
   const [imageError, setImageError] = useState(false);
   const currentSize = sizeMap[size] || sizeMap.md;
-  const avatarName = name ? name.trim() : 'usuario-sonar';
+  const rawName = name || username || 'Usuario';
+  const avatarName = rawName ? rawName.trim() : 'usuario-sonar';
+  const bgColor = avatarBg || backgroundColor || bg || '#4B2840';
 
   // Usamos imagen real si existe y no es un path mock local inexistente
   const shouldShowImage = Boolean(
@@ -40,7 +46,7 @@ export const Avatar = ({
         width: currentSize.size,
         height: currentSize.size,
         borderRadius: '50%',
-        backgroundColor: '#4B2840',
+        backgroundColor: bgColor,
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
@@ -54,7 +60,7 @@ export const Avatar = ({
       {shouldShowImage ? (
         <img
           src={src}
-          alt={name}
+          alt={rawName}
           onError={() => setImageError(true)}
           style={{
             width: '100%',
