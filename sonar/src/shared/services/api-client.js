@@ -32,6 +32,13 @@ export function getUserById(userId) {
   return apiRequest(`/users/${encodeURIComponent(userId)}`)
 }
 
+export function updateUser(userId, changes) {
+  return apiRequest(`/users/${encodeURIComponent(userId)}`, {
+    method: 'PATCH',
+    body: JSON.stringify(changes),
+  })
+}
+
 export async function getUserByEmail(email) {
   const users = await apiRequest(`/users?${new URLSearchParams({ email })}`)
   return users[0] ?? null

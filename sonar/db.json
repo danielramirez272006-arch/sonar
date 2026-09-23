@@ -16,7 +16,9 @@
       "preferences": [
         "Art Rock",
         "Electrónica"
-      ]
+      ],
+      "mutedUntil": null,
+      "status": null
     },
     {
       "id": "admin-1",

@@ -29,6 +29,10 @@ export function AuthProvider({ children }) {
           throw new Error('No existe un usuario con ese correo electrónico.')
         }
 
+        if (foundUser.status === 'banned') {
+          throw new Error('Esta cuenta está baneada y no puede iniciar sesión.')
+        }
+
         // Comparación directa solo para la autenticación mock local.
         if (foundUser.password !== password) {
           throw new Error('La contraseña es incorrecta.')
@@ -39,7 +43,9 @@ export function AuthProvider({ children }) {
           if (typeof window !== 'undefined') {
             window.localStorage?.setItem('sonar_auth_user', JSON.stringify(foundUser))
           }
-        } catch {}
+        } catch {
+          // La sesión continúa aunque el almacenamiento local no esté disponible.
+        }
         return foundUser
       } catch (cause) {
         const loginError = cause instanceof Error
@@ -59,7 +65,9 @@ export function AuthProvider({ children }) {
         if (typeof window !== 'undefined') {
           window.localStorage?.removeItem('sonar_auth_user')
         }
-      } catch {}
+      } catch {
+        // El cierre de sesión no depende de localStorage.
+      }
     }
 
     function hasRole(role) {
