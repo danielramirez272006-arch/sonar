@@ -8,6 +8,7 @@ export const ReviewForm = ({
   albumTitle = 'In Rainbows',
   artistName = 'Radiohead',
   onSubmit = (e) => e.preventDefault(),
+  onClose = null,
 }) => {
   const [reviewType, setReviewType] = useState(initialType || (trackTitle ? 'track' : 'album'));
   const [currentTrackTitle, setCurrentTrackTitle] = useState(trackTitle || (initialType === 'track' ? albumTitle : ''));
@@ -31,7 +32,7 @@ export const ReviewForm = ({
   const isTrackMode = reviewType === 'track';
 
   return (
-    <div className="w-full max-w-2xl p-6 sm:p-8 md:p-10 rounded-3xl bg-white dark:bg-[#4B2840] border border-[#e6d5e2] dark:border-white/10 shadow-[0_10px_35px_-5px_rgba(75,40,64,0.08)] dark:shadow-[0_15px_40px_-5px_rgba(0,0,0,0.5)] transition-colors duration-300">
+    <div className="w-full max-w-2xl p-6 sm:p-8 md:p-10 rounded-3xl bg-white dark:bg-[#4B2840] border border-[#e6d5e2] dark:border-white/10 shadow-[0_10px_35px_-5px_rgba(75,40,64,0.08)] dark:shadow-[0_15px_40px_-5px_rgba(0,0,0,0.5)] transition-colors duration-300 relative">
       {/* Header del Formulario */}
       <div className="flex flex-col gap-2 pb-5 border-b border-[#e6d5e2]/80 dark:border-white/10">
         <div className="flex items-center justify-between">
@@ -40,13 +41,27 @@ export const ReviewForm = ({
             <span>Nueva Crítica Sonar</span>
           </span>
 
-          <span className={`text-[10px] font-black uppercase px-2 py-0.5 rounded-md border ${
-            isTrackMode
-              ? 'bg-rose-50 dark:bg-[#B80C09]/20 text-[#B80C09] dark:text-rose-300 border-[#B80C09]/30'
-              : 'bg-purple-50 dark:bg-purple-950/40 text-purple-700 dark:text-purple-300 border-purple-300 dark:border-purple-800'
-          }`}>
-            {isTrackMode ? '🎵 Canción' : '💿 Álbum'}
-          </span>
+          <div className="flex items-center gap-2">
+            <span className={`text-[10px] font-black uppercase px-2 py-0.5 rounded-md border ${
+              isTrackMode
+                ? 'bg-rose-50 dark:bg-[#B80C09]/20 text-[#B80C09] dark:text-rose-300 border-[#B80C09]/30'
+                : 'bg-purple-50 dark:bg-purple-950/40 text-purple-700 dark:text-purple-300 border-purple-300 dark:border-purple-800'
+            }`}>
+              {isTrackMode ? '🎵 Canción' : '💿 Álbum'}
+            </span>
+
+            {onClose && (
+              <button
+                type="button"
+                onClick={onClose}
+                className="w-8 h-8 rounded-full bg-gray-100 hover:bg-[#B80C09] text-gray-700 hover:text-white dark:bg-white/10 dark:hover:bg-[#B80C09] dark:text-white flex items-center justify-center transition-colors cursor-pointer border border-gray-200 dark:border-white/10 shadow-xs"
+                title="Cerrar (Esc)"
+                aria-label="Cerrar formulario de crítica"
+              >
+                <span className="material-symbols-outlined text-[18px]">close</span>
+              </button>
+            )}
+          </div>
         </div>
 
         <h2 className="text-2xl sm:text-3xl font-extrabold text-[#231123] dark:text-white tracking-tight">

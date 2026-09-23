@@ -1,14 +1,14 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useTheme } from '../../../shared/context/theme-context';
-import { searchAlbums, searchTracks, getAlbumTracks } from '../../../shared/services/deezer-service';
+import { searchAlbums, searchTracks, searchArtists, getAlbumTracks } from '../../../shared/services/deezer-service';
 import { usePlayer } from '../../../shared/context/player-context';
 
 const SEARCH_TABS = [
   { id: 'all', label: 'Todo', icon: 'manage_search' },
-  { id: 'album', label: 'Álbumes', icon: 'album' },
-  { id: 'track', label: 'Canciones', icon: 'music_note' },
   { id: 'artist', label: 'Artistas', icon: 'person' },
+  { id: 'track', label: 'Canciones', icon: 'music_note' },
+  { id: 'album', label: 'Álbumes', icon: 'album' },
   { id: 'lyrics', label: 'Letras', icon: 'lyrics' },
 ];
 
@@ -257,7 +257,9 @@ export const HeroSearch = ({ onSearch = () => {}, onSubmit = () => {} }) => {
     debounceRef.current = setTimeout(async () => {
       try {
         let results = [];
-        if (activeTab === 'track' || activeTab === 'lyrics') {
+        if (activeTab === 'artist') {
+          results = await searchArtists(val.trim());
+        } else if (activeTab === 'track' || activeTab === 'lyrics') {
           results = await searchTracks(val.trim());
         } else {
           results = await searchAlbums(val.trim());

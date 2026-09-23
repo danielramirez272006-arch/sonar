@@ -337,6 +337,60 @@ export const searchTracks = async (query) => {
 };
 
 /**
+ * Busca artistas específicamente en Deezer y obtiene sus canciones más destacadas
+ */
+export const searchArtists = async (query) => {
+  if (!query || !query.trim()) return [];
+  const cleanQuery = query.trim();
+  try {
+    const response = await fetch(`${BASE_URL}/search/artist?q=${encodeURIComponent(cleanQuery)}`);
+    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+    const data = await response.json();
+    if (!data.data || data.data.length === 0) {
+      return searchTracks(cleanQuery);
+    }
+
+    const results = [];
+    const topArtists = data.data.slice(0, 3);
+    for (const artist of topArtists) {
+      try {
+        const topRes = await fetch(`${BASE_URL}/artist/${artist.id}/top?limit=10`);
+        if (topRes.ok) {
+          const topData = await topRes.json();
+          if (topData.data && topData.data.length > 0) {
+            topData.data.forEach((track) => {
+              results.push({
+                id: track.id,
+                title: track.title,
+                artist: artist.name,
+                album: track.album?.title || 'Sencillo',
+                albumTitle: track.album?.title || 'Sencillo',
+                cover: track.album?.cover_big || track.album?.cover_medium || artist.picture_big || '',
+                cover_xl: track.album?.cover_xl || track.album?.cover_big || artist.picture_xl || '',
+                cover_medium: track.album?.cover_medium || artist.picture_medium || '',
+                preview: track.preview,
+                duration: track.duration,
+                link: track.link,
+                type: 'track',
+                artistId: artist.id,
+                rating: (4.6 + ((track.id % 4) * 0.1)).toFixed(1),
+              });
+            });
+          }
+        }
+      } catch (err) {
+        console.warn('Error al obtener canciones del artista:', err);
+      }
+    }
+
+    return results.length > 0 ? results : searchTracks(cleanQuery);
+  } catch (error) {
+    console.error("Error al buscar artistas en Deezer:", error);
+    return searchTracks(cleanQuery);
+  }
+};
+
+/**
  * Resuelve dinámicamente un preview de audio válido y firmado para cualquier pista o álbum
  */
 export const resolvePlayablePreview = async (item) => {
