@@ -2,18 +2,19 @@ import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '../../../shared/context/auth-context';
 import { interactionsService } from '../../../shared/services/interactions-service';
-import LikeButton from '../../../shared/components/ui/like-button';
 
 export const CommentSection = ({ reviewId, onCommentCountChange }) => {
   const { user } = useAuth();
   const [comments, setComments] = useState([]);
   const [newCommentText, setNewCommentText] = useState('');
   const [likedCommentIds, setLikedCommentIds] = useState([]);
+  const [dislikedCommentIds, setDislikedCommentIds] = useState([]);
   const [reportedCommentIds, setReportedCommentIds] = useState([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  // Estado para responder a un comentario específico
+  // Estado para responder a un comentario o respuesta específica
   const [replyingToCommentId, setReplyingToCommentId] = useState(null);
+  const [replyTargetUser, setReplyTargetUser] = useState(null);
   const [replyText, setReplyText] = useState('');
   const [isSubmittingReply, setIsSubmittingReply] = useState(false);
 
@@ -39,10 +40,16 @@ export const CommentSection = ({ reviewId, onCommentCountChange }) => {
       setComments(initialComments);
       const likes = interactionsService.getLikedCommentIds(userId);
       setLikedCommentIds(likes);
+      const dislikes = interactionsService.getDislikedCommentIds(userId);
+      setDislikedCommentIds(dislikes);
       const reported = interactionsService.getReportedCommentIds(userId);
       setReportedCommentIds(reported);
     }
   }, [reviewId, userId]);
+
+  const calculateTotalComments = (list) => {
+    return list.reduce((acc, c) => acc + 1 + (c.replies?.length || 0), 0);
+  };
 
   const handleAddComment = (e) => {
     e.preventDefault();
@@ -74,6 +81,20 @@ export const CommentSection = ({ reviewId, onCommentCountChange }) => {
     }
   };
 
+  const handleStartReply = (parentCommentId, targetUser = null) => {
+    if (!user) {
+      window.location.hash = '#login';
+      return;
+    }
+    setReplyingToCommentId(parentCommentId);
+    setReplyTargetUser(targetUser);
+    if (targetUser?.userName) {
+      setReplyText(`@${targetUser.userName} `);
+    } else {
+      setReplyText('');
+    }
+  };
+
   const handleAddReply = (e, commentId) => {
     e.preventDefault();
     if (!user) {
@@ -96,6 +117,7 @@ export const CommentSection = ({ reviewId, onCommentCountChange }) => {
       setComments(res.comments);
       setReplyText('');
       setReplyingToCommentId(null);
+      setReplyTargetUser(null);
       if (onCommentCountChange) {
         onCommentCountChange(calculateTotalComments(res.comments));
       }
@@ -104,38 +126,83 @@ export const CommentSection = ({ reviewId, onCommentCountChange }) => {
     }
   };
 
-  const calculateTotalComments = (list) => {
-    return list.reduce((acc, c) => acc + 1 + (c.replies?.length || 0), 0);
-  };
-
   const handleToggleCommentLike = (commentId) => {
     if (!user) {
       window.location.hash = '#login';
       return;
     }
-    const isNowLiked = interactionsService.toggleCommentLike(commentId, userId);
+    const res = interactionsService.toggleCommentLike(commentId, userId);
     setLikedCommentIds((prev) =>
-      isNowLiked ? [...prev, commentId] : prev.filter((id) => id !== commentId)
+      res.isLiked ? [...prev, commentId] : prev.filter((id) => id !== commentId)
     );
+    setDislikedCommentIds((prev) => prev.filter((id) => id !== commentId));
+
     setComments((prev) =>
       prev.map((c) => {
         if (c.id === commentId) {
+          const hadDislike = dislikedCommentIds.includes(commentId);
           return {
             ...c,
-            likes: isNowLiked ? (c.likes || 0) + 1 : Math.max(0, (c.likes || 0) - 1),
+            likes: res.isLiked ? (c.likes || 0) + 1 : Math.max(0, (c.likes || 0) - 1),
+            dislikes: res.isLiked && hadDislike ? Math.max(0, (c.dislikes || 0) - 1) : (c.dislikes || 0),
           };
         }
         if (c.replies && c.replies.length > 0) {
           return {
             ...c,
-            replies: c.replies.map((r) =>
-              r.id === commentId
-                ? {
-                    ...r,
-                    likes: isNowLiked ? (r.likes || 0) + 1 : Math.max(0, (r.likes || 0) - 1),
-                  }
-                : r
-            ),
+            replies: c.replies.map((r) => {
+              if (r.id === commentId) {
+                const hadDislike = dislikedCommentIds.includes(commentId);
+                return {
+                  ...r,
+                  likes: res.isLiked ? (r.likes || 0) + 1 : Math.max(0, (r.likes || 0) - 1),
+                  dislikes: res.isLiked && hadDislike ? Math.max(0, (r.dislikes || 0) - 1) : (r.dislikes || 0),
+                };
+              }
+              return r;
+            }),
+          };
+        }
+        return c;
+      })
+    );
+  };
+
+  const handleToggleCommentDislike = (commentId) => {
+    if (!user) {
+      window.location.hash = '#login';
+      return;
+    }
+    const res = interactionsService.toggleCommentDislike(commentId, userId);
+    setDislikedCommentIds((prev) =>
+      res.isDisliked ? [...prev, commentId] : prev.filter((id) => id !== commentId)
+    );
+    setLikedCommentIds((prev) => prev.filter((id) => id !== commentId));
+
+    setComments((prev) =>
+      prev.map((c) => {
+        if (c.id === commentId) {
+          const hadLike = likedCommentIds.includes(commentId);
+          return {
+            ...c,
+            dislikes: res.isDisliked ? (c.dislikes || 0) + 1 : Math.max(0, (c.dislikes || 0) - 1),
+            likes: res.isDisliked && hadLike ? Math.max(0, (c.likes || 0) - 1) : (c.likes || 0),
+          };
+        }
+        if (c.replies && c.replies.length > 0) {
+          return {
+            ...c,
+            replies: c.replies.map((r) => {
+              if (r.id === commentId) {
+                const hadLike = likedCommentIds.includes(commentId);
+                return {
+                  ...r,
+                  dislikes: res.isDisliked ? (r.dislikes || 0) + 1 : Math.max(0, (r.dislikes || 0) - 1),
+                  likes: res.isDisliked && hadLike ? Math.max(0, (r.likes || 0) - 1) : (r.likes || 0),
+                };
+              }
+              return r;
+            }),
           };
         }
         return c;
@@ -240,6 +307,7 @@ export const CommentSection = ({ reviewId, onCommentCountChange }) => {
           <AnimatePresence initial={false}>
             {comments.map((comment) => {
               const isLiked = likedCommentIds.includes(comment.id);
+              const isDisliked = dislikedCommentIds.includes(comment.id);
               const isReported = reportedCommentIds.includes(comment.id);
               const isReplying = replyingToCommentId === comment.id;
 
@@ -285,21 +353,52 @@ export const CommentSection = ({ reviewId, onCommentCountChange }) => {
                         {comment.content}
                       </p>
 
-                      {/* Botones de acción del comentario */}
-                      <div className="flex items-center gap-4 mt-2">
-                        <LikeButton
-                          isLiked={isLiked}
-                          likesCount={comment.likes || 0}
-                          onToggleLike={() => handleToggleCommentLike(comment.id)}
-                          size="sm"
-                        />
+                      {/* Botones de acción del comentario (Corazón, Corazón Roto, Responder, Reportar) */}
+                      <div className="flex items-center gap-3 sm:gap-4 mt-2">
+                        {/* Botón Corazón (Me gusta) */}
+                        <button
+                          type="button"
+                          onClick={() => handleToggleCommentLike(comment.id)}
+                          className={`flex items-center gap-1 text-xs transition-colors cursor-pointer group ${
+                            isLiked
+                              ? 'text-[#B80C09] font-bold'
+                              : 'text-[#5c435a] dark:text-[#B89CB0] hover:text-[#B80C09]'
+                          }`}
+                          title="Me gusta (Corazón)"
+                        >
+                          <span className={`material-symbols-outlined text-[16px] ${isLiked ? 'font-fill text-[#B80C09]' : ''}`}>
+                            {isLiked ? 'favorite' : 'favorite'}
+                          </span>
+                          <span>{comment.likes || 0}</span>
+                        </button>
+
+                        {/* Botón Corazón Roto (No me gusta) */}
+                        <button
+                          type="button"
+                          onClick={() => handleToggleCommentDislike(comment.id)}
+                          className={`flex items-center gap-1 text-xs transition-colors cursor-pointer group ${
+                            isDisliked
+                              ? 'text-purple-600 dark:text-purple-400 font-bold'
+                              : 'text-[#5c435a]/70 dark:text-[#B89CB0]/70 hover:text-purple-600 dark:hover:text-purple-400'
+                          }`}
+                          title="No me gusta (Corazón roto)"
+                        >
+                          <span className="material-symbols-outlined text-[16px]">
+                            heart_broken
+                          </span>
+                          <span>{comment.dislikes || 0}</span>
+                        </button>
 
                         {/* Botón Responder */}
                         <button
                           type="button"
                           onClick={() => {
-                            setReplyingToCommentId(isReplying ? null : comment.id);
-                            setReplyText('');
+                            if (isReplying) {
+                              setReplyingToCommentId(null);
+                              setReplyTargetUser(null);
+                            } else {
+                              handleStartReply(comment.id, comment);
+                            }
                           }}
                           className={`flex items-center gap-1 text-[11px] font-bold transition-colors cursor-pointer ${
                             isReplying
@@ -330,53 +429,21 @@ export const CommentSection = ({ reviewId, onCommentCountChange }) => {
                     </div>
                   </div>
 
-                  {/* Formulario inline para responder */}
-                  {isReplying && (
-                    <motion.form
-                      initial={{ opacity: 0, y: -4 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      onSubmit={(e) => handleAddReply(e, comment.id)}
-                      className="ml-9 mt-1 flex gap-2 items-center bg-white dark:bg-[#1f1020] p-2 rounded-xl border border-[#B80C09]/30"
-                    >
-                      <input
-                        type="text"
-                        value={replyText}
-                        onChange={(e) => setReplyText(e.target.value)}
-                        placeholder={`Respondiendo a ${comment.userName}...`}
-                        autoFocus
-                        className="flex-1 text-xs bg-transparent border-none text-[#231123] dark:text-white placeholder:text-[#5c435a]/60 dark:placeholder:text-[#B89CB0]/60 outline-hidden"
-                      />
-                      <button
-                        type="button"
-                        onClick={() => setReplyingToCommentId(null)}
-                        className="px-2 py-1 text-[11px] text-gray-500 hover:text-gray-700 dark:text-gray-400 cursor-pointer"
-                      >
-                        Cancelar
-                      </button>
-                      <button
-                        type="submit"
-                        disabled={!replyText.trim() || isSubmittingReply}
-                        className="px-3 py-1 rounded-lg bg-[#B80C09] text-white text-[11px] font-bold hover:bg-[#B80C09]/90 disabled:opacity-40 transition-colors cursor-pointer"
-                      >
-                        Responder
-                      </button>
-                    </motion.form>
-                  )}
-
-                  {/* Respuestas anidadas (Replies) */}
+                  {/* Respuestas anidadas (Replies con su propio botón de responder y reacciones) */}
                   {comment.replies && comment.replies.length > 0 && (
                     <div className="ml-7 sm:ml-9 flex flex-col gap-2 mt-1 pt-2 border-t border-[#e6d5e2]/40 dark:border-white/5">
                       {comment.replies.map((reply) => {
                         const isReplyLiked = likedCommentIds.includes(reply.id);
+                        const isReplyDisliked = dislikedCommentIds.includes(reply.id);
                         const isReplyReported = reportedCommentIds.includes(reply.id);
 
                         return (
                           <div
                             key={reply.id}
-                            className="flex items-start gap-2 p-2 rounded-lg bg-white/70 dark:bg-[#1f1020]/70 border border-[#e6d5e2]/40 dark:border-white/5"
+                            className="flex items-start gap-2 p-2.5 rounded-xl bg-white/70 dark:bg-[#1f1020]/70 border border-[#e6d5e2]/40 dark:border-white/5"
                           >
                             <div
-                              className="w-5 h-5 rounded-full flex items-center justify-center text-white font-bold text-[9px] shrink-0 shadow-xs"
+                              className="w-6 h-6 rounded-full flex items-center justify-center text-white font-bold text-[10px] shrink-0 shadow-xs"
                               style={{ backgroundColor: reply.avatarBg || '#75527b' }}
                             >
                               {reply.avatarLetter || reply.userName?.charAt(0) || 'U'}
@@ -385,30 +452,77 @@ export const CommentSection = ({ reviewId, onCommentCountChange }) => {
                             <div className="flex-1 min-w-0">
                               <div className="flex items-baseline justify-between gap-2">
                                 <div className="flex items-baseline gap-1 truncate">
-                                  <span className="text-[11px] font-bold text-[#231123] dark:text-white truncate">
+                                  <span className="text-xs font-bold text-[#231123] dark:text-white truncate">
                                     {reply.userName}
                                   </span>
-                                  <span className="text-[9px] text-[#5c435a] dark:text-[#B89CB0] truncate">
+                                  <span className="text-[10px] text-[#5c435a] dark:text-[#B89CB0] truncate">
                                     {reply.userHandle}
                                   </span>
                                 </div>
-                                <span className="text-[9px] text-[#81737e] dark:text-[#B89CB0]/70 shrink-0">
-                                  {reply.timestamp}
-                                </span>
+                                <div className="flex items-center gap-1.5 shrink-0">
+                                  {isReplyReported && (
+                                    <span className="text-[8px] font-bold px-1.5 py-0.2 rounded bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20">
+                                      Reportado
+                                    </span>
+                                  )}
+                                  <span className="text-[9px] text-[#81737e] dark:text-[#B89CB0]/70">
+                                    {reply.timestamp}
+                                  </span>
+                                </div>
                               </div>
 
-                              <p className="text-[11px] text-[#231123]/90 dark:text-gray-200 mt-0.5 leading-snug break-words">
+                              <p className="text-xs text-[#231123]/90 dark:text-gray-200 mt-0.5 leading-snug break-words">
                                 {reply.content}
                               </p>
 
-                              <div className="flex items-center gap-3 mt-1">
-                                <LikeButton
-                                  isLiked={isReplyLiked}
-                                  likesCount={reply.likes || 0}
-                                  onToggleLike={() => handleToggleCommentLike(reply.id)}
-                                  size="sm"
-                                />
+                              {/* Botones de acción en respuestas: Corazón, Corazón Roto, Responder a la respuesta, Reportar */}
+                              <div className="flex items-center gap-3 mt-1.5">
+                                {/* Corazón */}
+                                <button
+                                  type="button"
+                                  onClick={() => handleToggleCommentLike(reply.id)}
+                                  className={`flex items-center gap-0.5 text-[11px] transition-colors cursor-pointer ${
+                                    isReplyLiked
+                                      ? 'text-[#B80C09] font-bold'
+                                      : 'text-[#5c435a] dark:text-[#B89CB0] hover:text-[#B80C09]'
+                                  }`}
+                                  title="Me gusta"
+                                >
+                                  <span className="material-symbols-outlined text-[14px]">
+                                    favorite
+                                  </span>
+                                  <span>{reply.likes || 0}</span>
+                                </button>
 
+                                {/* Corazón Roto */}
+                                <button
+                                  type="button"
+                                  onClick={() => handleToggleCommentDislike(reply.id)}
+                                  className={`flex items-center gap-0.5 text-[11px] transition-colors cursor-pointer ${
+                                    isReplyDisliked
+                                      ? 'text-purple-600 dark:text-purple-400 font-bold'
+                                      : 'text-[#5c435a]/70 dark:text-[#B89CB0]/70 hover:text-purple-600 dark:hover:text-purple-400'
+                                  }`}
+                                  title="No me gusta"
+                                >
+                                  <span className="material-symbols-outlined text-[14px]">
+                                    heart_broken
+                                  </span>
+                                  <span>{reply.dislikes || 0}</span>
+                                </button>
+
+                                {/* Botón Responder a esta respuesta para continuar la conversación */}
+                                <button
+                                  type="button"
+                                  onClick={() => handleStartReply(comment.id, reply)}
+                                  className="flex items-center gap-0.5 text-[10px] font-bold text-[#5c435a] dark:text-[#B89CB0] hover:text-[#B80C09] transition-colors cursor-pointer"
+                                  title={`Responder a ${reply.userName}`}
+                                >
+                                  <span className="material-symbols-outlined text-[12px]">reply</span>
+                                  <span>Responder</span>
+                                </button>
+
+                                {/* Reportar respuesta */}
                                 <button
                                   type="button"
                                   onClick={() => handleOpenReport({ ...reply, isReply: true })}
@@ -420,7 +534,7 @@ export const CommentSection = ({ reviewId, onCommentCountChange }) => {
                                       : 'text-[#5c435a]/60 dark:text-[#B89CB0]/60 hover:text-red-500'
                                   }`}
                                 >
-                                  <span className="material-symbols-outlined text-[13px]">flag</span>
+                                  <span className="material-symbols-outlined text-[12px]">flag</span>
                                   <span>{isReplyReported ? 'Reportado' : 'Reportar'}</span>
                                 </button>
                               </div>
@@ -429,6 +543,64 @@ export const CommentSection = ({ reviewId, onCommentCountChange }) => {
                         );
                       })}
                     </div>
+                  )}
+
+                  {/* Formulario inline para responder (para el comentario o para continuar la charla con una persona) */}
+                  {isReplying && (
+                    <motion.form
+                      initial={{ opacity: 0, y: -4 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      onSubmit={(e) => handleAddReply(e, comment.id)}
+                      className="ml-7 sm:ml-9 mt-1 flex flex-col gap-1.5 bg-white dark:bg-[#1f1020] p-2.5 rounded-xl border border-[#B80C09]/30 shadow-xs"
+                    >
+                      {replyTargetUser && (
+                        <div className="flex items-center justify-between text-[11px] text-[#B80C09] font-bold px-1">
+                          <span className="flex items-center gap-1">
+                            <span className="material-symbols-outlined text-[14px]">reply</span>
+                            Respondiendo a {replyTargetUser.userName} ({replyTargetUser.userHandle})
+                          </span>
+                          <button
+                            type="button"
+                            onClick={() => setReplyTargetUser(null)}
+                            className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 cursor-pointer"
+                            title="Quitar mención directa"
+                          >
+                            <span className="material-symbols-outlined text-[14px]">close</span>
+                          </button>
+                        </div>
+                      )}
+                      <div className="flex gap-2 items-center">
+                        <input
+                          type="text"
+                          value={replyText}
+                          onChange={(e) => setReplyText(e.target.value)}
+                          placeholder={
+                            replyTargetUser
+                              ? `Escribe tu respuesta para ${replyTargetUser.userName}...`
+                              : `Respondiendo al hilo de ${comment.userName}...`
+                          }
+                          autoFocus
+                          className="flex-1 text-xs bg-transparent border-none text-[#231123] dark:text-white placeholder:text-[#5c435a]/60 dark:placeholder:text-[#B89CB0]/60 outline-hidden"
+                        />
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setReplyingToCommentId(null);
+                            setReplyTargetUser(null);
+                          }}
+                          className="px-2.5 py-1 text-[11px] text-gray-500 hover:text-gray-700 dark:text-gray-400 cursor-pointer font-medium"
+                        >
+                          Cancelar
+                        </button>
+                        <button
+                          type="submit"
+                          disabled={!replyText.trim() || isSubmittingReply}
+                          className="px-3 py-1 rounded-lg bg-[#B80C09] text-white text-[11px] font-bold hover:bg-[#B80C09]/90 disabled:opacity-40 transition-colors cursor-pointer"
+                        >
+                          Responder
+                        </button>
+                      </div>
+                    </motion.form>
                   )}
                 </motion.div>
               );

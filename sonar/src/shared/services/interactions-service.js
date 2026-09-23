@@ -3,6 +3,7 @@
 const STORAGE_KEYS = {
   LIKED_REVIEWS: 'sonar_liked_reviews',
   LIKED_COMMENTS: 'sonar_liked_comments',
+  DISLIKED_COMMENTS: 'sonar_disliked_comments',
   COMMENTS_STORE: 'sonar_review_comments',
   USER_COLLECTIONS: 'sonar_user_collections',
   REPORTED_COMMENTS: 'sonar_reported_comments',
@@ -142,20 +143,70 @@ export const interactionsService = {
     return all[userId] || [];
   },
 
+  getDislikedCommentIds(userId) {
+    if (!userId || userId === 'guest' || userId === 'default') return [];
+    const all = getStorage(STORAGE_KEYS.DISLIKED_COMMENTS, {});
+    return all[userId] || [];
+  },
+
   toggleCommentLike(commentId, userId) {
-    if (!userId || userId === 'guest' || userId === 'default') return false;
-    const all = getStorage(STORAGE_KEYS.LIKED_COMMENTS, {});
-    const userLikes = all[userId] || [];
-    const isLiked = userLikes.includes(commentId);
-    let updated;
-    if (isLiked) {
-      updated = userLikes.filter((id) => id !== commentId);
-    } else {
-      updated = [...userLikes, commentId];
+    if (!userId || userId === 'guest' || userId === 'default') {
+      return { isLiked: false, isDisliked: false };
     }
-    all[userId] = updated;
-    setStorage(STORAGE_KEYS.LIKED_COMMENTS, all);
-    return !isLiked;
+    const likesStore = getStorage(STORAGE_KEYS.LIKED_COMMENTS, {});
+    const dislikesStore = getStorage(STORAGE_KEYS.DISLIKED_COMMENTS, {});
+
+    const userLikes = likesStore[userId] || [];
+    const userDislikes = dislikesStore[userId] || [];
+
+    const isLiked = userLikes.includes(commentId);
+    let nextLikes;
+    let nextDislikes = userDislikes;
+
+    if (isLiked) {
+      nextLikes = userLikes.filter((id) => id !== commentId);
+    } else {
+      nextLikes = [...userLikes, commentId];
+      // Quitar de dislikes si estaba con corazón roto
+      nextDislikes = userDislikes.filter((id) => id !== commentId);
+    }
+
+    likesStore[userId] = nextLikes;
+    dislikesStore[userId] = nextDislikes;
+    setStorage(STORAGE_KEYS.LIKED_COMMENTS, likesStore);
+    setStorage(STORAGE_KEYS.DISLIKED_COMMENTS, dislikesStore);
+
+    return { isLiked: !isLiked, isDisliked: false };
+  },
+
+  toggleCommentDislike(commentId, userId) {
+    if (!userId || userId === 'guest' || userId === 'default') {
+      return { isLiked: false, isDisliked: false };
+    }
+    const likesStore = getStorage(STORAGE_KEYS.LIKED_COMMENTS, {});
+    const dislikesStore = getStorage(STORAGE_KEYS.DISLIKED_COMMENTS, {});
+
+    const userLikes = likesStore[userId] || [];
+    const userDislikes = dislikesStore[userId] || [];
+
+    const isDisliked = userDislikes.includes(commentId);
+    let nextDislikes;
+    let nextLikes = userLikes;
+
+    if (isDisliked) {
+      nextDislikes = userDislikes.filter((id) => id !== commentId);
+    } else {
+      nextDislikes = [...userDislikes, commentId];
+      // Quitar de likes si tenía corazón
+      nextLikes = userLikes.filter((id) => id !== commentId);
+    }
+
+    likesStore[userId] = nextLikes;
+    dislikesStore[userId] = nextDislikes;
+    setStorage(STORAGE_KEYS.LIKED_COMMENTS, likesStore);
+    setStorage(STORAGE_KEYS.DISLIKED_COMMENTS, dislikesStore);
+
+    return { isLiked: false, isDisliked: !isDisliked };
   },
 
   // COMENTARIOS
@@ -177,6 +228,7 @@ export const interactionsService = {
       content: commentData.content,
       timestamp: 'Ahora mismo',
       likes: 0,
+      dislikes: 0,
       replies: [],
       createdAt: new Date().toISOString(),
     };
@@ -198,6 +250,7 @@ export const interactionsService = {
       content: replyData.content,
       timestamp: 'Ahora mismo',
       likes: 0,
+      dislikes: 0,
       createdAt: new Date().toISOString(),
     };
 

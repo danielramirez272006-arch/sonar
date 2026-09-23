@@ -94,6 +94,28 @@ describe('Interactions Service (Likes, Comentarios y Colecciones)', () => {
     expect(interactionsService.getReportedCommentIds(userId)).toContain(commentId);
   });
 
+  it('debe manejar corazón (like) y corazón roto (dislike) de manera mutuamente excluyente', () => {
+    const userId = 'user-react-test';
+    const commentId = 'c-test-react-100';
+
+    // 1. Dar corazón (like)
+    const like1 = interactionsService.toggleCommentLike(commentId, userId);
+    expect(like1.isLiked).toBe(true);
+    expect(interactionsService.getLikedCommentIds(userId)).toContain(commentId);
+    expect(interactionsService.getDislikedCommentIds(userId)).not.toContain(commentId);
+
+    // 2. Dar corazón roto (dislike) -> debe quitar el corazón y poner corazón roto
+    const dislike1 = interactionsService.toggleCommentDislike(commentId, userId);
+    expect(dislike1.isDisliked).toBe(true);
+    expect(interactionsService.getDislikedCommentIds(userId)).toContain(commentId);
+    expect(interactionsService.getLikedCommentIds(userId)).not.toContain(commentId);
+
+    // 3. Quitar corazón roto
+    const dislike2 = interactionsService.toggleCommentDislike(commentId, userId);
+    expect(dislike2.isDisliked).toBe(false);
+    expect(interactionsService.getDislikedCommentIds(userId)).not.toContain(commentId);
+  });
+
   it('debe guardar y remover álbumes de las colecciones del usuario', () => {
     const userId = 'user-collector';
     const testAlbum = {
