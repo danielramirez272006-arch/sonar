@@ -14,7 +14,10 @@ export const ReviewModal = () => {
 
   if (!reviewModalAlbum) return null;
 
-  const albumTitle = reviewModalAlbum.album || reviewModalAlbum.title || 'Álbum';
+  const isTrack = reviewModalAlbum.type === 'track' || Boolean(reviewModalAlbum.trackId) || Boolean(reviewModalAlbum.title && reviewModalAlbum.album && reviewModalAlbum.title !== reviewModalAlbum.album);
+  const initialType = reviewModalAlbum.type || (isTrack ? 'track' : 'album');
+  const songTitle = isTrack ? reviewModalAlbum.title : (reviewModalAlbum.trackTitle || reviewModalAlbum.songTitle || '');
+  const albumTitle = reviewModalAlbum.album || (isTrack ? (reviewModalAlbum.albumTitle || 'Sencillo') : reviewModalAlbum.title) || 'Álbum';
   const artistName = reviewModalAlbum.artist || 'Artista';
   const cover = reviewModalAlbum.cover || reviewModalAlbum.cover_medium || 'https://cdn-images.dzcdn.net/images/cover/a175af9b7d329bc678cb4d26fc13d6de/500x500-000000-80-0-0.jpg';
   const deezerId = reviewModalAlbum.deezerId || reviewModalAlbum.id;
@@ -24,9 +27,17 @@ export const ReviewModal = () => {
     const effectiveUserName = user?.name || user?.username || 'Mateo Rivaes';
     const effectiveUserHandle = user?.username ? `@${user.username}` : '@mateorivaes';
 
+    const isReviewingSong = reviewData.type === 'track';
+    const targetTitle = isReviewingSong && reviewData.trackTitle
+      ? reviewData.trackTitle
+      : albumTitle;
+
     // 1. Guardar en interactionsService (LocalStorage / Store para el perfil de usuario activo)
     const newLocalReview = interactionsService.addUserReview(effectiveUserId, {
-      albumTitle,
+      albumTitle: targetTitle,
+      parentAlbum: albumTitle,
+      trackTitle: isReviewingSong ? targetTitle : '',
+      type: reviewData.type || 'album',
       artist: artistName,
       cover,
       rating: reviewData.rating,
@@ -42,8 +53,10 @@ export const ReviewModal = () => {
       await createReview({
         id: `rev-${Date.now()}`,
         userId: effectiveUserId,
-        albumId: deezerId ? String(deezerId) : `album_${Date.now()}`,
-        albumTitle,
+        albumId: deezerId ? String(deezerId) : `item_${Date.now()}`,
+        albumTitle: targetTitle,
+        type: reviewData.type || 'album',
+        trackTitle: isReviewingSong ? targetTitle : '',
         artist: artistName,
         rating: reviewData.rating,
         content: reviewData.reviewText,
@@ -65,7 +78,11 @@ export const ReviewModal = () => {
     }
 
     // Éxito al publicar crítica
-    setToastMessage(`¡Crítica publicada para ${albumTitle}! Calificación: ${reviewData.rating} estrellas.`);
+    setToastMessage(
+      isReviewingSong
+        ? `¡Crítica de la canción "${targetTitle}" publicada! Calificación: ${reviewData.rating} ★.`
+        : `¡Crítica del álbum "${albumTitle}" publicada! Calificación: ${reviewData.rating} ★.`
+    );
     setTimeout(() => {
       closeReviewModal();
     }, 1200);
@@ -98,6 +115,8 @@ export const ReviewModal = () => {
             </button>
 
             <ReviewForm
+              initialType={initialType}
+              trackTitle={songTitle}
               albumTitle={albumTitle}
               artistName={artistName}
               onSubmit={handleReviewSubmit}

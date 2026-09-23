@@ -226,6 +226,15 @@ export const ReviewFeedCard = ({
                 — {review.artist}
               </span>
 
+              {/* Badge Canción vs Álbum */}
+              <span className={`px-1.5 py-0.2 rounded text-[9px] font-black uppercase tracking-wider border ${
+                review.type === 'track' || review.trackTitle
+                  ? 'bg-rose-50 dark:bg-[#B80C09]/20 text-[#B80C09] dark:text-rose-300 border-[#B80C09]/30'
+                  : 'bg-purple-50 dark:bg-purple-950/40 text-purple-700 dark:text-purple-300 border-purple-300 dark:border-purple-800/40'
+              }`}>
+                {review.type === 'track' || review.trackTitle ? '🎵 Canción' : '💿 Álbum'}
+              </span>
+
               {/* Botón Seguir Artista */}
               <button
                 type="button"

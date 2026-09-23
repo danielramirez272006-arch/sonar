@@ -26,9 +26,22 @@ const mockAlbum = {
     'Exploración introspectiva de la vulnerabilidad humana, la obsesión y la redención en la era digital. Cada composición entrelaza texturas acústicas con meticulosas capas de sintetizadores modulares, creando una atmósfera sonora cálida pero desgarradora. El concepto lírico profundiza en la finitud, el amor obsesivo y la disolución de la identidad.',
 };
 
+const ALBUM_TRACKS = [
+  { id: 138546803, title: '15 Step', duration: '3:57' },
+  { id: 138546804, title: 'Bodysnatchers', duration: '4:02' },
+  { id: 138546805, title: 'Nude', duration: '4:15' },
+  { id: 138546806, title: 'Weird Fishes / Arpeggi', duration: '5:18' },
+  { id: 138546807, title: 'All I Need', duration: '3:48' },
+  { id: 138546808, title: 'Faust Arp', duration: '2:09' },
+  { id: 138546809, title: 'Reckoner', duration: '4:50' },
+  { id: 138546810, title: 'House of Cards', duration: '5:28' },
+  { id: 138546811, title: 'Jigsaw Falling Into Place', duration: '4:09' },
+  { id: 138546812, title: 'Videotape', duration: '4:39' },
+];
+
 export const AlbumDetailPage = () => {
   const { user } = useAuth();
-  const { playTrack, isPlaying, currentTrack } = usePlayer();
+  const { playTrack, isPlaying, currentTrack, openReviewModal } = usePlayer();
   const userId = user?.id || null;
 
   const [isSaved, setIsSaved] = useState(false);
@@ -42,13 +55,32 @@ export const AlbumDetailPage = () => {
       avatarBg: '#5c1d5e',
       date: 'Hace 2 horas',
       rating: 5,
-      albumTitle: 'In Rainbows',
+      type: 'track',
+      trackTitle: 'Reckoner',
+      albumTitle: 'Reckoner',
       artist: 'Radiohead',
       cover: mockAlbum.cover,
       content:
         'Una obra maestra que equilibra con elegancia la experimentación electrónica y la calidez acústica. "Reckoner" sigue siendo una de las piezas mejor mezcladas en la historia de la música moderna.',
       likesCount: 142,
       commentsCount: 18,
+    },
+    {
+      id: 2,
+      userName: 'Marcos Vinyl',
+      userHandle: '@marcos_vinyl',
+      avatarLetter: 'M',
+      avatarBg: '#B80C09',
+      date: 'Hace 4 horas',
+      rating: 5,
+      type: 'album',
+      albumTitle: 'In Rainbows',
+      artist: 'Radiohead',
+      cover: mockAlbum.cover,
+      content:
+        'El disco más perfecto y cohesivo de la carrera de Radiohead. La producción analógica y calidez sonora en prensado de 180g es una experiencia incomparable.',
+      likesCount: 98,
+      commentsCount: 12,
     },
   ]);
 
@@ -83,6 +115,11 @@ export const AlbumDetailPage = () => {
       window.location.hash = '#login';
       return;
     }
+
+    const effectiveTitle = reviewData.type === 'track' && reviewData.trackTitle
+      ? reviewData.trackTitle
+      : mockAlbum.title;
+
     const newReview = {
       id: Date.now(),
       userName: user?.username || 'Usuario Sonar',
@@ -91,16 +128,23 @@ export const AlbumDetailPage = () => {
       avatarBg: user?.avatarBg || '#B80C09',
       date: 'Ahora mismo',
       rating: reviewData.rating || 5,
-      albumTitle: mockAlbum.title,
+      type: reviewData.type || 'album',
+      trackTitle: reviewData.trackTitle || '',
+      albumTitle: effectiveTitle,
       artist: mockAlbum.artist,
       cover: mockAlbum.cover,
       content: reviewData.reviewText,
       likesCount: 0,
       commentsCount: 0,
+      hasSpoilers: reviewData.hasSpoilers,
     };
 
     setAlbumReviews((prev) => [newReview, ...prev]);
-    setToastMessage(`¡Tu reseña de ${mockAlbum.title} fue publicada con éxito!`);
+    setToastMessage(
+      reviewData.type === 'track'
+        ? `¡Tu crítica de la canción "${effectiveTitle}" fue publicada con éxito!`
+        : `¡Tu crítica del disco "${mockAlbum.title}" fue publicada con éxito!`
+    );
   };
 
   return (
@@ -217,6 +261,85 @@ export const AlbumDetailPage = () => {
                   <span className="text-[#B80C09] font-bold">100% Verificado</span>
                 </div>
               </article>
+
+              {/* Lista de Canciones del Disco con Botón para Criticar Canción Individual */}
+              <div className="p-6 sm:p-8 rounded-3xl bg-white dark:bg-[#4B2840] border border-[#e6d5e2] dark:border-white/10 shadow-[0_8px_30px_-4px_rgba(75,40,64,0.06)] dark:shadow-[0_10px_35px_-5px_rgba(0,0,0,0.4)] transition-colors duration-300">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-4 border-b border-[#e6d5e2]/80 dark:border-white/10 mb-4 gap-2">
+                  <div className="flex items-center gap-2">
+                    <span className="material-symbols-outlined text-[22px] text-[#B80C09]">queue_music</span>
+                    <h3 className="text-lg sm:text-xl font-extrabold text-[#231123] dark:text-white tracking-tight">
+                      Pistas del Álbum ({ALBUM_TRACKS.length})
+                    </h3>
+                  </div>
+                  <span className="text-xs text-[#5c435a] dark:text-[#B89CB0] font-medium">
+                    Haz clic en <span className="text-[#B80C09] font-bold">Criticar</span> para reseñar una canción
+                  </span>
+                </div>
+
+                <div className="flex flex-col divide-y divide-gray-100 dark:divide-white/5">
+                  {ALBUM_TRACKS.map((track, idx) => (
+                    <div
+                      key={track.id}
+                      className="py-3 flex items-center justify-between gap-3 group hover:bg-[#fff0f4] dark:hover:bg-white/5 px-2 rounded-xl transition-colors"
+                    >
+                      <div className="flex items-center gap-3 min-w-0 flex-1">
+                        <span className="font-mono text-xs text-gray-400 w-5 text-right shrink-0">
+                          {idx + 1 < 10 ? `0${idx + 1}` : idx + 1}
+                        </span>
+                        <div className="flex flex-col min-w-0 text-left">
+                          <span className="text-sm font-bold text-[#231123] dark:text-white truncate group-hover:text-[#B80C09] transition-colors">
+                            {track.title}
+                          </span>
+                          <span className="text-[11px] text-[#5c435a] dark:text-[#B89CB0]">
+                            {mockAlbum.artist} · {track.duration}
+                          </span>
+                        </div>
+                      </div>
+
+                      <div className="flex items-center gap-2 shrink-0">
+                        <button
+                          type="button"
+                          onClick={() =>
+                            playTrack({
+                              id: track.id,
+                              trackId: track.id,
+                              deezerId: mockAlbum.deezerId,
+                              title: track.title,
+                              artist: mockAlbum.artist,
+                              album: mockAlbum.title,
+                              cover: mockAlbum.cover,
+                            })
+                          }
+                          className="w-8 h-8 rounded-full bg-gray-100 dark:bg-white/10 hover:bg-[#B80C09] hover:text-white text-[#231123] dark:text-white flex items-center justify-center transition-colors cursor-pointer"
+                          title="Reproducir muestra"
+                        >
+                          <span className="material-symbols-outlined text-[18px]">play_arrow</span>
+                        </button>
+
+                        <button
+                          type="button"
+                          onClick={() =>
+                            openReviewModal({
+                              id: track.id,
+                              trackId: track.id,
+                              title: track.title,
+                              album: mockAlbum.title,
+                              artist: mockAlbum.artist,
+                              cover: mockAlbum.cover,
+                              type: 'track',
+                            })
+                          }
+                          className="px-2.5 py-1.5 rounded-xl bg-rose-50 dark:bg-[#B80C09]/20 hover:bg-[#B80C09] hover:text-white text-[#B80C09] dark:text-rose-300 border border-rose-200 dark:border-[#B80C09]/30 text-xs font-bold transition-all flex items-center gap-1 cursor-pointer"
+                          title={`Escribir crítica de ${track.title}`}
+                        >
+                          <span className="material-symbols-outlined text-[14px]">rate_review</span>
+                          <span className="hidden sm:inline">Criticar Canción</span>
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
 
               {/* Formulario de Calificación y Reseña */}
               <ReviewForm
