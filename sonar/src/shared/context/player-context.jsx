@@ -208,6 +208,23 @@ export const PlayerProvider = ({ children }) => {
     setReviewModalAlbum(null);
   }, []);
 
+  const [playbackSpeed, setPlaybackSpeedState] = useState(1);
+
+  const setPlaybackSpeed = useCallback((speed) => {
+    if (audioRef.current && isFinite(speed)) {
+      audioRef.current.playbackRate = speed;
+      setPlaybackSpeedState(speed);
+    }
+  }, []);
+
+  const skipSeconds = useCallback((delta) => {
+    if (audioRef.current) {
+      const newTime = Math.max(0, Math.min(audioRef.current.duration || 99999, audioRef.current.currentTime + delta));
+      audioRef.current.currentTime = newTime;
+      setCurrentTime(newTime);
+    }
+  }, []);
+
   return (
     <PlayerContext.Provider
       value={{
@@ -216,6 +233,9 @@ export const PlayerProvider = ({ children }) => {
         isLoading,
         currentTime,
         duration,
+        playbackSpeed,
+        setPlaybackSpeed,
+        skipSeconds,
         playTrack,
         pauseTrack,
         closePlayer,

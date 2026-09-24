@@ -16,7 +16,7 @@ const DEFAULT_PODCAST_EPISODES = [
     description: 'Análisis de la presencia de Thundercat en el bajo, los arreglos de vientos de Kamasi Washington y cómo se mezcló para mantener la pegada del hip-hop con la dinámica del jazz en vivo.',
     deezerId: 9896728,
     audioUrl: '/audio/La_orquestación_de_To_Pimp_a_Butterfly.m4a',
-    cover: 'https://cdn-images.dzcdn.net/images/cover/00dd0da365a94b1829302d6b7fec70e6/1000x1000-000000-80-0-0.jpg'
+    cover: 'https://images.unsplash.com/photo-1511192336575-5a79af67a629?w=800&auto=format&fit=crop&q=80'
   },
   {
     id: 'base-2',
@@ -28,7 +28,7 @@ const DEFAULT_PODCAST_EPISODES = [
     description: 'Daft Punk y el arte de usar compresores Alesis 3630 para crear el efecto de bombeo del French House y cómo aislar micro-samples de vinilos de los 70s y 80s.',
     deezerId: 302127,
     audioUrl: '/audio/El_bombeo_del_Alesis_3630_en_Discovery.m4a',
-    cover: 'https://cdn-images.dzcdn.net/images/cover/5718f7c81c27e0b2417e2a4c45224f8a/1000x1000-000000-80-0-0.jpg'
+    cover: 'https://images.unsplash.com/photo-1598488035139-bdbb2231ce04?w=800&auto=format&fit=crop&q=80'
   },
   {
     id: 'base-3',
@@ -40,7 +40,7 @@ const DEFAULT_PODCAST_EPISODES = [
     description: 'Analizamos las cintas multipista de 2007: el uso de sintetizadores analógicos, la compresión de la caja de Phil Selway y la reverberación de placa de Thom Yorke.',
     deezerId: 14880659,
     audioUrl: '/audio/La_ingeniería_secreta_de_In_Rainbows.m4a',
-    cover: 'https://cdn-images.dzcdn.net/images/cover/a175af9b7d329bc678cb4d26fc13d6de/1000x1000-000000-80-0-0.jpg'
+    cover: 'https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=800&auto=format&fit=crop&q=80'
   },
   {
     id: 'base-4',
@@ -52,7 +52,7 @@ const DEFAULT_PODCAST_EPISODES = [
     description: 'Mitos y verdades sobre la distorsión armónica de segundo orden, la curva de ecualización RIAA y las ventajas físicas de prensar a 45 RPM.',
     deezerId: 10709540,
     audioUrl: '/audio/Por_qué_el_vinilo_suena_más_cálido.m4a',
-    cover: 'https://cdn-images.dzcdn.net/images/cover/de5b9b704cd4ec36f8bf49beb3e17ba2/1000x1000-000000-80-0-0.jpg'
+    cover: 'https://images.unsplash.com/photo-1539185441755-769473a23570?w=800&auto=format&fit=crop&q=80'
   },
   {
     id: 'base-5',
@@ -64,7 +64,7 @@ const DEFAULT_PODCAST_EPISODES = [
     description: 'Un recorrido sonoro por las técnicas de producción analógica, compresión sidechain y micro-texturas acústicas.',
     deezerId: 537883642,
     audioUrl: '/audio/Ingeniería_sonora_tras_Daft_Punk_y_Radiohead.m4a',
-    cover: 'https://cdn-images.dzcdn.net/images/cover/4bd6b0232c2092faf145101453cb1051/1000x1000-000000-80-0-0.jpg'
+    cover: 'https://images.unsplash.com/photo-1508700115892-45ecd05ae2ad?w=800&auto=format&fit=crop&q=80'
   }
 ];
 
@@ -181,8 +181,10 @@ export const PodcastsPage = () => {
       audioUrl: newPodcast.audioUrl || null,
       cover:
         newPodcast.cover ||
-        'https://cdn-images.dzcdn.net/images/cover/a175af9b7d329bc678cb4d26fc13d6de/1000x1000-000000-80-0-0.jpg',
+        'https://images.unsplash.com/photo-1590602847861-f357a9332bbc?w=800&auto=format&fit=crop&q=80',
       isCustom: true,
+      type: 'podcast',
+      isPodcast: true,
     };
 
     const updated = [createdEpisode, ...customEpisodes];
@@ -218,6 +220,11 @@ export const PodcastsPage = () => {
       cover: ep.cover,
       preview: ep.audioUrl || null,
       previewUrl: ep.audioUrl || null,
+      type: 'podcast',
+      isPodcast: true,
+      hosts: ep.hosts,
+      description: ep.description,
+      durationStr: ep.duration,
     });
   };
 
