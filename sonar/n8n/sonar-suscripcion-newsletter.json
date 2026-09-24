@@ -1,0 +1,149 @@
+{
+  "name": "SONAR - Suscripción a Newsletter Musical Audiófilo",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "newsletter",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "e4a2d810-72bb-49e0-8182-3d5f471e98a1",
+      "name": "Webhook Newsletter",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        220,
+        300
+      ],
+      "webhookId": "newsletter"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "c71a396e-5f60-449e-baef-ef110825c931",
+              "leftValue": "={{ $json.body?.email }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "b182d3e4-8521-4f90-89bc-9923a45c6123",
+      "name": "Validar Email",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        440,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "{\n  \"success\": false,\n  \"message\": \"Debes proporcionar una dirección de correo válida para suscribirte al boletín de Sonar.\"\n}",
+        "options": {
+          "responseCode": 400
+        }
+      },
+      "id": "fd903821-4190-482a-bc91-231a4789d311",
+      "name": "Respuesta Error",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [
+        680,
+        440
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const email = $input.item.json.body.email;\nconst name = $input.item.json.body.name || 'Melómano de Sonar';\nconst topics = $input.item.json.body.topics || ['Lanzamientos', 'Hi-Fi', 'Festivales'];\nconst timestamp = new Date().toISOString();\n\nconst emailHtml = `\n<div style=\"font-family: 'Helvetica Neue', Arial, sans-serif; max-width: 600px; margin: 0 auto; background: #231123; color: #FAF5F8; border-radius: 20px; overflow: hidden; border: 1px solid #4B2840;\">\n  <div style=\"background: linear-gradient(135deg, #5c1d5e 0%, #B80C09 100%); padding: 32px 24px; text-align: center;\">\n    <h1 style=\"margin: 0; font-size: 26px; font-weight: 900; letter-spacing: 0.1em; color: #FFFFFF;\">SONAR · NOTICIAS & RADAR AUDIÓFILO</h1>\n    <p style=\"margin: 8px 0 0; font-size: 13px; color: #FDDDE6;\">Buen criterio. Mejor música.</p>\n  </div>\n  <div style=\"padding: 32px 24px;\">\n    <h2 style=\"font-size: 20px; font-weight: 800; color: #FFFFFF;\">¡Bienvenido al boletín, ${name}!</h2>\n    <p style=\"font-size: 14px; line-height: 1.6; color: #DCDCDD;\">Te has suscrito con éxito al radar semanal de Sonar. Cada semana recibirás análisis de nuevos lanzamientos, guías de hardware analógico, crónicas de festivales y reediciones audiófilas exclusivas.</p>\n    <div style=\"background: #4B2840; border-radius: 12px; padding: 16px; margin: 20px 0;\">\n      <h3 style=\"margin: 0 0 8px; font-size: 12px; text-transform: uppercase; color: #ff8c8a; font-weight: 800;\">Tus temas seleccionados:</h3>\n      <ul style=\"margin: 0; padding-left: 20px; font-size: 13px; color: #FAF5F8;\">\n        ${topics.map(t => `<li>${t}</li>`).join('')}\n      </ul>\n    </div>\n    <p style=\"font-size: 12px; color: #A08C9D;\">Si deseas personalizar tus temas o pausar el boletín, visita tu perfil en <a href=\"http://localhost:5173/#usuario\" style=\"color: #B80C09; text-decoration: none; font-weight: bold;\">Sonar</a>.</p>\n  </div>\n</div>\n`;\n\nreturn {\n  json: {\n    email,\n    name,\n    topics,\n    timestamp,\n    subject: '¡Bienvenido al Radar Semanal de Sonar!',\n    emailHtml\n  }\n};"
+      },
+      "id": "a9018423-1492-49aa-9912-7819ab32c091",
+      "name": "Preparar Plantilla de Email",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        680,
+        220
+      ]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={\n  \"success\": true,\n  \"message\": \"¡Suscripción confirmada! Te hemos enviado un correo de bienvenida a \" + $json.email + \".\",\n  \"subscriber\": {\n    \"email\": $json.email,\n    \"name\": $json.name,\n    \"topics\": $json.topics,\n    \"subscribedAt\": $json.timestamp\n  }\n}",
+        "options": {
+          "responseCode": 200
+        }
+      },
+      "id": "e9314810-5829-4bc0-9812-38192a4bc819",
+      "name": "Respuesta Exitosa",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [
+        920,
+        220
+      ]
+    }
+  ],
+  "connections": {
+    "Webhook Newsletter": {
+      "main": [
+        [
+          {
+            "node": "Validar Email",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Validar Email": {
+      "main": [
+        [
+          {
+            "node": "Preparar Plantilla de Email",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Respuesta Error",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Preparar Plantilla de Email": {
+      "main": [
+        [
+          {
+            "node": "Respuesta Exitosa",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  }
+}
