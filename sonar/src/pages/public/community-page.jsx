@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { useReviews } from '../../features/reviews/use-reviews.js';
 import Navbar from '../../shared/components/layout/navbar';
 import Footer from '../../shared/components/layout/footer';
 import ReviewFeedCard from '../../features/reviews/components/review-feed-card';
@@ -168,7 +167,7 @@ export const CommunityPage = () => {
 
         // Normalizamos y vinculamos usuarios a las reseñas
         const formattedApiReviews = rawReviews
-          .filter((r) => r.status !== 'rejected')
+          .filter((r) => r.status === 'approved')
           .map((r) => {
             const author = rawUsers.find((u) => String(u.id) === String(r.userId));
             return {
@@ -359,7 +358,8 @@ export const CommunityPage = () => {
   // 3. PUBLICAR CRÍTICA EN LA API Y EL FEED
   const handlePublishReview = async (e) => {
     e.preventDefault();
-    if (!reviewText.trim()) return;
+    if (!user) { window.location.assign('#login'); return; }
+    if (isSubmitting || !reviewText.trim() || !selectedAlbum) return;
 
     setIsSubmitting(true);
 
@@ -375,40 +375,28 @@ export const CommunityPage = () => {
       albumTitle: selectedAlbum.title,
       artist: selectedAlbum.artist,
       deezerId: selectedAlbum.id,
+      albumId: String(selectedAlbum.id),
       cover: selectedAlbum.cover || selectedAlbum.cover_medium,
       content: reviewText.trim(),
       likesCount: 0,
       commentsCount: 0,
       tags: selectedReviewTags.length > 0 ? selectedReviewTags : ['Comunidad'],
-      status: 'approved',
+      status: 'pending_moderation',
       aiFlagged: false,
     };
 
     try {
-      // POST al endpoint /reviews de json-server
-      await createReview(newReviewData);
+      const saved = await createReview(newReviewData);
+      interactionsService.addUserReview(user.id, saved);
+      setToastMessage({ title: 'Tu cr?tica fue enviada a moderaci?n.', type: 'success' });
+      setReviewText('');
+      setAlbumSearchQuery('');
+      setIsComposing(false);
     } catch (err) {
-      console.warn('Persistencia en API mock falló, guardando en memoria:', err);
+      setToastMessage({ title: err.message || 'No se pudo guardar la rese?a.', type: 'error' });
+    } finally {
+      setIsSubmitting(false);
     }
-
-    // Registrar también en el historial de interacciones del usuario
-    if (user?.id) {
-      interactionsService.addReview({
-        id: newReviewData.id,
-        userId: user.id,
-        albumTitle: newReviewData.albumTitle,
-        artist: newReviewData.artist,
-        cover: newReviewData.cover,
-        rating: newReviewData.rating,
-        content: newReviewData.content,
-      });
-    }
-
-    setReviews([newReviewData, ...reviews]);
-    setReviewText('');
-    setAlbumSearchQuery('');
-    setIsComposing(false);
-    setIsSubmitting(false);
   };
 
   // Filtrado y ordenamiento del feed

@@ -120,59 +120,17 @@ export const ReviewModal = () => {
       ? reviewData.trackTitle
       : albumTitle;
 
-    // 1. Guardar en interactionsService (LocalStorage / Store para el perfil de usuario activo)
-    const newLocalReview = interactionsService.addUserReview(effectiveUserId, {
-      albumTitle: targetTitle,
-      parentAlbum: albumTitle,
-      trackTitle: isReviewingSong ? targetTitle : '',
-      type: reviewData.type || 'album',
-      artist: artistName,
-      cover,
-      rating: reviewData.rating,
-      content: reviewData.reviewText,
-      userName: effectiveUserName,
-      userHandle: effectiveUserHandle,
-      avatarLetter: effectiveUserName.charAt(0).toUpperCase(),
-      avatarBg: user?.avatarBg || user?.avatarColor || '#B80C09',
-      hasSpoilers: reviewData.hasSpoilers,
+    const saved = await createReview({
+      userId: effectiveUserId, userName: effectiveUserName,
+      albumId: String(reviewModalAlbum.albumId || deezerId), albumTitle: targetTitle,
+      parentAlbum: albumTitle, type: reviewData.type || 'album',
+      trackTitle: isReviewingSong ? targetTitle : '', artist: artistName, cover,
+      rating: reviewData.rating, content: reviewData.reviewText,
+      hasSpoilers: reviewData.hasSpoilers, status: 'pending_moderation', aiFlagged: false,
     });
-
-    // 2. Sincronizar con API backend
-    try {
-      await createReview({
-        id: `rev-${Date.now()}`,
-        userId: effectiveUserId,
-        albumId: deezerId ? String(deezerId) : `item_${Date.now()}`,
-        albumTitle: targetTitle,
-        type: reviewData.type || 'album',
-        trackTitle: isReviewingSong ? targetTitle : '',
-        artist: artistName,
-        rating: reviewData.rating,
-        content: reviewData.reviewText,
-        avatarBg: user?.avatarBg || user?.avatarColor || '#B80C09',
-        status: 'approved',
-        aiFlagged: false,
-        createdAt: new Date().toISOString(),
-      });
-    } catch (e) {
-      console.warn('Backend API no disponible (guardado en almacenamiento local):', e);
-    }
-
-    // 3. Emitir evento para actualizar toda la interfaz en tiempo real
-    if (typeof window !== 'undefined') {
-      window.dispatchEvent(
-        new CustomEvent('sonar:review-created', {
-          detail: newLocalReview,
-        })
-      );
-    }
-
-    // Éxito al publicar crítica
-    setToastMessage(
-      isReviewingSong
-        ? `¡Crítica de la canción "${targetTitle}" publicada! Calificación: ${reviewData.rating} ★.`
-        : `¡Crítica del álbum "${albumTitle}" publicada! Calificación: ${reviewData.rating} ★.`
-    );
+    interactionsService.addUserReview(effectiveUserId, { ...saved, userHandle: effectiveUserHandle });
+    window.dispatchEvent(new CustomEvent('sonar:review-created', { detail: saved }));
+    setToastMessage('Crítica enviada a moderación para ' + targetTitle + '.');
     setTimeout(() => {
       closeReviewModal();
     }, 1200);

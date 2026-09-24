@@ -1,63 +1,41 @@
-# 🌐 02. Portal Público y Experiencia de Usuario
+# Portal Público, Experiencia Musical y Perfil de Usuario — SONAR
 
-Este documento describe todas las secciones, componentes y funcionalidades interactivas disponibles para los visitantes y miembros de la comunidad en el portal público de **SONAR**.
+## 1. Experiencia Musical y Conexión con Deezer
 
----
-
-## 1. 🎵 Portada Principal (`HomePage`)
-**Rutas:** `/#explore`, `/`, `/#home`  
-**Archivo:** [`sonar/src/pages/public/home-page.jsx`](file:///c:/Users/MAURICIO/OneDrive/Documentos/sonar/sonar/src/pages/public/home-page.jsx)
-
-### Módulos Destacados:
-1. **Álbum de la Semana (`AlbumOfTheWeek`)**:
-   - Hero editorial con arte de portada y disco de vinilo físico en rotación continua (*spinning vinyl*).
-   - Datos de masterización (ej. *Direct Metal Mastering*, 180 gramos, master 24-bit/96kHz).
-   - Botón interactivo de preescucha analógica y enlace al detalle del álbum.
-2. **Buscador Principal (`HeroSearch`)**:
-   - Barra de búsqueda con autocompletado en tiempo real.
-   - Filtros rápidos por géneros (Art Pop, IDM, Jazz Fusión, Post-Rock, Ambient).
-3. **Reseñas Destacadas (`FeaturedReviews`)**:
-   - Tarjetas de crítica con calificación en estrellas, citas destacadas y badge de oyente verificado.
-4. **Cuadrícula de Tendencias (`TrendingGrid`)**:
-   - Los lanzamientos y reediciones más comentados de la semana por la comunidad.
+El portal integra búsqueda y reproducción directa a través de [deezer-service.js](../src/shared/services/deezer-service.js):
+- **Búsqueda Dinámica**: Búsqueda en tiempo real desde el Navbar y la página de catálogo con debounce para optimizar peticiones.
+- **Streaming de Muestras**: Reproducción en alta fidelidad (muestras de 30 segundos) controladas por [global-audio-player.jsx](../src/shared/components/layout/global-audio-player.jsx).
+- **Modo Vinilo Inmersivo ([VinylModePage](../src/pages/public/vinyl-mode-page.jsx))**: Interfaz con animación giratoria de disco de vinilo, control de velocidad (33⅓ / 45 RPM) y selección de pistas.
 
 ---
 
-## 2. 💿 Detalle de Álbum (`AlbumDetailPage`)
-**Rutas:** `/#album`, `/#album/:id`  
-**Archivo:** [`sonar/src/pages/public/album-detail-page.jsx`](file:///c:/Users/MAURICIO/OneDrive/Documentos/sonar/sonar/src/pages/public/album-detail-page.jsx)
+## 2. Comunidad, Críticas y Ensayos
 
-### Características:
-- **Ficha Técnica**: Sello discográfico, año de prensado, formato y duración total.
-- **Tracklist Interactivo**: Lista de pistas con duración, botón de reproducción de muestras y marcador de temas favoritos.
-- **Sección de Críticas y Puntuación**: Desglose de calificaciones de los usuarios y formulario para publicar una nueva reseña.
-
----
-
-## 3. 👥 Comunidad Audiófila (`CommunityPage`)
-**Rutas:** `/#community`  
-**Archivo:** [`sonar/src/pages/public/community-page.jsx`](file:///c:/Users/MAURICIO/OneDrive/Documentos/sonar/sonar/src/pages/public/community-page.jsx)
-
-### Características:
-- **Feed Social**: Actividad reciente de melómanos, reseñas recién publicadas y debates en curso.
-- **Filtros por Temática**: Hilos de discusión sobre equipos de audio Hi-Fi, cuidado de agujas y coleccionismo.
+- **Feed de Críticas del Mes ([ReviewsFeedPage](../src/pages/public/reviews-feed-page.jsx))**: Espacio editorial donde los críticos y usuarios publican ensayos sonoros.
+  - Botón **«Publicar Mi Crítica»** conectado al modal centralizado [ReviewModal](../src/shared/components/layout/review-modal.jsx).
+  - Botón **«Criticar»** directo en cada tarjeta de reseña para calificar cualquier disco inmediatamente.
+  - Integración de Text-to-Speech (`TTSButton`) para escuchar los ensayos mediante síntesis de voz.
+- **Interacciones Comunitarias**: Likes con criterio audiófilo, comentarios con respuestas anidadas e hilos de debate gestionados por [interactions-service.js](../src/shared/services/interactions-service.js).
 
 ---
 
-## 4. 🔑 Autenticación y Cuentas
-- **Inicio de Sesión (`LoginPage`)**: [`sonar/src/pages/public/login-page.jsx`](file:///c:/Users/MAURICIO/OneDrive/Documentos/sonar/sonar/src/pages/public/login-page.jsx)  
-  Formulario de credenciales con validación, recuperación de contraseña y soporte de acceso para curadores.
-- **Registro de Usuario (`RegisterPage`)**: [`sonar/src/pages/public/register-page.jsx`](file:///c:/Users/MAURICIO/OneDrive/Documentos/sonar/sonar/src/pages/public/register-page.jsx)  
-  Creación de perfil audiófilo seleccionando géneros de interés.
-- **Perfil y Guardados (`UserDashboardPage`)**: [`sonar/src/pages/user/user-dashboard-page.jsx`](file:///c:/Users/MAURICIO/OneDrive/Documentos/sonar/sonar/src/pages/user/user-dashboard-page.jsx)  
-  Colección personal de vinilos guardados, historial de reseñas y configuración de perfil.
+## 3. Biblioteca Personal y Colecciones Guardadas
+
+En [SavedAlbumsPage](../src/pages/user/saved-albums-page.jsx) y [UserDashboardPage](../src/pages/user/user-dashboard-page.jsx):
+- Guardado instantáneo con feedback visual inmediato (`bookmark_add` a `bookmark_added`).
+- Filtros por categoría: `Todos`, `🎵 Canciones`, `💿 Álbumes`, `Favoritos`, `Colección Vinilo`, `Por Escuchar`.
+- Gestión reactiva del estado sincronizada mediante el evento global `sonar:collection-changed`.
 
 ---
 
-## 5. 📜 Páginas Institucionales y Soporte
-- **Acerca de Sonar (`AboutPage`)**: [`sonar/src/pages/public/about-page.jsx`](file:///c:/Users/MAURICIO/OneDrive/Documentos/sonar/sonar/src/pages/public/about-page.jsx)  
-  El manifiesto de escucha atenta y crítica musical con criterio.
-- **Términos y Condiciones (`TermsPage`)**: [`sonar/src/pages/public/terms-page.jsx`](file:///c:/Users/MAURICIO/OneDrive/Documentos/sonar/sonar/src/pages/public/terms-page.jsx)  
-  Lineamientos de convivencia y moderación comunitaria.
-- **Error 404 Disco Rayado (`NotFoundPage`)**: [`sonar/src/pages/public/not-found-page.jsx`](file:///c:/Users/MAURICIO/OneDrive/Documentos/sonar/sonar/src/pages/public/not-found-page.jsx)  
-  Pantalla de página no encontrada con animación de disco rayado y botón de retorno al inicio.
+## 4. Avatar Studio y Personalización de Perfil
+
+En [EditProfileForm](../src/features/profile/components/edit-profile-form.jsx):
+- **Avatar Studio**:
+  - Subida de imágenes locales mediante **Drag & Drop** o selección de archivo (PNG, JPG, WEBP, GIF hasta 8MB) convertidas a Data URL.
+  - 11 Arquetipos Blobatar SVG musicales (Vinilófilo, Synth Master, Jazzista, etc.).
+  - 24 Colores sólidos curados y 10 Degradados modernos de alta resolución.
+- **Equipamiento Audiófilo**: Registro de auriculares de referencia, tocadiscos y amplificadores DAC.
+- **Preferencias Musicales**: Selección dinámica de géneros para alimentar recomendaciones personalizadas.
+- **Seguridad**: Cambio de contraseña cifrada con SHA-256 + salt criptográfico.
+- **Zona de Peligro (Eliminación de Cuenta)**: Modal de confirmación explícita para borrar la cuenta permanentemente cumpliendo con el ciclo completo de CRUD.

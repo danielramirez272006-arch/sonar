@@ -29,6 +29,8 @@ export const Avatar = ({
   backgroundColor,
   bg,
   avatarSeed,
+  avatarHue,
+  avatarTone,
   avatarStyle = 'blobatar',
   avatarIcon,
   size = 'md',
@@ -98,7 +100,7 @@ export const Avatar = ({
           className="text-white drop-shadow-md"
         />
       ) : (
-        <Blobatar name={effectiveSeed} size={currentSize.num} animate="hover" />
+        <Blobatar hue={avatarHue} tone={avatarTone} name={effectiveSeed} size={currentSize.num} animate="hover" />
       )}
     </motion.div>
   );

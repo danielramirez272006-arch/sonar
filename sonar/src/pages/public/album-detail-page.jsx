@@ -10,6 +10,8 @@ import Toast from '../../shared/components/ui/toast';
 import { useAuth } from '../../shared/context/auth-context';
 import { usePlayer } from '../../shared/context/player-context';
 import { interactionsService } from '../../shared/services/interactions-service';
+import { TTSButton } from '../../shared/components/a11y/tts-button';
+import { handleImageFallbackError, getFallbackCoverForAlbum } from '../../shared/services/recommendations-service';
 
 const mockAlbum = {
   id: 14880659,
@@ -171,17 +173,9 @@ export const AlbumDetailPage = () => {
       hasSpoilers: reviewData.hasSpoilers,
     };
 
-    try {
-      const saved = await createReview(newReview);
-      setAlbumReviews((prev) => [saved || newReview, ...prev]);
-    } catch {
-      setAlbumReviews((prev) => [newReview, ...prev]);
-    }
-    setToastMessage(
-      reviewData.type === 'track'
-        ? `¡Tu crítica de la canción "${effectiveTitle}" fue publicada!`
-        : `¡Tu crítica del disco "${mockAlbum.title}" fue publicada!`
-    );
+    const saved = await createReview(newReview);
+    setAlbumReviews((prev) => [saved, ...prev]);
+    setToastMessage(`Tu reseña de ${mockAlbum.title} fue enviada a moderación.`);
   };
 
   return (
@@ -205,12 +199,9 @@ export const AlbumDetailPage = () => {
               className="w-48 h-48 sm:w-60 sm:h-60 lg:w-72 lg:h-72 rounded-3xl overflow-hidden shrink-0 shadow-[0_20px_50px_-10px_rgba(0,0,0,0.7)] border border-white/15 bg-[#180e1a]"
             >
               <img
-                src={mockAlbum.cover || 'https://cdn-images.dzcdn.net/images/cover/a175af9b7d329bc678cb4d26fc13d6de/500x500-000000-80-0-0.jpg'}
+                src={mockAlbum.cover || getFallbackCoverForAlbum(mockAlbum)}
                 alt={mockAlbum.title}
-                onError={(e) => {
-                  e.currentTarget.onerror = null;
-                  e.currentTarget.src = 'https://cdn-images.dzcdn.net/images/cover/a175af9b7d329bc678cb4d26fc13d6de/500x500-000000-80-0-0.jpg';
-                }}
+                onError={(e) => handleImageFallbackError(e, mockAlbum)}
                 className="w-full h-full object-cover"
               />
             </motion.div>
@@ -277,16 +268,27 @@ export const AlbumDetailPage = () => {
             <div className="md:col-span-2 flex flex-col gap-8">
               {/* Contenedor: Contexto Lírico (Poblado por IA) */}
               <article className="p-6 sm:p-8 rounded-3xl bg-white dark:bg-[#4B2840] border border-[#e6d5e2] dark:border-white/10 shadow-[0_8px_30px_-4px_rgba(75,40,64,0.06)] dark:shadow-[0_10px_35px_-5px_rgba(0,0,0,0.4)] transition-colors duration-300">
-                <div className="flex items-center gap-2.5 pb-4 border-b border-[#e6d5e2]/80 dark:border-white/10 mb-4">
-                  <span className="material-symbols-outlined text-[20px] text-[#B80C09]" style={{ fontVariationSettings: "'FILL' 1" }}>
-                    auto_awesome
-                  </span>
-                  <h3 className="text-lg sm:text-xl font-extrabold text-[#231123] dark:text-white tracking-tight">
-                    Análisis & Contexto Lírico
-                  </h3>
-                  <span className="ml-auto text-[10px] sm:text-xs font-bold uppercase tracking-wider px-2.5 py-0.5 rounded-full bg-[#f8e9f6] dark:bg-[#231123] text-[#5c1d5e] dark:text-pink-200 border border-[#e6d5e2] dark:border-white/10">
-                    Generado por IA Sonar
-                  </span>
+                <div className="flex items-center gap-2.5 pb-4 border-b border-[#e6d5e2]/80 dark:border-white/10 mb-4 flex-wrap justify-between">
+                  <div className="flex items-center gap-2.5">
+                    <span className="material-symbols-outlined text-[20px] text-[#B80C09]" style={{ fontVariationSettings: "'FILL' 1" }}>
+                      auto_awesome
+                    </span>
+                    <h3 className="text-lg sm:text-xl font-extrabold text-[#231123] dark:text-white tracking-tight">
+                      Análisis & Contexto Lírico
+                    </h3>
+                  </div>
+
+                  <div className="flex items-center gap-2">
+                    <TTSButton
+                      text={mockAlbum.lyricContext}
+                      title={`Análisis lírico de ${mockAlbum.title} por IA Sonar`}
+                      size="sm"
+                      label="Escuchar Análisis"
+                    />
+                    <span className="text-[10px] sm:text-xs font-bold uppercase tracking-wider px-2.5 py-0.5 rounded-full bg-[#f8e9f6] dark:bg-[#231123] text-[#5c1d5e] dark:text-pink-200 border border-[#e6d5e2] dark:border-white/10">
+                      Generado por IA
+                    </span>
+                  </div>
                 </div>
 
                 <p className="text-sm sm:text-base text-[#5c435a] dark:text-gray-200 leading-relaxed italic">

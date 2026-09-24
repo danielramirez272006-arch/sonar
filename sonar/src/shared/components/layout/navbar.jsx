@@ -92,14 +92,14 @@ export const Navbar = ({
     if (!navSearch.trim()) return;
     const term = navSearch.trim();
     setIsNavDropdownOpen(false);
-    
+
     sessionStorage.setItem('sonar_pending_search', term);
 
     if (onSearch) {
       onSearch(term);
     }
     window.dispatchEvent(new CustomEvent('sonar:search', { detail: term }));
-    
+
     if (window.location.hash !== '#explore' && window.location.hash !== '') {
       window.location.hash = '#explore';
     } else {
@@ -121,7 +121,7 @@ export const Navbar = ({
       onSearch(album.title);
     }
     window.dispatchEvent(new CustomEvent('sonar:search', { detail: album.title }));
-    
+
     if (window.location.hash !== '#explore' && window.location.hash !== '') {
       window.location.hash = '#explore';
     } else {
@@ -351,6 +351,8 @@ export const Navbar = ({
                   src={authUser?.avatarUrl}
                   name={displayName}
                   avatarBg={authUser?.avatarBg || authUser?.avatarColor}
+                  avatarHue={authUser?.avatarHue}
+                  avatarTone={authUser?.avatarTone}
                   avatarSeed={authUser?.avatarSeed}
                   avatarStyle={authUser?.avatarStyle}
                   avatarIcon={authUser?.avatarIcon}

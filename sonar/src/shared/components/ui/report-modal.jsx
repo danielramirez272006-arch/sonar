@@ -78,6 +78,7 @@ export const ReportModal = ({
   const [details, setDetails] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
+  const [submitError, setSubmitError] = useState('');
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
@@ -125,6 +126,7 @@ export const ReportModal = ({
     if (isSubmitting) return;
 
     setIsSubmitting(true);
+    setSubmitError('');
     const chosenReasonObj = REPORT_REASONS.find((r) => r.id === selectedReasonId) || REPORT_REASONS[0];
 
     const reportData = {
@@ -148,7 +150,7 @@ export const ReportModal = ({
         onClose();
       }, 2200);
     } catch (err) {
-      console.error('Error enviando reporte:', err);
+      setSubmitError(err.message || 'No se pudo enviar el reporte.');
     } finally {
       setIsSubmitting(false);
     }
@@ -282,6 +284,7 @@ export const ReportModal = ({
                   </label>
 
                   <div className="flex flex-col gap-2">
+                    {submitError && <p role="alert">{submitError}</p>}
                     {REPORT_REASONS.map((reason) => {
                       const isSelected = selectedReasonId === reason.id;
                       const IconComponent = reason.icon;

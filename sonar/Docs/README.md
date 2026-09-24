@@ -1,72 +1,61 @@
-# 📚 Índice de Documentación — Plataforma SONAR
+# Índice de Documentación Técnica — SONAR
 
-Bienvenido a la documentación técnica y funcional de **SONAR: Audiophile Curation Hub**, una plataforma social y editorial dedicada a la crítica musical inmersiva, coleccionismo de vinilos y curaduría asistida por Inteligencia Artificial.
-
----
-
-## 🗂️ Estructura de Documentos
-
-1. **[01. Arquitectura y Enrutamiento](file:///c:/Users/MAURICIO/OneDrive/Documentos/sonar/sonar/Docs/01-Arquitectura-y-Enrutamiento.md)**
-   - Sistema de rutas SPA (`AppRouter`).
-   - Gestión de temas Claro/Oscuro (`ThemeProvider`).
-   - Estructura modular del proyecto y diseño atómico.
-
-2. **[02. Portal Público y Experiencia de Usuario](file:///c:/Users/MAURICIO/OneDrive/Documentos/sonar/sonar/Docs/02-Portal-Publico.md)**
-   - Home y Álbum de la semana con disco de vinilo interactivo.
-   - Buscador global y filtros por género.
-   - Detalle de Álbum, Comunidad y Reproductor.
-   - Páginas de Autenticación, Acerca de, Términos y Error 404.
-
-3. **[03. Consola de Administración y Moderación](file:///c:/Users/MAURICIO/OneDrive/Documentos/sonar/sonar/Docs/03-Consola-Administracion-y-Moderacion.md)**
-   - Dashboard administrativo y métricas KPI.
-   - Cola de moderación en vivo y acciones (Aprobar / Rechazar / Analizar).
-   - Feed de actividad reciente y exportación CSV.
-
-4. **[04. Servicios API y Motor de Inteligencia Artificial](file:///c:/Users/MAURICIO/OneDrive/Documentos/sonar/sonar/Docs/04-Servicios-API-y-Motor-IA.md)**
-   - Integración con API REST local (JSON Server).
-   - Servicio de auditoría lírica y detección de contenido con IA.
-   - Webhooks de automatización con n8n.
-
-5. **[Diseño Editorial y Estética Audiófila](file:///c:/Users/MAURICIO/OneDrive/Documentos/sonar/sonar/Docs/Design.md)**
-   - Guía de estilos, paleta de colores cromática y tokens de diseño.
+Bienvenido al centro de documentación técnica y operativa de **SONAR**, la plataforma y bitácora musical para audiófilos y críticos de audio de alta fidelidad.
 
 ---
 
-## 🚀 Guía Rápida de Ejecución Local
+## Índice General de Documentos
 
-### Requisitos Previos
-- Node.js v18+ y npm instalados.
+1. **[01-Arquitectura-y-Enrutamiento.md](01-Arquitectura-y-Enrutamiento.md)**:
+   - Estructura de carpetas modular por dominio (`features`, `pages`, `shared`).
+   - Sistema de enrutamiento dinámico y guardias de seguridad (RBAC).
+   - Gestión de estado global con Context API (`Auth`, `Theme`, `Player`, `Accessibility`).
 
-### Comandos de Arranque
+2. **[02-Portal-Publico.md](02-Portal-Publico.md)**:
+   - Integración musical y streaming de muestras Deezer.
+   - Feed de Críticas del Mes, publicación de reseñas y modo vinilo.
+   - Avatar Studio con subida de imágenes locales (Drag & Drop) y arquetipos Blobatar.
+   - Biblioteca personal y colecciones guardadas.
 
-```bash
-# 1. Instalar dependencias
-cd sonar
-npm install
+3. **[03-Consola-Administracion-y-Moderacion.md](03-Consola-Administracion-y-Moderacion.md)**:
+   - Dashboard de analítica, métricas en tiempo real y gráficos semanales.
+   - Flujo de moderación con aprobación, rechazo y confirmación.
+   - Módulo de Opiniones Coincidentes de la Comunidad.
+   - Indicador visual de conducta y gestión de sanciones.
 
-# 2. Iniciar la API Mock local (JSON Server en puerto 3001)
-npm run api
+4. **[04-Servicios-API-y-Motor-IA.md](04-Servicios-API-y-Motor-IA.md)**:
+   - Cliente API completo (`api-client.js`) con JSON Server.
+   - Integración externa con Deezer API.
+   - Automatización n8n con Webhooks y flujos de recuperación de contraseñas.
+   - Servicio criptográfico SHA-256 con salt aleatorio.
 
-# 3. Iniciar el servidor de desarrollo frontend (Vite en puerto 5173)
-npm run dev
+5. **[05-Sistema-de-Accesibilidad-Universal.md](05-Sistema-de-Accesibilidad-Universal.md)**:
+   - Estándar WCAG 2.1 AA/AAA.
+   - Modos de alto contraste, escala dinámica de fuentes y fuente OpenDyslexic.
+   - Filtros SVG para daltonismo (Protanopía, Deuteranopía, Tritanopía, Acromatopsia).
+   - Lectura por voz (Text-to-Speech) y atajos de teclado globales.
 
-# 4. Ejecutar pruebas unitarias automatizadas (Vitest)
-npm test
-```
+6. **[06-Seguridad-Criptografia-y-Autenticacion.md](06-Seguridad-Criptografia-y-Autenticacion.md)**:
+   - Hashing criptográfico con Web Crypto API.
+   - Control de acceso basado en roles (`admin` / `user`).
+   - Códigos de verificación OTP temporizados (15 min).
+   - Zona de peligro y eliminación definitiva de cuentas (CRUD DELETE).
 
----
+7. **[07-Manual-de-Usuario-y-Guia-Audiophila.md](07-Manual-de-Usuario-y-Guia-Audiophila.md)**:
+   - Guía paso a paso para el usuario final y melómano.
+   - Creación de cuenta, personalización de perfil y equipo de audio.
+   - Cómo escuchar muestras, redactar críticas y organizar colecciones.
 
-## 🗺️ Mapa de Rutas de la Aplicación
+8. **[08-Manual-Tecnico-de-Pruebas-y-Despliegue.md](08-Manual-Tecnico-de-Pruebas-y-Despliegue.md)**:
+   - Manual de ejecución de pruebas automatizadas (18 suites, 95 tests con Vitest).
+   - Guía de inicio local y compilación optimizada con Vite para producción.
 
-| Ruta Hash | Vista | Descripción |
-| :--- | :--- | :--- |
-| `/#explore` / `/` | **Home / Explorar** | Portada con vinilo animado, tendencias y reseñas destacadas. |
-| `/#community` | **Comunidad** | Feed social de melómanos y debates musicales. |
-| `/#album` | **Detalle de Álbum** | Ficha técnica de disco, tracklist y calificaciones. |
-| `/#login` | **Iniciar Sesión** | Acceso para usuarios y curadores. |
-| `/#register` | **Registro** | Creación de cuenta en Sonar. |
-| `/#profile` | **Perfil de Usuario** | Dashboard personal, reseñas publicadas y discos guardados. |
-| `/#dashboard` | **Admin Dashboard** | Métricas operativas, distribución de ratings y exportación. |
-| `/#moderacion` | **Moderación** | Cola de auditoría de reseñas asistida por IA. |
-| `/#about` | **Acerca de** | Manifiesto y propósito del proyecto. |
-| `/#terms` | **Términos** | Términos y condiciones de uso. |
+9. **[09-Catalogo-de-Recursos-y-Modulos-CRUD.md](09-Catalogo-de-Recursos-y-Modulos-CRUD.md)**:
+   - Matriz de recursos del sistema (Usuarios, Reseñas, Colecciones, Géneros, Listas Editoriales y Criterios).
+   - Especificaciones de operaciones Create, Read, Update y Delete.
+
+10. **[requerimientos.md](requerimientos.md)**:
+    - Lista de verificación y auditoría del 100% de requerimientos completados.
+
+11. **[Design.md](Design.md)**:
+    - Lineamientos de identidad visual, paletas cromáticas, tipografía y diseño UI/UX.

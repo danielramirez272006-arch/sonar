@@ -1,7 +1,8 @@
+import { CommunityOpinions } from '../../features/admin/moderation/components/community-opinions.jsx'
 import { ModerationTable } from '../../features/admin/moderation/components/moderation-table.jsx'
 import { EditorialGuide } from '../../features/admin/dashboard/components/editorial-guide.jsx'
 
-export function ModerationPage({ onRefresh, ...props }) {
+export function ModerationPage({ onRefresh, allReviews, ...props }) {
   return (
     <>
       <div className="page-heading">
@@ -27,7 +28,7 @@ export function ModerationPage({ onRefresh, ...props }) {
       </div>
 
       <div className="workspace-grid">
-        <ModerationTable {...props} />
+        <div className="moderation-main"><ModerationTable {...props} /><CommunityOpinions reviews={allReviews ?? props.reviews} users={props.users} busy={props.busy} error={props.error} /></div>
         <aside className="side-stack">
           {/* Tarjeta Motor IA Sonar */}
           <div className="p-6 rounded-xl border border-gray-200 dark:border-white/10 shadow-md bg-white dark:bg-[#4B2840] text-gray-900 dark:text-[#DCDCDD]">

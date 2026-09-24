@@ -1,6 +1,6 @@
 import { userStatus } from '../services/admin-data.js'
 import { createContext, useContext, useMemo, useState } from 'react'
-import { getUserByEmail, createUser, updateUser as updateUserApi } from '../services/api-client.js'
+import { getUserByEmail, createUser, updateUser as updateUserApi, deleteUser as deleteUserApi } from '../services/api-client.js'
 import { hashPassword, verifyPassword } from '../services/crypto-service.js'
 
 // El contexto y el hook se exportan juntos como API de este módulo.
@@ -173,6 +173,21 @@ export function AuthProvider({ children }) {
       }
     }
 
+    async function deleteAccount() {
+      if (!user?.id) throw new Error('Debes haber iniciado sesión para eliminar tu cuenta.')
+      const targetId = user.id
+      try {
+        await deleteUserApi(targetId)
+      } catch {
+        // Fallback local
+      }
+      logout()
+      if (typeof window !== 'undefined') {
+        window.location.hash = '#home'
+      }
+      return true
+    }
+
     function updateUser(changes) {
       setUser((prev) => {
         const updated = { ...(prev || {}), ...changes }
@@ -201,6 +216,7 @@ export function AuthProvider({ children }) {
       register,
       changePassword,
       logout,
+      deleteAccount,
       updateUser,
       hasRole,
       isAdmin: hasRole('admin'),

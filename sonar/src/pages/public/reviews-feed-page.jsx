@@ -159,8 +159,19 @@ export const ReviewsFeedPage = () => {
 
           <button
             type="button"
-            onClick={() => openReviewModal()}
-            className="flex items-center gap-2 px-5 py-3 rounded-xl bg-[#B80C09] text-white text-xs sm:text-sm font-bold uppercase tracking-wider shadow-lg hover:bg-[#9c0a07] transition-all cursor-pointer self-start md:self-auto shrink-0"
+            onClick={() => {
+              const defaultAlbum = filteredReviews[0] || FEATURED_EDITORIAL_REVIEWS[0];
+              openReviewModal({
+                id: defaultAlbum?.deezerId || defaultAlbum?.id || 14880659,
+                deezerId: defaultAlbum?.deezerId || 14880659,
+                title: defaultAlbum?.albumTitle || 'In Rainbows',
+                album: defaultAlbum?.albumTitle || 'In Rainbows',
+                artist: defaultAlbum?.artist || 'Radiohead',
+                cover: defaultAlbum?.cover || 'https://cdn-images.dzcdn.net/images/cover/a175af9b7d329bc678cb4d26fc13d6de/500x500-000000-80-0-0.jpg',
+                type: 'album',
+              });
+            }}
+            className="flex items-center gap-2 px-5 py-3 rounded-xl bg-[#B80C09] hover:bg-[#9c0a07] text-white text-xs sm:text-sm font-bold uppercase tracking-wider shadow-lg hover:scale-105 active:scale-95 transition-all cursor-pointer self-start md:self-auto shrink-0"
           >
             <span className="material-symbols-outlined text-[18px]">rate_review</span>
             <span>Publicar Mi Crítica</span>
@@ -306,6 +317,26 @@ export const ReviewsFeedPage = () => {
                         favorite
                       </span>
                       <span>{rev.likes + (isLiked ? 1 : 0)}</span>
+                    </button>
+
+                    <button
+                      onClick={() =>
+                        openReviewModal({
+                          id: rev.deezerId || rev.id,
+                          deezerId: rev.deezerId,
+                          trackId: rev.trackId,
+                          title: rev.albumTitle,
+                          album: rev.albumTitle,
+                          artist: rev.artist,
+                          cover: rev.cover,
+                          type: 'album',
+                        })
+                      }
+                      className="px-3 py-1.5 rounded-full bg-[#f8e9f6] dark:bg-white/10 hover:bg-[#B80C09] hover:text-white text-xs font-bold text-[#B80C09] dark:text-pink-300 transition-colors cursor-pointer flex items-center gap-1"
+                      title={`Escribir crítica para ${rev.albumTitle}`}
+                    >
+                      <span className="material-symbols-outlined text-[14px]">rate_review</span>
+                      <span>Criticar</span>
                     </button>
 
                     <button
