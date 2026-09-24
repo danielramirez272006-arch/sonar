@@ -5676,6 +5676,115 @@
         "Audio Seguro"
       ],
       "createdAt": "2026-09-24T20:43:20.581Z"
+    },
+    {
+      "id": "user-1790283547935",
+      "username": "Daniel Ramirez",
+      "email": "daniel_1790283547705@sonar.local",
+      "password": "sha256$f565e17347b4149da0ebe06b74bf0903$4910dbad1a0f6a945610752355cdf7cd35ebd5c9e6bdf0761b0904a4d0f22d0e",
+      "role": "user",
+      "accountType": "standard",
+      "parentalControl": {
+        "enabled": false,
+        "blockExplicit": false,
+        "pin": "1234"
+      },
+      "avatarUrl": "",
+      "avatarBg": "#0284c7",
+      "bio": "Nuevo melómano explorando vinilos y texturas acústicas en Sonar.",
+      "stats": {
+        "savedAlbums": 0,
+        "reviewsCount": 0,
+        "followers": 0,
+        "following": 0
+      },
+      "preferences": [
+        "Art Rock",
+        "Jazz & Fusion"
+      ],
+      "gear": {
+        "headphones": "Auriculares de referencia",
+        "turntable": "Tocadiscos Direct Drive",
+        "favoriteFormat": "Vinilo 33⅓ RPM"
+      },
+      "badges": [
+        "Melómano Verificado",
+        "Audiófilo Inicial"
+      ],
+      "createdAt": "2026-09-24T20:59:07.935Z"
+    },
+    {
+      "id": "user-1790283548051",
+      "username": "Elena Jazz",
+      "email": "audiophile_1790283547993@sonar.local",
+      "password": "sha256$4063a2356d0e9990eedc06a95de89230$cd6b0e2963d70f49268c84b45d0c121fb2165f2faf405c6c1c8602fe5beced4d",
+      "role": "user",
+      "accountType": "standard",
+      "parentalControl": {
+        "enabled": false,
+        "blockExplicit": false,
+        "pin": "1234"
+      },
+      "avatarUrl": "",
+      "avatarBg": "#059669",
+      "bio": "Exploradora de sintetizadores analógicos.",
+      "stats": {
+        "savedAlbums": 0,
+        "reviewsCount": 0,
+        "followers": 0,
+        "following": 0
+      },
+      "preferences": [
+        "Synthwave",
+        "Ambient & Drone",
+        "IDM / Techno"
+      ],
+      "gear": {
+        "headphones": "Auriculares de referencia",
+        "turntable": "Tocadiscos Direct Drive",
+        "favoriteFormat": "Vinilo 33⅓ RPM"
+      },
+      "badges": [
+        "Melómano Verificado",
+        "Audiófilo Inicial"
+      ],
+      "createdAt": "2026-09-24T20:59:08.051Z"
+    },
+    {
+      "id": "user-1790283551150",
+      "username": "melomano_junior",
+      "email": "junior_1790283551031@sonar.test",
+      "password": "sha256$ddd951b33308914a20784d896f35b9da$36ae1f452f235d07057d8196f3d728251067b2b60d9a8bc5a0b341efda883642",
+      "role": "user",
+      "accountType": "junior",
+      "parentalControl": {
+        "enabled": true,
+        "blockExplicit": true,
+        "pin": "5555"
+      },
+      "avatarUrl": "",
+      "avatarBg": "#5c1d5e",
+      "bio": "Melómano Junior explorando música segura y educativa en Sonar.",
+      "stats": {
+        "savedAlbums": 0,
+        "reviewsCount": 0,
+        "followers": 0,
+        "following": 0
+      },
+      "preferences": [
+        "Psicodelia",
+        "Synthwave"
+      ],
+      "gear": {
+        "headphones": "Auriculares de referencia",
+        "turntable": "Tocadiscos Direct Drive",
+        "favoriteFormat": "Vinilo 33⅓ RPM"
+      },
+      "badges": [
+        "Melómano Junior",
+        "Audio Seguro"
+      ],
+      "createdAt": "2026-09-24T20:59:11.150Z"
     }
   ],
   "reviews": [

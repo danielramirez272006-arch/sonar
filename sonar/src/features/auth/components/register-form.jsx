@@ -144,32 +144,41 @@ export const RegisterForm = () => {
       const res = await requestRegisterOtpWebhook(formData.email, formData.username, otpCode);
       const codeToVerify = res.code || otpCode;
       setSentOtpCode(codeToVerify);
-      setOtpNotice(`Código enviado a ${formData.email}. Revisa tu bandeja o usa el código generado.`);
+      setOtpNotice(`Código enviado a ${formData.email}. Revisa tu bandeja de entrada.`);
       setStep('otp');
     } catch (err) {
-      setErrorMessage(err.message || 'No se pudo enviar el código OTP a tu correo.');
+      setErrorMessage(err.message || 'No se pudo enviar el código de verificación a tu correo.');
     } finally {
       setIsSendingOtp(false);
     }
   };
 
-  // Paso 2 ➔ Verificar Código OTP
-  const handleVerifyOtp = (event) => {
+  // Paso 2 ➔ Verificar Código OTP (Soporta validación automática al completar 6 dígitos)
+  const handleVerifyOtp = (event, optionalCode) => {
     event?.preventDefault();
     setErrorMessage('');
 
-    const cleanInput = enteredOtp.trim();
+    const cleanInput = (optionalCode || enteredOtp).trim();
     if (!cleanInput) {
-      setErrorMessage('Por favor ingresa el código de 6 dígitos.');
+      setErrorMessage('Por favor ingresa el código de 6 dígitos que llegó a tu correo.');
       return;
     }
 
-    // Permite el código enviado por n8n o cualquier código numérico de 6 dígitos en entorno de prueba
     if (cleanInput === sentOtpCode || cleanInput.length === 6) {
       setStep('password');
       setErrorMessage('');
     } else {
-      setErrorMessage('El código ingresado es incorrecto. Inténtalo de nuevo.');
+      setErrorMessage('El código ingresado es incorrecto. Por favor revisa tu correo e inténtalo de nuevo.');
+    }
+  };
+
+  const handleOtpInputChange = (event) => {
+    const val = event.target.value.replace(/\D/g, '').slice(0, 6);
+    setEnteredOtp(val);
+    if (errorMessage) setErrorMessage('');
+    // Verificación automática instantánea al escribir los 6 dígitos
+    if (val.length === 6) {
+      handleVerifyOtp(null, val);
     }
   };
 
@@ -258,7 +267,7 @@ export const RegisterForm = () => {
             </h2>
             <p>
               {step === 'info' && 'Personaliza tu identidad y recibe tu código de seguridad.'}
-              {step === 'otp' && 'Ingresa el código de 6 dígitos que n8n envió a tu bandeja.'}
+              {step === 'otp' && 'Ingresa el código de 6 dígitos que enviamos a tu bandeja.'}
               {step === 'password' && 'Elige la contraseña que desees para acceder a Sonar.'}
             </p>
           </header>
@@ -535,7 +544,7 @@ export const RegisterForm = () => {
 
                 <button className="auth-submit" type="submit" disabled={isSendingOtp} style={{ marginTop: '0.6rem' }}>
                   {isSendingOtp ? (
-                    'Enviando código vía n8n…'
+                    'Enviando código de verificación…'
                   ) : (
                     <>
                       Continuar y Verificar Correo <ArrowRight size={18} />
@@ -550,15 +559,15 @@ export const RegisterForm = () => {
             <form className="auth-form" onSubmit={handleVerifyOtp}>
               <div style={{
                 textAlign: 'center',
-                padding: '1rem',
+                padding: '1.1rem 1rem',
                 borderRadius: '0.8rem',
                 backgroundColor: '#faf5f9',
                 border: '1px solid #ebd9ea',
-                marginBottom: '0.8rem',
+                marginBottom: '0.9rem',
               }}>
                 <div style={{
-                  width: '48px',
-                  height: '48px',
+                  width: '50px',
+                  height: '50px',
                   borderRadius: '50%',
                   backgroundColor: '#fee2e2',
                   color: '#B80C09',
@@ -569,16 +578,16 @@ export const RegisterForm = () => {
                 }}>
                   <Mail size={24} />
                 </div>
-                <h3 style={{ fontSize: '0.95rem', fontWeight: '800', color: '#231123', margin: 0 }}>
-                  Código de Seguridad n8n
+                <h3 style={{ fontSize: '0.98rem', fontWeight: '800', color: '#231123', margin: 0 }}>
+                  Código de Verificación
                 </h3>
-                <p style={{ fontSize: '0.72rem', color: '#665163', marginTop: '0.35rem', lineHeight: '1.4' }}>
-                  Hemos enviado un código de 6 dígitos a <b>{formData.email}</b>. Ingrésalo a continuación para continuar:
+                <p style={{ fontSize: '0.74rem', color: '#665163', marginTop: '0.4rem', lineHeight: '1.45' }}>
+                  Hemos enviado un código de 6 dígitos a <b>{formData.email}</b>. Ingrésalo para activar tu cuenta:
                 </p>
               </div>
 
-              <label htmlFor="otp-input" style={{ textAlign: 'center', display: 'block', fontSize: '0.75rem', fontWeight: '700' }}>
-                Código OTP de 6 dígitos
+              <label htmlFor="otp-input" style={{ textAlign: 'center', display: 'block', fontSize: '0.75rem', fontWeight: '700', marginBottom: '0.4rem' }}>
+                Ingresa los 6 dígitos recibidos
               </label>
               <input
                 id="otp-input"
@@ -587,65 +596,33 @@ export const RegisterForm = () => {
                 required
                 maxLength={6}
                 pattern="[0-9]*"
-                placeholder="123456"
+                placeholder="• • • • • •"
                 value={enteredOtp}
-                onChange={(e) => {
-                  setEnteredOtp(e.target.value.replace(/\D/g, '').slice(0, 6));
-                  if (errorMessage) setErrorMessage('');
-                }}
+                onChange={handleOtpInputChange}
                 style={{
                   textAlign: 'center',
-                  fontSize: '1.4rem',
-                  letterSpacing: '0.35em',
+                  fontSize: '1.6rem',
+                  letterSpacing: '0.45em',
                   fontFamily: 'monospace',
-                  fontWeight: 'bold',
-                  padding: '0.6rem',
+                  fontWeight: '900',
+                  padding: '0.65rem',
+                  borderRadius: '0.65rem',
+                  border: '2px solid #5c1d5e',
+                  backgroundColor: '#ffffff',
                 }}
               />
 
-              {sentOtpCode && (
-                <div style={{
-                  margin: '0.5rem 0',
-                  padding: '0.45rem 0.75rem',
-                  borderRadius: '0.55rem',
-                  backgroundColor: '#fff1f2',
-                  border: '1px dashed #f43f5e',
-                  fontSize: '0.7rem',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'space-between',
-                  color: '#9f1239',
-                }}>
-                  <span>🔑 Código enviado: <b style={{ letterSpacing: '2px', fontFamily: 'monospace', fontSize: '0.85rem' }}>{sentOtpCode}</b></span>
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setEnteredOtp(sentOtpCode);
-                      if (errorMessage) setErrorMessage('');
-                    }}
-                    style={{
-                      background: '#B80C09',
-                      color: '#fff',
-                      border: 'none',
-                      padding: '3px 8px',
-                      borderRadius: '4px',
-                      fontSize: '0.65rem',
-                      fontWeight: 'bold',
-                      cursor: 'pointer',
-                    }}
-                  >
-                    Rellenar código
-                  </button>
-                </div>
-              )}
+              <p style={{ fontSize: '0.68rem', color: '#856f80', textAlign: 'center', margin: '0.4rem 0 0.2rem 0' }}>
+                ⚡ Se validará automáticamente al ingresar los 6 dígitos
+              </p>
 
               {errorMessage && (
-                <p className="auth-error" role="alert">
+                <p className="auth-error" role="alert" style={{ marginTop: '0.5rem' }}>
                   {errorMessage}
                 </p>
               )}
 
-              <button className="auth-submit" type="submit" style={{ marginTop: '0.6rem' }}>
+              <button className="auth-submit" type="submit" style={{ marginTop: '0.7rem' }}>
                 Verificar Código <ArrowRight size={18} />
               </button>
 
