@@ -1,30 +1,74 @@
-# Arquitectura y enrutamiento
+# Arquitectura y Enrutamiento — SONAR
 
-## Organización
+## 1. Organización del Código
 
-El código se organiza por dominio en `src/features/`, por vistas en `src/pages/` y por recursos reutilizables en `src/shared/`. Esta organización equivale a separar componentes, páginas, servicios y contextos sin exigir carpetas llamadas literalmente Components o Services.
+El proyecto está estructurado de manera modular y escalable bajo una arquitectura basada en dominios y componentes reutilizables:
 
-[main.jsx](../src/main.jsx) monta React con AuthProvider y ThemeProvider. [App.jsx](../src/App.jsx) contiene la consola administrativa y la composición general de la aplicación.
+```text
+src/
+├── features/               # Módulos encapsulados por dominio
+│   ├── admin/             # Consola de administración, métricas y moderación
+│   ├── albums/            # Vistas de álbumes y reproductores
+│   ├── auth/              # Formularios de Login, Registro y Recuperación OTP
+│   ├── home/              # Vitrinas editoriales, destacados y trending grid
+│   ├── profile/           # Avatar Studio, especificaciones de audio y perfil
+│   └── reviews/           # Tarjetas de críticas, modales y comentarios
+├── pages/                 # Páginas principales de la aplicación
+│   ├── admin/             # Páginas de administración y moderación
+│   ├── public/            # Portales públicos (Home, Explorar, Vinilos, etc.)
+│   └── user/              # Dashboard de usuario y colecciones guardadas
+├── shared/                # Recursos compartidos transversales
+│   ├── components/        # Componentes UI (Botones, Inputs, Avatares, A11y)
+│   ├── context/           # Proveedores de estado global (Auth, Theme, Player, A11y)
+│   ├── routing/           # Enrutador dinámico y guardias de seguridad (RBAC)
+│   └── services/          # Clientes API, Deezer, IA, Criptografía y n8n
+├── Styles/                # Hojas de estilo CSS (Accesibilidad, Consola, Temas)
+├── App.jsx                # Componente raíz y contenedor principal
+└── main.jsx               # Punto de entrada y montaje de Providers
+```
 
-## Rutas
+---
 
-[AppRouter](../src/shared/routing/app-router.jsx) selecciona las páginas mediante el hash y escucha `hashchange` y `popstate`. También lee el pathname cuando no hay hash.
+## 2. Sistema de Enrutamiento y Navegación
 
-React Router DOM está instalado y `BrowserRouter` envuelve la aplicación, pero no sustituye el selector propio por una configuración completa de `Routes` y `Route`. No debe darse por cumplida toda la sección académica de React Router solo por tener la dependencia.
+El enrutamiento se gestiona a través de [AppRouter](../src/shared/routing/app-router.jsx), el cual escucha los eventos de `hashchange` y `popstate`, sincronizando la URL con las vistas de la aplicación:
 
-[PrivateRoute](../src/shared/routing/private-route.jsx) exige sesión. [AdminRoute](../src/shared/routing/admin-route.jsx) exige además `role === 'admin'`. Las rutas protegidas muestran el login como alternativa cuando no se cumplen estas condiciones.
+### Rutas Públicas
+- `#home` / `#` / vacía: [HomePage](../src/pages/public/home-page.jsx) — Portada editorial y buscador principal.
+- `#explore`: [CatalogPage](../src/pages/public/catalog-page.jsx) — Catálogo musical interactivo con Deezer.
+- `#community`: [CommunityPage](../src/pages/public/community-page.jsx) — Comunidad y reseñas en tiempo real.
+- `#curated-lists`: [CuratedListsPage](../src/pages/public/curated-lists-page.jsx) — Selecciones editoriales temáticas.
+- `#vinyl-mode`: [VinylModePage](../src/pages/public/vinyl-mode-page.jsx) — Experiencia inmersiva para tornamesas.
+- `#reviews`: [ReviewsFeedPage](../src/pages/public/reviews-feed-page.jsx) — Ensayos y críticas del mes.
+- `#album/:id`: [AlbumDetailPage](../src/pages/public/album-detail-page.jsx) — Ficha detallada de álbum y canciones.
+- `#login`: [LoginPage](../src/pages/auth/login-page.jsx) — Inicio de sesión seguro.
+- `#register`: [RegisterPage](../src/pages/auth/register-page.jsx) — Registro público de melómanos.
+- `#forgot-password`: [ForgotPasswordPage](../src/pages/auth/forgot-password-page.jsx) — Recuperación de contraseña con OTP.
+- `#guidelines`: [EditorialGuidelinesPage](../src/pages/public/editorial-guidelines-page.jsx) — Pautas y normas de conducta.
+- `#terms`: [TermsPage](../src/pages/public/terms-page.jsx) — Términos y privacidad.
 
-La consola admite parámetros como `#usuarios?user=ID`, `#admin-reports?report=ID` y `#admin-reviews?review=ID`. Las páginas desconocidas muestran NotFoundPage.
+### Rutas Privadas (Requieren Inicio de Sesión)
+- `#usuario`: [UserDashboardPage](../src/pages/user/user-dashboard-page.jsx) — Perfil de usuario, recomendaciones y personalización.
+- `#saved-albums`: [SavedAlbumsPage](../src/pages/user/saved-albums-page.jsx) — Biblioteca personal de música guardada.
 
-## Estado y persistencia
+### Rutas Protegidas de Administración (Requieren Rol `admin`)
+- `#admin`: [AdminDashboardPage](../src/pages/admin/admin-dashboard-page.jsx) — Métricas y analíticas del sistema.
+- `#moderacion`: [ModerationPage](../src/pages/admin/moderation-page.jsx) — Cola de moderación y auditoría de contenido.
+- `#usuarios`: [AdminUsersPage](../src/pages/admin/admin-users-page.jsx) — Gestión de usuarios, conducta y sanciones.
+- `#admin-reports`: [AdminReportsPage](../src/pages/admin/admin-reports-page.jsx) — Centro de reportes comunitarios.
 
-- [AuthContext](../src/shared/context/auth-context.jsx): usuario, registro, login y logout; sesión en `sonar_auth_user` de localStorage.
-- [ThemeContext](../src/shared/context/theme-context.jsx): preferencia del sistema o selección guardada en `theme` y `sonar-theme`; aplica `dark` o `light` al HTML.
-- [PlayerContext](../src/shared/context/player-context.jsx): reproducción y apertura del formulario de reseñas.
-- Los hooks de administración consultan usuarios, reseñas y pendientes a través de servicios.
+---
 
-## Límites de autorización
+## 3. Capas de Seguridad y Guardias de Navegación (RBAC)
 
-La sesión y el rol se leen del navegador. JSON Server no implementa autorización de servidor: proteger una ruta no impide modificar datos mediante llamadas directas a la API. Tampoco existe garantía de validación de sesión remota tras recargar.
+1. **[PrivateRoute](../src/shared/routing/private-route.jsx)**: Evalúa `isAuthenticated`. Si no existe sesión activa, muestra una pantalla de bloqueo con enlaces a login y registro.
+2. **[AdminRoute](../src/shared/routing/admin-route.jsx)**: Evalúa que el usuario tenga rol de administrador (`user.role === 'admin'`). Los usuarios estándar son redirigidos protegiendo la consola.
 
-El cliente de usuarios tiene alternativas locales ante errores de red. Registro y actualización pueden devolver un resultado local aunque el servidor no haya persistido la operación.
+---
+
+## 4. Estado Global y Persistencia
+
+- **[AuthContext](../src/shared/context/auth-context.jsx)**: Maneja sesión, registro, login, cambio de contraseña con SHA-256, borrado de cuenta (`deleteAccount`) y persistencia en `localStorage.sonar_auth_user`.
+- **[AccessibilityContext](../src/shared/context/accessibility-context.jsx)**: Gestiona tamaño de fuente, alto contraste WCAG AAA, filtros de daltonismo, tipografía disléxica, lectura por voz (TTS) y atajos de teclado.
+- **[ThemeContext](../src/shared/context/theme-context.jsx)**: Controla el modo claro y modo oscuro con persistencia en `localStorage.theme`.
+- **[PlayerContext](../src/shared/context/player-context.jsx)**: Controla el reproductor global de audio, streaming de muestras Deezer y apertura centralizada del modal de reseñas.

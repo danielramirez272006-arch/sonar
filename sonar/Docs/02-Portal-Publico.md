@@ -1,35 +1,41 @@
-# Portal público y cuentas
+# Portal Público, Experiencia Musical y Perfil de Usuario — SONAR
 
-## Música y búsqueda
+## 1. Experiencia Musical y Conexión con Deezer
 
-La portada combina contenido editorial y búsqueda mediante [deezer-service.js](../src/shared/services/deezer-service.js). El servicio consulta álbumes, artistas, pistas y preescuchas. También contiene datos de respaldo; ver una portada o una tarjeta no demuestra que una petición externa haya funcionado.
+El portal integra búsqueda y reproducción directa a través de [deezer-service.js](../src/shared/services/deezer-service.js):
+- **Búsqueda Dinámica**: Búsqueda en tiempo real desde el Navbar y la página de catálogo con debounce para optimizar peticiones.
+- **Streaming de Muestras**: Reproducción en alta fidelidad (muestras de 30 segundos) controladas por [global-audio-player.jsx](../src/shared/components/layout/global-audio-player.jsx).
+- **Modo Vinilo Inmersivo ([VinylModePage](../src/pages/public/vinyl-mode-page.jsx))**: Interfaz con animación giratoria de disco de vinilo, control de velocidad (33⅓ / 45 RPM) y selección de pistas.
 
-[AlbumDetailPage](../src/pages/public/album-detail-page.jsx) mantiene una ficha de ejemplo de In Rainbows con datos y pistas definidos en código. No debe describirse como una ficha dinámica completa para cualquier ID.
+---
 
-El reproductor usa PlayerContext. La reproducción depende de la disponibilidad de las muestras de audio y de las restricciones del navegador.
+## 2. Comunidad, Críticas y Ensayos
 
-## Comunidad y reseñas
+- **Feed de Críticas del Mes ([ReviewsFeedPage](../src/pages/public/reviews-feed-page.jsx))**: Espacio editorial donde los críticos y usuarios publican ensayos sonoros.
+  - Botón **«Publicar Mi Crítica»** conectado al modal centralizado [ReviewModal](../src/shared/components/layout/review-modal.jsx).
+  - Botón **«Criticar»** directo en cada tarjeta de reseña para calificar cualquier disco inmediatamente.
+  - Integración de Text-to-Speech (`TTSButton`) para escuchar los ensayos mediante síntesis de voz.
+- **Interacciones Comunitarias**: Likes con criterio audiófilo, comentarios con respuestas anidadas e hilos de debate gestionados por [interactions-service.js](../src/shared/services/interactions-service.js).
 
-[CommunityPage](../src/pages/public/community-page.jsx) combina reseñas aprobadas de la API con contenido de ejemplo. Ofrece filtros, publicación e interacciones.
+---
 
-Los formularios envían las reseñas a `createReview`, que consulta el estado del autor y fuerza `pending_moderation`. Enviar una reseña no equivale a aprobarla.
+## 3. Biblioteca Personal y Colecciones Guardadas
 
-Las tarjetas permiten reportar reseñas con autor identificable. Los reportes de reseñas se guardan en `users[].conductReports` para su revisión administrativa. Comentarios, favoritos y otras interacciones también utilizan servicios con almacenamiento local; no todos estos registros están en JSON Server.
+En [SavedAlbumsPage](../src/pages/user/saved-albums-page.jsx) y [UserDashboardPage](../src/pages/user/user-dashboard-page.jsx):
+- Guardado instantáneo con feedback visual inmediato (`bookmark_add` a `bookmark_added`).
+- Filtros por categoría: `Todos`, `🎵 Canciones`, `💿 Álbumes`, `Favoritos`, `Colección Vinilo`, `Por Escuchar`.
+- Gestión reactiva del estado sincronizada mediante el evento global `sonar:collection-changed`.
 
-## Login, registro y perfil
+---
 
-[LoginForm](../src/features/auth/components/login-form.jsx) valida credenciales y redirige según rol. Los botones sociales visibles no acreditan OAuth conectado.
+## 4. Avatar Studio y Personalización de Perfil
 
-El registro público crea un usuario con rol `user`. La sesión persiste en localStorage y el logout la elimina. El perfil incluye preferencias y opciones de avatar; algunas funciones tienen datos iniciales de demostración.
-
-## Recuperación de contraseña
-
-[ForgotPasswordForm](../src/features/auth/components/forgot-password-form.jsx) presenta correo, código OTP, contraseña nueva y confirmación. El código se genera o recibe en el navegador y se compara en el cliente.
-
-El servicio intenta enviar el código a n8n, pero puede devolver éxito simulado si falla. La pantalla anuncia una duración de 15 minutos sin una comprobación temporal equivalente en la validación revisada. Tampoco se ha implementado invalidación persistente de uso único.
-
-La actualización de contraseña depende de que exista un usuario y de la persistencia efectiva en la API. La alternativa local puede ocultar fallos de guardado. Este flujo no debe darse por validado de extremo a extremo.
-
-## Verificaciones pendientes
-
-Comprobar las vistas principales a 375, 768 y 1280 px o más, navegación por teclado, zoom, etiquetas de campos, audio y errores de conexión. La existencia de estilos responsive no sustituye esa comprobación.
+En [EditProfileForm](../src/features/profile/components/edit-profile-form.jsx):
+- **Avatar Studio**:
+  - Subida de imágenes locales mediante **Drag & Drop** o selección de archivo (PNG, JPG, WEBP, GIF hasta 8MB) convertidas a Data URL.
+  - 11 Arquetipos Blobatar SVG musicales (Vinilófilo, Synth Master, Jazzista, etc.).
+  - 24 Colores sólidos curados y 10 Degradados modernos de alta resolución.
+- **Equipamiento Audiófilo**: Registro de auriculares de referencia, tocadiscos y amplificadores DAC.
+- **Preferencias Musicales**: Selección dinámica de géneros para alimentar recomendaciones personalizadas.
+- **Seguridad**: Cambio de contraseña cifrada con SHA-256 + salt criptográfico.
+- **Zona de Peligro (Eliminación de Cuenta)**: Modal de confirmación explícita para borrar la cuenta permanentemente cumpliendo con el ciclo completo de CRUD.

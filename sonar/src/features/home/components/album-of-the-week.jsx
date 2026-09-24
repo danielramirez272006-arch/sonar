@@ -4,6 +4,7 @@ import { usePlayer } from '../../../shared/context/player-context';
 import { useAuth } from '../../../shared/context/auth-context';
 import { interactionsService } from '../../../shared/services/interactions-service';
 import Toast from '../../../shared/components/ui/toast';
+import { handleImageFallbackError, getFallbackCoverForAlbum } from '../../../shared/services/recommendations-service';
 
 export const ALL_SPOTLIGHT_ALBUMS = [
   {
@@ -138,25 +139,32 @@ export const AlbumOfTheWeek = () => {
 
   const [selectedIndex, setSelectedIndex] = useState(0);
 
+  const [collectionVersion, setCollectionVersion] = useState(0);
+
   // Al cambiar usuario o preferencias, resetear al álbum con mayor afinidad
   useEffect(() => {
     setSelectedIndex(0);
   }, [userPreferences]);
 
+  useEffect(() => {
+    const handleCollectionChange = () => {
+      setCollectionVersion((v) => v + 1);
+    };
+    window.addEventListener('sonar:collection-changed', handleCollectionChange);
+    return () => window.removeEventListener('sonar:collection-changed', handleCollectionChange);
+  }, []);
+
   const currentAlbum = sortedSpotlightAlbums[selectedIndex] || sortedSpotlightAlbums[0];
   const isCurrentPlaying = (currentTrack?.id === currentAlbum.id || currentTrack?.trackId === currentAlbum.trackId || currentTrack?.title === currentAlbum.title) && isPlaying;
-  const isSaved = interactionsService.isAlbumSaved(user?.id, currentAlbum.title);
+  const isSaved = interactionsService.isAlbumSaved(user?.id, currentAlbum);
 
   const isUserGenreMatch = userPreferences.some(
     p => p.toLowerCase() === currentAlbum.genre.toLowerCase() || currentAlbum.genre.toLowerCase().includes(p.toLowerCase())
   );
 
   const handleToggleSave = () => {
-    if (!user) {
-      window.location.hash = '#login';
-      return;
-    }
-    const res = interactionsService.toggleSaveAlbum(user.id, {
+    const effectiveUserId = user?.id || 'guest_user';
+    const res = interactionsService.toggleSaveAlbum(effectiveUserId, {
       id: currentAlbum.id,
       deezerId: currentAlbum.deezerId,
       title: currentAlbum.title,
@@ -165,7 +173,9 @@ export const AlbumOfTheWeek = () => {
       genre: currentAlbum.genre,
       year: currentAlbum.year,
       rating: currentAlbum.rating,
+      type: 'album',
     });
+    setCollectionVersion((v) => v + 1);
     setToastMessage(res.isSaved ? `"${currentAlbum.title}" guardado en tu colección` : `"${currentAlbum.title}" eliminado de tu colección`);
   };
 
@@ -283,7 +293,8 @@ export const AlbumOfTheWeek = () => {
                   <img
                     className="w-full h-full object-cover"
                     alt={`${currentAlbum.title} by ${currentAlbum.artist}`}
-                    src={currentAlbum.cover}
+                    src={currentAlbum.cover || getFallbackCoverForAlbum(currentAlbum)}
+                    onError={(e) => handleImageFallbackError(e, currentAlbum)}
                   />
                   <div className="absolute inset-0 bg-gradient-to-r from-black/20 via-transparent to-transparent pointer-events-none" />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/35 via-transparent to-transparent pointer-events-none" />

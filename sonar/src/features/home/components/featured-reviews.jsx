@@ -4,6 +4,8 @@ import { useAuth } from '../../../shared/context/auth-context';
 import { interactionsService } from '../../../shared/services/interactions-service';
 import CommentSection from '../../reviews/components/comment-section';
 import LikeButton from '../../../shared/components/ui/like-button';
+import { TTSButton } from '../../../shared/components/a11y/tts-button';
+import { handleImageFallbackError, getFallbackCoverForAlbum } from '../../../shared/services/recommendations-service';
 
 const initialReviewsData = [
   {
@@ -79,14 +81,21 @@ const FeaturedReviewCard = ({ review }) => {
   const [isSavedInCollection, setIsSavedInCollection] = useState(false);
 
   useEffect(() => {
-    const likedIds = interactionsService.getLikedReviewIds(userId);
+    const effectiveId = userId || 'guest_user';
+    const likedIds = interactionsService.getLikedReviewIds(effectiveId);
     setIsLiked(likedIds.includes(review.id));
-    setIsSavedInCollection(interactionsService.isAlbumSaved(userId, review.album.title));
+    setIsSavedInCollection(interactionsService.isAlbumSaved(effectiveId, review.album));
     const comments = interactionsService.getCommentsForReview(review.id);
     if (comments.length > 0) {
       setCommentsCount(comments.length);
     }
-  }, [review.id, review.album.title, userId]);
+
+    const handleCollectionChange = () => {
+      setIsSavedInCollection(interactionsService.isAlbumSaved(effectiveId, review.album));
+    };
+    window.addEventListener('sonar:collection-changed', handleCollectionChange);
+    return () => window.removeEventListener('sonar:collection-changed', handleCollectionChange);
+  }, [review.id, review.album, userId]);
 
   const handleLike = () => {
     if (!user) {
@@ -99,15 +108,13 @@ const FeaturedReviewCard = ({ review }) => {
   };
 
   const handleToggleSave = () => {
-    if (!user) {
-      window.location.hash = '#login';
-      return;
-    }
-    const res = interactionsService.toggleSaveAlbum(userId, {
+    const effectiveId = userId || 'guest_user';
+    const res = interactionsService.toggleSaveAlbum(effectiveId, {
       title: review.album.title,
       artist: review.album.artist,
       cover: review.album.cover,
       rating: review.rating,
+      type: 'album',
     });
     setIsSavedInCollection(res.isSaved);
   };
@@ -174,10 +181,8 @@ const FeaturedReviewCard = ({ review }) => {
               <img
                 className="w-full h-full object-cover"
                 alt={review.album.title}
-                src={review.album.cover}
-                onError={(e) => {
-                  e.target.style.display = 'none';
-                }}
+                src={review.album.cover || getFallbackCoverForAlbum(review.album)}
+                onError={(e) => handleImageFallbackError(e, review.album)}
               />
             </div>
             <div className="flex flex-col min-w-0">
@@ -211,8 +216,8 @@ const FeaturedReviewCard = ({ review }) => {
       </div>
 
       {/* Card Footer Metadata */}
-      <div className="flex items-center justify-between pt-4 mt-4 border-t border-[#e6d5e2]/70 dark:border-white/10">
-        <div className="flex items-center gap-4 text-[#5c435a] dark:text-[#B89CB0] text-xs font-medium">
+      <div className="flex items-center justify-between pt-4 mt-4 border-t border-[#e6d5e2]/70 dark:border-white/10 flex-wrap gap-2">
+        <div className="flex items-center gap-3 text-[#5c435a] dark:text-[#B89CB0] text-xs font-medium flex-wrap">
           <LikeButton
             isLiked={isLiked}
             likesCount={likes}
@@ -228,8 +233,15 @@ const FeaturedReviewCard = ({ review }) => {
             onClick={() => setShowComments(!showComments)}
           >
             <span className="material-symbols-outlined text-[16px]">chat_bubble</span>
-            <span>{commentsCount} comentarios</span>
+            <span>{commentsCount}</span>
           </button>
+
+          <TTSButton
+            text={review.text}
+            title={`Crítica de ${review.userName} sobre ${review.album.title}`}
+            size="sm"
+            label="Escuchar"
+          />
         </div>
         <span className="text-xs text-[#81737e] dark:text-[#B89CB0]/70">
           {review.timeAgo}

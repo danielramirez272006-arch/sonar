@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useState, useRef, useEffect, useCallback } from 'react';
 import { resolvePlayablePreview } from '../services/deezer-service';
+import { interactionsService } from '../services/interactions-service';
 
 const PlayerContext = createContext();
 
@@ -130,6 +131,13 @@ export const PlayerProvider = ({ children }) => {
 
       setCurrentTrack((prev) => (prev ? { ...prev, preview: validPreviewUrl } : trackPayload));
 
+      // Guardar en historial de escucha del usuario activo
+      try {
+        const storedUser = localStorage.getItem('sonar_auth_user');
+        const activeUserId = storedUser ? JSON.parse(storedUser)?.id || 'guest_user' : 'guest_user';
+        interactionsService.addRecentlyPlayed(activeUserId, trackPayload);
+      } catch {}
+
       await audio.play();
       setIsPlaying(true);
       setIsLoading(false);
@@ -181,11 +189,40 @@ export const PlayerProvider = ({ children }) => {
   }, []);
 
   const openReviewModal = useCallback((album) => {
-    setReviewModalAlbum(album);
+    setReviewModalAlbum(
+      album && typeof album === 'object' && Object.keys(album).length > 0
+        ? album
+        : {
+            id: 14880659,
+            deezerId: 14880659,
+            title: 'In Rainbows',
+            album: 'In Rainbows',
+            artist: 'Radiohead',
+            cover: 'https://cdn-images.dzcdn.net/images/cover/a175af9b7d329bc678cb4d26fc13d6de/500x500-000000-80-0-0.jpg',
+            type: 'album',
+          }
+    );
   }, []);
 
   const closeReviewModal = useCallback(() => {
     setReviewModalAlbum(null);
+  }, []);
+
+  const [playbackSpeed, setPlaybackSpeedState] = useState(1);
+
+  const setPlaybackSpeed = useCallback((speed) => {
+    if (audioRef.current && isFinite(speed)) {
+      audioRef.current.playbackRate = speed;
+      setPlaybackSpeedState(speed);
+    }
+  }, []);
+
+  const skipSeconds = useCallback((delta) => {
+    if (audioRef.current) {
+      const newTime = Math.max(0, Math.min(audioRef.current.duration || 99999, audioRef.current.currentTime + delta));
+      audioRef.current.currentTime = newTime;
+      setCurrentTime(newTime);
+    }
   }, []);
 
   return (
@@ -196,6 +233,9 @@ export const PlayerProvider = ({ children }) => {
         isLoading,
         currentTime,
         duration,
+        playbackSpeed,
+        setPlaybackSpeed,
+        skipSeconds,
         playTrack,
         pauseTrack,
         closePlayer,

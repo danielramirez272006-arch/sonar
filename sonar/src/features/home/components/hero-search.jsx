@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useTheme } from '../../../shared/context/theme-context';
 import { searchAlbums, searchTracks, searchArtists, getAlbumTracks } from '../../../shared/services/deezer-service';
 import { usePlayer } from '../../../shared/context/player-context';
+import { handleImageFallbackError, getFallbackCoverForAlbum } from '../../../shared/services/recommendations-service';
 
 const SEARCH_TABS = [
   { id: 'all', label: 'Todo', icon: 'manage_search' },
@@ -635,9 +636,10 @@ export const HeroSearch = ({ onSearch = () => {}, onSubmit = () => {} }) => {
                                   className="flex items-center gap-3 min-w-0 flex-1 cursor-pointer"
                                 >
                                   <img
-                                    src={album.cover}
+                                    src={album.cover || getFallbackCoverForAlbum(album)}
                                     alt={album.title}
                                     className="w-10 h-10 rounded-lg object-cover shadow-xs shrink-0"
+                                    onError={(e) => handleImageFallbackError(e, album)}
                                   />
                                   <div className="flex flex-col min-w-0">
                                     <span className="text-xs sm:text-sm font-bold text-[#231123] dark:text-white truncate group-hover:text-[#B80C09] transition-colors">
@@ -742,9 +744,10 @@ export const HeroSearch = ({ onSearch = () => {}, onSubmit = () => {} }) => {
                         className="hidden md:flex md:col-span-5 flex-col p-4 bg-gradient-to-b from-gray-50 to-rose-50/30 dark:from-[#1d0d1e] dark:to-[#2e132e] border-l border-gray-100 dark:border-white/10 items-center justify-center text-center"
                       >
                         <img
-                          src={hoveredAlbum.cover_xl || hoveredAlbum.cover}
+                          src={hoveredAlbum.cover_xl || hoveredAlbum.cover || getFallbackCoverForAlbum(hoveredAlbum)}
                           alt={hoveredAlbum.title}
                           className="w-24 h-24 rounded-xl object-cover shadow-md mb-2.5"
+                          onError={(e) => handleImageFallbackError(e, hoveredAlbum)}
                         />
                         <h4 className="text-xs font-bold text-[#231123] dark:text-white line-clamp-1">
                           {hoveredAlbum.title}

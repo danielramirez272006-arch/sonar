@@ -15,8 +15,38 @@ export const GENRE_OPTIONS = [
   'Neo-Soul',
 ];
 
-export const DEFAULT_FALLBACK_COVER =
-  'https://cdn-images.dzcdn.net/images/cover/a175af9b7d329bc678cb4d26fc13d6de/500x500-000000-80-0-0.jpg';
+export const HIGH_RES_FALLBACK_COVERS = [
+  'https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=600&auto=format&fit=crop&q=80', // Live / Stage art
+  'https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=600&auto=format&fit=crop&q=80', // Vinyl record close-up
+  'https://images.unsplash.com/photo-1508700115892-45ecd05ae2ad?w=600&auto=format&fit=crop&q=80', // Studio mixing desk
+  'https://images.unsplash.com/photo-1598488035139-bdbb2231ce04?w=600&auto=format&fit=crop&q=80', // Modular synthesizer
+  'https://images.unsplash.com/photo-1511192336575-5a79af67a629?w=600&auto=format&fit=crop&q=80', // Jazz saxophone
+  'https://images.unsplash.com/photo-1539185441755-769473a23570?w=600&auto=format&fit=crop&q=80', // Turntable needle
+  'https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=600&auto=format&fit=crop&q=80', // DJ & audio atmosphere
+  'https://images.unsplash.com/photo-1465847899084-d164df4dedc6?w=600&auto=format&fit=crop&q=80', // Vinyl crates
+];
+
+export const DEFAULT_FALLBACK_COVER = HIGH_RES_FALLBACK_COVERS[0];
+
+export const getFallbackCoverForAlbum = (albumOrTitle) => {
+  const seed = typeof albumOrTitle === 'string' ? albumOrTitle : (albumOrTitle?.title || albumOrTitle?.album || 'sonar');
+  let hash = 0;
+  for (let i = 0; i < seed.length; i++) {
+    hash = (hash << 5) - hash + seed.charCodeAt(i);
+    hash |= 0;
+  }
+  const index = Math.abs(hash) % HIGH_RES_FALLBACK_COVERS.length;
+  return HIGH_RES_FALLBACK_COVERS[index];
+};
+
+export const handleImageFallbackError = (e, albumOrTitle) => {
+  if (!e?.currentTarget) return;
+  const fallback = getFallbackCoverForAlbum(albumOrTitle);
+  if (e.currentTarget.src !== fallback) {
+    e.currentTarget.onerror = null;
+    e.currentTarget.src = fallback;
+  }
+};
 
 export const DEFAULT_FALLBACK_PREVIEW = null;
 

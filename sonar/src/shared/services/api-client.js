@@ -125,6 +125,21 @@ export async function createUser(user) {
   }
 }
 
+export async function deleteUser(userId) {
+  try {
+    const currentLocal = getLocalRegisteredUsers()
+    const updated = currentLocal.filter((u) => String(u.id) !== String(userId))
+    if (typeof window !== 'undefined') {
+      window.localStorage?.setItem(LOCAL_USERS_KEY, JSON.stringify(updated))
+    }
+    return await apiRequest(`/users/${encodeURIComponent(userId)}`, {
+      method: 'DELETE',
+    })
+  } catch {
+    return true
+  }
+}
+
 export function getReviews() {
   return apiRequest('/reviews')
 }

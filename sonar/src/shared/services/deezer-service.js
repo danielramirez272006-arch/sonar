@@ -397,6 +397,18 @@ export const searchArtists = async (query) => {
 export const resolvePlayablePreview = async (item) => {
   if (!item) return null;
 
+  // 0. Si es un archivo de audio local (/audio/...), podcast o Data URL / Blob
+  const rawPreview = item.preview || item.previewUrl || item.audioUrl;
+  if (
+    typeof rawPreview === 'string' &&
+    (rawPreview.startsWith('/audio/') ||
+      rawPreview.startsWith('/') ||
+      rawPreview.startsWith('blob:') ||
+      rawPreview.startsWith('data:audio/'))
+  ) {
+    return rawPreview;
+  }
+
   // 1. Si ya cuenta con una URL de preview firmada y fresca con HMAC
   if (item.preview && typeof item.preview === 'string' && item.preview.includes('hdnea=')) {
     return item.preview;

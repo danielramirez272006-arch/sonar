@@ -9,6 +9,8 @@ import { Avatar } from '../../../shared/components/ui/avatar';
 import CommentSection from './comment-section';
 import LikeButton from '../../../shared/components/ui/like-button';
 import { ReportModal } from '../../../shared/components/ui/report-modal';
+import { TTSButton } from '../../../shared/components/a11y/tts-button';
+import { handleImageFallbackError, getFallbackCoverForAlbum } from '../../../shared/services/recommendations-service';
 
 const cardVariants = {
   hidden: { opacity: 0, y: 20 },
@@ -81,9 +83,15 @@ export const ReviewFeedCard = ({
       }
     };
 
+    const handleCollectionChange = () => {
+      setIsSavedInCollection(interactionsService.isAlbumSaved(currentUserId, review.albumTitle));
+    };
+
+    window.addEventListener('sonar:collection-changed', handleCollectionChange);
     window.addEventListener('sonar:follow-user-changed', handleUserFollowChange);
     window.addEventListener('sonar:follow-artist-changed', handleArtistFollowChange);
     return () => {
+      window.removeEventListener('sonar:collection-changed', handleCollectionChange);
       window.removeEventListener('sonar:follow-user-changed', handleUserFollowChange);
       window.removeEventListener('sonar:follow-artist-changed', handleArtistFollowChange);
     };
@@ -129,15 +137,13 @@ export const ReviewFeedCard = ({
   };
 
   const handleToggleSave = () => {
-    if (!user) {
-      window.location.hash = '#login';
-      return;
-    }
-    const res = interactionsService.toggleSaveAlbum(currentUserId, {
+    const effectiveId = currentUserId || 'guest_user';
+    const res = interactionsService.toggleSaveAlbum(effectiveId, {
       title: review.albumTitle,
       artist: review.artist,
       cover: review.cover,
       rating: review.rating,
+      type: review.type || 'album',
     });
     setIsSavedInCollection(res.isSaved);
   };
@@ -234,13 +240,10 @@ export const ReviewFeedCard = ({
         {/* Carátula con botón de reproducción */}
         <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-xl overflow-hidden shrink-0 bg-gray-200 dark:bg-[#180e1a] shadow-xs relative group/cover">
           <img
-            src={review.cover}
+            src={review.cover || getFallbackCoverForAlbum({ title: review.albumTitle, artist: review.artistName })}
             alt={review.albumTitle}
             className="w-full h-full object-cover"
-            onError={(e) => {
-              e.currentTarget.onerror = null;
-              e.currentTarget.src = 'https://cdn-images.dzcdn.net/images/cover/a175af9b7d329bc678cb4d26fc13d6de/500x500-000000-80-0-0.jpg';
-            }}
+            onError={(e) => handleImageFallbackError(e, { title: review.albumTitle, artist: review.artistName })}
           />
           <button
             type="button"
@@ -330,9 +333,9 @@ export const ReviewFeedCard = ({
         </div>
       </div>
 
-      {/* Pie: Acciones Me gusta, Comentar y Reportar Reseña */}
+      {/* Pie: Acciones Me gusta, Comentar, Escuchar TTS y Reportar Reseña */}
       <div className="flex items-center justify-between pt-2 border-t border-[#e6d5e2]/60 dark:border-white/10 text-xs font-semibold text-[#5c435a] dark:text-[#B89CB0]">
-        <div className="flex items-center gap-6">
+        <div className="flex items-center gap-4 sm:gap-6 flex-wrap">
           <LikeButton
             isLiked={isLiked}
             likesCount={likes}
@@ -361,6 +364,13 @@ export const ReviewFeedCard = ({
             </svg>
             <span>{commentsCount} comentarios</span>
           </button>
+
+          <TTSButton
+            text={review.content}
+            title={`Crítica de ${review.userName} sobre ${review.albumTitle}`}
+            size="sm"
+            label="Escuchar"
+          />
         </div>
 
         {/* Botón Reportar Reseña */}
