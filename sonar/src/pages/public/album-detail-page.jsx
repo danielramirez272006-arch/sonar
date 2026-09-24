@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from 'react';
+import { createReview } from '../../shared/services/api-client.js';
+import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import Navbar from '../../shared/components/layout/navbar';
 import Footer from '../../shared/components/layout/footer';
@@ -110,7 +111,7 @@ export const AlbumDetailPage = () => {
     );
   };
 
-  const handleReviewSubmit = (reviewData) => {
+  const handleReviewSubmit = async (reviewData) => {
     if (!user) {
       window.location.hash = '#login';
       return;
@@ -121,7 +122,11 @@ export const AlbumDetailPage = () => {
       : mockAlbum.title;
 
     const newReview = {
-      id: Date.now(),
+      id: crypto.randomUUID(),
+      userId: user.id,
+      albumId: '14880659',
+      status: 'pending_moderation',
+      createdAt: new Date().toISOString(),
       userName: user?.username || 'Usuario Sonar',
       userHandle: user?.username ? `@${user.username.toLowerCase().replace(/\s+/g, '_')}` : '@usuario',
       avatarLetter: (user?.username || 'U').charAt(0).toUpperCase(),
@@ -139,11 +144,16 @@ export const AlbumDetailPage = () => {
       hasSpoilers: reviewData.hasSpoilers,
     };
 
-    setAlbumReviews((prev) => [newReview, ...prev]);
+    try {
+      const saved = await createReview(newReview);
+      setAlbumReviews((prev) => [saved || newReview, ...prev]);
+    } catch {
+      setAlbumReviews((prev) => [newReview, ...prev]);
+    }
     setToastMessage(
       reviewData.type === 'track'
-        ? `¡Tu crítica de la canción "${effectiveTitle}" fue publicada con éxito!`
-        : `¡Tu crítica del disco "${mockAlbum.title}" fue publicada con éxito!`
+        ? `¡Tu crítica de la canción "${effectiveTitle}" fue publicada!`
+        : `¡Tu crítica del disco "${mockAlbum.title}" fue publicada!`
     );
   };
 

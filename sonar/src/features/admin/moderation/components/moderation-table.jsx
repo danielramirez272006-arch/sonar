@@ -1,9 +1,10 @@
 import { useState } from 'react'
+import { ReviewAlbum } from './review-album.jsx'
 
 const statuses = { pending_moderation: 'Pendiente', approved: 'Aprobada', rejected: 'Rechazada' }
 
-export function ModerationTable({ reviews, users, query, busy, onAction, analyses, compact = false, error }) {
-  const [filter, setFilter] = useState('all')
+export function ModerationTable({ reviews, users, query, busy, onAction, analyses, compact = false, error, initialFilter = 'all' }) {
+  const [filter, setFilter] = useState(initialFilter)
   const [rejectId, setRejectId] = useState(null)
   const options = compact ? [['all', 'Todas'], ['pending_moderation', 'Pendientes'], ['approved', 'Aprobadas'], ['rejected', 'Rechazadas'], ['flagged', 'Marcadas']] : [['all', 'Todas'], ['flagged', 'Marcadas por IA']]
   const visible = reviews.filter(review => {
@@ -96,27 +97,7 @@ export function ModerationTable({ reviews, users, query, busy, onAction, analyse
                   {review.aiFlagged ? '✧ Marcada por IA' : statuses[review.status] || review.status}
                 </span>
               </div>
-              <div className="review-body py-5 flex flex-col sm:flex-row gap-5 items-start sm:items-center">
-                <div className={`record-art record-art-${index % 2}`} role="img" aria-label="Ilustración de un vinilo">
-                  <div className="record-disc" />
-                  <div className="record-sleeve"><span>SONAR<br />COLLECTION</span><i /><small>33⅓ RPM</small></div>
-                </div>
-                <div className="review-copy min-w-0">
-                  <div className="eyebrow text-[10px] tracking-wider uppercase font-semibold text-gray-500 dark:text-[#DCDCDD]/70">
-                    DEL ARCHIVO SONORO
-                  </div>
-                  <h3 className="text-lg font-bold text-gray-900 dark:text-[#DCDCDD] mt-1 mb-2">
-                    Álbum <span className="font-serif italic text-[#B80C09] dark:text-[#ff4d4a]">{review.albumId}</span>
-                  </h3>
-                  <div className="rating flex items-center gap-1 text-sm font-bold text-gray-800 dark:text-[#DCDCDD]">
-                    <span aria-hidden="true" className="text-amber-500">★</span> {review.rating}{' '}
-                    <small className="text-xs font-normal text-gray-500 dark:text-[#DCDCDD]/70">/ 5 · Calificación del oyente</small>
-                  </div>
-                  <blockquote className="mt-3 font-serif italic text-gray-700 dark:text-[#DCDCDD]/90 text-sm leading-relaxed">
-                    “{review.content}”
-                  </blockquote>
-                </div>
-              </div>
+              <ReviewAlbum review={review} />
               {!compact && (
                 <div
                   className={`analysis-box p-4 rounded-xl flex gap-3 mb-4 ${

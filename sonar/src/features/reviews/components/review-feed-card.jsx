@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from 'react';
+import { ReportReview } from './report-review.jsx';
+import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '../../../shared/context/auth-context';
 import { usePlayer } from '../../../shared/context/player-context';
@@ -380,7 +381,6 @@ export const ReviewFeedCard = ({
           />
         )}
       </AnimatePresence>
-
       {/* Modal de Reporte para la Reseña */}
       <ReportModal
         isOpen={isReportingReview}

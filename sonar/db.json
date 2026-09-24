@@ -18,8 +18,73 @@
         "Electrónica"
       ],
       "mutedUntil": null,
-      "status": null,
-      "avatarBg": "#7c3aed"
+      "status": "active",
+      "avatarBg": "#7c3aed",
+      "conductReports": [
+        {
+          "id": "181803c2-b9a9-4024-b1b4-05f94b22d93f",
+          "reason": "mala conducta",
+          "createdAt": "2026-09-23T14:31:03.517Z",
+          "status": "pending"
+        },
+        {
+          "id": "2e35a1a6-947d-4c16-97fa-ed9a0d2c14b2",
+          "reason": "jijijijij",
+          "createdAt": "2026-09-23T14:31:46.438Z",
+          "status": "pending"
+        },
+        {
+          "id": "b74950d6-c368-4f23-b6d2-c0f50b38bc23",
+          "reason": "sisi",
+          "createdAt": "2026-09-23T14:33:32.632Z",
+          "status": "reviewed",
+          "updatedAt": "2026-09-24T14:08:42.127Z"
+        },
+        {
+          "id": "ac8cd3e8-a43d-4e6a-bb6b-117fac4e3c65",
+          "reason": "hola",
+          "createdAt": "2026-09-23T14:33:37.458Z",
+          "status": "pending"
+        },
+        {
+          "id": "4f760362-fac5-4671-953f-93e18e52eefa",
+          "reason": "nigga",
+          "createdAt": "2026-09-23T14:42:10.484Z",
+          "status": "pending"
+        },
+        {
+          "id": "5304d2eb-f3f7-4397-af34-52a603c992ae",
+          "reason": "si",
+          "createdAt": "2026-09-23T14:42:13.346Z",
+          "status": "pending"
+        },
+        {
+          "id": "29ab4598-8f23-404e-a6cc-35964d4414d1",
+          "reason": "no",
+          "createdAt": "2026-09-23T14:42:16.240Z",
+          "status": "pending"
+        },
+        {
+          "id": "8978f615-9337-4a7b-8f29-c2378cfc538d",
+          "reason": "no",
+          "createdAt": "2026-09-23T14:42:20.541Z",
+          "status": "pending"
+        },
+        {
+          "id": "7a64ba31-30d3-40cb-968b-476ce1ba0d4f",
+          "reason": "a",
+          "createdAt": "2026-09-23T14:42:22.116Z",
+          "status": "pending"
+        },
+        {
+          "id": "64760819-1133-4f73-b113-106ebd6f366d",
+          "reason": "a",
+          "createdAt": "2026-09-23T14:42:24.538Z",
+          "status": "pending"
+        }
+      ],
+      "suspendedUntil": null,
+      "sanctions": []
     },
     {
       "id": "admin-1",
@@ -37,300 +102,9 @@
       "preferences": []
     },
     {
-      "id": "user-1790115776615",
+      "id": "user-1790175697367",
       "username": "Daniel Ramirez",
-      "email": "daniel@sonar.local",
-      "password": "password123",
-      "role": "user",
-      "avatarUrl": "",
-      "avatarBg": "#B80C09",
-      "bio": "Nuevo melómano explorando vinilos y texturas acústicas en Sonar.",
-      "stats": {
-        "savedAlbums": 0,
-        "reviewsCount": 0,
-        "followers": 0
-      },
-      "preferences": [
-        "Art Rock",
-        "Electrónica"
-      ]
-    },
-    {
-      "id": "user-1790115804184",
-      "username": "google_listener_541",
-      "email": "google_user_541@sonar.local",
-      "password": "social_mock_login_123",
-      "role": "user",
-      "avatarUrl": "",
-      "avatarBg": "#B80C09",
-      "bio": "Nuevo melómano explorando vinilos y texturas acústicas en Sonar.",
-      "stats": {
-        "savedAlbums": 0,
-        "reviewsCount": 0,
-        "followers": 0
-      },
-      "preferences": [
-        "Art Rock",
-        "Electrónica"
-      ]
-    },
-    {
-      "id": "user-1790115872935",
-      "username": "google_listener_364",
-      "email": "google_user_364@sonar.local",
-      "password": "social_mock_login_123",
-      "role": "user",
-      "avatarUrl": "",
-      "avatarBg": "#B80C09",
-      "bio": "Nuevo melómano explorando vinilos y texturas acústicas en Sonar.",
-      "stats": {
-        "savedAlbums": 0,
-        "reviewsCount": 0,
-        "followers": 0
-      },
-      "preferences": [
-        "Art Rock",
-        "Electrónica"
-      ]
-    },
-    {
-      "id": "user-1790115974684",
-      "username": "Daniel Ramirez",
-      "email": "daniel_1790115974587@sonar.local",
-      "password": "password123",
-      "role": "user",
-      "avatarUrl": "",
-      "avatarBg": "#B80C09",
-      "bio": "Nuevo melómano explorando vinilos y texturas acústicas en Sonar.",
-      "stats": {
-        "savedAlbums": 0,
-        "reviewsCount": 0,
-        "followers": 0
-      },
-      "preferences": [
-        "Art Rock",
-        "Electrónica"
-      ]
-    },
-    {
-      "id": "user-1790116172931",
-      "username": "Daniel Ramirez",
-      "email": "daniel_1790116172841@sonar.local",
-      "password": "password123",
-      "role": "user",
-      "avatarUrl": "",
-      "avatarBg": "#B80C09",
-      "bio": "Nuevo melómano explorando vinilos y texturas acústicas en Sonar.",
-      "stats": {
-        "savedAlbums": 0,
-        "reviewsCount": 0,
-        "followers": 0
-      },
-      "preferences": [
-        "Art Rock",
-        "Electrónica"
-      ]
-    },
-    {
-      "id": "user-1790116206934",
-      "username": "Daniel Ramirez",
-      "email": "daniel_1790116206858@sonar.local",
-      "password": "password123",
-      "role": "user",
-      "avatarUrl": "",
-      "avatarBg": "#B80C09",
-      "bio": "Nuevo melómano explorando vinilos y texturas acústicas en Sonar.",
-      "stats": {
-        "savedAlbums": 0,
-        "reviewsCount": 0,
-        "followers": 0
-      },
-      "preferences": [
-        "Art Rock",
-        "Electrónica"
-      ]
-    },
-    {
-      "id": "user-1790116408891",
-      "username": "Daniel Ramirez",
-      "email": "daniel_1790116408829@sonar.local",
-      "password": "password123",
-      "role": "user",
-      "avatarUrl": "",
-      "avatarBg": "#B80C09",
-      "bio": "Nuevo melómano explorando vinilos y texturas acústicas en Sonar.",
-      "stats": {
-        "savedAlbums": 0,
-        "reviewsCount": 0,
-        "followers": 0
-      },
-      "preferences": [
-        "Art Rock",
-        "Electrónica"
-      ]
-    },
-    {
-      "id": "user-1790116432493",
-      "username": "Daniel Ramirez",
-      "email": "daniel_1790116432432@sonar.local",
-      "password": "password123",
-      "role": "user",
-      "avatarUrl": "",
-      "avatarBg": "#B80C09",
-      "bio": "Nuevo melómano explorando vinilos y texturas acústicas en Sonar.",
-      "stats": {
-        "savedAlbums": 0,
-        "reviewsCount": 0,
-        "followers": 0
-      },
-      "preferences": [
-        "Art Rock",
-        "Electrónica"
-      ]
-    },
-    {
-      "id": "user-1790116484490",
-      "username": "danielramirez272006@gmail.com",
-      "email": "danielramirez272006@gmail.com",
-      "password": "dani123456",
-      "role": "user",
-      "avatarUrl": "",
-      "avatarBg": "#B80C09",
-      "bio": "Nuevo melómano explorando vinilos y texturas acústicas en Sonar.",
-      "stats": {
-        "savedAlbums": 0,
-        "reviewsCount": 0,
-        "followers": 0
-      },
-      "preferences": [
-        "Art Rock",
-        "Electrónica"
-      ]
-    },
-    {
-      "id": "user-1790117012849",
-      "username": "Daniel Ramirez",
-      "email": "daniel_1790117012706@sonar.local",
-      "password": "password123",
-      "role": "user",
-      "avatarUrl": "",
-      "avatarBg": "#B80C09",
-      "bio": "Nuevo melómano explorando vinilos y texturas acústicas en Sonar.",
-      "stats": {
-        "savedAlbums": 0,
-        "reviewsCount": 0,
-        "followers": 66,
-        "following": 170
-      },
-      "preferences": [
-        "Ambient & Drone",
-        "Folk Acústico"
-      ]
-    },
-    {
-      "id": "user-1790117201446",
-      "username": "Daniel Ramirez",
-      "email": "daniel_1790117201370@sonar.local",
-      "password": "password123",
-      "role": "user",
-      "avatarUrl": "",
-      "avatarBg": "#0284c7",
-      "bio": "Nuevo melómano explorando vinilos y texturas acústicas en Sonar.",
-      "stats": {
-        "savedAlbums": 0,
-        "reviewsCount": 0,
-        "followers": 303,
-        "following": 149
-      },
-      "preferences": [
-        "Jazz & Fusion",
-        "Ambient & Drone"
-      ]
-    },
-    {
-      "id": "user-1790117431693",
-      "username": "Daniel Ramirez",
-      "email": "daniel_1790117431618@sonar.local",
-      "password": "password123",
-      "role": "user",
-      "avatarUrl": "",
-      "avatarBg": "#7c3aed",
-      "bio": "Nuevo melómano explorando vinilos y texturas acústicas en Sonar.",
-      "stats": {
-        "savedAlbums": 0,
-        "reviewsCount": 0,
-        "followers": 133,
-        "following": 99
-      },
-      "preferences": [
-        "Folk Acústico",
-        "Art Rock"
-      ]
-    },
-    {
-      "id": "user-1790117573057",
-      "username": "Daniel Ramirez",
-      "email": "daniel_1790117572976@sonar.local",
-      "password": "password123",
-      "role": "user",
-      "avatarUrl": "",
-      "avatarBg": "#4B2840",
-      "bio": "Nuevo melómano explorando vinilos y texturas acústicas en Sonar.",
-      "stats": {
-        "savedAlbums": 0,
-        "reviewsCount": 0,
-        "followers": 366,
-        "following": 30
-      },
-      "preferences": [
-        "IDM / Techno",
-        "Electrónica"
-      ]
-    },
-    {
-      "id": "user-1790117573133",
-      "username": "Elena Jazz",
-      "email": "audiophile_1790117573097@sonar.local",
-      "password": "password123",
-      "role": "user",
-      "avatarUrl": "",
-      "avatarBg": "#d97706",
-      "bio": "Amante del vinilo y el jazz modal.",
-      "stats": {
-        "savedAlbums": 0,
-        "reviewsCount": 0,
-        "followers": 200,
-        "following": 68
-      },
-      "preferences": [
-        "Jazz & Fusion",
-        "Post-Punk"
-      ]
-    },
-    {
-      "id": "user-1790117596977",
-      "username": "audiophile_972",
-      "email": "spotify_user_972@sonar.local",
-      "password": "social_mock_login_123",
-      "role": "user",
-      "avatarUrl": "",
-      "avatarBg": "#B80C09",
-      "bio": "Nuevo melómano explorando vinilos y texturas acústicas en Sonar.",
-      "stats": {
-        "savedAlbums": 0,
-        "reviewsCount": 0,
-        "followers": 125,
-        "following": 83
-      },
-      "preferences": [
-        "Electrónica",
-        "Post-Punk"
-      ]
-    },
-    {
-      "id": "user-1790117950587",
-      "username": "Daniel Ramirez",
-      "email": "daniel_1790117950496@sonar.local",
+      "email": "daniel_1790175697277@sonar.local",
       "password": "password123",
       "role": "user",
       "avatarUrl": "",
@@ -343,54 +117,15 @@
         "following": 0
       },
       "preferences": [
-        "Neo-Soul",
-        "Psicodelia"
-      ]
+        "Hip-Hop Experimental",
+        "Neo-Soul"
+      ],
+      "createdAt": "2026-09-23T15:01:37.367Z"
     },
     {
-      "id": "user-1790117950665",
+      "id": "user-1790175697482",
       "username": "Elena Jazz",
-      "email": "audiophile_1790117950631@sonar.local",
-      "password": "password123",
-      "role": "user",
-      "avatarUrl": "",
-      "avatarBg": "#4B2840",
-      "bio": "Amante del vinilo y el jazz modal.",
-      "stats": {
-        "savedAlbums": 0,
-        "reviewsCount": 0,
-        "followers": 0,
-        "following": 0
-      },
-      "preferences": [
-        "Jazz & Fusion",
-        "Post-Punk"
-      ]
-    },
-    {
-      "id": "user-1790117988850",
-      "username": "Daniel Ramirez",
-      "email": "daniel_1790117988781@sonar.local",
-      "password": "password123",
-      "role": "user",
-      "avatarUrl": "",
-      "avatarBg": "#4B2840",
-      "bio": "Nuevo melómano explorando vinilos y texturas acústicas en Sonar.",
-      "stats": {
-        "savedAlbums": 0,
-        "reviewsCount": 0,
-        "followers": 0,
-        "following": 0
-      },
-      "preferences": [
-        "Folk Acústico",
-        "Art Rock"
-      ]
-    },
-    {
-      "id": "user-1790117988936",
-      "username": "Elena Jazz",
-      "email": "audiophile_1790117988899@sonar.local",
+      "email": "audiophile_1790175697427@sonar.local",
       "password": "password123",
       "role": "user",
       "avatarUrl": "",
@@ -405,67 +140,48 @@
       "preferences": [
         "Jazz & Fusion",
         "Post-Punk"
-      ]
-    },
-    {
-      "id": "demo-ana",
-      "username": "Ana Calderon",
-      "email": "ana.demo@sonar.local",
-      "password": "demo_password_ana",
-      "role": "user",
-      "avatarUrl": "/avatars/default-teal.png",
-      "bio": "Coleccionista de dream pop y discos que suenan mejor de noche.",
-      "stats": {
-        "savedAlbums": 38,
-        "reviewsCount": 12,
-        "followers": 74
-      },
-      "preferences": [
-        "Dream Pop",
-        "Shoegaze",
-        "Vinilos"
       ],
-      "status": "active",
-      "mutedUntil": null
+      "createdAt": "2026-09-23T15:01:37.482Z"
     },
     {
-      "id": "demo-bruno",
-      "username": "Bruno Soria",
-      "email": "bruno.demo@sonar.local",
-      "password": "demo_password_bruno",
+      "id": "user-1790175932236",
+      "username": "Daniel Ramirez",
+      "email": "daniel_1790175932120@sonar.local",
+      "password": "password123",
       "role": "user",
-      "avatarUrl": "/avatars/default-teal.png",
-      "bio": "Exploro electronica experimental, ambient y nuevas formas de escuchar.",
+      "avatarUrl": "",
+      "avatarBg": "#B80C09",
+      "bio": "Nuevo melómano explorando vinilos y texturas acústicas en Sonar.",
       "stats": {
-        "savedAlbums": 91,
-        "reviewsCount": 27,
-        "followers": 143
+        "savedAlbums": 0,
+        "reviewsCount": 0,
+        "followers": 0,
+        "following": 0
       },
       "preferences": [
-        "Electronica",
-        "Ambient",
-        "IDM"
+        "Electrónica",
+        "Post-Punk"
       ],
-      "status": "active",
-      "mutedUntil": null
+      "createdAt": "2026-09-23T15:05:32.236Z"
     },
     {
-      "id": "demo-camila",
-      "username": "Camila Torres",
-      "email": "camila.demo@sonar.local",
-      "password": "demo_password_camila",
+      "id": "user-1790175932320",
+      "username": "Elena Jazz",
+      "email": "audiophile_1790175932293@sonar.local",
+      "password": "password123",
       "role": "user",
-      "avatarUrl": "/avatars/default-teal.png",
-      "bio": "Cantautora aficionada a las letras intimas y las armonias vocales.",
+      "avatarUrl": "",
+      "avatarBg": "#7c3aed",
+      "bio": "Amante del vinilo y el jazz modal.",
       "stats": {
-        "savedAlbums": 24,
-        "reviewsCount": 8,
-        "followers": 51
+        "savedAlbums": 0,
+        "reviewsCount": 0,
+        "followers": 0,
+        "following": 0
       },
       "preferences": [
-        "Folk",
-        "Indie",
-        "Songwriting"
+        "Jazz & Fusion",
+        "Post-Punk"
       ],
       "status": "active",
       "mutedUntil": null
@@ -1413,7 +1129,51 @@
         "Synthwave",
         "Ambient & Drone",
         "IDM / Techno"
-      ]
+      ],
+      "createdAt": "2026-09-23T15:05:32.320Z"
+    },
+    {
+      "id": "user-1790260885716",
+      "username": "Daniel Ramirez",
+      "email": "daniel_1790260885561@sonar.local",
+      "password": "password123",
+      "role": "user",
+      "avatarUrl": "",
+      "avatarBg": "#7c3aed",
+      "bio": "Nuevo melómano explorando vinilos y texturas acústicas en Sonar.",
+      "stats": {
+        "savedAlbums": 0,
+        "reviewsCount": 0,
+        "followers": 0,
+        "following": 0
+      },
+      "preferences": [
+        "IDM / Techno",
+        "Electrónica"
+      ],
+      "createdAt": "2026-09-24T14:41:25.716Z"
+    },
+    {
+      "id": "user-1790260885793",
+      "username": "Elena Jazz",
+      "email": "audiophile_1790260885758@sonar.local",
+      "password": "password123",
+      "role": "user",
+      "avatarUrl": "",
+      "avatarBg": "#B80C09",
+      "bio": "Exploradora de sintetizadores analógicos.",
+      "stats": {
+        "savedAlbums": 0,
+        "reviewsCount": 0,
+        "followers": 0,
+        "following": 0
+      },
+      "preferences": [
+        "Synthwave",
+        "Ambient & Drone",
+        "IDM / Techno"
+      ],
+      "createdAt": "2026-09-24T14:41:25.793Z"
     }
   ],
   "reviews": [

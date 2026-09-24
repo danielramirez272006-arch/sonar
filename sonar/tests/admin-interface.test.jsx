@@ -4,6 +4,8 @@ import { act, cleanup, fireEvent, render, screen, waitFor } from '@testing-libra
 import App from '../src/App.jsx'
 import { getReviews, getUsers, getPendingReviews, updateReview } from '../src/shared/services/api-client.js'
 
+vi.mock('../src/shared/components/ui/blobatar-avatar.jsx', () => ({ BlobatarAvatar: () => <span /> }))
+vi.mock('../src/shared/services/deezer-service.js', () => ({ getAlbumById: async () => null, DEFAULT_DEEZER_ALBUMS: [], searchAlbums: async () => [] }))
 vi.mock('../src/shared/services/api-client.js', () => ({
   getReviews: vi.fn(), getUsers: vi.fn(), getPendingReviews: vi.fn(), updateReview: vi.fn(),
 }))
@@ -27,7 +29,7 @@ afterEach(cleanup)
 it('saltar al contenido conserva la pantalla de moderación', async () => {
   window.history.replaceState(null, '', '/#moderacion')
   render(<App />)
-  await screen.findByText('Mateo')
+  await screen.findAllByText('Mateo')
   await act(async () => {
     window.history.replaceState(null, '', '/#contenido')
     window.dispatchEvent(new Event('hashchange'))
@@ -38,7 +40,7 @@ it('saltar al contenido conserva la pantalla de moderación', async () => {
 it('limpia la búsqueda y devuelve el foco al campo', async () => {
   render(<App />)
   await screen.findAllByText('Mateo')
-  const search = screen.getByRole('textbox', { name: /Buscar reseñas/ })
+  const search = screen.getByRole('combobox', { name: /Buscar reseñas/ })
   fireEvent.change(search, { target: { value: 'sin coincidencias' } })
   fireEvent.click(screen.getByRole('button', { name: 'Limpiar búsqueda' }))
   expect(search.value).toBe('')
@@ -76,7 +78,7 @@ it('analiza una reseña normal sin aprobarla ni rechazarla', async () => {
 it('muestra los datos y permite filtrar las reseñas con la búsqueda', async () => {
   render(<App />)
   expect((await screen.findAllByText('Mateo')).length).toBeGreaterThan(0)
-  const search = screen.getByRole('textbox', { name: /Buscar reseñas/ })
+  const search = screen.getByRole('combobox', { name: /Buscar reseñas/ })
   fireEvent.change(search, { target: { value: 'sin coincidencias' } })
   expect(screen.getByText('No hay coincidencias')).toBeTruthy()
   fireEvent.change(search, { target: { value: 'Mateo' } })

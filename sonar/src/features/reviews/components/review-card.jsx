@@ -1,4 +1,5 @@
-import React from 'react';
+import { ReportReview } from './report-review.jsx';
+
 import StarRating from '../../../shared/components/ui/star-rating';
 import Avatar from '../../../shared/components/ui/avatar';
 
@@ -22,7 +23,7 @@ export const ReviewCard = ({ review = {} }) => {
       <p className="text-sm text-[#231123]/90 dark:text-gray-200 leading-relaxed italic">
         “{review.content || review.text}”
       </p>
-    </article>
+    <ReportReview review={review} /></article>
   );
 };
 

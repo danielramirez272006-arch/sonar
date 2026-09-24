@@ -4,7 +4,7 @@ import 'blobatar/motion.css';
 import 'blobatar/gaze.css';
 
 /** Avatar determinista: el mismo nombre siempre genera el mismo Blobatar. */
-export const BlobatarAvatar = ({ name, size = 50, active = false, className = '' }) => {
+export const BlobatarAvatar = ({ name, size = 50, active = false, hue, tone, className = '' }) => {
   const avatarName = name?.trim() || 'usuario-sonar';
   const { ref } = useGaze({
     travel: active ? 2 : 0,
@@ -13,7 +13,7 @@ export const BlobatarAvatar = ({ name, size = 50, active = false, className = ''
 
   return (
     <span className={`blobatar-avatar ${className}`} style={{ width: size, height: size }} aria-label={`Avatar de ${avatarName}`}>
-      <Blobatar ref={ref} name={avatarName} size={size} animate={active ? 'always' : 'hover'} />
+      <Blobatar ref={ref} name={avatarName} size={size} hue={hue} tone={tone} background="circle" animate={active ? 'always' : 'hover'} />
     </span>
   );
 };
