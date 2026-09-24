@@ -79,7 +79,8 @@
           "id": "64760819-1133-4f73-b113-106ebd6f366d",
           "reason": "a",
           "createdAt": "2026-09-23T14:42:24.538Z",
-          "status": "pending"
+          "status": "resolved",
+          "updatedAt": "2026-09-24T14:28:52.296Z"
         }
       ],
       "suspendedUntil": null,

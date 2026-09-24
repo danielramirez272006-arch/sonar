@@ -52,10 +52,10 @@ export function AdminDashboardPage({ metrics, reviews = [], users = [], onRefres
       </section>}
 
       <div className="admin-workspace__grid">
-        <div className="admin-workspace__main"><PriorityQueue reviews={reviews} users={users} busy={feedProps.busy} onAction={feedProps.onAction} /><ModerationRhythm metrics={metrics} reviews={reviews} /></div>
-        <aside className="admin-workspace__side"><RecentActivityFeed activities={adminEvents(users, reviews)} /><section className="admin-tools"><span className="eyebrow">HERRAMIENTAS</span><h2>Atajos de trabajo</h2><button type="button" onClick={onExport} disabled={feedProps.busy || !!currentError}><Download size={16} /> Exportar archivo CSV <ArrowUpRight size={15} /></button><a href="#moderacion"><SlidersHorizontal size={16} /> Configurar filtros <ArrowUpRight size={15} /></a></section></aside>
+        <div className="admin-workspace__main"><PriorityQueue reviews={reviews} users={users} busy={feedProps.busy} onAction={feedProps.onAction} /><ModerationRhythm metrics={metrics} reviews={reviews} /><ActivityChart events={adminEvents(users, reviews)} /></div>
+        <aside className="admin-workspace__side"><RecentActivityFeed activities={adminEvents(users, reviews)} className="dashboard-recent-activity" /><section className="admin-tools"><span className="eyebrow">HERRAMIENTAS</span><h2>Atajos de trabajo</h2><button type="button" onClick={onExport} disabled={feedProps.busy || !!currentError}><Download size={16} /> Exportar archivo CSV <ArrowUpRight size={15} /></button><a href="#moderacion"><SlidersHorizontal size={16} /> Configurar filtros <ArrowUpRight size={15} /></a></section></aside>
       </div>
-      <ActivityChart events={adminEvents(users, reviews)} /><UsersPage reviews={reviews} users={users} onUserUpdate={feedProps.onUserUpdate} compact />
+      <UsersPage reviews={reviews} users={users} onUserUpdate={feedProps.onUserUpdate} compact />
       <section className="admin-workspace__archive" aria-labelledby="archive-title"><div><span className="eyebrow">ARCHIVO EDITORIAL</span><h2 id="archive-title">Reseñas y filtros</h2><p>Explora el historial completo sin salir de la consola.</p></div><ModerationTable {...feedProps} error={currentError} reviews={reviews} users={users} compact /></section>
     </div>
   );
