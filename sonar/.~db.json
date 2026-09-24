@@ -3401,6 +3401,37 @@
         "Audiófilo Inicial"
       ],
       "createdAt": "2026-09-24T17:15:40.327Z"
+    },
+    {
+      "id": "user-1790270140520",
+      "username": "Elena Jazz",
+      "email": "audiophile_1790270140444@sonar.local",
+      "password": "sha256$eff91b51d3b0ff1d80008956b3f6e161$286a853f47d444a50e1b1e3d078c601e9597fee21702f2958cd4b0d05a261ec8",
+      "role": "user",
+      "avatarUrl": "",
+      "avatarBg": "#5c1d5e",
+      "bio": "Exploradora de sintetizadores analógicos.",
+      "stats": {
+        "savedAlbums": 0,
+        "reviewsCount": 0,
+        "followers": 0,
+        "following": 0
+      },
+      "preferences": [
+        "Synthwave",
+        "Ambient & Drone",
+        "IDM / Techno"
+      ],
+      "gear": {
+        "headphones": "Auriculares de referencia",
+        "turntable": "Tocadiscos Direct Drive",
+        "favoriteFormat": "Vinilo 33⅓ RPM"
+      },
+      "badges": [
+        "Melómano Verificado",
+        "Audiófilo Inicial"
+      ],
+      "createdAt": "2026-09-24T17:15:40.520Z"
     }
   ],
   "reviews": [

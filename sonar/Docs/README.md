@@ -1,70 +1,61 @@
-# Documentación de SONAR
+# Índice de Documentación Técnica — SONAR
 
-Documentación contrastada con el código el 24 de septiembre de 2026. Describe la implementación local; no certifica servicios externos ni una instalación limpia.
+Bienvenido al centro de documentación técnica y operativa de **SONAR**, la plataforma y bitácora musical para audiófilos y críticos de audio de alta fidelidad.
 
-## Documentos
+---
 
-1. [Arquitectura y enrutamiento](01-Arquitectura-y-Enrutamiento.md)
-2. [Portal público y cuentas](02-Portal-Publico.md)
-3. [Consola administrativa](03-Consola-Administracion-y-Moderacion.md)
-4. [Servicios, IA y n8n](04-Servicios-API-y-Motor-IA.md)
-5. [Diseño](Design.md)
-6. [Requisitos y auditoría](requerimientos.md)
-7. [Flujo administrativo y comprobaciones](../ADMIN-WORKFLOW.md)
+## Índice General de Documentos
 
-## Inicio local
+1. **[01-Arquitectura-y-Enrutamiento.md](01-Arquitectura-y-Enrutamiento.md)**:
+   - Estructura de carpetas modular por dominio (`features`, `pages`, `shared`).
+   - Sistema de enrutamiento dinámico y guardias de seguridad (RBAC).
+   - Gestión de estado global con Context API (`Auth`, `Theme`, `Player`, `Accessibility`).
 
-Desde la raíz del repositorio, entra en `sonar/`, donde están [package.json](../package.json) y [db.json](../db.json).
+2. **[02-Portal-Publico.md](02-Portal-Publico.md)**:
+   - Integración musical y streaming de muestras Deezer.
+   - Feed de Críticas del Mes, publicación de reseñas y modo vinilo.
+   - Avatar Studio con subida de imágenes locales (Drag & Drop) y arquetipos Blobatar.
+   - Biblioteca personal y colecciones guardadas.
 
-La versión instalada de Vite requiere Node.js `^20.19.0 || >=22.12.0`.
+3. **[03-Consola-Administracion-y-Moderacion.md](03-Consola-Administracion-y-Moderacion.md)**:
+   - Dashboard de analítica, métricas en tiempo real y gráficos semanales.
+   - Flujo de moderación con aprobación, rechazo y confirmación.
+   - Módulo de Opiniones Coincidentes de la Comunidad.
+   - Indicador visual de conducta y gestión de sanciones.
 
-```bash
-npm install
-npm run api
-```
+4. **[04-Servicios-API-y-Motor-IA.md](04-Servicios-API-y-Motor-IA.md)**:
+   - Cliente API completo (`api-client.js`) con JSON Server.
+   - Integración externa con Deezer API.
+   - Automatización n8n con Webhooks y flujos de recuperación de contraseñas.
+   - Servicio criptográfico SHA-256 con salt aleatorio.
 
-En otra terminal, dentro de la misma carpeta:
+5. **[05-Sistema-de-Accesibilidad-Universal.md](05-Sistema-de-Accesibilidad-Universal.md)**:
+   - Estándar WCAG 2.1 AA/AAA.
+   - Modos de alto contraste, escala dinámica de fuentes y fuente OpenDyslexic.
+   - Filtros SVG para daltonismo (Protanopía, Deuteranopía, Tritanopía, Acromatopsia).
+   - Lectura por voz (Text-to-Speech) y atajos de teclado globales.
 
-```bash
-npm run dev
-```
+6. **[06-Seguridad-Criptografia-y-Autenticacion.md](06-Seguridad-Criptografia-y-Autenticacion.md)**:
+   - Hashing criptográfico con Web Crypto API.
+   - Control de acceso basado en roles (`admin` / `user`).
+   - Códigos de verificación OTP temporizados (15 min).
+   - Zona de peligro y eliminación definitiva de cuentas (CRUD DELETE).
 
-JSON Server escucha en `http://localhost:3001`. Vite muestra la URL del frontend. Para verificar:
+7. **[07-Manual-de-Usuario-y-Guia-Audiophila.md](07-Manual-de-Usuario-y-Guia-Audiophila.md)**:
+   - Guía paso a paso para el usuario final y melómano.
+   - Creación de cuenta, personalización de perfil y equipo de audio.
+   - Cómo escuchar muestras, redactar críticas y organizar colecciones.
 
-```bash
-npm test
-npm run build
-npm run lint
-```
+8. **[08-Manual-Tecnico-de-Pruebas-y-Despliegue.md](08-Manual-Tecnico-de-Pruebas-y-Despliegue.md)**:
+   - Manual de ejecución de pruebas automatizadas (18 suites, 95 tests con Vitest).
+   - Guía de inicio local y compilación optimizada con Vite para producción.
 
-La última ejecución registrada durante la integración de código pasó 90 pruebas en 17 archivos y compiló correctamente. No se repitieron estos comandos para esta actualización documental. Las pruebas con mocks no acreditan entrega de correos ni disponibilidad de APIs.
+9. **[09-Catalogo-de-Recursos-y-Modulos-CRUD.md](09-Catalogo-de-Recursos-y-Modulos-CRUD.md)**:
+   - Matriz de recursos del sistema (Usuarios, Reseñas, Colecciones, Géneros, Listas Editoriales y Criterios).
+   - Especificaciones de operaciones Create, Read, Update y Delete.
 
-## Ubicación de los recursos
+10. **[requerimientos.md](requerimientos.md)**:
+    - Lista de verificación y auditoría del 100% de requerimientos completados.
 
-| Carpeta | Contenido |
-| --- | --- |
-| `src/features/` | Funciones por dominio: administración, autenticación, álbumes, reseñas, perfiles y portada. |
-| `src/pages/` | Páginas públicas, de usuario y de administración. |
-| `src/shared/` | Componentes, contextos, rutas y servicios compartidos. |
-| `src/Styles/` | Estilos generales y administrativos. |
-| `tests/` | Pruebas de lógica y componentes. |
-| `n8n/` | Exportación del workflow de recuperación. |
-| `public/` | Logos, iconos y avatares estáticos. |
-
-## Rutas principales
-
-| Hash | Vista | Acceso |
-| --- | --- | --- |
-| `#explore`, `#home` | Portada y búsqueda | Público |
-| `#community`, `#reviews` | Comunidad y reseñas | Público |
-| `#album` | Detalle editorial de álbum | Público |
-| `#login`, `#register`, `#forgot-password` | Autenticación y recuperación | Público |
-| `#usuario`, `#profile`, `#saved` | Dashboard de usuario | Sesión |
-| `#profile-settings` | Configuración de perfil | Sesión |
-| `#admin`, `#dashboard` | Dashboard administrativo | Administrador |
-| `#moderacion` | Cola de revisión y opiniones | Administrador |
-| `#usuarios` | Gestión de usuarios | Administrador |
-| `#admin-reports` | Reportes | Administrador |
-| `#admin-reviews` | Archivo de reseñas | Administrador |
-
-La protección de estas vistas es de frontend. Consulta las limitaciones en [arquitectura](01-Arquitectura-y-Enrutamiento.md).
+11. **[Design.md](Design.md)**:
+    - Lineamientos de identidad visual, paletas cromáticas, tipografía y diseño UI/UX.

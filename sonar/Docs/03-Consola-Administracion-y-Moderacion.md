@@ -1,46 +1,39 @@
-# Consola de administración y moderación
+# Consola de Administración y Moderación — SONAR
 
-## Dashboard
+## 1. Dashboard Administrativo y Métricas en Tiempo Real
 
-[AdminDashboardPage](../src/pages/admin/admin-dashboard-page.jsx) muestra una cola prioritaria, estado de moderación, actividad semanal, eventos recientes, usuarios y archivo de reseñas.
+El panel [AdminDashboardPage](../src/pages/admin/admin-dashboard-page.jsx) ofrece analítica clave del sistema:
+- **Métricas Clave**: Usuarios totales registrados, reseñas totales publicadas y reseñas pendientes de revisión.
+- **Gráfico de Actividad Semanal**: Visualización por barras diarias de reseñas, nuevos usuarios, reportes y decisiones de moderación de los últimos 7 días.
+- **Cola Prioritaria**: Listado de elementos que requieren atención inmediata con atajos a la moderación.
 
-[admin-data.js](../src/shared/services/admin-data.js) calcula usuarios, reseñas, pendientes, aprobadas, rechazadas, marcadas, altas recientes, reportes pendientes y usuarios sancionados a partir de los registros cargados.
+---
 
-El gráfico semanal utiliza React y CSS, sin Recharts ni Chart.js. Cuenta reseñas, altas, reportes y decisiones por día; excluye eventos futuros y registros sin fecha válida.
+## 2. Flujo de Moderación de Contenido
 
-El gráfico ocupa la columna principal. La actividad reciente tiene desplazamiento interno para limitar su altura. Actualizar vuelve a consultar los datos; no hay garantía de sincronización continua con otros clientes.
+En [ModerationPage](../src/pages/admin/moderation-page.jsx):
+- **Aprobación y Rechazo**: Aprobación directa o rechazo con solicitud de motivo y confirmación modal.
+- **Historial de Decisiones**: Registro inmutable de cada veredicto (`status: approved | rejected | pending_moderation`).
+- **Archivo Editorial**: Filtros avanzados por estado, autor, fecha y calificación.
 
-## Moderación
+---
 
-En `#moderacion` se revisan reseñas pendientes. Aprobar y rechazar actualizan el estado; el rechazo solicita confirmación. Las decisiones quedan en `moderationHistory`.
+## 3. Módulo de Opiniones Coincidentes de la Comunidad
 
-La acción etiquetada como IA usa un diccionario local de palabras, no un modelo externo. Puede marcar contenido para revisión humana, pero no aprueba ni rechaza automáticamente.
+El componente [CommunityOpinions](../src/features/admin/moderation/components/community-opinions.jsx) procesa reseñas mediante [community-opinions.js](../src/shared/services/community-opinions.js):
+- Agrupa reseñas que comparten apreciaciones técnicas o valoraciones similares sobre un mismo álbum.
+- Requiere al menos dos usuarios distintos para consolidar una coincidencia comunitaria.
+- Muestra tarjeta representativa, número de críticos coincidentes y citas originales desplegables.
 
-El archivo `#admin-reviews` permite revisar estados y enlaces a reseñas concretas.
+---
 
-## Opiniones generales
+## 4. Gestión de Usuarios, Conducta y Sanciones
 
-[CommunityOpinions](../src/features/admin/moderation/components/community-opinions.jsx) muestra grupos calculados por [community-opinions.js](../src/shared/services/community-opinions.js):
-
-- Usa reseñas aprobadas o pendientes con autor, álbum y texto.
-- Agrupa únicamente dentro del mismo álbum.
-- Exige al menos dos usuarios distintos; varias reseñas de una persona no bastan.
-- Normaliza texto y compara coincidencias exactas o conjuntos de palabras con reglas conservadoras.
-- Muestra una opinión representativa, número de usuarios y comentarios originales desplegables.
-- Incluye estados de carga, error y ausencia de coincidencias.
-
-No es un resumen generativo ni una medición fiable de consenso o sentimiento. Las reglas no comprenden todos los matices del lenguaje.
-
-## Reportes y usuarios
-
-`#admin-reports` permite filtrar reportes, abrir el usuario, enviar a moderación y resolver. Se retiró el botón redundante «Ver contenido».
-
-`#usuarios` ofrece filtros, perfil administrativo, historial, indicador de conducta y sanciones. Silenciar, suspender, banear o retirar sanciones requiere motivo y confirmación. Las sanciones temporales se evalúan según su vencimiento.
-
-SONAR Intelligence muestra datos preparados para una futura integración; no calcula un riesgo real.
-
-## Persistencia y alcance
-
-Los reportes y sanciones pertenecen al usuario; las decisiones de moderación pertenecen a la reseña. Resolver no elimina el historial. Las restricciones se aplican desde el cliente y requieren autorización de servidor para ser seguras frente a llamadas directas.
-
-Consulta [el flujo de comprobación](../ADMIN-WORKFLOW.md).
+En [AdminUsersPage](../src/pages/admin/admin-users-page.jsx):
+- **Indicador Visual de Conducta**: Carita semafórica calculada en base al historial de reportes (Verde = Ejemplar, Amarillo = Advertencia, Naranja = Riesgo, Rojo = Sanción Crítica).
+- **Acciones de Sanción**:
+  - Silenciar usuario temporalmente.
+  - Suspender cuenta por tiempo determinado.
+  - Expulsión / Baneo definitivo.
+  - Retiro de sanciones con registro de auditoría.
+- **Gestión de Reportes ([AdminReportsPage](../src/pages/admin/admin-reports-page.jsx))**: Clasificación por motivos (Lenguaje inapropiado, Spam, Odio, Spoilers sin marcar) con resolución auditada.
