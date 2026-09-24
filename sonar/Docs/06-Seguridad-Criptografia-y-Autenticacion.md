@@ -39,3 +39,13 @@ En [forgot-password-form.jsx](../src/features/auth/components/forgot-password-fo
 
 - **Confirmación Explícita**: Para eliminar una cuenta, el usuario debe acceder a la Zona de Peligro en el editor de perfil y escribir la frase de confirmación `ELIMINAR MI CUENTA`.
 - **Limpieza de Sesión**: La función `deleteAccount()` en [AuthContext](../src/shared/context/auth-context.jsx) ejecuta la eliminación en la API mediante `deleteUser()` y limpia los tokens y claves de `localStorage`.
+
+---
+
+## 5. Control de Inactividad y Cierre de Sesión Automático
+
+En [AuthContext](../src/shared/context/auth-context.jsx):
+- **Supervisión de Actividad**: Listener global que registra interacciones de usuario (`mousemove`, `click`, `keydown`, `scroll`, `touchstart`) y reinicia dinámicamente el contador de inactividad.
+- **Límite Administrador**: Si un usuario con rol `admin` permanece inactivo durante **30 segundos**, la sesión es destruida por seguridad y redirigida a `#login` con una alerta clara.
+- **Límite Usuario Estándar**: Si un usuario con rol `user` permanece inactivo durante **1 minuto (60 segundos)**, se ejecuta el cierre de sesión automático notificando la inactividad.
+

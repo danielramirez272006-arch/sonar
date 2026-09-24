@@ -16,6 +16,11 @@ El portal integra búsqueda y reproducción directa a través de [deezer-service
   - Botón **«Criticar»** directo en cada tarjeta de reseña para calificar cualquier disco inmediatamente.
   - Integración de Text-to-Speech (`TTSButton`) para escuchar los ensayos mediante síntesis de voz.
 - **Interacciones Comunitarias**: Likes con criterio audiófilo, comentarios con respuestas anidadas e hilos de debate gestionados por [interactions-service.js](../src/shared/services/interactions-service.js).
+- **Radar Musical & Lanzamientos Destacados ([NewsPage](../src/pages/public/news-page.jsx))**:
+  - Sección conectada en tiempo real al endpoint `/releases` filtrado por estado `published`.
+  - Tarjetas interactivas con badges de tipo (*Álbum, Sencillo, EP, Vinilo*), género y fecha.
+  - **Modal de Detalle & Descripción Completa**: Al hacer clic en cualquier lanzamiento destacado, se abre un modal con la portada en alta resolución, la reseña editorial completa, reproductor/enlace a streaming y lectura por voz TTS.
+
 
 ---
 
