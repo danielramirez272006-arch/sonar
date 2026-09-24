@@ -54,42 +54,52 @@ export async function requestPasswordResetWebhook(email, code = '') {
   const cleanEmail = email.trim().toLowerCase()
   const generatedCode = code || Math.floor(100000 + Math.random() * 900000).toString()
 
-  const webhookUrl =
-    (typeof import.meta !== 'undefined' && import.meta.env?.VITE_N8N_FORGOT_PASSWORD_WEBHOOK_URL) ||
-    'http://localhost:5678/webhook/forgot-password'
+  const configuredUrl =
+    typeof import.meta !== 'undefined' && import.meta.env?.VITE_N8N_FORGOT_PASSWORD_WEBHOOK_URL
 
-  console.log(
-    '%c[n8n Webhook - OTP Password] Enviando petición a n8n:',
-    'color: #B80C09; font-weight: bold;',
-    { email: cleanEmail, code: generatedCode, endpoint: webhookUrl }
-  )
+  const endpoints = configuredUrl
+    ? [configuredUrl]
+    : [
+        'http://localhost:5678/webhook-test/forgot-password',
+        'http://localhost:5678/webhook/forgot-password',
+      ]
 
-  try {
-    const controller = new AbortController()
-    const timeoutId = setTimeout(() => controller.abort(), 2000)
+  for (const endpoint of endpoints) {
+    try {
+      console.log(
+        '%c[n8n Webhook - OTP Password] Enviando petición a n8n:',
+        'color: #B80C09; font-weight: bold;',
+        { email: cleanEmail, code: generatedCode, endpoint }
+      )
 
-    const response = await fetch(webhookUrl, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ email: cleanEmail, code: generatedCode }),
-      signal: controller.signal,
-    })
-    clearTimeout(timeoutId)
+      const controller = new AbortController()
+      const timeoutId = setTimeout(() => controller.abort(), 2500)
 
-    if (response.ok) {
-      const data = await response.json()
-      return {
-        ...data,
-        code: data.code || generatedCode,
+      const response = await fetch(endpoint, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email: cleanEmail, code: generatedCode }),
+        signal: controller.signal,
+      })
+      clearTimeout(timeoutId)
+
+      if (response.ok) {
+        const data = await response.json()
+        const receivedCode =
+          typeof data.code === 'string' && !data.code.startsWith('=')
+            ? data.code
+            : generatedCode
+
+        return {
+          ...data,
+          code: receivedCode,
+        }
       }
+    } catch {
+      // Intentar el siguiente endpoint o pasar al fallback
     }
-  } catch {
-    // Si n8n no está conectado o en ejecución, continuar con la respuesta y el código emitido
-    console.info(
-      '[n8n Webhook] n8n no respondió en localhost:5678. Continuando con el código generado.'
-    )
   }
 
   await delay(200)
