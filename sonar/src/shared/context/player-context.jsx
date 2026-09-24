@@ -181,7 +181,19 @@ export const PlayerProvider = ({ children }) => {
   }, []);
 
   const openReviewModal = useCallback((album) => {
-    setReviewModalAlbum(album);
+    setReviewModalAlbum(
+      album && typeof album === 'object' && Object.keys(album).length > 0
+        ? album
+        : {
+            id: 14880659,
+            deezerId: 14880659,
+            title: 'In Rainbows',
+            album: 'In Rainbows',
+            artist: 'Radiohead',
+            cover: 'https://cdn-images.dzcdn.net/images/cover/a175af9b7d329bc678cb4d26fc13d6de/500x500-000000-80-0-0.jpg',
+            type: 'album',
+          }
+    );
   }, []);
 
   const closeReviewModal = useCallback(() => {
