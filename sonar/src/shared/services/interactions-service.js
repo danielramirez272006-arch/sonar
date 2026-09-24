@@ -8,6 +8,7 @@ const STORAGE_KEYS = {
   USER_COLLECTIONS: 'sonar_user_collections',
   REPORTED_COMMENTS: 'sonar_reported_comments',
   REPORTED_REVIEWS: 'sonar_reported_reviews',
+  RECENTLY_PLAYED: 'sonar_recently_played',
 };
 
 // Comentarios iniciales enriquecidos para las reseñas
@@ -624,6 +625,68 @@ export const interactionsService = {
       }
       return false;
     });
+  },
+
+  // ===================== HISTORIAL DE REPRODUCCIÓN (RECENTLY PLAYED) =====================
+  getRecentlyPlayed(userId) {
+    const effectiveUserId = String(userId || 'guest_user').trim() || 'guest_user';
+    const allRecent = getStorage(STORAGE_KEYS.RECENTLY_PLAYED, {});
+    return allRecent[effectiveUserId] || [];
+  },
+
+  addRecentlyPlayed(userId, item) {
+    if (!item) return [];
+    const effectiveUserId = String(userId || 'guest_user').trim() || 'guest_user';
+    const allRecent = getStorage(STORAGE_KEYS.RECENTLY_PLAYED, {});
+    const currentList = allRecent[effectiveUserId] || [];
+
+    const playedItem = {
+      id: item.id || `play-${Date.now()}`,
+      deezerId: item.deezerId || item.id,
+      title: item.title || item.name || 'Pista de Sonar',
+      artist: item.artist || 'Artista',
+      album: item.album || item.albumTitle || item.title || '',
+      cover: item.cover || item.cover_medium || item.image || 'https://cdn-images.dzcdn.net/images/cover/a175af9b7d329bc678cb4d26fc13d6de/500x500-000000-80-0-0.jpg',
+      preview: item.preview || item.previewUrl,
+      type: item.type || (item.podcast ? 'podcast' : 'track'),
+      playedAt: new Date().toISOString(),
+    };
+
+    // Filtrar duplicados recientes de la misma canción y limitar a los 25 más recientes
+    const deduplicated = currentList.filter(
+      (p) =>
+        String(p.id) !== String(playedItem.id) &&
+        String(p.title).toLowerCase() !== String(playedItem.title).toLowerCase()
+    );
+
+    const updated = [playedItem, ...deduplicated].slice(0, 25);
+    allRecent[effectiveUserId] = updated;
+    setStorage(STORAGE_KEYS.RECENTLY_PLAYED, allRecent);
+
+    if (typeof window !== 'undefined') {
+      window.dispatchEvent(
+        new CustomEvent('sonar:recently-played-changed', {
+          detail: { userId: effectiveUserId, item: playedItem, history: updated },
+        })
+      );
+    }
+
+    return updated;
+  },
+
+  clearRecentlyPlayed(userId) {
+    const effectiveUserId = String(userId || 'guest_user').trim() || 'guest_user';
+    const allRecent = getStorage(STORAGE_KEYS.RECENTLY_PLAYED, {});
+    allRecent[effectiveUserId] = [];
+    setStorage(STORAGE_KEYS.RECENTLY_PLAYED, allRecent);
+
+    if (typeof window !== 'undefined') {
+      window.dispatchEvent(
+        new CustomEvent('sonar:recently-played-changed', {
+          detail: { userId: effectiveUserId, history: [] },
+        })
+      );
+    }
   },
 };
 

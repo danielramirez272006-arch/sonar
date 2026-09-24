@@ -29,6 +29,7 @@ export const UserDashboardPage = () => {
   const [userReviews, setUserReviews] = useState([]);
   const [followedArtists, setFollowedArtists] = useState([]);
   const [followedUsers, setFollowedUsers] = useState([]);
+  const [recentlyPlayed, setRecentlyPlayed] = useState([]);
 
   const handlePlayAlbum = (album) => {
     if (!album) return;
@@ -56,7 +57,11 @@ export const UserDashboardPage = () => {
     const reviews = interactionsService.getUserReviews(userId);
     setUserReviews(reviews);
 
-    // 4. Artistas y Usuarios que sigue
+    // 4. Historial de reproducción reciente
+    const recent = interactionsService.getRecentlyPlayed(userId);
+    setRecentlyPlayed(recent);
+
+    // 5. Artistas y Usuarios que sigue
     const currentId = user?.id || 'guest';
     setFollowedArtists(socialService.getFollowedArtists(currentId));
     setFollowedUsers(socialService.getFollowedUsers(currentId));
@@ -70,10 +75,14 @@ export const UserDashboardPage = () => {
     const handleReviewCreated = () => {
       setUserReviews(interactionsService.getUserReviews(userId));
     };
+    const handleRecentChange = () => {
+      setRecentlyPlayed(interactionsService.getRecentlyPlayed(userId));
+    };
 
     window.addEventListener('sonar:follow-artist-changed', handleArtistChange);
     window.addEventListener('sonar:follow-user-changed', handleUserChange);
     window.addEventListener('sonar:review-created', handleReviewCreated);
+    window.addEventListener('sonar:recently-played-changed', handleRecentChange);
     const handleCollectionChange = () => {
       setSavedAlbums(interactionsService.getUserSavedAlbums(userId));
     };
@@ -82,6 +91,7 @@ export const UserDashboardPage = () => {
       window.removeEventListener('sonar:follow-artist-changed', handleArtistChange);
       window.removeEventListener('sonar:follow-user-changed', handleUserChange);
       window.removeEventListener('sonar:review-created', handleReviewCreated);
+      window.removeEventListener('sonar:recently-played-changed', handleRecentChange);
       window.removeEventListener('sonar:collection-changed', handleCollectionChange);
     };
   }, [user, userId, genreFilter]);
@@ -186,6 +196,26 @@ export const UserDashboardPage = () => {
               <span className="material-symbols-outlined text-[18px]">rate_review</span>
               <span>Mis Reseñas ({userReviews.length})</span>
               {activeTab === 'reviews' && (
+                <motion.div
+                  layoutId="dashboard-tab-indicator"
+                  className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#B80C09]"
+                  transition={{ type: 'spring', stiffness: 400, damping: 30 }}
+                />
+              )}
+            </button>
+
+            <button
+              type="button"
+              onClick={() => setActiveTab('history')}
+              className={`pb-3 text-sm sm:text-base font-bold transition-all cursor-pointer relative whitespace-nowrap flex items-center gap-2 ${
+                activeTab === 'history'
+                  ? 'text-[#B80C09]'
+                  : 'text-[#5c435a] dark:text-[#B89CB0] hover:text-[#231123] dark:hover:text-white'
+              }`}
+            >
+              <span className="material-symbols-outlined text-[18px]">history</span>
+              <span>Historial ({recentlyPlayed.length})</span>
+              {activeTab === 'history' && (
                 <motion.div
                   layoutId="dashboard-tab-indicator"
                   className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#B80C09]"
@@ -531,6 +561,95 @@ export const UserDashboardPage = () => {
                 userReviews.map((review) => (
                   <ReviewFeedCard key={review.id} review={review} />
                 ))
+              )}
+            </section>
+          )}
+
+          {/* TAB: HISTORIAL DE ESCUCHA (RECENTLY PLAYED) */}
+          {activeTab === 'history' && (
+            <section className="flex flex-col gap-6">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-4 rounded-2xl bg-white dark:bg-[#4B2840] border border-[#e6d5e2] dark:border-white/10 shadow-xs">
+                <div className="flex items-center gap-2.5">
+                  <span className="material-symbols-outlined text-[22px] text-[#B80C09]">history</span>
+                  <div>
+                    <p className="text-xs sm:text-sm text-[#5c435a] dark:text-pink-200">
+                      Registro de canciones, pistas y podcasts reproducidos recientemente en esta sesión.
+                    </p>
+                  </div>
+                </div>
+                {recentlyPlayed.length > 0 && (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      interactionsService.clearRecentlyPlayed(userId);
+                      setRecentlyPlayed([]);
+                    }}
+                    className="text-xs font-bold text-rose-500 hover:text-rose-700 dark:hover:text-rose-400 self-start sm:self-auto flex items-center gap-1 cursor-pointer transition-colors"
+                  >
+                    <span className="material-symbols-outlined text-[15px]">delete_sweep</span>
+                    <span>Limpiar Historial</span>
+                  </button>
+                )}
+              </div>
+
+              {recentlyPlayed.length === 0 ? (
+                <div className="flex flex-col items-center justify-center py-16 px-4 text-center rounded-2xl bg-white dark:bg-[#4B2840] border border-[#e6d5e2] dark:border-white/10 shadow-xs">
+                  <span className="material-symbols-outlined text-5xl text-[#5c435a]/50 dark:text-[#B89CB0]/50 mb-3">
+                    headphones
+                  </span>
+                  <h3 className="text-lg font-bold text-[#231123] dark:text-white">
+                    Aún no has reproducido ninguna pista
+                  </h3>
+                  <p className="text-xs sm:text-sm text-[#5c435a] dark:text-[#B89CB0] max-w-md mt-1 mb-5">
+                    Explora el catálogo o las recomendaciones para iniciar una sesión sonora en alta fidelidad.
+                  </p>
+                  <button
+                    type="button"
+                    onClick={() => setActiveTab('recommendations')}
+                    className="px-5 py-2.5 rounded-full bg-[#B80C09] hover:bg-[#960a07] text-white text-xs sm:text-sm font-bold transition-all shadow-sm cursor-pointer"
+                  >
+                    Explorar Recomendaciones
+                  </button>
+                </div>
+              ) : (
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                  {recentlyPlayed.map((item, idx) => (
+                    <motion.article
+                      key={item.id || idx}
+                      whileHover={{ y: -3 }}
+                      className="p-4 rounded-2xl bg-white dark:bg-[#4B2840] border border-[#e6d5e2] dark:border-white/10 shadow-xs hover:shadow-md transition-all flex items-center justify-between gap-3"
+                    >
+                      <div className="flex items-center gap-3.5 min-w-0">
+                        <img
+                          src={item.cover || DEFAULT_FALLBACK_COVER}
+                          alt={item.title}
+                          className="w-14 h-14 rounded-xl object-cover shadow-xs shrink-0"
+                        />
+                        <div className="flex flex-col min-w-0">
+                          <h4 className="text-sm font-extrabold text-[#231123] dark:text-white truncate">
+                            {item.title}
+                          </h4>
+                          <span className="text-xs text-[#5c435a] dark:text-[#B89CB0] truncate">
+                            {item.artist}
+                          </span>
+                          <span className="text-[10px] text-gray-400 mt-0.5 flex items-center gap-1">
+                            <span className="material-symbols-outlined text-[12px]">schedule</span>
+                            {item.playedAt ? new Date(item.playedAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : 'Reciente'}
+                          </span>
+                        </div>
+                      </div>
+
+                      <button
+                        type="button"
+                        onClick={() => handlePlayAlbum(item)}
+                        className="w-10 h-10 rounded-full bg-[#B80C09] hover:bg-[#960a07] text-white flex items-center justify-center shrink-0 shadow-sm cursor-pointer transition-transform hover:scale-105"
+                        title="Reproducir de nuevo"
+                      >
+                        <span className="material-symbols-outlined text-[20px]">play_arrow</span>
+                      </button>
+                    </motion.article>
+                  ))}
+                </div>
               )}
             </section>
           )}

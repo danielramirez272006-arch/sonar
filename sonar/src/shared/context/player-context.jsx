@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useState, useRef, useEffect, useCallback } from 'react';
 import { resolvePlayablePreview } from '../services/deezer-service';
+import { interactionsService } from '../services/interactions-service';
 
 const PlayerContext = createContext();
 
@@ -129,6 +130,13 @@ export const PlayerProvider = ({ children }) => {
       audio.currentTime = 0;
 
       setCurrentTrack((prev) => (prev ? { ...prev, preview: validPreviewUrl } : trackPayload));
+
+      // Guardar en historial de escucha del usuario activo
+      try {
+        const storedUser = localStorage.getItem('sonar_auth_user');
+        const activeUserId = storedUser ? JSON.parse(storedUser)?.id || 'guest_user' : 'guest_user';
+        interactionsService.addRecentlyPlayed(activeUserId, trackPayload);
+      } catch {}
 
       await audio.play();
       setIsPlaying(true);

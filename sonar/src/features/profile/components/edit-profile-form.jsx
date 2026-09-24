@@ -128,6 +128,8 @@ export const EditProfileForm = ({ initialData = {}, onSave = () => {} }) => {
     avatarUrl: initialData.avatarUrl || '',
     avatarHue: initialData.avatarHue ?? 18,
     avatarTone: initialData.avatarTone ?? 'vivid',
+    bannerUrl: initialData.bannerUrl || '',
+    bannerGradient: initialData.bannerGradient || 'linear-gradient(135deg, rgba(184, 12, 9, 0.7) 0%, rgba(75, 40, 64, 0.95) 100%)',
     preferences: initialData.preferences || ['Art Rock', 'Electrónica'],
     gear: initialData.gear || {
       headphones: 'Sennheiser HD 600',
@@ -147,8 +149,38 @@ export const EditProfileForm = ({ initialData = {}, onSave = () => {} }) => {
 
   // Estados y handlers para subida de imagen de avatar
   const fileInputRef = useRef(null);
+  const bannerInputRef = useRef(null);
   const [isDragging, setIsDragging] = useState(false);
   const [uploadError, setUploadError] = useState(null);
+  const [bannerUploadError, setBannerUploadError] = useState(null);
+
+  const processBannerFile = (file) => {
+    if (!file) return;
+    setBannerUploadError(null);
+
+    if (!file.type.startsWith('image/')) {
+      setBannerUploadError('Por favor selecciona una imagen válida (PNG, JPG, WEBP).');
+      return;
+    }
+
+    const maxSizeBytes = 10 * 1024 * 1024; // 10MB
+    if (file.size > maxSizeBytes) {
+      setBannerUploadError('La imagen de portada supera los 10MB.');
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      setFormData((prev) => ({
+        ...prev,
+        bannerUrl: e.target.result,
+      }));
+    };
+    reader.onerror = () => {
+      setBannerUploadError('Error al leer el archivo de portada.');
+    };
+    reader.readAsDataURL(file);
+  };
 
   const processImageFile = (file) => {
     if (!file) return;
@@ -611,6 +643,107 @@ export const EditProfileForm = ({ initialData = {}, onSave = () => {} }) => {
             </div>
           </div>
 
+          {/* PORTADA / BANNER STUDIO */}
+          <div className="p-5 sm:p-6 rounded-3xl bg-gray-50/80 dark:bg-[#231123]/70 border border-[#e6d5e2] dark:border-white/10 flex flex-col gap-4">
+            <div className="flex flex-col sm:flex-row items-center justify-between gap-4 border-b border-[#e6d5e2] dark:border-white/10 pb-4">
+              <div className="flex items-center gap-3">
+                <span className="p-2.5 rounded-2xl bg-[#B80C09]/10 text-[#B80C09]">
+                  <ImageIcon className="w-5 h-5" />
+                </span>
+                <div className="flex flex-col">
+                  <h4 className="text-base font-extrabold text-[#231123] dark:text-white">
+                    Portada de Perfil (Banner)
+                  </h4>
+                  <p className="text-xs text-[#5c435a] dark:text-[#B89CB0]">
+                    Personaliza la imagen o degradado de cabecera de tu perfil público.
+                  </p>
+                </div>
+              </div>
+
+              <input
+                type="file"
+                ref={bannerInputRef}
+                onChange={(e) => {
+                  const file = e.target.files?.[0];
+                  if (file) processBannerFile(file);
+                }}
+                accept="image/png, image/jpeg, image/jpg, image/webp"
+                className="hidden"
+                id="banner-file-input"
+              />
+
+              <div className="flex items-center gap-2">
+                <button
+                  type="button"
+                  onClick={() => bannerInputRef.current?.click()}
+                  className="px-4 py-2 rounded-xl bg-[#B80C09] hover:bg-[#960a07] text-white text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 shadow-xs"
+                >
+                  <UploadCloud className="w-4 h-4" />
+                  <span>Subir Imagen</span>
+                </button>
+                {formData.bannerUrl && (
+                  <button
+                    type="button"
+                    onClick={() => setFormData((prev) => ({ ...prev, bannerUrl: '' }))}
+                    className="px-3 py-2 rounded-xl bg-gray-200 dark:bg-white/10 text-xs font-bold text-gray-700 dark:text-gray-300 hover:text-rose-500 transition-colors cursor-pointer"
+                  >
+                    Quitar
+                  </button>
+                )}
+              </div>
+            </div>
+
+            {bannerUploadError && (
+              <p className="text-xs text-rose-500 font-bold">{bannerUploadError}</p>
+            )}
+
+            {/* Previsualización del banner */}
+            <div
+              className="w-full h-24 sm:h-28 rounded-2xl overflow-hidden relative shadow-inner border border-[#e6d5e2] dark:border-white/10"
+              style={{
+                background: formData.bannerUrl
+                  ? `url(${formData.bannerUrl}) center/cover no-repeat`
+                  : formData.bannerGradient,
+              }}
+            >
+              <div className="absolute inset-0 bg-black/20 flex items-center justify-center">
+                <span className="text-xs font-bold text-white bg-black/40 px-3 py-1 rounded-full backdrop-blur-xs">
+                  {formData.bannerUrl ? 'Imagen personalizada activa' : 'Degradado predeterminado'}
+                </span>
+              </div>
+            </div>
+
+            {/* Selector rápido de degradados para el banner */}
+            <div className="flex flex-col gap-2 pt-2">
+              <span className="text-xs font-bold text-[#5c435a] dark:text-[#B89CB0]">
+                O elige un estilo de atmósfera sonora:
+              </span>
+              <div className="grid grid-cols-2 sm:grid-cols-5 gap-2">
+                {GRADIENT_PALETTES.slice(0, 5).map((item) => (
+                  <button
+                    key={item.name}
+                    type="button"
+                    onClick={() =>
+                      setFormData((prev) => ({
+                        ...prev,
+                        bannerUrl: '',
+                        bannerGradient: item.gradient,
+                      }))
+                    }
+                    className={`p-2 rounded-xl border text-xs font-bold flex items-center gap-2 cursor-pointer transition-all ${
+                      !formData.bannerUrl && formData.bannerGradient === item.gradient
+                        ? 'border-[#B80C09] ring-2 ring-[#B80C09]/40'
+                        : 'border-[#e6d5e2] dark:border-white/10'
+                    }`}
+                  >
+                    <div className="w-4 h-4 rounded-md shrink-0" style={{ background: item.gradient }} />
+                    <span className="truncate text-[11px] text-[#231123] dark:text-white">{item.name}</span>
+                  </button>
+                ))}
+              </div>
+            </div>
+          </div>
+
           {/* GÉNEROS MUSICALES */}
           <div className="flex flex-col gap-2.5 p-5 rounded-3xl bg-gray-50/80 dark:bg-[#231123]/70 border border-[#e6d5e2] dark:border-white/10">
             <span className="text-xs font-extrabold uppercase tracking-wider text-[#B80C09]">
@@ -801,9 +934,46 @@ export const EditProfileForm = ({ initialData = {}, onSave = () => {} }) => {
         </form>
       )}
 
-      {/* TAB 4: ELIMINAR CUENTA (ZONA DE PELIGRO - USER CRUD DELETE) */}
+      {/* TAB 4: PRIVACIDAD Y ZONA DE PELIGRO */}
       {activeTab === 'danger' && (
         <div className="flex flex-col gap-6">
+          {/* EXPORTACIÓN DE DATOS PERSONALES */}
+          <div className="p-6 rounded-3xl bg-white dark:bg-[#4B2840] border border-[#e6d5e2] dark:border-white/10 flex flex-col gap-4 shadow-xs">
+            <div className="flex items-center gap-3 text-[#231123] dark:text-white">
+              <span className="material-symbols-outlined text-2xl text-[#B80C09]">download</span>
+              <div>
+                <h4 className="text-base font-extrabold">Portabilidad: Exportar mis Datos (JSON)</h4>
+                <p className="text-xs text-[#5c435a] dark:text-[#B89CB0] mt-0.5">
+                  Descarga una copia completa de tu perfil, críticas publicadas, colecciones guardadas y preferencias.
+                </p>
+              </div>
+            </div>
+            <div className="flex justify-end">
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => {
+                  const exportPayload = {
+                    user: formData,
+                    exportedAt: new Date().toISOString(),
+                    system: 'SONAR Audio Community',
+                  };
+                  const blob = new Blob([JSON.stringify(exportPayload, null, 2)], { type: 'application/json' });
+                  const url = URL.createObjectURL(blob);
+                  const a = document.createElement('a');
+                  a.href = url;
+                  a.download = `sonar_datos_${formData.username || 'usuario'}.json`;
+                  a.click();
+                  URL.revokeObjectURL(url);
+                }}
+                className="px-5 py-2 rounded-xl text-xs font-bold flex items-center gap-1.5 cursor-pointer shadow-2xs"
+              >
+                <span className="material-symbols-outlined text-[16px]">file_download</span>
+                <span>Descargar Archivo JSON</span>
+              </Button>
+            </div>
+          </div>
+
           <div className="p-6 rounded-3xl bg-rose-500/10 border border-rose-500/30 flex flex-col gap-4">
             <div className="flex items-center gap-3 text-rose-600 dark:text-rose-400">
               <Trash2 className="w-6 h-6 shrink-0" />

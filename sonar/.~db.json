@@ -3532,7 +3532,7 @@
       "role": "user",
       "avatarUrl": "",
       "avatarBg": "#4B2840",
-      "bio": "Amante del vinilo y el jazz modal.",
+      "bio": "Exploradora de sintetizadores analógicos.",
       "stats": {
         "savedAlbums": 0,
         "reviewsCount": 0,
@@ -3540,8 +3540,9 @@
         "following": 0
       },
       "preferences": [
-        "Jazz & Fusion",
-        "Post-Punk"
+        "Synthwave",
+        "Ambient & Drone",
+        "IDM / Techno"
       ],
       "gear": {
         "headphones": "Auriculares de referencia",
