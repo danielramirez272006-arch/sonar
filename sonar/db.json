@@ -1303,6 +1303,49 @@
         "IDM / Techno"
       ],
       "createdAt": "2026-09-24T14:56:37.935Z"
+    },
+    {
+      "id": "user-1790262123754",
+      "username": "Daniel Ramirez",
+      "email": "daniel_1790262123629@sonar.local",
+      "password": "password123",
+      "role": "user",
+      "avatarUrl": "",
+      "avatarBg": "#B80C09",
+      "bio": "Nuevo melómano explorando vinilos y texturas acústicas en Sonar.",
+      "stats": {
+        "savedAlbums": 0,
+        "reviewsCount": 0,
+        "followers": 0,
+        "following": 0
+      },
+      "preferences": [
+        "Art Rock",
+        "Jazz & Fusion"
+      ],
+      "createdAt": "2026-09-24T15:02:03.754Z"
+    },
+    {
+      "id": "user-1790262123862",
+      "username": "Elena Jazz",
+      "email": "audiophile_1790262123817@sonar.local",
+      "password": "password123",
+      "role": "user",
+      "avatarUrl": "",
+      "avatarBg": "#0284c7",
+      "bio": "Exploradora de sintetizadores analógicos.",
+      "stats": {
+        "savedAlbums": 0,
+        "reviewsCount": 0,
+        "followers": 0,
+        "following": 0
+      },
+      "preferences": [
+        "Synthwave",
+        "Ambient & Drone",
+        "IDM / Techno"
+      ],
+      "createdAt": "2026-09-24T15:02:03.862Z"
     }
   ],
   "reviews": [
