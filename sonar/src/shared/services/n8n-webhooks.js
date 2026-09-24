@@ -63,13 +63,18 @@ export async function requestPasswordResetWebhook(email) {
   )
 
   try {
+    const controller = new AbortController()
+    const timeoutId = setTimeout(() => controller.abort(), 1500)
+
     const response = await fetch(webhookUrl, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({ email: cleanEmail }),
+      signal: controller.signal,
     })
+    clearTimeout(timeoutId)
 
     if (response.ok) {
       const data = await response.json()
@@ -82,7 +87,7 @@ export async function requestPasswordResetWebhook(email) {
     )
   }
 
-  await delay(600)
+  await delay(200)
   return {
     success: true,
     message:

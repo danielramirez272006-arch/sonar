@@ -2044,6 +2044,128 @@
         "Audiófilo Inicial"
       ],
       "createdAt": "2026-09-24T15:27:14.821Z"
+    },
+    {
+      "id": "user-1790263803444",
+      "username": "Daniel Ramirez",
+      "email": "daniel_1790263802118@sonar.local",
+      "password": "sha256$b799eabb4998bf92235494874fb09654$318fa57f42f2146e0d12b59271b98bdb41d1ab9b94649ec8d59d1aa7be2abc29",
+      "role": "user",
+      "avatarUrl": "",
+      "avatarBg": "#B80C09",
+      "bio": "Nuevo melómano explorando vinilos y texturas acústicas en Sonar.",
+      "stats": {
+        "savedAlbums": 0,
+        "reviewsCount": 0,
+        "followers": 0,
+        "following": 0
+      },
+      "preferences": [
+        "Art Rock",
+        "Jazz & Fusion"
+      ],
+      "gear": {
+        "headphones": "Auriculares de referencia",
+        "turntable": "Tocadiscos Direct Drive",
+        "favoriteFormat": "Vinilo 33⅓ RPM"
+      },
+      "badges": [
+        "Melómano Verificado",
+        "Audiófilo Inicial"
+      ],
+      "createdAt": "2026-09-24T15:30:03.444Z"
+    },
+    {
+      "id": "user-1790263803530",
+      "username": "Elena Jazz",
+      "email": "audiophile_1790263803493@sonar.local",
+      "password": "sha256$805328d097059efed234597a354caaee$a5d303836a3f50f40d5d6c0a840cdf6cd3b9d57a93409d456cac09fa5decf8fc",
+      "role": "user",
+      "avatarUrl": "",
+      "avatarBg": "#4B2840",
+      "bio": "Exploradora de sintetizadores analógicos.",
+      "stats": {
+        "savedAlbums": 0,
+        "reviewsCount": 0,
+        "followers": 0,
+        "following": 0
+      },
+      "preferences": [
+        "Synthwave",
+        "Ambient & Drone",
+        "IDM / Techno"
+      ],
+      "gear": {
+        "headphones": "Auriculares de referencia",
+        "turntable": "Tocadiscos Direct Drive",
+        "favoriteFormat": "Vinilo 33⅓ RPM"
+      },
+      "badges": [
+        "Melómano Verificado",
+        "Audiófilo Inicial"
+      ],
+      "createdAt": "2026-09-24T15:30:03.530Z"
+    },
+    {
+      "id": "user-1790263860635",
+      "username": "Daniel Ramirez",
+      "email": "daniel_1790263859503@sonar.local",
+      "password": "sha256$7ddb16cd8bf7c2d1deee0720c45c68cf$63a39ae2776c6ec9395dacbebd2f54d07eb3700df361a9d524d53fd1d96c715c",
+      "role": "user",
+      "avatarUrl": "",
+      "avatarBg": "#059669",
+      "bio": "Nuevo melómano explorando vinilos y texturas acústicas en Sonar.",
+      "stats": {
+        "savedAlbums": 0,
+        "reviewsCount": 0,
+        "followers": 0,
+        "following": 0
+      },
+      "preferences": [
+        "Ambient & Drone",
+        "Folk Acústico"
+      ],
+      "gear": {
+        "headphones": "Auriculares de referencia",
+        "turntable": "Tocadiscos Direct Drive",
+        "favoriteFormat": "Vinilo 33⅓ RPM"
+      },
+      "badges": [
+        "Melómano Verificado",
+        "Audiófilo Inicial"
+      ],
+      "createdAt": "2026-09-24T15:31:00.635Z"
+    },
+    {
+      "id": "user-1790263861088",
+      "username": "Elena Jazz",
+      "email": "audiophile_1790263860872@sonar.local",
+      "password": "sha256$b62055d81d97c46928ecb489c32af078$f1942dd4a54ce403f67796d534c9925941fb4594938890044343ed4c4a18c6ef",
+      "role": "user",
+      "avatarUrl": "",
+      "avatarBg": "#5c1d5e",
+      "bio": "Exploradora de sintetizadores analógicos.",
+      "stats": {
+        "savedAlbums": 0,
+        "reviewsCount": 0,
+        "followers": 0,
+        "following": 0
+      },
+      "preferences": [
+        "Synthwave",
+        "Ambient & Drone",
+        "IDM / Techno"
+      ],
+      "gear": {
+        "headphones": "Auriculares de referencia",
+        "turntable": "Tocadiscos Direct Drive",
+        "favoriteFormat": "Vinilo 33⅓ RPM"
+      },
+      "badges": [
+        "Melómano Verificado",
+        "Audiófilo Inicial"
+      ],
+      "createdAt": "2026-09-24T15:31:01.088Z"
     }
   ],
   "reviews": [

@@ -39,10 +39,10 @@ describe('ForgotPassword n8n Webhook Form', () => {
     const submitBtn = screen.getByRole('button', { name: /Enviar Enlace de Recuperación/i });
     fireEvent.click(submitBtn);
 
-    const successMsg = await screen.findByText(/¡Correo de Recuperación Solicitado!/i);
+    const successMsg = await screen.findByText(/¡Revisa tu Correo!/i);
     expect(successMsg).toBeDefined();
 
-    const checkInboxMsg = await screen.findByText(/Revisa tu bandeja de entrada/i);
+    const checkInboxMsg = await screen.findByText(/Bandeja de entrada/i);
     expect(checkInboxMsg).toBeDefined();
   });
 });

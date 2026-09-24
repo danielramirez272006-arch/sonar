@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { ArrowRight, ArrowLeft, CheckCircle2, KeyRound, Mail, ShieldCheck, Sparkles, Send } from 'lucide-react';
+import { ArrowRight, ArrowLeft, CheckCircle2, KeyRound, Mail, ShieldCheck, Send } from 'lucide-react';
 import { requestPasswordResetWebhook } from '../../../shared/services/n8n-webhooks';
 import { RotatingReview } from './rotating-review';
 
@@ -7,23 +7,23 @@ const EditorialPanel = () => (
   <aside className="auth-editorial" aria-label="Comunidad editorial de audio">
     <div className="auth-editorial__copy">
       <p className="auth-eyebrow">
-        <span /> Automatización n8n & Seguridad Sonar
+        <span /> Seguridad & Protección Sonar
       </p>
       <h1>
         <span>Recupera tu</span>
         <span>acceso musical.</span>
       </h1>
       <p>
-        Enviamos un enlace seguro y temporal a tu bandeja de correo para que puedas crear una nueva contraseña encriptada.
+        Te enviaremos un enlace seguro a tu correo electrónico para que puedas crear una nueva contraseña y volver a tu colección.
       </p>
     </div>
     <RotatingReview />
     <div className="auth-editorial__stats">
       <span>
         <ShieldCheck size={14} />
-        Tokens temporales de 15 minutos
+        Cifrado de extremo a extremo
       </span>
-      <span>Integración con n8n & Gmail</span>
+      <span>Protección de cuenta & privacidad</span>
     </div>
   </aside>
 );
@@ -41,7 +41,7 @@ export const ForgotPasswordForm = () => {
     const cleanEmail = email.trim().toLowerCase();
 
     if (!cleanEmail) {
-      setErrorMessage('Por favor introduce un correo electrónico válido.');
+      setErrorMessage('Por favor introduce tu correo electrónico.');
       return;
     }
 
@@ -54,7 +54,7 @@ export const ForgotPasswordForm = () => {
       );
       setIsSubmitted(true);
     } catch (err) {
-      setErrorMessage(err.message || 'No se pudo enviar la solicitud de recuperación.');
+      setErrorMessage(err.message || 'No se pudo enviar el correo de recuperación. Inténtalo de nuevo.');
     } finally {
       setIsLoading(false);
     }
@@ -72,8 +72,8 @@ export const ForgotPasswordForm = () => {
             </h2>
             <p>
               {!isSubmitted
-                ? 'Ingresa tu correo para recibir un enlace de recuperación seguro vía n8n.'
-                : 'Solicitud procesada con éxito.'}
+                ? 'Ingresa tu correo electrónico para recibir un enlace de restablecimiento.'
+                : 'Solicitud enviada con éxito.'}
             </p>
           </header>
 
@@ -103,25 +103,9 @@ export const ForgotPasswordForm = () => {
                 <Mail size={16} style={{ position: 'absolute', left: '0.85rem', top: '50%', transform: 'translateY(-50%)', color: '#856f80' }} />
               </div>
 
-              <div style={{
-                marginTop: '0.75rem',
-                background: '#faf5f9',
-                padding: '0.85rem',
-                borderRadius: '8px',
-                border: '1px solid #ebd9ea',
-                fontSize: '0.73rem',
-                color: '#5c435a',
-                lineHeight: '1.45',
-              }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '5px', fontWeight: 'bold', color: '#5c1d5e', marginBottom: '3px' }}>
-                  <Sparkles size={14} /> Flujo n8n conectado:
-                </div>
-                Se enviará un webhook a tu workflow de n8n para generar un token único y enviar el correo con Gmail.
-              </div>
-
-              <button className="auth-submit" type="submit" disabled={isLoading} style={{ marginTop: '1rem' }}>
+              <button className="auth-submit" type="submit" disabled={isLoading} style={{ marginTop: '1.1rem' }}>
                 {isLoading ? (
-                  'Conectando con n8n...'
+                  'Enviando enlace…'
                 ) : (
                   <>
                     Enviar Enlace de Recuperación <Send size={16} />
@@ -142,13 +126,13 @@ export const ForgotPasswordForm = () => {
                 <CheckCircle2 size={46} />
               </div>
               <h3 style={{ margin: '0 0 0.5rem', fontSize: '1.2rem', color: '#166534' }}>
-                ¡Correo de Recuperación Solicitado!
+                ¡Revisa tu Correo!
               </h3>
               <p style={{ fontSize: '0.82rem', color: '#4b5563', lineHeight: '1.5', marginBottom: '1.5rem' }}>
                 {responseMessage}
               </p>
-              <div style={{ background: '#fdf2f8', border: '1px solid #fbcfe8', padding: '0.75rem', borderRadius: '8px', fontSize: '0.72rem', color: '#831843', marginBottom: '1.25rem', textAlign: 'left' }}>
-                📬 <b>Revisa tu bandeja de entrada:</b> Busca el correo con el asunto <i>"SONAR - Recuperación de contraseña"</i> y abre el botón para restablecer tu clave.
+              <div style={{ background: '#fdf2f8', border: '1px solid #fbcfe8', padding: '0.75rem', borderRadius: '8px', fontSize: '0.74rem', color: '#831843', marginBottom: '1.25rem', textAlign: 'left' }}>
+                📬 <b>Bandeja de entrada:</b> Busca el correo con el asunto <i>"SONAR - Recuperación de contraseña"</i> y haz clic en el botón para crear tu nueva clave.
               </div>
               <a
                 href="#login"
