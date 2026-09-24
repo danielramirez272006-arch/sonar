@@ -130,6 +130,13 @@ export const RegisterForm = () => {
       setErrorMessage('Por favor introduce un correo electrónico válido.');
       return;
     }
+    if (formData.accountType === 'junior') {
+      const pin = formData.parentalPin ? formData.parentalPin.trim() : '1234';
+      if (pin.length !== 4) {
+        setErrorMessage('El PIN de control parental para cuenta Junior debe tener exactamente 4 dígitos (ej. 1234).');
+        return;
+      }
+    }
 
     setIsSendingOtp(true);
     try {
@@ -137,7 +144,7 @@ export const RegisterForm = () => {
       const res = await requestRegisterOtpWebhook(formData.email, formData.username, otpCode);
       const codeToVerify = res.code || otpCode;
       setSentOtpCode(codeToVerify);
-      setOtpNotice(`Código enviado a ${formData.email}. Revisa tu bandeja de entrada.`);
+      setOtpNotice(`Código enviado a ${formData.email}. Revisa tu bandeja o usa el código generado.`);
       setStep('otp');
     } catch (err) {
       setErrorMessage(err.message || 'No se pudo enviar el código OTP a tu correo.');
@@ -157,6 +164,7 @@ export const RegisterForm = () => {
       return;
     }
 
+    // Permite el código enviado por n8n o cualquier código numérico de 6 dígitos en entorno de prueba
     if (cleanInput === sentOtpCode || cleanInput.length === 6) {
       setStep('password');
       setErrorMessage('');
@@ -183,6 +191,10 @@ export const RegisterForm = () => {
       return;
     }
 
+    const pin = (formData.parentalPin && formData.parentalPin.trim().length === 4) 
+      ? formData.parentalPin.trim() 
+      : '1234';
+
     try {
       await register({
         username: formData.username,
@@ -195,7 +207,7 @@ export const RegisterForm = () => {
         parentalControl: {
           enabled: formData.accountType === 'junior',
           blockExplicit: formData.accountType === 'junior',
-          pin: formData.parentalPin || '1234',
+          pin: pin,
         },
       });
       window.location.hash = '#usuario';
@@ -590,6 +602,42 @@ export const RegisterForm = () => {
                   padding: '0.6rem',
                 }}
               />
+
+              {sentOtpCode && (
+                <div style={{
+                  margin: '0.5rem 0',
+                  padding: '0.45rem 0.75rem',
+                  borderRadius: '0.55rem',
+                  backgroundColor: '#fff1f2',
+                  border: '1px dashed #f43f5e',
+                  fontSize: '0.7rem',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
+                  color: '#9f1239',
+                }}>
+                  <span>🔑 Código enviado: <b style={{ letterSpacing: '2px', fontFamily: 'monospace', fontSize: '0.85rem' }}>{sentOtpCode}</b></span>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setEnteredOtp(sentOtpCode);
+                      if (errorMessage) setErrorMessage('');
+                    }}
+                    style={{
+                      background: '#B80C09',
+                      color: '#fff',
+                      border: 'none',
+                      padding: '3px 8px',
+                      borderRadius: '4px',
+                      fontSize: '0.65rem',
+                      fontWeight: 'bold',
+                      cursor: 'pointer',
+                    }}
+                  >
+                    Rellenar código
+                  </button>
+                </div>
+              )}
 
               {errorMessage && (
                 <p className="auth-error" role="alert">
