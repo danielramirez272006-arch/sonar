@@ -30,7 +30,7 @@ export const Navbar = ({
   const navDebounceRef = useRef(null);
 
   const { isDark, toggleTheme } = useTheme();
-  const { user: authUser, isAuthenticated, logout } = useAuth();
+  const { user: authUser, isAuthenticated, logout, isJunior, isParentalControlActive } = useAuth();
   const { toggleTrack, currentTrack, isPlaying } = usePlayer();
 
   useEffect(() => {
@@ -342,6 +342,24 @@ export const Navbar = ({
           {/* Avatar del usuario o Botón de Ingreso */}
           {isAuthenticated && authUser ? (
             <div className="flex items-center gap-2">
+              {/* Badge visual de Modo Junior / Parental Control */}
+              {(isJunior || isParentalControlActive) && (
+                <motion.button
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  onClick={() => {
+                    window.location.hash = '#usuario';
+                    sessionStorage.setItem('sonar_active_profile_tab', 'parental_control');
+                    window.dispatchEvent(new CustomEvent('sonar:navigate-tab', { detail: 'parental_control' }));
+                  }}
+                  title="Modo Junior y Control Parental activo. Clic para administrar."
+                  className="hidden sm:flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emerald-500/10 dark:bg-emerald-500/20 text-emerald-700 dark:text-emerald-300 border border-emerald-500/30 text-[11px] font-black tracking-wide cursor-pointer shadow-xs hover:bg-emerald-500/20 transition-all"
+                >
+                  <span className="material-symbols-outlined text-[14px]">shield</span>
+                  <span>Modo Junior</span>
+                </motion.button>
+              )}
+
               <motion.div
                 whileHover={{ scale: 1.03 }}
                 whileTap={{ scale: 0.97 }}
