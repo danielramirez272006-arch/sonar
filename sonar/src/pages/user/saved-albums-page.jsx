@@ -5,6 +5,7 @@ import Footer from '../../shared/components/layout/footer';
 import { useAuth } from '../../shared/context/auth-context';
 import { usePlayer } from '../../shared/context/player-context';
 import { interactionsService } from '../../shared/services/interactions-service';
+import { handleImageFallbackError, getFallbackCoverForAlbum } from '../../shared/services/recommendations-service';
 
 export const SavedAlbumsPage = () => {
   const { user } = useAuth();
@@ -106,13 +107,10 @@ export const SavedAlbumsPage = () => {
                   {/* Carátula Cuadrada */}
                   <div className="relative w-full aspect-square rounded-xl overflow-hidden bg-gray-200 dark:bg-[#231123] mb-3 shadow-xs">
                     <img
-                      src={item.cover}
+                      src={item.cover || getFallbackCoverForAlbum(item)}
                       alt={item.title}
                       className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                      onError={(e) => {
-                        e.currentTarget.onerror = null;
-                        e.currentTarget.src = 'https://cdn-images.dzcdn.net/images/cover/a175af9b7d329bc678cb4d26fc13d6de/500x500-000000-80-0-0.jpg';
-                      }}
+                      onError={(e) => handleImageFallbackError(e, item)}
                     />
                     
                     {/* Badge tipo */}

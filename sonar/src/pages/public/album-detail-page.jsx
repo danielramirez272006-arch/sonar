@@ -11,6 +11,7 @@ import { useAuth } from '../../shared/context/auth-context';
 import { usePlayer } from '../../shared/context/player-context';
 import { interactionsService } from '../../shared/services/interactions-service';
 import { TTSButton } from '../../shared/components/a11y/tts-button';
+import { handleImageFallbackError, getFallbackCoverForAlbum } from '../../shared/services/recommendations-service';
 
 const mockAlbum = {
   id: 14880659,
@@ -198,12 +199,9 @@ export const AlbumDetailPage = () => {
               className="w-48 h-48 sm:w-60 sm:h-60 lg:w-72 lg:h-72 rounded-3xl overflow-hidden shrink-0 shadow-[0_20px_50px_-10px_rgba(0,0,0,0.7)] border border-white/15 bg-[#180e1a]"
             >
               <img
-                src={mockAlbum.cover || 'https://cdn-images.dzcdn.net/images/cover/a175af9b7d329bc678cb4d26fc13d6de/500x500-000000-80-0-0.jpg'}
+                src={mockAlbum.cover || getFallbackCoverForAlbum(mockAlbum)}
                 alt={mockAlbum.title}
-                onError={(e) => {
-                  e.currentTarget.onerror = null;
-                  e.currentTarget.src = 'https://cdn-images.dzcdn.net/images/cover/a175af9b7d329bc678cb4d26fc13d6de/500x500-000000-80-0-0.jpg';
-                }}
+                onError={(e) => handleImageFallbackError(e, mockAlbum)}
                 className="w-full h-full object-cover"
               />
             </motion.div>

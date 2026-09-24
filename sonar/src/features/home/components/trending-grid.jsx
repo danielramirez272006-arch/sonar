@@ -1,7 +1,11 @@
 import React, { useState, useMemo, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { DEFAULT_DEEZER_ALBUMS } from '../../../shared/services/deezer-service';
-import { CATALOG_RECOMMENDATIONS } from '../../../shared/services/recommendations-service';
+import {
+  CATALOG_RECOMMENDATIONS,
+  handleImageFallbackError,
+  getFallbackCoverForAlbum,
+} from '../../../shared/services/recommendations-service';
 import { usePlayer } from '../../../shared/context/player-context';
 import { useAuth } from '../../../shared/context/auth-context';
 import { interactionsService } from '../../../shared/services/interactions-service';
@@ -329,10 +333,8 @@ export const TrendingGrid = () => {
                     <img
                       className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                       alt={album.title}
-                      src={album.cover}
-                      onError={(e) => {
-                        e.target.style.display = 'none';
-                      }}
+                      src={album.cover || getFallbackCoverForAlbum(album)}
+                      onError={(e) => handleImageFallbackError(e, album)}
                     />
 
                     {/* Botón Guardar en esquina superior con prioridad de click z-30 */}
@@ -427,8 +429,9 @@ export const TrendingGrid = () => {
                       #{idx + 1}
                     </span>
                     <img
-                      src={album.cover}
+                      src={album.cover || getFallbackCoverForAlbum(album)}
                       alt={album.title}
+                      onError={(e) => handleImageFallbackError(e, album)}
                       className="w-14 h-14 rounded-xl object-cover shadow-sm shrink-0"
                     />
                     <div className="flex flex-col min-w-0">

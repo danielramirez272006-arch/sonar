@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
+import { handleImageFallbackError, getFallbackCoverForAlbum, HIGH_RES_FALLBACK_COVERS } from '../../../shared/services/recommendations-service';
 
 const equalizerBars = [
   { delay: 0, duration: 0.8 },
@@ -12,7 +13,7 @@ export const DeezerPlayer = ({
   track = {
     title: '15 Step',
     artist: 'Radiohead · In Rainbows',
-    cover: 'https://cdn-images.dzcdn.net/images/cover/a175af9b7d329bc678cb4d26fc13d6de/500x500-000000-80-0-0.jpg',
+    cover: HIGH_RES_FALLBACK_COVERS[0],
     duration: '3:57',
     currentTime: '1:24',
   },
@@ -71,12 +72,10 @@ export const DeezerPlayer = ({
         {/* Mini-carátula */}
         <div className="relative w-14 h-14 sm:w-16 sm:h-16 rounded-xl overflow-hidden shrink-0 shadow-md bg-gray-200 dark:bg-[#231123] border border-white/20">
           <img
-            src={track.cover}
+            src={track.cover || getFallbackCoverForAlbum(track)}
             alt={track.title}
             className="w-full h-full object-cover"
-            onError={(e) => {
-              e.target.style.display = 'none';
-            }}
+            onError={(e) => handleImageFallbackError(e, track)}
           />
           {isPlaying && (
             <div className="absolute inset-0 bg-black/20 flex items-center justify-center">

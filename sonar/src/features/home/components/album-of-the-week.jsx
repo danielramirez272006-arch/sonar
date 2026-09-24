@@ -4,6 +4,7 @@ import { usePlayer } from '../../../shared/context/player-context';
 import { useAuth } from '../../../shared/context/auth-context';
 import { interactionsService } from '../../../shared/services/interactions-service';
 import Toast from '../../../shared/components/ui/toast';
+import { handleImageFallbackError, getFallbackCoverForAlbum } from '../../../shared/services/recommendations-service';
 
 export const ALL_SPOTLIGHT_ALBUMS = [
   {
@@ -292,7 +293,8 @@ export const AlbumOfTheWeek = () => {
                   <img
                     className="w-full h-full object-cover"
                     alt={`${currentAlbum.title} by ${currentAlbum.artist}`}
-                    src={currentAlbum.cover}
+                    src={currentAlbum.cover || getFallbackCoverForAlbum(currentAlbum)}
+                    onError={(e) => handleImageFallbackError(e, currentAlbum)}
                   />
                   <div className="absolute inset-0 bg-gradient-to-r from-black/20 via-transparent to-transparent pointer-events-none" />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/35 via-transparent to-transparent pointer-events-none" />

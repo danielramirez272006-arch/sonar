@@ -5,6 +5,7 @@ import { interactionsService } from '../../../shared/services/interactions-servi
 import CommentSection from '../../reviews/components/comment-section';
 import LikeButton from '../../../shared/components/ui/like-button';
 import { TTSButton } from '../../../shared/components/a11y/tts-button';
+import { handleImageFallbackError, getFallbackCoverForAlbum } from '../../../shared/services/recommendations-service';
 
 const initialReviewsData = [
   {
@@ -180,10 +181,8 @@ const FeaturedReviewCard = ({ review }) => {
               <img
                 className="w-full h-full object-cover"
                 alt={review.album.title}
-                src={review.album.cover}
-                onError={(e) => {
-                  e.target.style.display = 'none';
-                }}
+                src={review.album.cover || getFallbackCoverForAlbum(review.album)}
+                onError={(e) => handleImageFallbackError(e, review.album)}
               />
             </div>
             <div className="flex flex-col min-w-0">

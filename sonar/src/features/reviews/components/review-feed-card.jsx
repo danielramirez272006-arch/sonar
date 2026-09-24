@@ -10,6 +10,7 @@ import CommentSection from './comment-section';
 import LikeButton from '../../../shared/components/ui/like-button';
 import { ReportModal } from '../../../shared/components/ui/report-modal';
 import { TTSButton } from '../../../shared/components/a11y/tts-button';
+import { handleImageFallbackError, getFallbackCoverForAlbum } from '../../../shared/services/recommendations-service';
 
 const cardVariants = {
   hidden: { opacity: 0, y: 20 },
@@ -239,13 +240,10 @@ export const ReviewFeedCard = ({
         {/* Carátula con botón de reproducción */}
         <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-xl overflow-hidden shrink-0 bg-gray-200 dark:bg-[#180e1a] shadow-xs relative group/cover">
           <img
-            src={review.cover}
+            src={review.cover || getFallbackCoverForAlbum({ title: review.albumTitle, artist: review.artistName })}
             alt={review.albumTitle}
             className="w-full h-full object-cover"
-            onError={(e) => {
-              e.currentTarget.onerror = null;
-              e.currentTarget.src = 'https://cdn-images.dzcdn.net/images/cover/a175af9b7d329bc678cb4d26fc13d6de/500x500-000000-80-0-0.jpg';
-            }}
+            onError={(e) => handleImageFallbackError(e, { title: review.albumTitle, artist: review.artistName })}
           />
           <button
             type="button"

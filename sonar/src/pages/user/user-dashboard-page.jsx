@@ -13,6 +13,8 @@ import {
   GENRE_OPTIONS,
   DEFAULT_FALLBACK_COVER,
   DEFAULT_FALLBACK_PREVIEW,
+  handleImageFallbackError,
+  getFallbackCoverForAlbum,
 } from '../../shared/services/recommendations-service';
 import ReviewFeedCard from '../../features/reviews/components/review-feed-card';
 
@@ -329,13 +331,10 @@ export const UserDashboardPage = () => {
                         {/* Carátula */}
                         <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-xl overflow-hidden shrink-0 bg-black/10 shadow-xs relative group">
                           <img
-                            src={album.cover}
+                            src={album.cover || getFallbackCoverForAlbum(album)}
                             alt={album.title}
                             className="w-full h-full object-cover"
-                            onError={(e) => {
-                              e.currentTarget.onerror = null;
-                              e.currentTarget.src = DEFAULT_FALLBACK_COVER;
-                            }}
+                            onError={(e) => handleImageFallbackError(e, album)}
                           />
                           <button
                             type="button"
@@ -459,13 +458,10 @@ export const UserDashboardPage = () => {
                       {/* Carátula Cuadrada */}
                       <div className="relative w-full aspect-square rounded-xl overflow-hidden bg-gray-200 dark:bg-[#231123] mb-3 shadow-xs">
                         <img
-                          src={album.cover}
+                          src={album.cover || getFallbackCoverForAlbum(album)}
                           alt={album.title}
                           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                          onError={(e) => {
-                            e.currentTarget.onerror = null;
-                            e.currentTarget.src = DEFAULT_FALLBACK_COVER;
-                          }}
+                          onError={(e) => handleImageFallbackError(e, album)}
                         />
                         {/* Badges de Tipo y Colección */}
                         <div className="absolute top-2 left-2 flex flex-wrap items-center gap-1 z-10">
@@ -621,8 +617,9 @@ export const UserDashboardPage = () => {
                     >
                       <div className="flex items-center gap-3.5 min-w-0">
                         <img
-                          src={item.cover || DEFAULT_FALLBACK_COVER}
+                          src={item.cover || getFallbackCoverForAlbum(item)}
                           alt={item.title}
+                          onError={(e) => handleImageFallbackError(e, item)}
                           className="w-14 h-14 rounded-xl object-cover shadow-xs shrink-0"
                         />
                         <div className="flex flex-col min-w-0">
