@@ -93,6 +93,24 @@ export const ProfileHeader = ({
                 ))}
               </div>
             )}
+
+            {/* Equipamiento Audiófilo del Usuario */}
+            {currentUser.gear && (currentUser.gear.headphones || currentUser.gear.turntable) && (
+              <div className="flex flex-wrap items-center justify-center sm:justify-start gap-2 pt-1">
+                {currentUser.gear.turntable && (
+                  <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-[#B80C09]/10 text-[#B80C09] dark:text-pink-300 text-[11px] font-bold border border-[#B80C09]/20">
+                    <span className="material-symbols-outlined text-[13px]">album</span>
+                    <span>{currentUser.gear.turntable}</span>
+                  </span>
+                )}
+                {currentUser.gear.headphones && (
+                  <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-blue-500/10 text-blue-600 dark:text-blue-300 text-[11px] font-bold border border-blue-500/20">
+                    <span className="material-symbols-outlined text-[13px]">headphones</span>
+                    <span>{currentUser.gear.headphones}</span>
+                  </span>
+                )}
+              </div>
+            )}
           </div>
         </div>
 

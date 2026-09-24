@@ -1,6 +1,7 @@
 import { userStatus } from '../services/admin-data.js'
 import { createContext, useContext, useMemo, useState } from 'react'
 import { getUserByEmail, createUser, updateUser as updateUserApi } from '../services/api-client.js'
+import { hashPassword, verifyPassword } from '../services/crypto-service.js'
 
 // El contexto y el hook se exportan juntos como API de este módulo.
 // eslint-disable-next-line react-refresh/only-export-components
@@ -24,7 +25,7 @@ export function AuthProvider({ children }) {
       setError(null)
 
       try {
-        const foundUser = await getUserByEmail(email)
+        const foundUser = await getUserByEmail(email.trim().toLowerCase())
 
         if (!foundUser) {
           throw new Error('No existe un usuario con ese correo electrónico.')
@@ -34,8 +35,9 @@ export function AuthProvider({ children }) {
           throw new Error('Esta cuenta está baneada y no puede iniciar sesión.')
         }
 
-        // Comparación directa solo para la autenticación mock local.
-        if (foundUser.password !== password) {
+        // Verificación segura criptográfica de la contraseña
+        const isPasswordValid = await verifyPassword(password, foundUser.password)
+        if (!isPasswordValid) {
           throw new Error('La contraseña es incorrecta.')
         }
 
@@ -59,7 +61,7 @@ export function AuthProvider({ children }) {
       }
     }
 
-    async function register({ username, email, password, preferences, avatarBg, bio }) {
+    async function register({ username, email, password, preferences, avatarBg, bio, gear }) {
       setIsLoading(true)
       setError(null)
       try {
@@ -91,11 +93,14 @@ export function AuthProvider({ children }) {
         const avatarColors = ['#B80C09', '#5c1d5e', '#4B2840', '#0284c7', '#059669', '#d97706', '#7c3aed'];
         const selectedAvatarBg = avatarBg || avatarColors[hash % avatarColors.length];
 
+        // Hasheo seguro SHA-256 con salt criptográfico
+        const encryptedPassword = await hashPassword(password);
+
         const newUser = {
           id: `user-${Date.now()}`,
           username: username.trim(),
           email: email.trim().toLowerCase(),
-          password: password,
+          password: encryptedPassword,
           role: 'user',
           avatarUrl: '',
           avatarBg: selectedAvatarBg,
@@ -107,6 +112,13 @@ export function AuthProvider({ children }) {
             following: 0,
           },
           preferences: initialPreferences,
+          gear: gear || {
+            headphones: 'Auriculares de referencia',
+            turntable: 'Tocadiscos Direct Drive',
+            favoriteFormat: 'Vinilo 33⅓ RPM',
+          },
+          badges: ['Melómano Verificado', 'Audiófilo Inicial'],
+          createdAt: new Date().toISOString(),
         }
 
         try {
@@ -132,6 +144,21 @@ export function AuthProvider({ children }) {
       } finally {
         setIsLoading(false)
       }
+    }
+
+    async function changePassword(oldPassword, newPassword) {
+      if (!user) throw new Error('Debes iniciar sesión para cambiar tu contraseña.')
+      if (!newPassword || newPassword.length < 6) {
+        throw new Error('La nueva contraseña debe tener al menos 6 caracteres.')
+      }
+
+      const isOldValid = await verifyPassword(oldPassword, user.password)
+      if (!isOldValid) {
+        throw new Error('La contraseña actual es incorrecta.')
+      }
+
+      const newEncrypted = await hashPassword(newPassword)
+      return updateUser({ password: newEncrypted })
     }
 
     function logout() {
@@ -172,6 +199,7 @@ export function AuthProvider({ children }) {
       error,
       login,
       register,
+      changePassword,
       logout,
       updateUser,
       hasRole,
