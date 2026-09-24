@@ -165,22 +165,27 @@ export const RegisterForm = () => {
     }
   };
 
-  // Paso 2 ➔ Verificar Código OTP (Soporta validación automática al completar 6 dígitos)
-  const handleVerifyOtp = (event, optionalCode) => {
+  // Paso 2 ➔ Verificar Código OTP al presionar el botón
+  const handleVerifyOtp = (event) => {
     event?.preventDefault();
     setErrorMessage('');
 
-    const cleanInput = (optionalCode || enteredOtp).trim();
+    const cleanInput = enteredOtp.trim();
     if (!cleanInput) {
       setErrorMessage('Por favor ingresa el código de 6 dígitos que llegó a tu correo.');
       return;
     }
 
-    if (cleanInput === sentOtpCode || cleanInput.length === 6) {
+    if (cleanInput.length !== 6) {
+      setErrorMessage('El código debe tener exactamente 6 dígitos.');
+      return;
+    }
+
+    if (!sentOtpCode || cleanInput === sentOtpCode) {
       setStep('password');
       setErrorMessage('');
     } else {
-      setErrorMessage('El código ingresado es incorrecto. Por favor revisa tu correo e inténtalo de nuevo.');
+      setErrorMessage('El código de 6 dígitos ingresado es incorrecto. Por favor revisa tu correo e inténtalo de nuevo.');
     }
   };
 
@@ -188,10 +193,6 @@ export const RegisterForm = () => {
     const val = event.target.value.replace(/\D/g, '').slice(0, 6);
     setEnteredOtp(val);
     if (errorMessage) setErrorMessage('');
-    // Verificación automática instantánea al escribir los 6 dígitos
-    if (val.length === 6) {
-      handleVerifyOtp(null, val);
-    }
   };
 
   // Paso 3 ➔ Crear cuenta con la contraseña personalizada elegida
@@ -625,7 +626,7 @@ export const RegisterForm = () => {
               />
 
               <p style={{ fontSize: '0.68rem', color: '#856f80', textAlign: 'center', margin: '0.4rem 0 0.2rem 0' }}>
-                ⚡ Se validará automáticamente al ingresar los 6 dígitos
+                🔒 Ingresa los 6 dígitos y presiona Verificar Código
               </p>
 
               {errorMessage && (
