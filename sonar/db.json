@@ -947,8 +947,8 @@
       "email": "google_user_177@sonar.local",
       "password": "social_mock_login_123",
       "role": "user",
-      "avatarUrl": "",
-      "avatarBg": "#5c1d5e",
+      "avatarUrl": "-AE0G7HObiR6o7W6jBBIJp_m6wz1K9VHHGqbl9iSBTn9KrPGEhCOo_34i60w32oLJsBtaOX_u-eYbnEybVLFriOmk--iL2h&s=10",
+      "avatarBg": "linear-gradient(135deg, #11998e 0%, #38ef7d 100%)",
       "bio": "homoxesual",
       "stats": {
         "savedAlbums": 0,
@@ -959,7 +959,10 @@
       "preferences": [
         "Neo-Soul",
         "Psicodelia"
-      ]
+      ],
+      "avatarStyle": "blobatar",
+      "avatarSeed": "cyber-audio",
+      "avatarIcon": "headphones"
     },
     {
       "id": "user-1790194547376",
@@ -1276,6 +1279,129 @@
       "role": "user",
       "avatarUrl": "",
       "avatarBg": "#d97706",
+      "bio": "Exploradora de sintetizadores analógicos.",
+      "stats": {
+        "savedAlbums": 0,
+        "reviewsCount": 0,
+        "followers": 0,
+        "following": 0
+      },
+      "preferences": [
+        "Synthwave",
+        "Ambient & Drone",
+        "IDM / Techno"
+      ]
+    },
+    {
+      "id": "user-1790259436210",
+      "username": "Daniel Ramirez",
+      "email": "daniel_1790259436133@sonar.local",
+      "password": "password123",
+      "role": "user",
+      "avatarUrl": "",
+      "avatarBg": "#B80C09",
+      "bio": "Nuevo melómano explorando vinilos y texturas acústicas en Sonar.",
+      "stats": {
+        "savedAlbums": 0,
+        "reviewsCount": 0,
+        "followers": 0,
+        "following": 0
+      },
+      "preferences": [
+        "Dream Pop",
+        "IDM / Techno"
+      ]
+    },
+    {
+      "id": "user-1790259436436",
+      "username": "Elena Jazz",
+      "email": "audiophile_1790259436396@sonar.local",
+      "password": "password123",
+      "role": "user",
+      "avatarUrl": "",
+      "avatarBg": "#059669",
+      "bio": "Exploradora de sintetizadores analógicos.",
+      "stats": {
+        "savedAlbums": 0,
+        "reviewsCount": 0,
+        "followers": 0,
+        "following": 0
+      },
+      "preferences": [
+        "Synthwave",
+        "Ambient & Drone",
+        "IDM / Techno"
+      ]
+    },
+    {
+      "id": "user-1790259516324",
+      "username": "Daniel Ramirez",
+      "email": "daniel_1790259516239@sonar.local",
+      "password": "password123",
+      "role": "user",
+      "avatarUrl": "",
+      "avatarBg": "#7c3aed",
+      "bio": "Nuevo melómano explorando vinilos y texturas acústicas en Sonar.",
+      "stats": {
+        "savedAlbums": 0,
+        "reviewsCount": 0,
+        "followers": 0,
+        "following": 0
+      },
+      "preferences": [
+        "Dream Pop",
+        "IDM / Techno"
+      ]
+    },
+    {
+      "id": "user-1790259516407",
+      "username": "Elena Jazz",
+      "email": "audiophile_1790259516372@sonar.local",
+      "password": "password123",
+      "role": "user",
+      "avatarUrl": "",
+      "avatarBg": "#5c1d5e",
+      "bio": "Exploradora de sintetizadores analógicos.",
+      "stats": {
+        "savedAlbums": 0,
+        "reviewsCount": 0,
+        "followers": 0,
+        "following": 0
+      },
+      "preferences": [
+        "Synthwave",
+        "Ambient & Drone",
+        "IDM / Techno"
+      ]
+    },
+    {
+      "id": "user-1790259849770",
+      "username": "Daniel Ramirez",
+      "email": "daniel_1790259849710@sonar.local",
+      "password": "password123",
+      "role": "user",
+      "avatarUrl": "",
+      "avatarBg": "#5c1d5e",
+      "bio": "Nuevo melómano explorando vinilos y texturas acústicas en Sonar.",
+      "stats": {
+        "savedAlbums": 0,
+        "reviewsCount": 0,
+        "followers": 0,
+        "following": 0
+      },
+      "preferences": [
+        "Psicodelia",
+        "Synthwave"
+      ]
+    },
+    {
+      "id": "user-1790259849837",
+      "username": "Elena Jazz",
+      "email": "audiophile_1790259849815@sonar.local",
+      "password": "password123",
+      "role": "user",
+      "avatarUrl": "",
+      "avatarBg": "#4B2840",
       "bio": "Exploradora de sintetizadores analógicos.",
       "stats": {
         "savedAlbums": 0,

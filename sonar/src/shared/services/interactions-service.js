@@ -7,6 +7,7 @@ const STORAGE_KEYS = {
   COMMENTS_STORE: 'sonar_review_comments',
   USER_COLLECTIONS: 'sonar_user_collections',
   REPORTED_COMMENTS: 'sonar_reported_comments',
+  REPORTED_REVIEWS: 'sonar_reported_reviews',
 };
 
 // Comentarios iniciales enriquecidos para las reseñas
@@ -269,10 +270,16 @@ export const interactionsService = {
     return { newReply, comments: updated };
   },
 
-  // REPORTES DE COMENTARIOS
+  // REPORTES DE COMENTARIOS Y RESEÑAS
   getReportedCommentIds(userId) {
     if (!userId || userId === 'guest' || userId === 'default') return [];
     const all = getStorage(STORAGE_KEYS.REPORTED_COMMENTS, {});
+    return all[userId] || [];
+  },
+
+  getReportedReviewIds(userId) {
+    if (!userId || userId === 'guest' || userId === 'default') return [];
+    const all = getStorage(STORAGE_KEYS.REPORTED_REVIEWS, {});
     return all[userId] || [];
   },
 
@@ -280,9 +287,9 @@ export const interactionsService = {
     if (!userId || userId === 'guest' || userId === 'default') return false;
     const all = getStorage(STORAGE_KEYS.REPORTED_COMMENTS, {});
     const userReports = all[userId] || [];
-    const commentId = reportPayload.commentId;
+    const commentId = reportPayload.commentId || reportPayload.targetId;
 
-    if (!userReports.includes(commentId)) {
+    if (commentId && !userReports.includes(commentId)) {
       all[userId] = [...userReports, commentId];
       setStorage(STORAGE_KEYS.REPORTED_COMMENTS, all);
     }
@@ -290,14 +297,17 @@ export const interactionsService = {
     // Guardar en bitácora de reportes para administración/auditoría
     const reportsLog = getStorage('sonar_reports_log', []);
     const newReportEntry = {
-      id: `rep-${Date.now()}`,
+      id: `rep-c-${Date.now()}`,
       reportedBy: userId,
-      commentId: reportPayload.commentId,
-      commentText: reportPayload.commentText || '',
-      commentUser: reportPayload.commentUser || '',
-      reason: reportPayload.reason || 'Lenguaje inapropiado o subido de tono',
+      type: 'comment',
+      commentId: commentId,
+      commentText: reportPayload.commentText || reportPayload.targetContent || '',
+      commentUser: reportPayload.commentUser || reportPayload.targetUser || '',
+      reason: reportPayload.reason || reportPayload.reasonTitle || 'Lenguaje inapropiado o subido de tono',
+      reasonId: reportPayload.reasonId || 'hate_speech',
+      tags: reportPayload.tags || [],
       details: reportPayload.details || '',
-      timestamp: new Date().toISOString(),
+      timestamp: reportPayload.timestamp || new Date().toISOString(),
       status: 'pending_review',
     };
     setStorage('sonar_reports_log', [newReportEntry, ...reportsLog]);
@@ -311,6 +321,50 @@ export const interactionsService = {
     }
 
     return true;
+  },
+
+  reportReview(userId, reportPayload) {
+    if (!userId || userId === 'guest' || userId === 'default') return false;
+    const all = getStorage(STORAGE_KEYS.REPORTED_REVIEWS, {});
+    const userReports = all[userId] || [];
+    const reviewId = reportPayload.reviewId || reportPayload.targetId;
+
+    if (reviewId && !userReports.includes(reviewId)) {
+      all[userId] = [...userReports, reviewId];
+      setStorage(STORAGE_KEYS.REPORTED_REVIEWS, all);
+    }
+
+    const reportsLog = getStorage('sonar_reports_log', []);
+    const newReportEntry = {
+      id: `rep-r-${Date.now()}`,
+      reportedBy: userId,
+      type: 'review',
+      reviewId: reviewId,
+      reviewTitle: reportPayload.reviewTitle || reportPayload.targetTitle || '',
+      reviewText: reportPayload.reviewText || reportPayload.targetContent || '',
+      reviewUser: reportPayload.reviewUser || reportPayload.targetUser || '',
+      reason: reportPayload.reason || reportPayload.reasonTitle || 'Contenido inadecuado en reseña',
+      reasonId: reportPayload.reasonId || 'other',
+      tags: reportPayload.tags || [],
+      details: reportPayload.details || '',
+      timestamp: reportPayload.timestamp || new Date().toISOString(),
+      status: 'pending_review',
+    };
+    setStorage('sonar_reports_log', [newReportEntry, ...reportsLog]);
+
+    if (typeof window !== 'undefined') {
+      window.dispatchEvent(
+        new CustomEvent('sonar:review-reported', {
+          detail: newReportEntry,
+        })
+      );
+    }
+
+    return true;
+  },
+
+  getReportsLog() {
+    return getStorage('sonar_reports_log', []);
   },
 
   // RESEÑAS PROPIAS DEL USUARIO

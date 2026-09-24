@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '../../../shared/context/auth-context';
 import { interactionsService } from '../../../shared/services/interactions-service';
+import { ReportModal } from '../../../shared/components/ui/report-modal';
 
 export const CommentSection = ({ reviewId, onCommentCountChange }) => {
   const { user } = useAuth();
@@ -20,19 +21,9 @@ export const CommentSection = ({ reviewId, onCommentCountChange }) => {
 
   // Estado para el modal de reporte
   const [reportingTarget, setReportingTarget] = useState(null);
-  const [reportReason, setReportReason] = useState('Lenguaje ofensivo o subido de tono');
-  const [reportDetails, setReportDetails] = useState('');
   const [reportSubmittedToast, setReportSubmittedToast] = useState(false);
 
   const userId = user?.id || null;
-
-  const REPORT_REASONS = [
-    { id: 'offensive', label: '🚫 Lenguaje ofensivo, insultos o subido de tono' },
-    { id: 'harassment', label: '⚠️ Acoso, agresión o provocaciones' },
-    { id: 'spam', label: '📢 Spam, publicidad no autorizada o enlaces engañosos' },
-    { id: 'offtopic', label: '🔇 Contenido fuera de lugar / No musical' },
-    { id: 'other', label: '❓ Otro motivo' },
-  ];
 
   useEffect(() => {
     if (reviewId) {
@@ -216,26 +207,21 @@ export const CommentSection = ({ reviewId, onCommentCountChange }) => {
       return;
     }
     setReportingTarget(target);
-    setReportReason('Lenguaje ofensivo o subido de tono');
-    setReportDetails('');
   };
 
-  const handleSubmitReport = (e) => {
-    e.preventDefault();
-    if (!reportingTarget) return;
-
+  const handleProcessReport = async (reportPayload) => {
     interactionsService.reportComment(userId, {
-      commentId: reportingTarget.id,
-      commentText: reportingTarget.content,
-      commentUser: reportingTarget.userName,
-      reason: reportReason,
-      details: reportDetails,
+      ...reportPayload,
+      commentId: reportingTarget?.id,
+      commentText: reportingTarget?.content,
+      commentUser: reportingTarget?.userName,
     });
 
-    setReportedCommentIds((prev) => [...prev, reportingTarget.id]);
-    setReportingTarget(null);
+    if (reportingTarget?.id) {
+      setReportedCommentIds((prev) => [...prev, reportingTarget.id]);
+    }
     setReportSubmittedToast(true);
-    setTimeout(() => setReportSubmittedToast(false), 4000);
+    setTimeout(() => setReportSubmittedToast(false), 4500);
   };
 
   return (
@@ -609,112 +595,13 @@ export const CommentSection = ({ reviewId, onCommentCountChange }) => {
         )}
       </div>
 
-      {/* Modal de Reporte con botón de salir y selección de motivos */}
-      <AnimatePresence>
-        {reportingTarget && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-xs">
-            <motion.div
-              initial={{ opacity: 0, scale: 0.95, y: 10 }}
-              animate={{ opacity: 1, scale: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.95, y: 10 }}
-              transition={{ type: 'spring', duration: 0.3 }}
-              className="w-full max-w-md bg-white dark:bg-[#2c1729] rounded-2xl p-6 shadow-2xl border border-[#e6d5e2] dark:border-white/10 flex flex-col gap-4 text-[#231123] dark:text-white relative"
-            >
-              {/* Encabezado del Modal con botón de salir (X) visible y destacado */}
-              <div className="flex items-center justify-between pb-3 border-b border-[#e6d5e2] dark:border-white/10">
-                <div className="flex items-center gap-2 text-red-600 dark:text-red-400">
-                  <span className="material-symbols-outlined text-[24px]">report</span>
-                  <h3 className="text-base sm:text-lg font-black text-[#231123] dark:text-white">
-                    Reportar Comentario
-                  </h3>
-                </div>
-
-                {/* Botón de salir (X) que nunca se corta */}
-                <button
-                  type="button"
-                  onClick={() => setReportingTarget(null)}
-                  title="Cerrar ventana de reporte"
-                  className="w-8 h-8 rounded-full bg-gray-100 hover:bg-gray-200 dark:bg-white/10 dark:hover:bg-white/20 text-[#231123] dark:text-white flex items-center justify-center transition-colors cursor-pointer shrink-0"
-                >
-                  <span className="material-symbols-outlined text-[18px]">close</span>
-                </button>
-              </div>
-
-              {/* Vista previa del comentario reportado */}
-              <div className="p-3 rounded-xl bg-gray-50 dark:bg-[#1f1020] border border-[#e6d5e2]/60 dark:border-white/5 text-xs">
-                <span className="font-bold text-[#5c435a] dark:text-[#B89CB0] block mb-1">
-                  Comentario de {reportingTarget.userName} ({reportingTarget.userHandle}):
-                </span>
-                <p className="italic text-[#231123] dark:text-gray-200 line-clamp-2">
-                  &ldquo;{reportingTarget.content}&rdquo;
-                </p>
-              </div>
-
-              {/* Formulario con motivos */}
-              <form onSubmit={handleSubmitReport} className="flex flex-col gap-3">
-                <label className="text-xs font-bold text-[#231123] dark:text-white">
-                  ¿Por qué deseas reportar este comentario?
-                </label>
-
-                <div className="flex flex-col gap-1.5 max-h-44 overflow-y-auto pr-1">
-                  {REPORT_REASONS.map((r) => (
-                    <label
-                      key={r.id}
-                      className={`flex items-center gap-2 p-2.5 rounded-xl border text-xs cursor-pointer transition-all ${
-                        reportReason === r.label
-                          ? 'border-[#B80C09] bg-[#B80C09]/5 font-bold text-[#B80C09]'
-                          : 'border-[#e6d5e2] dark:border-white/10 hover:bg-gray-50 dark:hover:bg-white/5 text-[#5c435a] dark:text-gray-300'
-                      }`}
-                    >
-                      <input
-                        type="radio"
-                        name="reportReason"
-                        value={r.label}
-                        checked={reportReason === r.label}
-                        onChange={(e) => setReportReason(e.target.value)}
-                        className="accent-[#B80C09]"
-                      />
-                      <span>{r.label}</span>
-                    </label>
-                  ))}
-                </div>
-
-                {/* Explicación opcional */}
-                <div className="flex flex-col gap-1 mt-1">
-                  <label className="text-xs font-semibold text-[#5c435a] dark:text-[#B89CB0]">
-                    Detalles adicionales (opcional):
-                  </label>
-                  <textarea
-                    rows={2}
-                    value={reportDetails}
-                    onChange={(e) => setReportDetails(e.target.value)}
-                    placeholder="Explica qué ocurrió o por qué este comentario es inapropiado..."
-                    className="w-full p-2.5 text-xs rounded-xl bg-gray-50 dark:bg-[#1f1020] border border-[#e6d5e2] dark:border-white/10 text-[#231123] dark:text-white placeholder:text-[#5c435a]/50 dark:placeholder:text-[#B89CB0]/50 outline-hidden focus:border-[#B80C09]"
-                  />
-                </div>
-
-                {/* Botones de acción */}
-                <div className="flex items-center justify-end gap-2.5 pt-3 border-t border-[#e6d5e2] dark:border-white/10 mt-1">
-                  <button
-                    type="button"
-                    onClick={() => setReportingTarget(null)}
-                    className="px-4 py-2 rounded-xl text-xs font-bold text-[#5c435a] dark:text-gray-300 bg-gray-100 hover:bg-gray-200 dark:bg-white/5 dark:hover:bg-white/10 transition-colors cursor-pointer"
-                  >
-                    Cancelar / Salir
-                  </button>
-                  <button
-                    type="submit"
-                    className="px-4 py-2 rounded-xl text-xs font-bold text-white bg-[#B80C09] hover:bg-[#960a07] shadow-md transition-colors cursor-pointer flex items-center gap-1.5"
-                  >
-                    <span className="material-symbols-outlined text-[16px]">send</span>
-                    Enviar Reporte
-                  </button>
-                </div>
-              </form>
-            </motion.div>
-          </div>
-        )}
-      </AnimatePresence>
+      {/* Modal de Reporte Moderno con Glassmorphism */}
+      <ReportModal
+        isOpen={Boolean(reportingTarget)}
+        target={reportingTarget}
+        onClose={() => setReportingTarget(null)}
+        onSubmitReport={handleProcessReport}
+      />
     </motion.div>
   );
 };

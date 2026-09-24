@@ -7,6 +7,7 @@ import { socialService } from '../../../shared/services/social-service';
 import { Avatar } from '../../../shared/components/ui/avatar';
 import CommentSection from './comment-section';
 import LikeButton from '../../../shared/components/ui/like-button';
+import { ReportModal } from '../../../shared/components/ui/report-modal';
 
 const cardVariants = {
   hidden: { opacity: 0, y: 20 },
@@ -50,6 +51,8 @@ export const ReviewFeedCard = ({
   const [isSavedInCollection, setIsSavedInCollection] = useState(false);
   const [isFollowingUser, setIsFollowingUser] = useState(false);
   const [isFollowingArtist, setIsFollowingArtist] = useState(false);
+  const [isReportingReview, setIsReportingReview] = useState(false);
+  const [isReviewReported, setIsReviewReported] = useState(false);
 
   useEffect(() => {
     const likedIds = interactionsService.getLikedReviewIds(currentUserId);
@@ -60,6 +63,9 @@ export const ReviewFeedCard = ({
     if (existingComments.length > 0) {
       setCommentsCount(existingComments.length);
     }
+    const reportedReviewIds = interactionsService.getReportedReviewIds(currentUserId);
+    setIsReviewReported(reportedReviewIds.includes(review.id));
+
     setIsFollowingUser(socialService.isFollowingUser(currentUserId, authorId));
     setIsFollowingArtist(socialService.isFollowingArtist(currentUserId, review.artist));
 
@@ -81,6 +87,25 @@ export const ReviewFeedCard = ({
       window.removeEventListener('sonar:follow-artist-changed', handleArtistFollowChange);
     };
   }, [review.id, review.albumTitle, review.artist, currentUserId, authorId]);
+
+  const handleOpenReportReview = () => {
+    if (!user) {
+      window.location.hash = '#login';
+      return;
+    }
+    setIsReportingReview(true);
+  };
+
+  const handleProcessReportReview = async (reportPayload) => {
+    interactionsService.reportReview(currentUserId, {
+      ...reportPayload,
+      reviewId: review.id,
+      reviewTitle: `${review.albumTitle} - ${review.artist}`,
+      reviewText: review.content,
+      reviewUser: review.userName,
+    });
+    setIsReviewReported(true);
+  };
 
   const handleLike = () => {
     if (!user) {
@@ -294,36 +319,56 @@ export const ReviewFeedCard = ({
         </div>
       </div>
 
-      {/* Pie: Acciones Me gusta y Comentar */}
-      <div className="flex items-center gap-6 pt-2 border-t border-[#e6d5e2]/60 dark:border-white/10 text-xs font-semibold text-[#5c435a] dark:text-[#B89CB0]">
-        <LikeButton
-          isLiked={isLiked}
-          likesCount={likes}
-          onToggleLike={handleLike}
-          size="md"
-        />
+      {/* Pie: Acciones Me gusta, Comentar y Reportar Reseña */}
+      <div className="flex items-center justify-between pt-2 border-t border-[#e6d5e2]/60 dark:border-white/10 text-xs font-semibold text-[#5c435a] dark:text-[#B89CB0]">
+        <div className="flex items-center gap-6">
+          <LikeButton
+            isLiked={isLiked}
+            likesCount={likes}
+            onToggleLike={handleLike}
+            size="md"
+          />
 
-        <button
-          type="button"
-          onClick={() => setShowComments(!showComments)}
-          className={`flex items-center gap-1.5 transition-colors cursor-pointer ${
-            showComments ? 'text-[#B80C09] font-bold' : 'hover:text-[#B80C09]'
-          }`}
-        >
-          <svg
-            width="18"
-            height="18"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
+          <button
+            type="button"
+            onClick={() => setShowComments(!showComments)}
+            className={`flex items-center gap-1.5 transition-colors cursor-pointer ${
+              showComments ? 'text-[#B80C09] font-bold' : 'hover:text-[#B80C09]'
+            }`}
           >
-            <path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z" />
-          </svg>
-          <span>{commentsCount} comentarios</span>
-        </button>
+            <svg
+              width="18"
+              height="18"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z" />
+            </svg>
+            <span>{commentsCount} comentarios</span>
+          </button>
+        </div>
+
+        {/* Botón Reportar Reseña */}
+        {!isSelf && (
+          <button
+            type="button"
+            onClick={handleOpenReportReview}
+            disabled={isReviewReported}
+            title="Reportar esta reseña a moderación"
+            className={`flex items-center gap-1 text-[11px] font-medium transition-colors cursor-pointer ${
+              isReviewReported
+                ? 'text-amber-500/70 cursor-not-allowed'
+                : 'text-[#5c435a]/60 dark:text-[#B89CB0]/60 hover:text-red-500'
+            }`}
+          >
+            <span className="material-symbols-outlined text-[15px]">flag</span>
+            <span className="hidden sm:inline">{isReviewReported ? 'Reportada' : 'Reportar'}</span>
+          </button>
+        )}
       </div>
 
       {/* Sección Expandible de Comentarios */}
@@ -335,6 +380,22 @@ export const ReviewFeedCard = ({
           />
         )}
       </AnimatePresence>
+
+      {/* Modal de Reporte para la Reseña */}
+      <ReportModal
+        isOpen={isReportingReview}
+        target={{
+          id: review.id,
+          targetType: 'review',
+          userName: review.userName,
+          userHandle: review.userHandle,
+          avatarBg: review.avatarBg,
+          content: `${review.albumTitle} (${review.artist}): "${review.content}"`,
+          timestamp: review.date,
+        }}
+        onClose={() => setIsReportingReview(false)}
+        onSubmitReport={handleProcessReportReview}
+      />
     </motion.article>
   );
 };

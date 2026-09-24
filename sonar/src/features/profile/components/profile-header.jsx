@@ -52,6 +52,9 @@ export const ProfileHeader = ({
               src={currentUser.avatarUrl}
               name={displayName}
               avatarBg={currentUser.avatarBg || currentUser.avatarColor}
+              avatarSeed={currentUser.avatarSeed}
+              avatarStyle={currentUser.avatarStyle}
+              avatarIcon={currentUser.avatarIcon}
               size="2xl"
               className="w-24 h-24"
             />
