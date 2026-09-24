@@ -1,4 +1,4 @@
-import { ReportReview } from './report-review.jsx';
+import { apiRequest, updateUser } from '../../../shared/services/api-client.js';
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '../../../shared/context/auth-context';
@@ -105,6 +105,16 @@ export const ReviewFeedCard = ({
   };
 
   const handleProcessReportReview = async (reportPayload) => {
+    if (!user || !review.userId) throw new Error('No se puede reportar esta rese?a.');
+    const author = await apiRequest('/users/' + encodeURIComponent(review.userId));
+    const reports = author.conductReports || [];
+    if (reports.some(report => String(report.contentId) === String(review.id) && String(report.reporterId) === String(user.id) && report.status === 'pending')) throw new Error('Ya tienes un reporte pendiente sobre esta rese?a.');
+    await updateUser(author.id, { conductReports: [...reports, {
+      id: crypto.randomUUID(), reporterId: user.id, reporterName: user.username,
+      contentType: 'review', contentId: review.id, contentSnapshot: review.content,
+      reason: [reportPayload.reasonTitle, reportPayload.details].filter(Boolean).join(': '),
+      createdAt: new Date().toISOString(), status: 'pending',
+    }] });
     interactionsService.reportReview(currentUserId, {
       ...reportPayload,
       reviewId: review.id,

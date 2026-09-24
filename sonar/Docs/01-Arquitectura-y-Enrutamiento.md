@@ -1,70 +1,30 @@
-# 🏛️ 01. Arquitectura y Enrutamiento
+# Arquitectura y enrutamiento
 
-Este documento detalla la estructura técnica, el sistema de enrutamiento SPA y la gestión global de estado y temas de la plataforma **SONAR**.
+## Organización
 
----
+El código se organiza por dominio en `src/features/`, por vistas en `src/pages/` y por recursos reutilizables en `src/shared/`. Esta organización equivale a separar componentes, páginas, servicios y contextos sin exigir carpetas llamadas literalmente Components o Services.
 
-## 📁 Estructura del Código Fuente
+[main.jsx](../src/main.jsx) monta React con AuthProvider y ThemeProvider. [App.jsx](../src/App.jsx) contiene la consola administrativa y la composición general de la aplicación.
 
-El código fuente de la aplicación se encuentra encapsulado en `sonar/src/` bajo una arquitectura modular y escalable por capas:
+## Rutas
 
-```
-sonar/src/
-├── assets/                  # Iconos y recursos estáticos internos
-├── features/                # Módulos encapsulados por dominio
-│   ├── admin/               # Lógica, hooks y componentes de administración
-│   ├── auth/                # Formularios y componentes de autenticación
-│   └── home/                # Componentes destacados de la portada (Hero, Vinilo, etc.)
-├── pages/                   # Vistas principales de página
-│   ├── admin/               # Páginas de administración y moderación
-│   ├── public/              # Páginas públicas (Home, Álbum, Comunidad, 404, etc.)
-│   └── user/                # Páginas de usuario y perfil
-├── shared/                  # Código y utilidades compartidas
-│   ├── components/          # Componentes reutilizables (Navbar, Footer, UI atómica)
-│   ├── context/             # Proveedores de contexto de React (Tema, Auth)
-│   ├── routing/             # Enrutador central (AppRouter)
-│   └── services/            # Clientes de API, servicio de IA y webhooks
-└── Styles/                  # Hojas de estilo CSS globales y específicas
-    ├── App.css
-    ├── index.css
-    ├── admin.css
-    ├── admin-dashboard.css
-    └── admin-moderation.css
-```
+[AppRouter](../src/shared/routing/app-router.jsx) selecciona las páginas mediante el hash y escucha `hashchange` y `popstate`. También lee el pathname cuando no hay hash.
 
----
+React Router DOM está instalado y `BrowserRouter` envuelve la aplicación, pero no sustituye el selector propio por una configuración completa de `Routes` y `Route`. No debe darse por cumplida toda la sección académica de React Router solo por tener la dependencia.
 
-## 🚦 Sistema de Enrutamiento (`AppRouter`)
+[PrivateRoute](../src/shared/routing/private-route.jsx) exige sesión. [AdminRoute](../src/shared/routing/admin-route.jsx) exige además `role === 'admin'`. Las rutas protegidas muestran el login como alternativa cuando no se cumplen estas condiciones.
 
-El archivo [`sonar/src/shared/routing/app-router.jsx`](file:///c:/Users/MAURICIO/OneDrive/Documentos/sonar/sonar/src/shared/routing/app-router.jsx) implementa un enrutador SPA reactivo sin recargas, con soporte simultáneo para navegación por **Path** (`/explore`) y navegación por **Hash** (`#explore`).
+La consola admite parámetros como `#usuarios?user=ID`, `#admin-reports?report=ID` y `#admin-reviews?review=ID`. Las páginas desconocidas muestran NotFoundPage.
 
-### Ventajas del Enrutador Implementado:
-1. **Sin dependencias externas pesadas**: Manejo ágil mediante la API de historial y eventos `popstate` y `hashchange`.
-2. **Transiciones fluidas con Framer Motion**: Cada cambio de vista está envuelto en un componente [`PageTransition`](file:///c:/Users/MAURICIO/OneDrive/Documentos/sonar/sonar/src/shared/components/ui/page-transition.jsx) con desvanecimiento y desplazamiento suave.
-3. **Manejo de Ruta 404**: Cualquier ruta no registrada despliega automáticamente la página [`NotFoundPage`](file:///c:/Users/MAURICIO/OneDrive/Documentos/sonar/sonar/src/pages/public/not-found-page.jsx).
+## Estado y persistencia
 
-```jsx
-// Ejemplo de uso del hook useRouter en componentes hijos
-import { useRouter } from '../../shared/routing/app-router';
+- [AuthContext](../src/shared/context/auth-context.jsx): usuario, registro, login y logout; sesión en `sonar_auth_user` de localStorage.
+- [ThemeContext](../src/shared/context/theme-context.jsx): preferencia del sistema o selección guardada en `theme` y `sonar-theme`; aplica `dark` o `light` al HTML.
+- [PlayerContext](../src/shared/context/player-context.jsx): reproducción y apertura del formulario de reseñas.
+- Los hooks de administración consultan usuarios, reseñas y pendientes a través de servicios.
 
-const MyComponent = () => {
-  const { currentPath, navigate } = useRouter();
+## Límites de autorización
 
-  return (
-    <button onClick={() => navigate('#community')}>
-      Ir a la Comunidad
-    </button>
-  );
-};
-```
+La sesión y el rol se leen del navegador. JSON Server no implementa autorización de servidor: proteger una ruta no impide modificar datos mediante llamadas directas a la API. Tampoco existe garantía de validación de sesión remota tras recargar.
 
----
-
-## 🌓 Contexto de Tema Claro / Oscuro (`ThemeProvider`)
-
-Ubicado en [`sonar/src/shared/context/theme-context.jsx`](file:///c:/Users/MAURICIO/OneDrive/Documentos/sonar/sonar/src/shared/context/theme-context.jsx):
-
-- **Detección automática**: Consulta las preferencias del sistema (`prefers-color-scheme`).
-- **Persistencia**: Guarda la elección en `localStorage` con la clave `'sonar-theme'`.
-- **Clases en raíz HTML**: Aplica las clases `.dark` o `.light` en el elemento `<html>` para compatibilidad nativa con CSS y Tailwind.
-- **Botón conmutador animado en Navbar**: Permite cambiar instantáneamente entre el modo blanco editorial y el modo negro audiófilo.
+El cliente de usuarios tiene alternativas locales ante errores de red. Registro y actualización pueden devolver un resultado local aunque el servidor no haya persistido la operación.

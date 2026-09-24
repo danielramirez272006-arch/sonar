@@ -172,17 +172,9 @@ export const AlbumDetailPage = () => {
       hasSpoilers: reviewData.hasSpoilers,
     };
 
-    try {
-      const saved = await createReview(newReview);
-      setAlbumReviews((prev) => [saved || newReview, ...prev]);
-    } catch {
-      setAlbumReviews((prev) => [newReview, ...prev]);
-    }
-    setToastMessage(
-      reviewData.type === 'track'
-        ? `¡Tu crítica de la canción "${effectiveTitle}" fue publicada!`
-        : `¡Tu crítica del disco "${mockAlbum.title}" fue publicada!`
-    );
+    const saved = await createReview(newReview);
+    setAlbumReviews((prev) => [saved, ...prev]);
+    setToastMessage(`Tu reseña de ${mockAlbum.title} fue enviada a moderación.`);
   };
 
   return (

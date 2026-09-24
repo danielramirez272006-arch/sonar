@@ -1,51 +1,46 @@
-﻿# Ampliación administrativa de SONAR
+# Flujo administrativo de SONAR
 
-- [x] Perfil administrativo con avatar, rol, estado, fechas y contadores reales.
-- [x] Reportes en `#admin-reports`, filtros y acceso a usuario/contenido/moderación.
-- [x] Silenciar, suspender, banear y retirar sanciones con motivo y confirmación.
-- [x] Historial persistente de sanciones, responsable, duración y retiradas.
-- [x] Actividad reciente a partir de usuarios, reseñas, reportes y decisiones.
-- [x] Gráfico de siete días: reseñas, usuarios, reportes y moderaciones.
-- [x] KPI calculados: pendientes, marcados, altas, reportes y sancionados.
-- [x] Gestión de usuarios con búsqueda, filtros por estado/rol y tabla compacta.
-- [x] SONAR Intelligence preparado; sin decisiones automáticas ni riesgo inventado.
-- [x] Hero compacto, estados vacíos, errores, contraste y adaptación móvil.
-- [x] Publicación real en API, reporte de reseñas y registro de moderaciones.
+## Funciones disponibles
 
-## Persistencia y compatibilidad
+- Dashboard con métricas calculadas, actividad reciente y gráfico semanal.
+- Gestión de usuarios con filtros, perfil, reportes e historial de sanciones.
+- Cola de reseñas, confirmación de rechazo y registro de decisiones.
+- Reportes con acceso al usuario, envío a moderación y resolución.
+- Opiniones generales con comentarios similares de al menos dos usuarios del mismo álbum.
+- Exportación CSV y actualización manual de datos.
 
-Se mantienen las colecciones existentes `/users` y `/reviews`, sin migración destructiva.
-Los reportes anteriores `users[].conductReports` se reutilizan. Cada reporte nuevo añade
-`reporterId`, `reporterName`, `contentType`, `contentId`, `contentSnapshot`, `createdAt` y `status`.
-Los estados son `pending`, `reviewed`, `resolved`; el estado anterior `dismissed` se
-conserva en el historial y se muestra como resuelto en la sección de reportes.
-El indicador de conducta sigue contando los reportes no descartados.
+El análisis etiquetado como IA sigue siendo una simulación local. SONAR Intelligence prepara información para una integración futura.
 
-Las sanciones están en `users[].sanctions`. Se conservan motivo, tipo, fecha, duración,
-administrador, vencimiento y retirada. Los estados efectivos usan `mutedUntil`,
-`suspendedUntil` y `status`; las sanciones temporales vencidas se consideran inactivas.
-Las cuentas administradoras no se pueden sancionar desde estas acciones.
+## Persistencia
 
-Las nuevas reseñas se guardan como pendientes con `createdAt`; las decisiones se
-anexan a `reviews[].moderationHistory`. La comunidad muestra reseñas aprobadas
-persistidas y conserva las tarjetas editoriales de ejemplo. Estas últimas, sin un
-usuario real identificado, no permiten generar reportes.
+Las colecciones principales son /users y /reviews.
 
-Los datos antiguos sin fecha se mantienen y cuentan en los totales, pero no en las
-estadísticas de siete días. Las fechas no se deducen ni se rellenan artificialmente.
-`admin-data.js` expone `behaviorInput` como contrato de entrada para una futura IA:
-reportes, sanciones, publicaciones recientes, contenido marcado y reseñas rechazadas.
+Los reportes están en users[].conductReports: identificador, responsable del reporte, contenido, motivo, fecha y estado. Los estados son pending, reviewed y resolved; dismissed se presenta como resuelto para compatibilidad. El indicador de conducta sigue contando los no descartados, incluidos reportes resueltos.
 
-## Comprobación manual
+Las sanciones están en users[].sanctions; conservan motivo, administrador, fechas y retirada. El estado efectivo usa mutedUntil, suspendedUntil y status. No se permite sancionar cuentas administradoras desde este flujo.
 
-1. Ejecutar `npm run api` y `npm run dev` en terminales distintas.
-2. Publicar una reseña desde el portal con una cuenta activa; abrir moderación como admin.
-3. Aprobarla y encontrarla en Comunidad; reportarla desde una cuenta de usuario.
-4. Abrir Reportes, consultar el contenido y enviar a moderación.
-5. Abrir el perfil; seleccionar una sanción, duración y motivo. Revisar y confirmar.
-6. Comprobar el historial, indicador, KPI y actividad; retirar la sanción y recargar.
-7. Revisar filtros, búsquedas, navegación por teclado y tamaños de pantalla.
+Las reseñas nuevas se guardan como pending_moderation y las decisiones se anexan a moderationHistory. Comunidad incluye reseñas aprobadas de la API y tarjetas de ejemplo.
 
-El proyecto sigue usando JSON Server y autenticación de demostración. Los controles
-actuales se aplican en el cliente; un backend con autorización es necesario para
-hacer cumplir estas restricciones frente a llamadas directas a la API en producción.
+Los eventos sin fecha válida no se inventan para el gráfico semanal. Las coincidencias de opiniones excluyen reseñas rechazadas y cuentan usuarios distintos.
+
+## Comprobación manual pendiente
+
+1. Iniciar npm run api y npm run dev desde la carpeta de la aplicación.
+2. Publicar una reseña con una cuenta activa y comprobar su registro pendiente.
+3. Entrar como administrador; aprobar o rechazar y revisar el historial.
+4. Reportar una reseña real desde otra cuenta; localizar el reporte en #admin-reports.
+5. Enviar a moderación o resolver y verificar la persistencia tras recargar.
+6. Revisar y confirmar una sanción; retirarla y comprobar su historial.
+7. Comparar métricas y gráfico con los registros de usuarios y reseñas.
+8. Probar opiniones similares de dos usuarios del mismo álbum y abrir sus comentarios.
+9. Comprobar errores de red, teclado, zoom y tamaños de 375, 768 y 1280 px o más.
+
+Estos pasos describen qué verificar; no son un registro de pruebas manuales ya realizadas.
+
+## Límites
+
+La autorización se aplica en el cliente. JSON Server requiere una capa de autorización para impedir llamadas directas no autorizadas. Algunas actualizaciones de usuarios tienen fallback local y pueden aparentar éxito si falla el servidor.
+
+La última ejecución de pruebas registrada en la sesión pasó 90 pruebas en 17 archivos. No acredita servicios externos ni cobertura visual completa.
+
+Consulta [requisitos](Docs/requerimientos.md) y [documentación técnica](Docs/README.md).

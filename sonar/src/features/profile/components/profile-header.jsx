@@ -1,6 +1,5 @@
 import { motion } from 'framer-motion';
 import { Avatar } from '../../../shared/components/ui/avatar';
-import { BlobatarAvatar } from '../../../shared/components/ui/blobatar-avatar';
 import { useRouter } from '../../../shared/routing/app-router';
 import { socialService } from '../../../shared/services/social-service';
 
@@ -52,6 +51,8 @@ export const ProfileHeader = ({
               src={currentUser.avatarUrl}
               name={displayName}
               avatarBg={currentUser.avatarBg || currentUser.avatarColor}
+              avatarHue={currentUser.avatarHue}
+              avatarTone={currentUser.avatarTone}
               avatarSeed={currentUser.avatarSeed}
               avatarStyle={currentUser.avatarStyle}
               avatarIcon={currentUser.avatarIcon}

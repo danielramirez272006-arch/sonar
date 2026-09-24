@@ -1,63 +1,35 @@
-# 🌐 02. Portal Público y Experiencia de Usuario
+# Portal público y cuentas
 
-Este documento describe todas las secciones, componentes y funcionalidades interactivas disponibles para los visitantes y miembros de la comunidad en el portal público de **SONAR**.
+## Música y búsqueda
 
----
+La portada combina contenido editorial y búsqueda mediante [deezer-service.js](../src/shared/services/deezer-service.js). El servicio consulta álbumes, artistas, pistas y preescuchas. También contiene datos de respaldo; ver una portada o una tarjeta no demuestra que una petición externa haya funcionado.
 
-## 1. 🎵 Portada Principal (`HomePage`)
-**Rutas:** `/#explore`, `/`, `/#home`  
-**Archivo:** [`sonar/src/pages/public/home-page.jsx`](file:///c:/Users/MAURICIO/OneDrive/Documentos/sonar/sonar/src/pages/public/home-page.jsx)
+[AlbumDetailPage](../src/pages/public/album-detail-page.jsx) mantiene una ficha de ejemplo de In Rainbows con datos y pistas definidos en código. No debe describirse como una ficha dinámica completa para cualquier ID.
 
-### Módulos Destacados:
-1. **Álbum de la Semana (`AlbumOfTheWeek`)**:
-   - Hero editorial con arte de portada y disco de vinilo físico en rotación continua (*spinning vinyl*).
-   - Datos de masterización (ej. *Direct Metal Mastering*, 180 gramos, master 24-bit/96kHz).
-   - Botón interactivo de preescucha analógica y enlace al detalle del álbum.
-2. **Buscador Principal (`HeroSearch`)**:
-   - Barra de búsqueda con autocompletado en tiempo real.
-   - Filtros rápidos por géneros (Art Pop, IDM, Jazz Fusión, Post-Rock, Ambient).
-3. **Reseñas Destacadas (`FeaturedReviews`)**:
-   - Tarjetas de crítica con calificación en estrellas, citas destacadas y badge de oyente verificado.
-4. **Cuadrícula de Tendencias (`TrendingGrid`)**:
-   - Los lanzamientos y reediciones más comentados de la semana por la comunidad.
+El reproductor usa PlayerContext. La reproducción depende de la disponibilidad de las muestras de audio y de las restricciones del navegador.
 
----
+## Comunidad y reseñas
 
-## 2. 💿 Detalle de Álbum (`AlbumDetailPage`)
-**Rutas:** `/#album`, `/#album/:id`  
-**Archivo:** [`sonar/src/pages/public/album-detail-page.jsx`](file:///c:/Users/MAURICIO/OneDrive/Documentos/sonar/sonar/src/pages/public/album-detail-page.jsx)
+[CommunityPage](../src/pages/public/community-page.jsx) combina reseñas aprobadas de la API con contenido de ejemplo. Ofrece filtros, publicación e interacciones.
 
-### Características:
-- **Ficha Técnica**: Sello discográfico, año de prensado, formato y duración total.
-- **Tracklist Interactivo**: Lista de pistas con duración, botón de reproducción de muestras y marcador de temas favoritos.
-- **Sección de Críticas y Puntuación**: Desglose de calificaciones de los usuarios y formulario para publicar una nueva reseña.
+Los formularios envían las reseñas a `createReview`, que consulta el estado del autor y fuerza `pending_moderation`. Enviar una reseña no equivale a aprobarla.
 
----
+Las tarjetas permiten reportar reseñas con autor identificable. Los reportes de reseñas se guardan en `users[].conductReports` para su revisión administrativa. Comentarios, favoritos y otras interacciones también utilizan servicios con almacenamiento local; no todos estos registros están en JSON Server.
 
-## 3. 👥 Comunidad Audiófila (`CommunityPage`)
-**Rutas:** `/#community`  
-**Archivo:** [`sonar/src/pages/public/community-page.jsx`](file:///c:/Users/MAURICIO/OneDrive/Documentos/sonar/sonar/src/pages/public/community-page.jsx)
+## Login, registro y perfil
 
-### Características:
-- **Feed Social**: Actividad reciente de melómanos, reseñas recién publicadas y debates en curso.
-- **Filtros por Temática**: Hilos de discusión sobre equipos de audio Hi-Fi, cuidado de agujas y coleccionismo.
+[LoginForm](../src/features/auth/components/login-form.jsx) valida credenciales y redirige según rol. Los botones sociales visibles no acreditan OAuth conectado.
 
----
+El registro público crea un usuario con rol `user`. La sesión persiste en localStorage y el logout la elimina. El perfil incluye preferencias y opciones de avatar; algunas funciones tienen datos iniciales de demostración.
 
-## 4. 🔑 Autenticación y Cuentas
-- **Inicio de Sesión (`LoginPage`)**: [`sonar/src/pages/public/login-page.jsx`](file:///c:/Users/MAURICIO/OneDrive/Documentos/sonar/sonar/src/pages/public/login-page.jsx)  
-  Formulario de credenciales con validación, recuperación de contraseña y soporte de acceso para curadores.
-- **Registro de Usuario (`RegisterPage`)**: [`sonar/src/pages/public/register-page.jsx`](file:///c:/Users/MAURICIO/OneDrive/Documentos/sonar/sonar/src/pages/public/register-page.jsx)  
-  Creación de perfil audiófilo seleccionando géneros de interés.
-- **Perfil y Guardados (`UserDashboardPage`)**: [`sonar/src/pages/user/user-dashboard-page.jsx`](file:///c:/Users/MAURICIO/OneDrive/Documentos/sonar/sonar/src/pages/user/user-dashboard-page.jsx)  
-  Colección personal de vinilos guardados, historial de reseñas y configuración de perfil.
+## Recuperación de contraseña
 
----
+[ForgotPasswordForm](../src/features/auth/components/forgot-password-form.jsx) presenta correo, código OTP, contraseña nueva y confirmación. El código se genera o recibe en el navegador y se compara en el cliente.
 
-## 5. 📜 Páginas Institucionales y Soporte
-- **Acerca de Sonar (`AboutPage`)**: [`sonar/src/pages/public/about-page.jsx`](file:///c:/Users/MAURICIO/OneDrive/Documentos/sonar/sonar/src/pages/public/about-page.jsx)  
-  El manifiesto de escucha atenta y crítica musical con criterio.
-- **Términos y Condiciones (`TermsPage`)**: [`sonar/src/pages/public/terms-page.jsx`](file:///c:/Users/MAURICIO/OneDrive/Documentos/sonar/sonar/src/pages/public/terms-page.jsx)  
-  Lineamientos de convivencia y moderación comunitaria.
-- **Error 404 Disco Rayado (`NotFoundPage`)**: [`sonar/src/pages/public/not-found-page.jsx`](file:///c:/Users/MAURICIO/OneDrive/Documentos/sonar/sonar/src/pages/public/not-found-page.jsx)  
-  Pantalla de página no encontrada con animación de disco rayado y botón de retorno al inicio.
+El servicio intenta enviar el código a n8n, pero puede devolver éxito simulado si falla. La pantalla anuncia una duración de 15 minutos sin una comprobación temporal equivalente en la validación revisada. Tampoco se ha implementado invalidación persistente de uso único.
+
+La actualización de contraseña depende de que exista un usuario y de la persistencia efectiva en la API. La alternativa local puede ocultar fallos de guardado. Este flujo no debe darse por validado de extremo a extremo.
+
+## Verificaciones pendientes
+
+Comprobar las vistas principales a 375, 768 y 1280 px o más, navegación por teclado, zoom, etiquetas de campos, audio y errores de conexión. La existencia de estilos responsive no sustituye esa comprobación.
