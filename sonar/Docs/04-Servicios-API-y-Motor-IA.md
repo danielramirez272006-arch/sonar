@@ -1,50 +1,66 @@
-# ⚡ 04. Servicios API y Motor de Inteligencia Artificial
+# Servicios, APIs, IA y n8n
 
-Este documento describe la capa de servicios, la integración con la base de datos simulada y el motor de análisis automatizado con IA.
+## API local
 
----
+[api-client.js](../src/shared/services/api-client.js) utiliza `http://localhost:3001`.
 
-## 1. 🔌 Cliente de API (`api-client.js`)
-**Archivo:** [`sonar/src/shared/services/api-client.js`](file:///c:/Users/MAURICIO/OneDrive/Documentos/sonar/sonar/src/shared/services/api-client.js)
+| Función | Petición | Uso |
+| --- | --- | --- |
+| getUsers | GET /users | Usuarios, perfiles y métricas. |
+| getUserById | GET /users/:id | Consulta de usuario. |
+| getUserByEmail | GET /users?email=... | Autenticación y recuperación. |
+| createUser | POST /users | Registro. |
+| updateUser | PATCH /users/:id | Perfil, reportes, sanciones y contraseña. |
+| getReviews | GET /reviews | Archivo y comunidad. |
+| getReviewsByUser | GET /reviews?userId=... | Reseñas de un autor. |
+| getPendingReviews | GET /reviews?status=pending_moderation | Cola. |
+| createReview | GET del autor y POST /reviews | Comprueba sanción y guarda pendiente. |
+| updateReview | GET y PATCH /reviews/:id cuando hay moderación | Conserva historial de decisiones. |
 
-El cliente de API realiza peticiones HTTP REST a la API local (`JSON Server`) corriendo por defecto en `http://localhost:3001`:
+El cliente genérico también implementa PUT y DELETE. Su existencia no acredita un CRUD completo en la interfaz. No se identificó un flujo de eliminación administrativa de usuarios.
 
-| Función | Método HTTP | Endpoint | Descripción |
-| :--- | :--- | :--- | :--- |
-| `getReviews()` | `GET` | `/reviews` | Obtiene la lista completa de reseñas. |
-| `getReviewById(id)` | `GET` | `/reviews/:id` | Obtiene una reseña específica. |
-| `getUsers()` | `GET` | `/users` | Lista todos los usuarios registrados. |
-| `getUserById(id)` | `GET` | `/users/:id` | Información de un usuario por su ID. |
-| `getAlbums()` | `GET` | `/albums` | Catálogo de álbumes y metadatos físicos. |
-| `updateReviewStatus(id, status)` | `PATCH` | `/reviews/:id` | Actualiza el estado (`approved`, `rejected`, etc.). |
-| `setReviewAiFlagged(id, aiFlagged)` | `PATCH` | `/reviews/:id` | Marca o desmarca una reseña como observada por IA. |
+Algunos servicios de usuarios devuelven datos locales o un objeto de resultado si la API falla. Por ello, una confirmación visual no siempre demuestra persistencia en db.json.
 
----
+## Deezer
 
-## 2. 🧠 Motor de Análisis con IA (`ia-service.js`)
-**Archivo:** [`sonar/src/shared/services/ia-service.js`](file:///c:/Users/MAURICIO/OneDrive/Documentos/sonar/sonar/src/shared/services/ia-service.js)
+[deezer-service.js](../src/shared/services/deezer-service.js) consulta rutas bajo `/api/deezer`. [vite.config.js](../vite.config.js) las dirige a `https://api.deezer.com` durante desarrollo.
 
-El servicio de IA se encarga de analizar el texto de las reseñas antes o durante la moderación humana:
+Incluye búsqueda, detalle de álbum, pistas, artistas y muestras. Los consumidores usan sus resultados en buscadores, tarjetas y reproductor. Hay información de respaldo y manejo de fallos.
 
-### Reglas de Análisis:
-- **Detección de Lenguaje Ofensivo**: Evalúa el cuerpo de la reseña contra un diccionario de términos inapropiados o conductas tóxicas.
-- **Marcado Automático (`aiFlagged: true`)**: Si se detecta una coincidencia, la reseña se categoriza para inspección obligatoria.
-- **Simulación de Score de Confianza**: Devuelve métricas de confianza y sugerencia curatorial (ej. *Revisión humana recomendada* vs *Sin anomalías detectadas*).
+El proxy de desarrollo no configura automáticamente el servidor de producción.
 
-```js
-// Ejemplo de llamada al servicio de IA
-import { analyzeReview } from './shared/services/ia-service.js';
+## Inteligencia Artificial
 
-const resultado = await analyzeReview(review);
-console.log(resultado.aiFlagged); // true | false
-console.log(resultado.reason);    // Detalle del análisis
-```
+[ia-service.js](../src/shared/services/ia-service.js) contiene:
 
----
+- Recomendaciones fijas con espera simulada.
+- Contexto lírico de demostración.
+- Marcado de reseñas mediante palabras de un diccionario.
 
-## 3. 🔄 Webhooks con n8n (`n8n-webhooks.js`)
-**Archivo:** [`sonar/src/shared/services/n8n-webhooks.js`](file:///c:/Users/MAURICIO/OneDrive/Documentos/sonar/sonar/src/shared/services/n8n-webhooks.js)
+[community-opinions.js](../src/shared/services/community-opinions.js) usa reglas de similitud textual. Ninguno de estos servicios acredita una integración real con un modelo de IA.
 
-Permite la integración con flujos de trabajo externos en **n8n**:
-- Notificación automática a canales de Discord/Slack cuando una reseña es marcada por IA.
-- Sincronización periódica de métricas hacia sistemas de reportería externa.
+## n8n y Gmail
+
+Existe una exportación: [SONAR - Código de Recuperación OTP](../n8n/sonar-recuperacion-contrasena.json).
+
+| Elemento | Implementación |
+| --- | --- |
+| Trigger | Webhook de recuperación. |
+| Objetivo | Entregar un código OTP por correo. |
+| Nodos | Webhook, validación de email, preparación de código, Gmail y respuestas HTTP. |
+| Destinatario | Se obtiene de los datos de la solicitud. |
+| Estado del archivo | active: false; no demuestra el estado de una instancia externa. |
+
+Para utilizarlo es necesario importarlo en n8n, configurar Gmail y el webhook y comprobar una entrega real. El cliente permite configurar `VITE_N8N_FORGOT_PASSWORD_WEBHOOK_URL`; si no se define, intenta localhost:5678 con `/webhook-test/forgot-password` y `/webhook/forgot-password`.
+
+La URL del webhook es configuración visible del frontend; no colocar secretos en variables VITE.
+
+[requestPasswordResetWebhook](../src/shared/services/n8n-webhooks.js) puede devolver `simulated: true` y un mensaje de éxito ante fallos. Esto no demuestra que Gmail envió un correo. Además, el código OTP aparece en el flujo del cliente y sus registros de consola.
+
+Los webhooks de moderación del mismo archivo son simulados. Falta un segundo workflow real y su comprobación.
+
+## Seguridad y pruebas
+
+JSON Server no impone autorización por rol. La recuperación no incorpora expiración efectiva ni invalidación persistente del OTP. El almacenamiento de contraseñas incluye compatibilidad con valores de demostración.
+
+Las pruebas de n8n usan fetch simulado. Validan lógica de solicitudes, no credenciales, activación del workflow o entrega del correo.

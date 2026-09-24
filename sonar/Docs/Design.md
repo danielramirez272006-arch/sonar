@@ -1,57 +1,42 @@
-Diseña una suite administrativa web en formato desktop (1440px) para "SONAR", una plataforma audiófila de diario y crítica musical con estética editorial de vinilo.
+# Diseño de SONAR
 
-### Paleta de Colores y Estilo Visual
-- Fondo general: Blanco roto / marfil suave (#FFF7FA a #FFFFFF).
-- Color primario y tipografía de acento: Violeta profundo / ciruela (#5C1D5E y #231123).
-- Colores de alerta y soporte: Brick Ember (#B80C09) y Dark Teal (#003844).
-- Superficies y bordes: Tarjetas con esquinas redondeadas (rounded-xl), bordes tenues lila (#F0D1EB) y sombras sutiles.
-- Tipografía: Inter, sans-serif limpia con títulos densos y etiquetas en mayúsculas pequeñas con espaciado amplio.
+Guía de la implementación actual, actualizada el 24 de septiembre de 2026. Reemplaza la especificación inicial que contenía cifras y prestaciones de ejemplo. No constituye una validación de contraste ni un juego de mockups.
 
-### Header Global
-- Logo superior izquierdo: Isotipo de roseta/radar sónico en cuadrantes con punto rojo central, seguido del nombre "SONAR • CONSOLE" de tamaño destacado y subtítulo "AUDIOPHILE CURATION HUB".
-- Navegación: Enlaces horizontales (Dashboard, Descubrir, Álbumes, Listas, Reseñas, Comunidad) con badge activo en "Moderación (38)".
-- Buscador central: Input con placeholder "Buscar catálogo..." y shortcut "⌘K".
-- Botón CTA derecho: "+ Registrar Disco" en botón sólido violeta con esquinas redondeadas.
+## Identidad visual
 
-### Pantalla 1: Dashboard Administrativo
-1. Cabecera de Página:
-   - Breadcrumb: Administración / Centro de Control / Dashboard.
-   - Título "Dashboard Administrativo" con bajada editorial.
-   - Tarjeta de perfil de administrador a la derecha: avatar circular, nombre "Mateo Valenzuela", badge "LEAD CURATOR" y estado "En servicio activo".
-2. Métricas Clave (Grid de 6 tarjetas superiores con iconos y microetiquetas):
-   - Usuarios Totales: 48,290 (+12.4%).
-   - Reseñas Acumuladas: 142,850 (+842 en 24h).
-   - Pendientes: 38 con badge rojo "URGENTE" y enlace "Moderar ahora →".
-   - Aprobadas: 138,420 (96.9%).
-   - Rechazadas: 2,840 (1.98%).
-   - Marcadas por IA: 152 con alerta roja.
-3. Banner de Acción Rápida:
-   - Caja de aviso con borde suave para atender 38 reseñas pendientes, con botón primario "Ir a Cola de Moderación (38)" y botón secundario "Ver Registros de Auditoría".
-4. Layout Principal a 2 Columnas:
-   - Columna izquierda (Actividad Reciente): Filtros píldora (Todas, Nuevas, Aprobadas, Rechazadas, Marcadas). Tarjetas individuales de reseñas con avatar, metadatos, calificación en estrellas, citas textuales entrecomilladas y botones de acción (Examinar, Aprobar, Rechazar y Suspender).
-   - Columna derecha (Métricas y Reglas):
-     * Distribución de Calificaciones (barras horizontales de 1 a 5 estrellas) y tiempo de respuesta (14 min).
-     * Módulo de Filtros de IA Activos (Toxicidad 99.4%, Contenido sintético, Oyente verificado).
-     * Enlaces al Manual Curatorial y descarga de CSV.
+La interfaz utiliza una estética editorial musical: portadas, referencias al vinilo, títulos destacados y tarjetas para reseñas. La administración prioriza lectura, estados y decisiones.
 
-### Pantalla 2: Moderación de Reseñas
-1. Header de Sección:
-   - Título "Moderación de Reseñas", contador "38 reseñas en cola activa" con indicador verde pulsante y botón "Actualizar cola".
-   - Barra de filtros: Tabs (Todas 38, Marcadas por IA 12, Reportadas 6) y buscador por crítico o álbum.
-2. Feed de Moderación (Tarjetas editoriales de reseñas):
-   - Cabecera de tarjeta: Avatar, usuario, badge de rol (Oyente Verificado, Crítico de Club, Colaboradora), IP/dispositivo y etiqueta de alerta (Alerta de Coherencia, Pendiente, Lenguaje Inadecuado, Spoilers).
-   - Miniatura de Álbum: Carátula de vinilo con disco físico asomándose de la funda (Vespertine de Björk, Kid A de Radiohead, To Pimp a Butterfly de Kendrick Lamar, MOTOMAMI de Rosalía), estrellas de calificación y especificación técnica de la edición física (ej. "Vinilo 180g Pressing Direct Metal Mastering").
-   - Texto de la reseña: Crítica musical en cursiva con terminología audiófila.
-   - Caja de Auditoría IA: Recuadro temático con el veredicto del modelo (porcentaje de similitud, citas omitidas, detección de lenguaje o verificación de spoilers).
-   - Barra de Acciones: Botón primario "Aprobar Reseña", botón secundario "Rechazar" y botón terciario con icono de chispa "Revisar con IA".
-3. Barra Lateral Derecha:
-   - Panel de estado "MOTOR IA SONAR" con precisión (99.4%), latencia (180ms) y gráfico de línea de rendimiento diario.
-   - Caja de "Criterios Editoriales SONAR" (Foco en escucha física, Autoría original, Pasión y respeto).
-   - Módulo para desarrolladores para alternar estados (Error, Empty State).
-4. Player Inferior Persistente:
-   - Barra horizontal de preescucha analógica: título del track ("Vespertine — Cocoon"), master 24-bit/96kHz, barra de progreso con tiempos y botón de reproducción.
+| Rol | Valores utilizados |
+| --- | --- |
+| Fondo claro | #FFF7FA, #FFFFFF |
+| Fondo oscuro | #231123; paneles administrativos #24202A |
+| Superficie de marca | #4B2840 |
+| Acento ciruela | #5C1D5E |
+| Alertas | #B80C09 |
+| Acento secundario | #003844 |
+| Texto oscuro | #231123 |
+| Texto sobre fondo oscuro | #DCDCDD, #F5EDF3 |
+| Bordes claros | #E6D5E2 |
 
-### Footer
-- Bloque con isotipo y descripción de marca SONAR.
-- Columnas de navegación: Catálogo, Comunidad y Plataforma.
-- Copyright legal "© 2025 SONAR Inc. Registrado con devoción sonora" con sello "EDICIÓN AUDIÓFILA".
+Los tokens generales están en [index.css](../src/Styles/index.css). La consola tiene ajustes propios en [admin.css](../src/Styles/admin.css), [admin-dashboard.css](../src/Styles/admin-dashboard.css) y [admin-moderation.css](../src/Styles/admin-moderation.css).
+
+## Componentes y uso
+
+- Mantener etiquetas visibles para estados: pendiente, aprobada, rechazada, sancionada o resuelta.
+- Usar iconos como apoyo del texto, no como único significado.
+- Mantener las acciones de consulta agrupadas y destacar la decisión principal.
+- Los reportes tienen «Ver usuario», «Enviar a moderación» y «Resolver reporte».
+- Las opiniones generales presentan la evidencia mediante comentarios desplegables.
+- Las métricas de la consola proceden de datos; no reutilizar cifras decorativas del diseño inicial como resultados reales.
+
+El [logo](../public/logo-sonar.svg) y el [favicon](../public/favicon.svg) están en public. Los componentes usan tipografía sans serif y acentos serif en elementos editoriales; revisar las reglas de cada zona antes de cambiar fuentes.
+
+## Temas y adaptación
+
+ThemeProvider cambia las clases dark/light y conserva la selección. Los estilos incluyen breakpoints y reglas de movimiento reducido. Esto no acredita por sí solo accesibilidad completa.
+
+La revisión pendiente debe cubrir 375, 768 y 1280 px o más, zoom, foco, teclado, contraste y etiquetas de controles. El componente Input compartido requiere revisar la asociación entre label e input.
+
+## Entregables pendientes
+
+No se localizaron entregables independientes de mockups de escritorio y móvil ni un anteproyecto completo. Esta guía aporta paleta, recursos y criterios, pero queda pendiente completar el libro de marca y verificar su aplicación.
