@@ -3249,6 +3249,67 @@
         "Audiófilo Inicial"
       ],
       "createdAt": "2026-09-24T17:03:16.456Z"
+    },
+    {
+      "id": "user-1790269555726",
+      "username": "Daniel Ramirez",
+      "email": "daniel_1790269555520@sonar.local",
+      "password": "sha256$46db02cb6164a0aadc7834dd3e2bf236$22524368c4e1ddebb87c5e9f5f0b2d4672eda57f7311a62c575a683ce65be138",
+      "role": "user",
+      "avatarUrl": "",
+      "avatarBg": "#4B2840",
+      "bio": "Nuevo melómano explorando vinilos y texturas acústicas en Sonar.",
+      "stats": {
+        "savedAlbums": 0,
+        "reviewsCount": 0,
+        "followers": 0,
+        "following": 0
+      },
+      "preferences": [
+        "Psicodelia",
+        "Synthwave"
+      ],
+      "gear": {
+        "headphones": "Auriculares de referencia",
+        "turntable": "Tocadiscos Direct Drive",
+        "favoriteFormat": "Vinilo 33⅓ RPM"
+      },
+      "badges": [
+        "Melómano Verificado",
+        "Audiófilo Inicial"
+      ],
+      "createdAt": "2026-09-24T17:05:55.726Z"
+    },
+    {
+      "id": "user-1790269555824",
+      "username": "Elena Jazz",
+      "email": "audiophile_1790269555773@sonar.local",
+      "password": "sha256$3f4dd52378f0f5fcc3f16a99b51e6318$4cbd77712038aa0e448e7b548f5de92c3f7cef680bf88e35ccfb04ace478bc07",
+      "role": "user",
+      "avatarUrl": "",
+      "avatarBg": "#d97706",
+      "bio": "Exploradora de sintetizadores analógicos.",
+      "stats": {
+        "savedAlbums": 0,
+        "reviewsCount": 0,
+        "followers": 0,
+        "following": 0
+      },
+      "preferences": [
+        "Synthwave",
+        "Ambient & Drone",
+        "IDM / Techno"
+      ],
+      "gear": {
+        "headphones": "Auriculares de referencia",
+        "turntable": "Tocadiscos Direct Drive",
+        "favoriteFormat": "Vinilo 33⅓ RPM"
+      },
+      "badges": [
+        "Melómano Verificado",
+        "Audiófilo Inicial"
+      ],
+      "createdAt": "2026-09-24T17:05:55.824Z"
     }
   ],
   "reviews": [
@@ -3310,6 +3371,24 @@
       "status": "approved",
       "aiFlagged": false,
       "createdAt": "2026-09-23T20:27:18.883Z"
+    },
+    {
+      "userId": "user-1790267441427",
+      "userName": "google_listener_225",
+      "albumId": "9896728",
+      "albumTitle": "To Pimp a Butterfly",
+      "parentAlbum": "To Pimp a Butterfly",
+      "type": "album",
+      "trackTitle": "",
+      "artist": "Kendrick Lamar",
+      "cover": "https://cdn-images.dzcdn.net/images/cover/00dd0da365a94b1829302d6b7fec70e6/500x500-000000-80-0-0.jpg",
+      "rating": 3,
+      "content": "nenro",
+      "hasSpoilers": false,
+      "status": "pending_moderation",
+      "aiFlagged": false,
+      "createdAt": "2026-09-24T17:05:10.390Z",
+      "id": "hFg0cif"
     }
   ]
 }

@@ -5,7 +5,6 @@ import { AnimatedLogo } from '../ui/AnimatedLogo';
 import { useTheme } from '../../context/theme-context';
 import { useAuth } from '../../context/auth-context';
 import { usePlayer } from '../../context/player-context';
-import { useAccessibility } from '../../context/accessibility-context';
 import { searchAlbums } from '../../services/deezer-service';
 
 export const Navbar = ({
@@ -30,7 +29,6 @@ export const Navbar = ({
   const navDebounceRef = useRef(null);
 
   const { isDark, toggleTheme } = useTheme();
-  const { toggleA11yWidget } = useAccessibility();
   const { user: authUser, isAuthenticated, logout } = useAuth();
   const { toggleTrack, currentTrack, isPlaying } = usePlayer();
 
@@ -314,21 +312,6 @@ export const Navbar = ({
               );
             })}
           </nav>
-
-          {/* Botón Accesibilidad Universal (WCAG 2.1) */}
-          <motion.button
-            whileHover={{ scale: 1.08 }}
-            whileTap={{ scale: 0.92 }}
-            onClick={toggleA11yWidget}
-            type="button"
-            aria-label="Opciones de accesibilidad (Alt + A)"
-            title="Accesibilidad y Contraste (Alt + A)"
-            className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl flex items-center justify-center bg-[#f8e9f6] dark:bg-white/5 text-[#231123] dark:text-gray-200 border border-[#e6d5e2] dark:border-white/10 hover:border-[#B80C09] dark:hover:border-white/20 hover:text-[#B80C09] dark:hover:text-[#ff6b68] dark:hover:bg-white/10 transition-all cursor-pointer shadow-xs"
-          >
-            <span className="material-symbols-outlined text-[19px] sm:text-[21px] text-[#B80C09]">
-              accessibility_new
-            </span>
-          </motion.button>
 
           {/* Botón Switch Modo Blanco / Modo Negro con fondo translúcido */}
           <motion.button
