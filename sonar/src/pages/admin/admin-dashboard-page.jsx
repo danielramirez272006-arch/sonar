@@ -1,3 +1,4 @@
+import { GrowthPanel } from '../../features/admin/dashboard/components/growth-panel.jsx';
 import { adminEvents } from '../../shared/services/admin-data.js';
 import { ActivityChart } from '../../features/admin/dashboard/components/activity-chart.jsx';
 import { ArrowUpRight, Download, RefreshCw, SlidersHorizontal } from 'lucide-react';
@@ -45,6 +46,7 @@ export function AdminDashboardPage({ metrics, reviews = [], users = [], onRefres
       {currentError && <div className="admin-workspace__error">Los datos pueden estar desactualizados: {typeof currentError === 'string' ? currentError : 'no se pudo cargar la información.'}</div>}
 
       <KpiCards metrics={metrics} busy={feedProps.busy} error={currentError} onSelect={setSelectedMetric} />
+      <GrowthPanel users={users} busy={feedProps.busy} error={currentError} />
 
       {selectedDetail && <section className="dashboard-detail" aria-live="polite">
         <header><div><span className="eyebrow">DETALLE DE MÉTRICA</span><h2>{selectedDetail.title}</h2><p>{selectedDetail.reason}</p></div><button type="button" onClick={() => setSelectedMetric(null)}>Cerrar</button></header>
