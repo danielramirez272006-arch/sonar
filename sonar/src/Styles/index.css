@@ -106,14 +106,14 @@ html, body {
 /* Acceso: composición editorial independiente del portal público. */
 .auth-page { min-height: 100vh; background: #fff; color: #231123; }
 .auth-shell { min-height: 100vh; display: grid; grid-template-columns: minmax(420px, 58%) minmax(420px, 42%); }
-.auth-editorial { position: relative; overflow: hidden; padding: clamp(2rem, 5.1vw, 5.3rem) clamp(2rem, 5vw, 5rem) 1.8rem; display: flex; flex-direction: column; color: #231123; background: radial-gradient(circle at 64% 88%, rgba(255,255,255,.92) 0 5%, transparent 28%), linear-gradient(135deg, #fde6fa 0%, #f7dff6 51%, #f9d8f1 100%); }
+.auth-editorial { position: relative; overflow: hidden; padding: clamp(2rem, 4vw, 4rem) clamp(2rem, 4vw, 4.5rem) 2rem; display: flex; flex-direction: column; justify-content: space-between; gap: 1.5rem; color: #231123; background: radial-gradient(circle at 64% 88%, rgba(255,255,255,.92) 0 5%, transparent 28%), linear-gradient(135deg, #fde6fa 0%, #f7dff6 51%, #f9d8f1 100%); }
 .auth-editorial::after { content: ''; position: absolute; width: 560px; height: 560px; border-radius: 50%; border: 1px solid rgba(255,255,255,.5); bottom: -370px; right: -65px; }
 .auth-editorial__copy { max-width: 590px; position: relative; z-index: 1; }
 .auth-eyebrow { display: inline-flex; align-items: center; gap: .35rem; margin: 0 0 .72rem; padding: .28rem .7rem; border-radius: 999px; background: rgba(255,255,255,.64); font-size: .58rem; font-weight: 800; letter-spacing: .1em; text-transform: uppercase; }
 .auth-eyebrow span { width: .42rem; height: .42rem; border-radius: 50%; background: #651a60; box-shadow: .5rem 0 0 #b80c09; }
 .auth-editorial h1 { max-width: 510px; margin: 0; font-size: clamp(2.4rem, 4vw, 4.25rem); line-height: 1.03; letter-spacing: -.06em; font-weight: 800; }
 .auth-editorial__copy > p:last-child { max-width: 515px; margin: 1rem 0 0; color: #5c435a; font-size: clamp(.93rem, 1.18vw, 1.1rem); line-height: 1.55; }
-.auth-review { position: relative; z-index: 1; width: min(100%, 430px); margin: auto auto 4.4rem; padding: 1.15rem 1.2rem 1rem; border-radius: .85rem; background: rgba(255,255,255,.92); box-shadow: 0 22px 35px rgba(100,50,92,.18); transform: rotate(-3deg); font-size: .72rem; animation: auth-card-float 6s ease-in-out infinite; }
+.auth-review { position: relative; z-index: 1; width: min(100%, 430px); margin: 1rem 0 1.5rem; padding: 0; background: transparent; box-shadow: none; transform: none; font-size: .72rem; height: 194px; }
 .auth-review__content { display:grid; grid-template-columns:auto 1fr auto; gap:.28rem .72rem; animation: auth-review-change .58s cubic-bezier(.2,.75,.25,1) both; }.auth-review__dots { display:flex; justify-content:center; gap:.28rem; margin-top:.85rem; }.auth-review__dots i { width:.3rem; height:.3rem; border-radius:50%; background:#d9c4d7; transition:width .3s ease, background .3s ease; }.auth-review__dots i.active { width:.9rem; background:#5c1d5e; }
 .auth-review__avatars { display: flex; align-items: center; grid-row: span 2; }
 .auth-review__avatars span { display:grid; place-items:center; width: 2rem; height: 2rem; color:#fff; font-size:.72rem; font-weight:800; border: 2px solid #fff; border-radius:50%; background:#5c1d5e; }
