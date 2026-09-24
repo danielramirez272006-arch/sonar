@@ -85,7 +85,16 @@ export const GlobalAudioPlayer = () => {
     };
   }, [currentTrack?.album, currentTrack?.id, currentTrack?.deezerId]);
 
-  if (!currentTrack) return null;
+  const [currentHash, setCurrentHash] = useState(() => (typeof window !== 'undefined' ? window.location.hash : ''));
+
+  useEffect(() => {
+    const onHashChange = () => setCurrentHash(window.location.hash);
+    window.addEventListener('hashchange', onHashChange);
+    return () => window.removeEventListener('hashchange', onHashChange);
+  }, []);
+
+  const isVinylPage = currentHash === '#album' || currentHash === '#vinilo' || currentHash === '#vinyl-mode';
+  if (!currentTrack || isVinylPage) return null;
 
   const isCurrentTrackSaved = Boolean(
     savedMap[String(currentTrack.id)] ||

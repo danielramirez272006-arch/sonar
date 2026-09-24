@@ -220,21 +220,21 @@ export const VinylModePage = () => {
   const adjustedSeconds = (baseSeconds * (1 - pitch / 100)).toFixed(2);
 
   return (
-    <div className="min-h-screen flex flex-col bg-[#160c18] text-[#FAF5F8] transition-colors duration-300 select-none overflow-x-hidden">
+    <div className="min-h-screen flex flex-col bg-gradient-to-b from-[#fff7fa] via-[#faeff7] to-[#f4e2f0] dark:from-[#160c18] dark:via-[#120713] dark:to-[#0b040c] text-[#231123] dark:text-[#FAF5F8] transition-colors duration-300 select-none overflow-x-hidden">
       {/* Navbar con buscador oculto (showSearch={false}) */}
       <Navbar showSearch={false} />
 
       <main className="flex-1 max-w-[1400px] w-full mx-auto px-4 sm:px-6 lg:px-10 py-8 sm:py-12 flex flex-col items-center justify-center">
         {/* Encabezado Principal */}
         <div className="text-center mb-8 max-w-3xl">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/5 border border-white/10 text-[11px] uppercase tracking-widest font-black text-[#B80C09] dark:text-rose-400 mb-3 shadow-inner">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#f0e2ee] dark:bg-white/5 border border-[#ddcadb] dark:border-white/10 text-[11px] uppercase tracking-widest font-black text-[#B80C09] dark:text-rose-400 mb-3 shadow-2xs">
             <span className="w-2 h-2 rounded-full bg-[#B80C09] animate-pulse" />
             SISTEMA AUDIÓFILO DE ALTA PRECISIÓN · 33⅓ & 45 RPM
           </div>
-          <h1 className="text-3xl sm:text-5xl font-black tracking-tight text-white drop-shadow-md">
+          <h1 className="text-3xl sm:text-5xl font-black tracking-tight text-[#231123] dark:text-white drop-shadow-sm">
             Tocadiscos Analógico Sonar
           </h1>
-          <p className="text-xs sm:text-sm text-[#d4bed0] mt-2 max-w-xl mx-auto leading-relaxed">
+          <p className="text-xs sm:text-sm text-[#4e344b] dark:text-[#d4bed0] mt-2 max-w-xl mx-auto leading-relaxed font-medium">
             Plato balanceado, brazo fonocaptor de aluminio, vúmetros iluminados y búsqueda integrada de discos en el catálogo.
           </p>
         </div>

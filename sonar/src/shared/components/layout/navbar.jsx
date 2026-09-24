@@ -292,10 +292,10 @@ export const Navbar = ({
                   onClick={() => handleNavClick(link)}
                   whileHover={{ y: -1 }}
                   whileTap={{ scale: 0.95 }}
-                  className={`relative px-3 sm:px-4 py-2 text-xs sm:text-sm font-semibold rounded-xl cursor-pointer transition-colors duration-200 ${
+                  className={`relative px-3 sm:px-4 py-2 text-xs sm:text-sm font-bold rounded-xl cursor-pointer transition-colors duration-200 ${
                     isActive
                       ? 'text-[#231123] dark:text-white'
-                      : 'text-[#5c435a] hover:text-[#231123] dark:text-gray-300 dark:hover:text-white dark:bg-transparent'
+                      : 'text-[#482d46] hover:text-[#B80C09] dark:text-[#d8c5d3] dark:hover:text-white'
                   }`}
                 >
                   {link.label}
@@ -377,13 +377,13 @@ export const Navbar = ({
             <div className="flex items-center gap-2">
               <a
                 href="#login"
-                className="px-3.5 py-1.5 rounded-xl text-xs sm:text-sm font-bold text-[#231123] dark:text-white hover:text-[#B80C09] transition-colors"
+                className="px-3.5 py-1.5 rounded-xl text-xs sm:text-sm font-bold text-[#231123] dark:text-white hover:text-[#B80C09] dark:hover:text-[#ff6b68] bg-[#f0e2ee] dark:bg-white/10 border border-[#ddcadb] dark:border-white/10 transition-all shadow-2xs cursor-pointer"
               >
                 Ingresar
               </a>
               <a
                 href="#register"
-                className="px-3.5 py-1.5 rounded-xl bg-[#B80C09] hover:bg-[#9c0a07] text-white text-xs sm:text-sm font-bold shadow-xs transition-colors"
+                className="px-3.5 py-1.5 rounded-xl bg-[#B80C09] hover:bg-[#9c0a07] text-white text-xs sm:text-sm font-bold shadow-xs transition-colors cursor-pointer"
               >
                 Registrarse
               </a>
