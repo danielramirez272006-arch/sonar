@@ -15,7 +15,7 @@ const DEFAULT_PODCAST_EPISODES = [
     hosts: 'Alejandro Ramos & Sofia Chen',
     description: 'Análisis de la presencia de Thundercat en el bajo, los arreglos de vientos de Kamasi Washington y cómo se mezcló para mantener la pegada del hip-hop con la dinámica del jazz en vivo.',
     deezerId: 9896728,
-    audioUrl: null,
+    audioUrl: '/audio/La_orquestación_de_To_Pimp_a_Butterfly.m4a',
     cover: 'https://cdn-images.dzcdn.net/images/cover/00dd0da365a94b1829302d6b7fec70e6/1000x1000-000000-80-0-0.jpg'
   },
   {
@@ -27,7 +27,7 @@ const DEFAULT_PODCAST_EPISODES = [
     hosts: 'Camila Delgado & Mateo Valenzuela',
     description: 'Daft Punk y el arte de usar compresores Alesis 3630 para crear el efecto de bombeo del French House y cómo aislar micro-samples de vinilos de los 70s y 80s.',
     deezerId: 302127,
-    audioUrl: null,
+    audioUrl: '/audio/El_bombeo_del_Alesis_3630_en_Discovery.m4a',
     cover: 'https://cdn-images.dzcdn.net/images/cover/5718f7c81c27e0b2417e2a4c45224f8a/1000x1000-000000-80-0-0.jpg'
   },
   {
@@ -39,7 +39,7 @@ const DEFAULT_PODCAST_EPISODES = [
     hosts: 'Mateo Valenzuela & Sofia Chen',
     description: 'Analizamos las cintas multipista de 2007: el uso de sintetizadores analógicos, la compresión de la caja de Phil Selway y la reverberación de placa de Thom Yorke.',
     deezerId: 14880659,
-    audioUrl: null,
+    audioUrl: '/audio/La_ingeniería_secreta_de_In_Rainbows.m4a',
     cover: 'https://cdn-images.dzcdn.net/images/cover/a175af9b7d329bc678cb4d26fc13d6de/1000x1000-000000-80-0-0.jpg'
   },
   {
@@ -51,19 +51,19 @@ const DEFAULT_PODCAST_EPISODES = [
     hosts: 'Valeria Montero (Ingeniera de Mastering)',
     description: 'Mitos y verdades sobre la distorsión armónica de segundo orden, la curva de ecualización RIAA y las ventajas físicas de prensar a 45 RPM.',
     deezerId: 10709540,
-    audioUrl: null,
+    audioUrl: '/audio/Por_qué_el_vinilo_suena_más_cálido.m4a',
     cover: 'https://cdn-images.dzcdn.net/images/cover/de5b9b704cd4ec36f8bf49beb3e17ba2/1000x1000-000000-80-0-0.jpg'
   },
   {
     id: 'base-5',
-    title: 'Ep. 40: De Sheffield al infinito — El legado sonoro de Warp Records',
+    title: 'Ep. 40: De Sheffield al infinito — El legado sonoro tras Daft Punk y Radiohead',
     show: 'Crónicas del Vinilo',
     duration: '54 min',
     date: '28 Ago 2026',
-    hosts: 'Carlos Echeverría',
-    description: 'Un recorrido por la historia de Aphex Twin, Boards of Canada y el nacimiento de la Intelligent Dance Music (IDM).',
+    hosts: 'Carlos Echeverría & Sofia Chen',
+    description: 'Un recorrido sonoro por las técnicas de producción analógica, compresión sidechain y micro-texturas acústicas.',
     deezerId: 537883642,
-    audioUrl: null,
+    audioUrl: '/audio/Ingeniería_sonora_tras_Daft_Punk_y_Radiohead.m4a',
     cover: 'https://cdn-images.dzcdn.net/images/cover/4bd6b0232c2092faf145101453cb1051/1000x1000-000000-80-0-0.jpg'
   }
 ];

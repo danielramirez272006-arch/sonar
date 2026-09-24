@@ -32,3 +32,4 @@ Esta carpeta está ubicada en `sonar/public/audio/` y está configurada para ser
    - **Opción A:** Seleccionar el archivo directamente desde tu equipo en el selector de audio.
    - **Opción B:** Escribir la ruta `/audio/tu-archivo.mp3` en el campo de enlace de audio.
 4. Presiona **«Publicar Episodio»** y empezará a sonar inmediatamente en el reproductor integrado.
+<audio controls src="Ingeniería_sonora_tras_Daft_Punk_y_Radiohead.m4a" title="Title"></audio> <audio controls src="La_ingeniería_secreta_de_In_Rainbows.m4a" title="Title"></audio> <audio controls src="La_orquestación_de_To_Pimp_a_Butterfly.m4a" title="Title"></audio> <audio controls src="El_bombeo_del_Alesis_3630_en_Discovery.m4a" title="Title"></audio> <audio controls src="Por_qué_el_vinilo_suena_más_cálido.m4a" title="Title"></audio>
