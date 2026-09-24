@@ -1719,6 +1719,79 @@
         "Audiófilo Inicial"
       ],
       "createdAt": "2026-09-24T15:14:20.673Z"
+    },
+    {
+      "id": "user-1790262987095",
+      "username": "Daniel Ramirez",
+      "email": "daniel_1790262986926@sonar.local",
+      "password": "sha256$6303bdec4b726f8ceb517147459b621b$54e2bf714250051be545b845611b4c4c2bb18fba46cd8d885f46bc107a868931",
+      "role": "user",
+      "avatarUrl": "",
+      "avatarBg": "#4B2840",
+      "bio": "Nuevo melómano explorando vinilos y texturas acústicas en Sonar.",
+      "stats": {
+        "savedAlbums": 0,
+        "reviewsCount": 0,
+        "followers": 0,
+        "following": 0
+      },
+      "preferences": [
+        "Dream Pop",
+        "IDM / Techno"
+      ],
+      "gear": {
+        "headphones": "Auriculares de referencia",
+        "turntable": "Tocadiscos Direct Drive",
+        "favoriteFormat": "Vinilo 33⅓ RPM"
+      },
+      "badges": [
+        "Melómano Verificado",
+        "Audiófilo Inicial"
+      ],
+      "createdAt": "2026-09-24T15:16:27.095Z"
+    },
+    {
+      "id": "user-1790262987186",
+      "username": "Elena Jazz",
+      "email": "audiophile_1790262987155@sonar.local",
+      "password": "sha256$85ffba1fcdbf4bdd18695ecf669f2913$7f81a8a969d3b143fbb85cae6d3768d6ee3dcda659a9f9323d6d02317894a997",
+      "role": "user",
+      "avatarUrl": "",
+      "avatarBg": "#0284c7",
+      "bio": "Exploradora de sintetizadores analógicos.",
+      "stats": {
+        "savedAlbums": 0,
+        "reviewsCount": 0,
+        "followers": 0,
+        "following": 0
+      },
+      "preferences": [
+        "Synthwave",
+        "Ambient & Drone",
+        "IDM / Techno"
+      ],
+      "gear": {
+        "headphones": "Auriculares de referencia",
+        "turntable": "Tocadiscos Direct Drive",
+        "favoriteFormat": "Vinilo 33⅓ RPM"
+      },
+      "badges": [
+        "Melómano Verificado",
+        "Audiófilo Inicial"
+      ],
+      "createdAt": "2026-09-24T15:16:27.186Z"
+    },
+    {
+      "id": "test-user-challenge",
+      "username": "melomano_seguro",
+      "email": "recuperacion_directa@sonar.local",
+      "password": "sha256$5d05f643d3808f9e6606522ba0009ba4$a149d6c075627071a69bdf0459852525e897489fa44604f82f0b38e5568db0e7",
+      "role": "user",
+      "preferences": [
+        "Art Rock",
+        "Electrónica"
+      ],
+      "createdAt": "2026-09-24T15:16:28.000Z"
     }
   ],
   "reviews": [

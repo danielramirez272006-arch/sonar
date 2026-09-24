@@ -1,8 +1,9 @@
-import { useState, useEffect } from 'react';
-import { ArrowRight, ArrowLeft, CheckCircle2, KeyRound, Mail, ShieldCheck, Eye, EyeOff, Sparkles, RefreshCw } from 'lucide-react';
+import { useState } from 'react';
+import { ArrowRight, ArrowLeft, CheckCircle2, KeyRound, ShieldCheck, Eye, EyeOff, Sparkles, Music2, UserCheck, HelpCircle } from 'lucide-react';
 import { getUserByEmail, updateUser, getUsers } from '../../../shared/services/api-client';
 import { hashPassword } from '../../../shared/services/crypto-service';
 import { RotatingReview } from './rotating-review';
+import { GENRE_OPTIONS } from '../../../shared/services/recommendations-service';
 
 const EditorialPanel = () => (
   <aside className="auth-editorial" aria-label="Comunidad editorial de audio">
@@ -15,75 +16,80 @@ const EditorialPanel = () => (
         <span>acceso musical.</span>
       </h1>
       <p>
-        Protegemos tu diario de vinilos y colecciones con cifrado de grado criptográfico SHA-256.
+        Verificación de identidad instantánea mediante desafío de perfil sonoro y cifrado criptográfico SHA-256.
       </p>
     </div>
     <RotatingReview />
     <div className="auth-editorial__stats">
       <span>
         <ShieldCheck size={14} />
-        Cifrado seguro de extremo a extremo
+        Validación directa sin correo externo
       </span>
-      <span>Recuperación instantánea</span>
+      <span>Cifrado SHA-256 protegido</span>
     </div>
   </aside>
 );
 
 export const ForgotPasswordForm = () => {
-  // Pasos: 1 = Email, 2 = Código OTP, 3 = Nueva Contraseña, 4 = Éxito
+  // Pasos: 1 = Buscar Cuenta, 2 = Desafío de Identidad Musical/Usuario, 3 = Nueva Contraseña, 4 = Éxito
   const [step, setStep] = useState(1);
-  const [email, setEmail] = useState('');
+  const [identifier, setIdentifier] = useState('');
   const [targetUser, setTargetUser] = useState(null);
-  const [generatedOtp, setGeneratedOtp] = useState('');
-  const [enteredOtp, setEnteredOtp] = useState('');
+  
+  // Desafío de seguridad: género musical registrado o nombre de usuario
+  const [challengeMethod, setChallengeMethod] = useState('genre'); // 'genre' | 'username'
+  const [selectedGenre, setSelectedGenre] = useState('');
+  const [confirmUsername, setConfirmUsername] = useState('');
+  const [genreOptions, setGenreOptions] = useState([]);
+
+  // Nueva contraseña
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
-  const [resendTimer, setResendTimer] = useState(60);
 
-  useEffect(() => {
-    let timer;
-    if (step === 2 && resendTimer > 0) {
-      timer = setInterval(() => setResendTimer((prev) => prev - 1), 1000);
-    }
-    return () => clearInterval(timer);
-  }, [step, resendTimer]);
-
-  const generateSecurityCode = () => {
-    return Math.floor(100000 + Math.random() * 900000).toString();
-  };
-
-  // Paso 1: Buscar usuario y generar código
-  const handleRequestCode = async (e) => {
+  // Paso 1: Buscar la cuenta por Correo o @Usuario
+  const handleFindAccount = async (e) => {
     e.preventDefault();
     setErrorMessage('');
-    const cleanEmail = email.trim().toLowerCase();
+    const cleanId = identifier.trim().toLowerCase().replace(/^@/, '');
 
-    if (!cleanEmail) {
-      setErrorMessage('Por favor introduce tu correo electrónico.');
+    if (!cleanId) {
+      setErrorMessage('Por favor introduce tu correo electrónico o nombre de usuario.');
       return;
     }
 
     setIsLoading(true);
     try {
-      let found = await getUserByEmail(cleanEmail);
+      let found = await getUserByEmail(cleanId);
       if (!found) {
-        // Buscar por coincidencia aproximada o en la lista total
         const allUsers = await getUsers();
-        found = allUsers.find((u) => u.email?.toLowerCase() === cleanEmail || u.username?.toLowerCase() === cleanEmail);
+        found = allUsers.find(
+          (u) =>
+            u.email?.toLowerCase() === cleanId ||
+            u.username?.toLowerCase() === cleanId ||
+            u.username?.toLowerCase().replace(/\s+/g, '_') === cleanId
+        );
       }
 
       if (!found) {
-        // Por seguridad y buena UX, si no se encuentra avisamos claramente
-        throw new Error('No encontramos ninguna cuenta asociada a este correo.');
+        throw new Error('No encontramos ninguna cuenta con ese correo o usuario.');
       }
 
       setTargetUser(found);
-      const code = generateSecurityCode();
-      setGeneratedOtp(code);
-      setResendTimer(60);
+
+      // Preparar opciones de género musical para el desafío
+      const userGenres = found.preferences && found.preferences.length > 0
+        ? found.preferences
+        : ['Art Rock', 'Electrónica'];
+      
+      const correctGenre = userGenres[Math.floor(Math.random() * userGenres.length)];
+      const otherGenres = GENRE_OPTIONS.filter((g) => !userGenres.includes(g)).slice(0, 3);
+      const shuffled = [correctGenre, ...otherGenres].sort(() => Math.random() - 0.5);
+
+      setGenreOptions(shuffled);
       setStep(2);
     } catch (err) {
       setErrorMessage(err.message || 'Error al buscar la cuenta.');
@@ -92,18 +98,34 @@ export const ForgotPasswordForm = () => {
     }
   };
 
-  // Paso 2: Verificar código
-  const handleVerifyOtp = (e) => {
+  // Paso 2: Verificar desafío de seguridad
+  const handleVerifyChallenge = (e) => {
     e.preventDefault();
     setErrorMessage('');
-    if (enteredOtp.trim() !== generatedOtp.trim()) {
-      setErrorMessage('El código de 6 dígitos ingresado es incorrecto.');
-      return;
+
+    if (challengeMethod === 'genre') {
+      if (!selectedGenre) {
+        setErrorMessage('Por favor selecciona uno de los géneros musicales de tu perfil.');
+        return;
+      }
+      const userGenres = targetUser?.preferences || ['Art Rock', 'Electrónica'];
+      if (!userGenres.includes(selectedGenre)) {
+        setErrorMessage('El género seleccionado no coincide con las preferencias de esta cuenta.');
+        return;
+      }
+      setStep(3);
+    } else {
+      const cleanUser = confirmUsername.trim().toLowerCase().replace(/^@/, '');
+      const actualUser = (targetUser?.username || '').trim().toLowerCase().replace(/\s+/g, '_');
+      if (cleanUser !== actualUser && cleanUser !== (targetUser?.username || '').trim().toLowerCase()) {
+        setErrorMessage('El nombre de usuario no coincide con la cuenta registrada.');
+        return;
+      }
+      setStep(3);
     }
-    setStep(3);
   };
 
-  // Paso 3: Guardar nueva contraseña cifrada
+  // Paso 3: Guardar nueva contraseña cifrada SHA-256
   const handleResetPassword = async (e) => {
     e.preventDefault();
     setErrorMessage('');
@@ -120,7 +142,7 @@ export const ForgotPasswordForm = () => {
 
     setIsLoading(true);
     try {
-      // Hasheo seguro SHA-256 con salt criptográfico
+      // Hasheo criptográfico SHA-256 con salt único
       const encryptedPassword = await hashPassword(newPassword);
 
       if (targetUser?.id) {
@@ -170,9 +192,9 @@ export const ForgotPasswordForm = () => {
               Recuperar Contraseña
             </h2>
             <p>
-              {step === 1 && 'Ingresa tu correo para recibir un código de acceso seguro.'}
-              {step === 2 && `Ingresa el código de 6 dígitos que enviamos a ${email}.`}
-              {step === 3 && 'Crea una nueva contraseña segura para tu cuenta.'}
+              {step === 1 && 'Ingresa tu correo o usuario para verificar tu cuenta al instante.'}
+              {step === 2 && 'Confirma tu identidad mediante el desafío de seguridad de tu cuenta.'}
+              {step === 3 && 'Define tu nueva contraseña con cifrado de seguridad SHA-256.'}
               {step === 4 && '¡Tu contraseña ha sido actualizada y cifrada con éxito!'}
             </p>
           </header>
@@ -199,100 +221,179 @@ export const ForgotPasswordForm = () => {
             </p>
           )}
 
-          {/* PASO 1: Ingreso de correo */}
+          {/* PASO 1: Ingreso de correo o usuario */}
           {step === 1 && (
-            <form onSubmit={handleRequestCode} className="auth-form">
-              <label htmlFor="recovery-email">Correo electrónico registrado</label>
+            <form onSubmit={handleFindAccount} className="auth-form">
+              <label htmlFor="recovery-identifier">Correo electrónico o Nombre de usuario</label>
               <div style={{ position: 'relative' }}>
                 <input
-                  id="recovery-email"
-                  type="email"
+                  id="recovery-identifier"
+                  type="text"
                   required
-                  autoComplete="email"
-                  placeholder="tu@ejemplo.com"
-                  value={email}
+                  placeholder="tu@ejemplo.com o @usuario"
+                  value={identifier}
                   onChange={(e) => {
-                    setEmail(e.target.value);
+                    setIdentifier(e.target.value);
                     if (errorMessage) setErrorMessage('');
                   }}
-                  style={{ paddingLeft: '2.5rem' }}
+                  style={{ paddingLeft: '2.4rem' }}
                 />
-                <Mail size={16} style={{ position: 'absolute', left: '0.85rem', top: '50%', transform: 'translateY(-50%)', color: '#856f80' }} />
+                <UserCheck size={16} style={{ position: 'absolute', left: '0.85rem', top: '50%', transform: 'translateY(-50%)', color: '#856f80' }} />
               </div>
 
-              <div style={{ marginTop: '0.5rem', background: '#fbf4fa', padding: '0.65rem 0.85rem', borderRadius: '8px', border: '1px solid #ebd9ea', fontSize: '0.72rem', color: '#5c435a' }}>
-                💡 <b>Prueba rápida:</b> Puedes usar cuentas registradas como <code>mateo@email.com</code> o el correo con el que te registraste.
+              <div style={{ marginTop: '0.65rem', background: '#faf5f9', padding: '0.75rem', borderRadius: '8px', border: '1px solid #ebd9ea', fontSize: '0.73rem', color: '#5c435a', lineHeight: '1.4' }}>
+                ⚡ <b>Recuperación directa sin correo:</b> Puedes usar cuentas de demostración como <code>mateo@email.com</code> o la cuenta que acabas de registrar.
               </div>
 
               <button className="auth-submit" type="submit" disabled={isLoading} style={{ marginTop: '1rem' }}>
-                {isLoading ? 'Buscando cuenta...' : (
+                {isLoading ? 'Verificando cuenta...' : (
                   <>
-                    Enviar código de seguridad <ArrowRight size={17} />
+                    Continuar a Verificación <ArrowRight size={17} />
                   </>
                 )}
               </button>
             </form>
           )}
 
-          {/* PASO 2: Código OTP */}
+          {/* PASO 2: Desafío de Seguridad Audiófilo */}
           {step === 2 && (
-            <form onSubmit={handleVerifyOtp} className="auth-form">
-              {/* Notificación con el código simulado para agilidad del usuario */}
-              <div style={{ background: '#fdf2f8', border: '1px solid #fbcfe8', padding: '0.85rem', borderRadius: '8px', marginBottom: '0.75rem' }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', color: '#9d174d', fontWeight: 'bold', fontSize: '0.75rem', marginBottom: '0.25rem' }}>
-                  <Sparkles size={15} /> Código de verificación enviado:
+            <form onSubmit={handleVerifyChallenge} className="auth-form">
+              {/* Tarjeta de Cuenta Encontrada */}
+              <div style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '0.75rem',
+                padding: '0.75rem',
+                borderRadius: '8px',
+                background: '#fdf2f8',
+                border: '1px solid #fbcfe8',
+                marginBottom: '0.85rem'
+              }}>
+                <div style={{
+                  width: '38px',
+                  height: '38px',
+                  borderRadius: '50%',
+                  background: targetUser?.avatarBg || '#5c1d5e',
+                  color: '#fff',
+                  display: 'grid',
+                  placeItems: 'center',
+                  fontWeight: 'bold',
+                  fontSize: '1rem'
+                }}>
+                  {targetUser?.username ? targetUser.username.charAt(0).toUpperCase() : 'U'}
                 </div>
-                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                  <span style={{ fontSize: '1.25rem', letterSpacing: '0.3em', fontWeight: '900', color: '#5c1d5e', fontFamily: 'monospace' }}>
-                    {generatedOtp}
-                  </span>
-                  <button
-                    type="button"
-                    onClick={() => setEnteredOtp(generatedOtp)}
-                    style={{ fontSize: '0.7rem', padding: '0.2rem 0.5rem', borderRadius: '4px', border: '1px solid #5c1d5e', background: '#fff', color: '#5c1d5e', cursor: 'pointer', fontWeight: 'bold' }}
-                  >
-                    Auto-completar
-                  </button>
+                <div>
+                  <div style={{ fontSize: '0.82rem', fontWeight: '800', color: '#831843' }}>
+                    @{targetUser?.username}
+                  </div>
+                  <div style={{ fontSize: '0.7rem', color: '#9d174d' }}>
+                    {targetUser?.email}
+                  </div>
                 </div>
               </div>
 
-              <label htmlFor="otp-input">Ingresa el código de 6 dígitos</label>
-              <input
-                id="otp-input"
-                type="text"
-                maxLength={6}
-                required
-                placeholder="123456"
-                value={enteredOtp}
-                onChange={(e) => setEnteredOtp(e.target.value.replace(/\D/g, ''))}
-                style={{ textAlign: 'center', fontSize: '1.2rem', letterSpacing: '0.3em', fontWeight: 'bold' }}
-              />
-
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '0.35rem', fontSize: '0.72rem' }}>
+              {/* Selector de Método de Verificación */}
+              <div style={{ display: 'flex', gap: '0.35rem', marginBottom: '0.75rem' }}>
                 <button
                   type="button"
-                  disabled={resendTimer > 0}
-                  onClick={() => {
-                    const newCode = generateSecurityCode();
-                    setGeneratedOtp(newCode);
-                    setResendTimer(60);
+                  onClick={() => setChallengeMethod('genre')}
+                  style={{
+                    flex: 1,
+                    padding: '0.4rem',
+                    borderRadius: '6px',
+                    fontSize: '0.7rem',
+                    fontWeight: 'bold',
+                    cursor: 'pointer',
+                    border: challengeMethod === 'genre' ? '1px solid #5c1d5e' : '1px solid #e5e7eb',
+                    background: challengeMethod === 'genre' ? '#5c1d5e' : '#f9fafb',
+                    color: challengeMethod === 'genre' ? '#ffffff' : '#4b5563',
                   }}
-                  style={{ background: 'none', border: 'none', color: resendTimer > 0 ? '#9ca3af' : '#5c1d5e', cursor: resendTimer > 0 ? 'default' : 'pointer', display: 'flex', alignItems: 'center', gap: '4px', fontWeight: '600' }}
                 >
-                  <RefreshCw size={13} />
-                  {resendTimer > 0 ? `Reenviar código en ${resendTimer}s` : 'Reenviar código'}
+                  <Music2 size={12} style={{ display: 'inline', marginRight: '4px', verticalAlign: 'middle' }} />
+                  Desafío Musical
                 </button>
+                <button
+                  type="button"
+                  onClick={() => setChallengeMethod('username')}
+                  style={{
+                    flex: 1,
+                    padding: '0.4rem',
+                    borderRadius: '6px',
+                    fontSize: '0.7rem',
+                    fontWeight: 'bold',
+                    cursor: 'pointer',
+                    border: challengeMethod === 'username' ? '1px solid #5c1d5e' : '1px solid #e5e7eb',
+                    background: challengeMethod === 'username' ? '#5c1d5e' : '#f9fafb',
+                    color: challengeMethod === 'username' ? '#ffffff' : '#4b5563',
+                  }}
+                >
+                  <UserCheck size={12} style={{ display: 'inline', marginRight: '4px', verticalAlign: 'middle' }} />
+                  Confirmar Usuario
+                </button>
+              </div>
+
+              {challengeMethod === 'genre' ? (
+                <div>
+                  <label style={{ display: 'flex', alignItems: 'center', gap: '4px', marginBottom: '0.4rem' }}>
+                    <HelpCircle size={14} color="#B80C09" />
+                    ¿Cuál de estos géneros forma parte de tu perfil?
+                  </label>
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.4rem' }}>
+                    {genreOptions.map((genre) => (
+                      <button
+                        key={genre}
+                        type="button"
+                        onClick={() => {
+                          setSelectedGenre(genre);
+                          if (errorMessage) setErrorMessage('');
+                        }}
+                        style={{
+                          padding: '0.65rem 0.5rem',
+                          borderRadius: '8px',
+                          fontSize: '0.74rem',
+                          fontWeight: '700',
+                          textAlign: 'center',
+                          cursor: 'pointer',
+                          border: selectedGenre === genre ? '2px solid #B80C09' : '1px solid #e5e7eb',
+                          backgroundColor: selectedGenre === genre ? '#fff1f2' : '#ffffff',
+                          color: selectedGenre === genre ? '#B80C09' : '#374151',
+                          transition: 'all 0.15s ease',
+                        }}
+                      >
+                        {selectedGenre === genre ? `✓ ${genre}` : genre}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              ) : (
+                <div>
+                  <label htmlFor="confirm-user-input">Escribe tu nombre de usuario exacto</label>
+                  <input
+                    id="confirm-user-input"
+                    type="text"
+                    required
+                    placeholder="ej: mateo o tu_usuario"
+                    value={confirmUsername}
+                    onChange={(e) => {
+                      setConfirmUsername(e.target.value);
+                      if (errorMessage) setErrorMessage('');
+                    }}
+                  />
+                </div>
+              )}
+
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '0.65rem', fontSize: '0.72rem' }}>
                 <button
                   type="button"
                   onClick={() => setStep(1)}
                   style={{ background: 'none', border: 'none', color: '#6b7280', cursor: 'pointer' }}
                 >
-                  Cambiar correo
+                  ← Cambiar cuenta
                 </button>
               </div>
 
               <button className="auth-submit" type="submit" style={{ marginTop: '0.85rem' }}>
-                Verificar código <ArrowRight size={17} />
+                Validar Identidad <ArrowRight size={17} />
               </button>
             </form>
           )}
@@ -332,15 +433,24 @@ export const ForgotPasswordForm = () => {
               )}
 
               <label htmlFor="confirm-password" style={{ marginTop: '0.5rem' }}>Confirmar nueva contraseña</label>
-              <input
-                id="confirm-password"
-                type={showPassword ? 'text' : 'password'}
-                required
-                minLength={6}
-                placeholder="Repite la nueva contraseña"
-                value={confirmPassword}
-                onChange={(e) => setConfirmPassword(e.target.value)}
-              />
+              <div className="auth-password">
+                <input
+                  id="confirm-password"
+                  type={showConfirmPassword ? 'text' : 'password'}
+                  required
+                  minLength={6}
+                  placeholder="Repite la nueva contraseña"
+                  value={confirmPassword}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                  aria-label={showConfirmPassword ? 'Ocultar contraseña' : 'Mostrar contraseña'}
+                >
+                  {showConfirmPassword ? <EyeOff size={17} /> : <Eye size={17} />}
+                </button>
+              </div>
 
               {confirmPassword && (
                 <div style={{ fontSize: '0.7rem', fontWeight: 'bold', color: newPassword === confirmPassword ? '#10b981' : '#ef4444' }}>
@@ -349,7 +459,7 @@ export const ForgotPasswordForm = () => {
               )}
 
               <button className="auth-submit" type="submit" disabled={isLoading} style={{ marginTop: '1rem' }}>
-                {isLoading ? 'Cifrando y guardando...' : (
+                {isLoading ? 'Cifrando con SHA-256 y guardando...' : (
                   <>
                     Restablecer Contraseña Cifrada <ShieldCheck size={18} />
                   </>
@@ -368,7 +478,7 @@ export const ForgotPasswordForm = () => {
                 ¡Contraseña Restablecida con Éxito!
               </h3>
               <p style={{ fontSize: '0.8rem', color: '#4b5563', lineHeight: '1.5', marginBottom: '1.5rem' }}>
-                Tu nueva contraseña ha sido cifrada mediante el algoritmo <b>SHA-256</b> con un salt único. Ya puedes iniciar sesión de forma segura.
+                Tu nueva contraseña ha sido cifrada mediante el algoritmo <b>SHA-256</b> con salt único. Ya puedes iniciar sesión sin problemas.
               </p>
               <a
                 href="#login"

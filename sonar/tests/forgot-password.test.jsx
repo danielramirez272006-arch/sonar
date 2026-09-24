@@ -2,13 +2,13 @@
  * @vitest-environment jsdom
  */
 import { describe, it, expect, beforeEach, afterEach } from 'vitest';
-import { render, screen, fireEvent, waitFor, cleanup } from '@testing-library/react';
+import { render, screen, fireEvent, cleanup } from '@testing-library/react';
 import React from 'react';
 import { ForgotPasswordForm } from '../src/features/auth/components/forgot-password-form';
 import { createUser } from '../src/shared/services/api-client';
 import { hashPassword } from '../src/shared/services/crypto-service';
 
-describe('ForgotPassword Flow & Security', () => {
+describe('ForgotPassword Flow & Security (No-Email Direct Challenge)', () => {
   beforeEach(() => {
     window.localStorage.clear();
     global.ResizeObserver = class ResizeObserver {
@@ -30,36 +30,40 @@ describe('ForgotPassword Flow & Security', () => {
 
   afterEach(cleanup);
 
-  it('permite buscar una cuenta, verificar el código y actualizar la contraseña con hash SHA-256', async () => {
-    const testEmail = 'recuperacion@sonar.local';
+  it('permite buscar una cuenta, resolver el desafío de identidad y actualizar la contraseña con hash SHA-256', async () => {
+    const testEmail = 'recuperacion_directa@sonar.local';
     const oldPassHash = await hashPassword('claveAntigua123');
 
     await createUser({
-      id: 'test-user-recov',
-      username: 'usuario_recuperacion',
+      id: 'test-user-challenge',
+      username: 'melomano_seguro',
       email: testEmail,
       password: oldPassHash,
       role: 'user',
+      preferences: ['Art Rock', 'Electrónica'],
     });
 
     render(<ForgotPasswordForm />);
 
-    // Paso 1: Ingreso de correo
-    const emailInput = screen.getByLabelText(/Correo electrónico registrado/i);
-    fireEvent.change(emailInput, { target: { value: testEmail } });
+    // Paso 1: Ingreso de correo o usuario
+    const idInput = screen.getByLabelText(/Correo electrónico o Nombre de usuario/i);
+    fireEvent.change(idInput, { target: { value: testEmail } });
 
-    const submitBtn = screen.getByRole('button', { name: /Enviar código de seguridad/i });
-    fireEvent.click(submitBtn);
+    const searchBtn = screen.getByRole('button', { name: /Continuar a Verificación/i });
+    fireEvent.click(searchBtn);
 
-    // Esperar paso 2: Ingreso de código
-    await screen.findByText(/Código de verificación enviado/i);
+    // Esperar paso 2: Desafío de identidad
+    await screen.findByText(/¿Cuál de estos géneros forma parte de tu perfil\?/i);
 
-    // Auto-completar el código
-    const autoFillBtn = screen.getByRole('button', { name: /Auto-completar/i });
-    fireEvent.click(autoFillBtn);
+    // Seleccionar la opción de confirmar por usuario para validación inequívoca
+    const confirmUserTab = screen.getByRole('button', { name: /Confirmar Usuario/i });
+    fireEvent.click(confirmUserTab);
 
-    const verifyBtn = screen.getByRole('button', { name: /Verificar código/i });
-    fireEvent.click(verifyBtn);
+    const userInput = screen.getByLabelText(/Escribe tu nombre de usuario exacto/i);
+    fireEvent.change(userInput, { target: { value: 'melomano_seguro' } });
+
+    const validateBtn = screen.getByRole('button', { name: /Validar Identidad/i });
+    fireEvent.click(validateBtn);
 
     // Esperar paso 3: Nueva contraseña
     await screen.findByLabelText(/^Nueva contraseña$/i);
