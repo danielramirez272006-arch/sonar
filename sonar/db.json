@@ -4659,6 +4659,37 @@
         "Audi├│filo Inicial"
       ],
       "createdAt": "2026-09-24T19:33:32.808Z"
+    },
+    {
+      "id": "user-1790284884999",
+      "username": "google_listener_380",
+      "email": "google_user_380@sonar.local",
+      "password": "sha256$74788f6051223c534ed6fe9420bd0be0$1d7ee11adb75581c00075490efd211399b8897d4342f68c8fbf3395da19767b9",
+      "role": "user",
+      "avatarUrl": "",
+      "avatarBg": "#B80C09",
+      "bio": "Nuevo melómano explorando vinilos y texturas acústicas en Sonar.",
+      "stats": {
+        "savedAlbums": 0,
+        "reviewsCount": 0,
+        "followers": 0,
+        "following": 0
+      },
+      "preferences": [
+        "Art Rock",
+        "Electrónica",
+        "Psicodelia"
+      ],
+      "gear": {
+        "headphones": "Auriculares de referencia",
+        "turntable": "Tocadiscos Direct Drive",
+        "favoriteFormat": "Vinilo 33⅓ RPM"
+      },
+      "badges": [
+        "Melómano Verificado",
+        "Audiófilo Inicial"
+      ],
+      "createdAt": "2026-09-24T21:21:24.999Z"
     }
   ],
   "reviews": [
@@ -4756,9 +4787,43 @@
       "aiFlagged": false,
       "createdAt": "2026-09-24T19:31:38.562Z",
       "id": "aOAdDX5"
+    },
+    {
+      "userId": "admin-1",
+      "userName": "Administrador",
+      "albumId": "3579685431",
+      "albumTitle": "The Life of a Showgirl",
+      "parentAlbum": "The Life of a Showgirl",
+      "type": "album",
+      "trackTitle": "",
+      "artist": "Taylor Swift",
+      "cover": "https://cdn-images.dzcdn.net/images/cover/d0bed55a0efb3c5c3ddb3dacda67d9b3/500x500-000000-80-0-0.jpg",
+      "rating": 5,
+      "content": "Que rica esta",
+      "hasSpoilers": true,
+      "status": "pending_moderation",
+      "aiFlagged": false,
+      "createdAt": "2026-09-24T20:31:34.107Z",
+      "id": "8wbYAzt"
     }
   ],
-  "featuredReleases": [],
+  "featuredReleases": [
+    {
+      "title": "los eso brad",
+      "artist": "Daniel el Rico",
+      "releaseDate": "2026-09-30",
+      "genre": "Sebas come caca",
+      "type": "coreano",
+      "cover": "https://preview.redd.it/meu-gato-%C3%A9-praticamente-o-gato-do-meme-v0-n9dleoj8dgfc1.jpg?width=640&crop=smart&auto=webp&s=52de2578fe227e639db822d551bba33c6d28a2f1",
+      "externalUrl": "",
+      "description": "“Sebas come caca” es una canción de estilo pop-rock con elementos electrónicos. La letra habla de una persona que camina sola por una ciudad durante la noche mientras recuerda una relación que terminó. Las luces de neón y la lluvia representan los recuerdos que todavía siguen presentes, aunque la persona intenta continuar con su vida.\n\nLa canción comienza de forma tranquila con piano y sonidos ambientales, pero poco a poco agrega batería, guitarra eléctrica y sintetizadores hasta llegar a un coro más fuerte y emocional. El mensaje principal de “Sebas come caca” es aprender a aceptar el pasado y seguir adelante, incluso cuando algunos recuerdos todavía duelen.\n\nArtista : Daniel triple h\nGénero: Pop Rock / Alternative\nDuración: 3:42\nÁlbum: los eso brad\nAño: 2026",
+      "status": "published",
+      "labelId": "",
+      "updatedAt": "2026-09-24T21:04:55.750Z",
+      "id": "99f22ef3-85ac-4c50-9fbd-a7326146e6be",
+      "createdAt": "2026-09-24T21:04:55.750Z"
+    }
+  ],
   "recordLabels": [],
   "vinylEditions": [],
   "announcements": [
@@ -4787,8 +4852,9 @@
       "reason": "Lenguaje de odio o discriminaci├│n",
       "tags": [],
       "reviewId": 2,
-      "status": "pending",
-      "createdAt": "2026-09-24T20:14:34.213Z"
+      "status": "resolved",
+      "createdAt": "2026-09-24T20:14:34.213Z",
+      "updatedAt": "2026-09-24T20:42:39.582Z"
     }
   ]
 }

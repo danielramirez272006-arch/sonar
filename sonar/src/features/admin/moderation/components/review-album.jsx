@@ -19,7 +19,11 @@ export function ReviewAlbum({ review }) {
   }, [albumId])
 
   const current = result?.id === albumId ? result : null
-  const album = current?.album || fallback
+  // Fallback chain: Deezer API → DEFAULT_DEEZER_ALBUMS → datos guardados en la reseña
+  const reviewFallback = (review.albumTitle || review.artist || review.cover)
+    ? { title: review.albumTitle, artist: review.artist, cover: review.cover, year: null }
+    : null
+  const album = current?.album || fallback || reviewFallback
   const loading = !current
   return (
     <div className="review-body">
@@ -30,7 +34,7 @@ export function ReviewAlbum({ review }) {
       )}
       <div className="review-copy">
         <div className="eyebrow">CATÁLOGO MUSICAL · DEEZER</div>
-        <h3>{album?.title || `Álbum ${review.albumId}`}</h3>
+        <h3>{album?.title || review.albumTitle || `Álbum ${review.albumId}`}</h3>
         {album && <p className="review-album-artist">{album.artist}{album.year ? ` · ${album.year}` : ''}</p>}
         <div className="rating"><span aria-hidden="true">★</span> {review.rating} <small>/ 5 · Calificación del oyente</small></div>
         <blockquote>“{review.content}”</blockquote>
