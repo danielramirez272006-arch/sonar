@@ -35,12 +35,12 @@ describe('News Page & n8n Newsletter Integration', () => {
     );
   };
 
-  it('renderiza la página de noticias con la cinta de última hora y el titular destacado', () => {
+  it('renderiza la página de noticias con el encabezado editorial y el titular de portada', () => {
     renderNewsPage();
 
-    expect(screen.getByText(/RADAR EN VIVO/i)).toBeTruthy();
-    expect(screen.getByText(/Noticias & Novedades Sónicas/i)).toBeTruthy();
-    expect(screen.getByText(/PORTADA PRINCIPAL/i)).toBeTruthy();
+    expect(screen.getByText(/Radar Musical & Actualidad/i)).toBeTruthy();
+    expect(screen.getByText(/PERIODISMO & CRÓNICA AUDIÓFILA/i)).toBeTruthy();
+    expect(screen.getByText(/PORTADA DE LA SEMANA/i)).toBeTruthy();
   });
 
   it('permite filtrar noticias por categoría temática', () => {

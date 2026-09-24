@@ -26,8 +26,27 @@ const EditorialPanel = () => (
       <p>
         Califica vinilos, analiza letras con inteligencia artificial y sincroniza tus hallazgos con una comunidad audiófila global.
       </p>
+
+      {/* Badges de características audiófilas */}
+      <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.45rem', marginTop: '1.1rem' }}>
+        <span style={{ display: 'inline-flex', alignItems: 'center', gap: '0.35rem', padding: '0.32rem 0.7rem', borderRadius: '999px', backgroundColor: 'rgba(255,255,255,0.75)', fontSize: '0.68rem', fontWeight: '800', color: '#5c1d5e', border: '1px solid rgba(92,29,94,0.12)', boxShadow: '0 2px 6px rgba(92,29,94,0.05)' }}>
+          <Headphones size={13} style={{ color: '#B80C09' }} /> Muestras de Audio HD
+        </span>
+        <span style={{ display: 'inline-flex', alignItems: 'center', gap: '0.35rem', padding: '0.32rem 0.7rem', borderRadius: '999px', backgroundColor: 'rgba(255,255,255,0.75)', fontSize: '0.68rem', fontWeight: '800', color: '#5c1d5e', border: '1px solid rgba(92,29,94,0.12)', boxShadow: '0 2px 6px rgba(92,29,94,0.05)' }}>
+          <Sparkles size={13} style={{ color: '#d97706' }} /> Análisis de Letras IA
+        </span>
+        <span style={{ display: 'inline-flex', alignItems: 'center', gap: '0.35rem', padding: '0.32rem 0.7rem', borderRadius: '999px', backgroundColor: 'rgba(255,255,255,0.75)', fontSize: '0.68rem', fontWeight: '800', color: '#5c1d5e', border: '1px solid rgba(92,29,94,0.12)', boxShadow: '0 2px 6px rgba(92,29,94,0.05)' }}>
+          <Disc3 size={13} style={{ color: '#B80C09' }} /> Reseñas de Vinilos
+        </span>
+      </div>
     </div>
-    <RotatingReview />
+
+    {/* Tarjeta de Reseñas Rotativas Centrada */}
+    <div style={{ margin: '1rem 0' }}>
+      <RotatingReview />
+    </div>
+
+    {/* Estadísticas de la Comunidad */}
     <div className="auth-editorial__stats">
       <span>
         <Music2 size={14} />

@@ -36,7 +36,21 @@ export const RotatingReview = () => {
         })}
       </div>
       <div className="auth-review__dots" aria-label={`Comentario ${activeIndex + 1} de ${reviews.length}`}>
-        {reviews.map((review, index) => <i key={review.username} className={index === activeIndex ? 'active' : ''} aria-hidden="true" />)}
+        {reviews.map((review, index) => (
+          <button
+            key={review.username}
+            type="button"
+            onClick={() => setActiveIndex(index)}
+            className={index === activeIndex ? 'active' : ''}
+            aria-label={`Ver reseña de ${review.username}`}
+            style={{
+              cursor: 'pointer',
+              border: 'none',
+              padding: 0,
+              display: 'inline-block',
+            }}
+          />
+        ))}
       </div>
     </section>
   );
