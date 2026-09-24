@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '../../../shared/context/auth-context';
+import { useAccessibility } from '../../../shared/context/accessibility-context';
 import { interactionsService } from '../../../shared/services/interactions-service';
 import { ReportModal } from '../../../shared/components/ui/report-modal';
 
 export const CommentSection = ({ reviewId, onCommentCountChange }) => {
   const { user } = useAuth();
+  const { playAudioCue } = useAccessibility();
   const [comments, setComments] = useState([]);
   const [newCommentText, setNewCommentText] = useState('');
   const [likedCommentIds, setLikedCommentIds] = useState([]);
@@ -342,38 +344,54 @@ export const CommentSection = ({ reviewId, onCommentCountChange }) => {
                       {/* Botones de acción del comentario (Corazón, Corazón Roto, Responder, Reportar) */}
                       <div className="flex items-center gap-3 sm:gap-4 mt-2">
                         {/* Botón Corazón (Me gusta) */}
-                        <button
+                        <motion.button
+                          whileHover={{ scale: 1.06 }}
+                          whileTap={{ scale: 0.88 }}
                           type="button"
-                          onClick={() => handleToggleCommentLike(comment.id)}
-                          className={`flex items-center gap-1 text-xs transition-colors cursor-pointer group ${
+                          onClick={() => {
+                            playAudioCue('like');
+                            handleToggleCommentLike(comment.id);
+                          }}
+                          className={`px-2.5 py-1 rounded-full text-xs font-semibold flex items-center gap-1.5 transition-all cursor-pointer shadow-2xs ${
                             isLiked
-                              ? 'text-[#B80C09] font-bold'
-                              : 'text-[#5c435a] dark:text-[#B89CB0] hover:text-[#B80C09]'
+                              ? 'bg-rose-500/15 dark:bg-rose-500/25 text-[#B80C09] dark:text-rose-300 border border-rose-500/30 shadow-xs font-black'
+                              : 'bg-black/5 dark:bg-white/5 hover:bg-rose-50 dark:hover:bg-rose-950/40 text-[#5c435a] dark:text-[#B89CB0] hover:text-[#B80C09] dark:hover:text-rose-400 border border-black/5 dark:border-white/10 hover:border-rose-200 dark:hover:border-rose-900/40'
                           }`}
                           title="Me gusta (Corazón)"
                         >
-                          <span className={`material-symbols-outlined text-[16px] ${isLiked ? 'font-fill text-[#B80C09]' : ''}`}>
-                            {isLiked ? 'favorite' : 'favorite'}
+                          <span
+                            className="material-symbols-outlined text-[15px] transition-transform duration-200"
+                            style={{ fontVariationSettings: isLiked ? "'FILL' 1" : "'FILL' 0" }}
+                          >
+                            favorite
                           </span>
-                          <span>{comment.likes || 0}</span>
-                        </button>
+                          <span className="font-mono text-[11px] font-bold">{comment.likes || 0}</span>
+                        </motion.button>
 
                         {/* Botón Corazón Roto (No me gusta) */}
-                        <button
+                        <motion.button
+                          whileHover={{ scale: 1.06 }}
+                          whileTap={{ scale: 0.88 }}
                           type="button"
-                          onClick={() => handleToggleCommentDislike(comment.id)}
-                          className={`flex items-center gap-1 text-xs transition-colors cursor-pointer group ${
+                          onClick={() => {
+                            playAudioCue('click');
+                            handleToggleCommentDislike(comment.id);
+                          }}
+                          className={`px-2.5 py-1 rounded-full text-xs font-semibold flex items-center gap-1.5 transition-all cursor-pointer shadow-2xs ${
                             isDisliked
-                              ? 'text-purple-600 dark:text-purple-400 font-bold'
-                              : 'text-[#5c435a]/70 dark:text-[#B89CB0]/70 hover:text-purple-600 dark:hover:text-purple-400'
+                              ? 'bg-purple-500/15 dark:bg-purple-500/25 text-purple-600 dark:text-purple-300 border border-purple-500/30 shadow-xs font-black'
+                              : 'bg-black/5 dark:bg-white/5 hover:bg-purple-50 dark:hover:bg-purple-950/40 text-[#5c435a]/80 dark:text-[#B89CB0]/80 hover:text-purple-600 dark:hover:text-purple-300 border border-black/5 dark:border-white/10 hover:border-purple-200 dark:hover:border-purple-900/40'
                           }`}
                           title="No me gusta (Corazón roto)"
                         >
-                          <span className="material-symbols-outlined text-[16px]">
+                          <span
+                            className="material-symbols-outlined text-[15px] transition-transform duration-200"
+                            style={{ fontVariationSettings: isDisliked ? "'FILL' 1" : "'FILL' 0" }}
+                          >
                             heart_broken
                           </span>
-                          <span>{comment.dislikes || 0}</span>
-                        </button>
+                          <span className="font-mono text-[11px] font-bold">{comment.dislikes || 0}</span>
+                        </motion.button>
 
                         {/* Botón Responder */}
                         <button
@@ -464,38 +482,54 @@ export const CommentSection = ({ reviewId, onCommentCountChange }) => {
                               {/* Botones de acción en respuestas: Corazón, Corazón Roto, Responder a la respuesta, Reportar */}
                               <div className="flex items-center gap-3 mt-1.5">
                                 {/* Corazón */}
-                                <button
+                                <motion.button
+                                  whileHover={{ scale: 1.06 }}
+                                  whileTap={{ scale: 0.88 }}
                                   type="button"
-                                  onClick={() => handleToggleCommentLike(reply.id)}
-                                  className={`flex items-center gap-0.5 text-[11px] transition-colors cursor-pointer ${
+                                  onClick={() => {
+                                    playAudioCue('like');
+                                    handleToggleCommentLike(reply.id);
+                                  }}
+                                  className={`px-2 py-0.5 rounded-full text-[11px] font-semibold flex items-center gap-1 transition-all cursor-pointer shadow-2xs ${
                                     isReplyLiked
-                                      ? 'text-[#B80C09] font-bold'
-                                      : 'text-[#5c435a] dark:text-[#B89CB0] hover:text-[#B80C09]'
+                                      ? 'bg-rose-500/15 dark:bg-rose-500/25 text-[#B80C09] dark:text-rose-300 border border-rose-500/30 font-black'
+                                      : 'bg-black/5 dark:bg-white/5 hover:bg-rose-50 dark:hover:bg-rose-950/40 text-[#5c435a] dark:text-[#B89CB0] hover:text-[#B80C09] dark:hover:text-rose-400 border border-black/5 dark:border-white/10'
                                   }`}
                                   title="Me gusta"
                                 >
-                                  <span className="material-symbols-outlined text-[14px]">
+                                  <span
+                                    className="material-symbols-outlined text-[13px]"
+                                    style={{ fontVariationSettings: isReplyLiked ? "'FILL' 1" : "'FILL' 0" }}
+                                  >
                                     favorite
                                   </span>
-                                  <span>{reply.likes || 0}</span>
-                                </button>
+                                  <span className="font-mono text-[10px] font-bold">{reply.likes || 0}</span>
+                                </motion.button>
 
                                 {/* Corazón Roto */}
-                                <button
+                                <motion.button
+                                  whileHover={{ scale: 1.06 }}
+                                  whileTap={{ scale: 0.88 }}
                                   type="button"
-                                  onClick={() => handleToggleCommentDislike(reply.id)}
-                                  className={`flex items-center gap-0.5 text-[11px] transition-colors cursor-pointer ${
+                                  onClick={() => {
+                                    playAudioCue('click');
+                                    handleToggleCommentDislike(reply.id);
+                                  }}
+                                  className={`px-2 py-0.5 rounded-full text-[11px] font-semibold flex items-center gap-1 transition-all cursor-pointer shadow-2xs ${
                                     isReplyDisliked
-                                      ? 'text-purple-600 dark:text-purple-400 font-bold'
-                                      : 'text-[#5c435a]/70 dark:text-[#B89CB0]/70 hover:text-purple-600 dark:hover:text-purple-400'
+                                      ? 'bg-purple-500/15 dark:bg-purple-500/25 text-purple-600 dark:text-purple-300 border border-purple-500/30 font-black'
+                                      : 'bg-black/5 dark:bg-white/5 hover:bg-purple-50 dark:hover:bg-purple-950/40 text-[#5c435a]/80 dark:text-[#B89CB0]/80 hover:text-purple-600 dark:hover:text-purple-300 border border-black/5 dark:border-white/10'
                                   }`}
                                   title="No me gusta"
                                 >
-                                  <span className="material-symbols-outlined text-[14px]">
+                                  <span
+                                    className="material-symbols-outlined text-[13px]"
+                                    style={{ fontVariationSettings: isReplyDisliked ? "'FILL' 1" : "'FILL' 0" }}
+                                  >
                                     heart_broken
                                   </span>
-                                  <span>{reply.dislikes || 0}</span>
-                                </button>
+                                  <span className="font-mono text-[10px] font-bold">{reply.dislikes || 0}</span>
+                                </motion.button>
 
                                 {/* Botón Responder a esta respuesta para continuar la conversación */}
                                 <button
