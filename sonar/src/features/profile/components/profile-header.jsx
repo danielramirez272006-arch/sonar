@@ -149,22 +149,44 @@ export const ProfileHeader = ({
               )}
 
               {/* Equipamiento Audiófilo del Usuario */}
-              {currentUser.gear && (currentUser.gear.headphones || currentUser.gear.turntable) && (
-                <div className="flex flex-wrap items-center justify-center sm:justify-start gap-2 pt-1">
-                  {currentUser.gear.turntable && (
-                    <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-[#B80C09]/10 text-[#B80C09] dark:text-pink-300 text-[11px] font-bold border border-[#B80C09]/20">
-                      <span className="material-symbols-outlined text-[13px]">album</span>
-                      <span>{currentUser.gear.turntable}</span>
-                    </span>
-                  )}
-                  {currentUser.gear.headphones && (
-                    <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-blue-500/10 text-blue-600 dark:text-blue-300 text-[11px] font-bold border border-blue-500/20">
-                      <span className="material-symbols-outlined text-[13px]">headphones</span>
-                      <span>{currentUser.gear.headphones}</span>
-                    </span>
-                  )}
-                </div>
-              )}
+              {(() => {
+                const setup = currentUser.audiophileSetup || currentUser.gear || {};
+                const turntable = setup.turntable;
+                const headphones = setup.headphones;
+                const dac = setup.dac || setup.amplifier;
+                const format = setup.favoriteFormat;
+
+                if (!turntable && !headphones && !dac && !format) return null;
+
+                return (
+                  <div className="flex flex-wrap items-center justify-center sm:justify-start gap-1.5 pt-1.5">
+                    {turntable && (
+                      <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-[#B80C09]/10 text-[#B80C09] dark:text-pink-300 text-[11px] font-bold border border-[#B80C09]/20">
+                        <span className="material-symbols-outlined text-[13px]">album</span>
+                        <span>{turntable}</span>
+                      </span>
+                    )}
+                    {headphones && (
+                      <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-blue-500/10 text-blue-600 dark:text-blue-300 text-[11px] font-bold border border-blue-500/20">
+                        <span className="material-symbols-outlined text-[13px]">headphones</span>
+                        <span>{headphones}</span>
+                      </span>
+                    )}
+                    {dac && (
+                      <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-300 text-[11px] font-bold border border-emerald-500/20">
+                        <span className="material-symbols-outlined text-[13px]">speaker</span>
+                        <span>{dac}</span>
+                      </span>
+                    )}
+                    {format && (
+                      <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-amber-500/10 text-amber-600 dark:text-amber-300 text-[11px] font-bold border border-amber-500/20">
+                        <span className="material-symbols-outlined text-[13px]">graphic_eq</span>
+                        <span>{format}</span>
+                      </span>
+                    )}
+                  </div>
+                );
+              })()}
             </div>
           </div>
 

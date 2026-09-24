@@ -43,6 +43,57 @@ export const UserDashboardPage = () => {
   const [recentlyPlayed, setRecentlyPlayed] = useState([]);
   const [parentPinInput, setParentPinInput] = useState(() => user?.parentalControl?.pin || '1234');
   const [parentalNotice, setParentalNotice] = useState('');
+  const [gearSetup, setGearSetup] = useState(() => ({
+    turntable: user?.audiophileSetup?.turntable || user?.gear?.turntable || 'Technics SL-1200MK7',
+    headphones: user?.audiophileSetup?.headphones || user?.gear?.headphones || 'Sennheiser HD 660S',
+    dac: user?.audiophileSetup?.dac || 'Cambridge Audio DacMagic 200M',
+    favoriteFormat: user?.audiophileSetup?.favoriteFormat || 'Vinilo 180g Prensado Japonés',
+    stylus: user?.audiophileSetup?.stylus || 'Ortofon 2M Blue',
+  }));
+  const [gearSavedNotice, setGearSavedNotice] = useState(false);
+
+  const handleSaveGear = (e) => {
+    e?.preventDefault();
+    updateUser({
+      audiophileSetup: gearSetup,
+      gear: {
+        turntable: gearSetup.turntable,
+        headphones: gearSetup.headphones,
+      },
+    });
+    setGearSavedNotice(true);
+    setTimeout(() => setGearSavedNotice(false), 3000);
+  };
+
+  const handleExportBackup = () => {
+    const backupData = {
+      app: 'SONAR Hi-Fi Music Ecosystem',
+      version: '2.4.0',
+      exportDate: new Date().toISOString(),
+      user: {
+        id: user?.id,
+        name: user?.name,
+        username: user?.username,
+        email: user?.email,
+        accountType: user?.accountType,
+        preferences: user?.preferences,
+        audiophileSetup: gearSetup,
+      },
+      savedAlbums,
+      userReviews,
+      recentlyPlayed,
+      followedArtists,
+      followedUsers,
+    };
+
+    const dataStr = 'data:text/json;charset=utf-8,' + encodeURIComponent(JSON.stringify(backupData, null, 2));
+    const downloadAnchor = document.createElement('a');
+    downloadAnchor.setAttribute('href', dataStr);
+    downloadAnchor.setAttribute('download', `sonar-backup-${(user?.name || 'usuario').toLowerCase().replace(/\s+/g, '-')}.json`);
+    document.body.appendChild(downloadAnchor);
+    downloadAnchor.click();
+    downloadAnchor.remove();
+  };
 
   const handlePlayAlbum = (album) => {
     if (!album) return;
@@ -285,6 +336,26 @@ export const UserDashboardPage = () => {
 
             <button
               type="button"
+              onClick={() => setActiveTab('audiophile_gear')}
+              className={`pb-3 text-sm sm:text-base font-bold transition-all cursor-pointer relative whitespace-nowrap flex items-center gap-2 ${
+                activeTab === 'audiophile_gear'
+                  ? 'text-[#B80C09]'
+                  : 'text-[#5c435a] dark:text-[#B89CB0] hover:text-[#231123] dark:hover:text-white'
+              }`}
+            >
+              <span className="material-symbols-outlined text-[18px]">headphones</span>
+              <span>Equipamiento Hi-Fi</span>
+              {activeTab === 'audiophile_gear' && (
+                <motion.div
+                  layoutId="dashboard-tab-indicator"
+                  className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#B80C09]"
+                  transition={{ type: 'spring', stiffness: 400, damping: 30 }}
+                />
+              )}
+            </button>
+
+            <button
+              type="button"
               onClick={() => setActiveTab('parental_control')}
               className={`pb-3 text-sm sm:text-base font-bold transition-all cursor-pointer relative whitespace-nowrap flex items-center gap-2 ${
                 activeTab === 'parental_control'
@@ -302,6 +373,19 @@ export const UserDashboardPage = () => {
                 />
               )}
             </button>
+
+            <div className="ml-auto flex items-center gap-2 pb-2">
+              <button
+                type="button"
+                onClick={handleExportBackup}
+                className="px-3 py-1.5 rounded-xl bg-gray-100 hover:bg-gray-200 dark:bg-white/10 dark:hover:bg-white/20 text-[#231123] dark:text-white text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer shadow-xs"
+                title="Descargar respaldo JSON de tus álbumes, reseñas y configuración"
+              >
+                <span className="material-symbols-outlined text-[15px] text-[#B80C09]">download</span>
+                <span className="hidden sm:inline">Exportar Backup</span>
+                <span className="sm:hidden">Backup</span>
+              </button>
+            </div>
           </div>
 
           {/* TAB 1: RECOMENDACIONES PERSONALIZADAS */}
@@ -798,6 +882,212 @@ export const UserDashboardPage = () => {
                   ))}
                 </div>
               )}
+            </section>
+          )}
+
+          {/* TAB: EQUIPAMIENTO AUDIÓFILO */}
+          {activeTab === 'audiophile_gear' && (
+            <section className="flex flex-col gap-6">
+              <div className="p-6 sm:p-8 rounded-3xl bg-white dark:bg-[#4B2840] border border-[#e6d5e2] dark:border-white/10 shadow-xs flex flex-col gap-6">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-5 border-b border-gray-100 dark:border-white/10">
+                  <div className="flex items-center gap-3.5">
+                    <div className="w-14 h-14 rounded-2xl bg-[#B80C09]/15 dark:bg-[#B80C09]/25 text-[#B80C09] flex items-center justify-center shrink-0">
+                      <span className="material-symbols-outlined text-[30px]">headphones</span>
+                    </div>
+                    <div>
+                      <h3 className="text-base sm:text-xl font-black text-[#231123] dark:text-white flex items-center gap-2">
+                        <span>Equipamiento Hi-Fi & Calibración</span>
+                        <span className="px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase bg-[#B80C09]/15 text-[#B80C09] dark:text-pink-300 border border-[#B80C09]/30">
+                          Calidad de Estudio
+                        </span>
+                      </h3>
+                      <p className="text-xs sm:text-sm text-[#5c435a] dark:text-[#B89CB0] mt-0.5">
+                        Registra tus tornamesas, DACs y audífonos para exhibirlos en tu perfil y personalizar la respuesta acústica.
+                      </p>
+                    </div>
+                  </div>
+
+                  {gearSavedNotice && (
+                    <span className="text-xs font-bold text-emerald-600 bg-emerald-50 dark:bg-emerald-950/40 dark:text-emerald-300 px-3 py-1.5 rounded-xl border border-emerald-200 dark:border-emerald-800 self-start sm:self-auto animate-fade-in">
+                      ✓ Equipamiento actualizado con éxito
+                    </span>
+                  )}
+                </div>
+
+                {/* Resumen del Setup Actual */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                  <div className="p-4 rounded-2xl bg-[#231123] text-white border border-white/10 flex flex-col gap-2">
+                    <div className="flex items-center justify-between text-xs text-pink-300 font-bold">
+                      <span className="flex items-center gap-1.5">
+                        <span className="material-symbols-outlined text-[16px]">album</span>
+                        <span>Tornamesa</span>
+                      </span>
+                    </div>
+                    <span className="text-sm font-black text-white truncate">
+                      {gearSetup.turntable || 'Sin asignar'}
+                    </span>
+                  </div>
+
+                  <div className="p-4 rounded-2xl bg-[#231123] text-white border border-white/10 flex flex-col gap-2">
+                    <div className="flex items-center justify-between text-xs text-blue-300 font-bold">
+                      <span className="flex items-center gap-1.5">
+                        <span className="material-symbols-outlined text-[16px]">headphones</span>
+                        <span>Audífonos</span>
+                      </span>
+                    </div>
+                    <span className="text-sm font-black text-white truncate">
+                      {gearSetup.headphones || 'Sin asignar'}
+                    </span>
+                  </div>
+
+                  <div className="p-4 rounded-2xl bg-[#231123] text-white border border-white/10 flex flex-col gap-2">
+                    <div className="flex items-center justify-between text-xs text-emerald-300 font-bold">
+                      <span className="flex items-center gap-1.5">
+                        <span className="material-symbols-outlined text-[16px]">speaker</span>
+                        <span>DAC / Amplificador</span>
+                      </span>
+                    </div>
+                    <span className="text-sm font-black text-white truncate">
+                      {gearSetup.dac || 'Sin asignar'}
+                    </span>
+                  </div>
+
+                  <div className="p-4 rounded-2xl bg-[#231123] text-white border border-white/10 flex flex-col gap-2">
+                    <div className="flex items-center justify-between text-xs text-amber-300 font-bold">
+                      <span className="flex items-center gap-1.5">
+                        <span className="material-symbols-outlined text-[16px]">graphic_eq</span>
+                        <span>Formato Clave</span>
+                      </span>
+                    </div>
+                    <span className="text-sm font-black text-white truncate">
+                      {gearSetup.favoriteFormat || 'Sin asignar'}
+                    </span>
+                  </div>
+                </div>
+
+                {/* Formulario Interactivo */}
+                <form onSubmit={handleSaveGear} className="flex flex-col gap-6 pt-2">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                    {/* Tornamesa */}
+                    <div className="flex flex-col gap-2 p-4 rounded-2xl bg-gray-50 dark:bg-black/20 border border-gray-200/70 dark:border-white/10">
+                      <label className="text-xs font-black uppercase text-[#231123] dark:text-white flex items-center gap-2">
+                        <span className="material-symbols-outlined text-[18px] text-[#B80C09]">album</span>
+                        <span>Tornamesa / Reproductor</span>
+                      </label>
+                      <input
+                        type="text"
+                        value={gearSetup.turntable}
+                        onChange={(e) => setGearSetup({ ...gearSetup, turntable: e.target.value })}
+                        placeholder="Ej. Technics SL-1200MK7, Audio-Technica LP120X..."
+                        className="w-full text-xs font-semibold py-2.5 px-3 rounded-xl bg-white dark:bg-[#341b31] border border-gray-300 dark:border-white/20 text-[#231123] dark:text-white focus:outline-hidden focus:border-[#B80C09]"
+                      />
+                      <div className="flex flex-wrap gap-1.5 pt-1">
+                        {['Technics SL-1200MK7', 'Audio-Technica LP120X', 'Pro-Ject Debut Carbon', 'Rega Planar 3'].map((preset) => (
+                          <button
+                            key={preset}
+                            type="button"
+                            onClick={() => setGearSetup({ ...gearSetup, turntable: preset })}
+                            className="px-2 py-0.5 rounded-lg text-[10px] font-bold bg-white dark:bg-[#231123] text-[#5c435a] dark:text-pink-200 border border-gray-300 dark:border-white/10 hover:border-[#B80C09]"
+                          >
+                            + {preset}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* Audífonos */}
+                    <div className="flex flex-col gap-2 p-4 rounded-2xl bg-gray-50 dark:bg-black/20 border border-gray-200/70 dark:border-white/10">
+                      <label className="text-xs font-black uppercase text-[#231123] dark:text-white flex items-center gap-2">
+                        <span className="material-symbols-outlined text-[18px] text-blue-500">headphones</span>
+                        <span>Audífonos / Monitores</span>
+                      </label>
+                      <input
+                        type="text"
+                        value={gearSetup.headphones}
+                        onChange={(e) => setGearSetup({ ...gearSetup, headphones: e.target.value })}
+                        placeholder="Ej. Sennheiser HD 660S, Sony WH-1000XM5..."
+                        className="w-full text-xs font-semibold py-2.5 px-3 rounded-xl bg-white dark:bg-[#341b31] border border-gray-300 dark:border-white/20 text-[#231123] dark:text-white focus:outline-hidden focus:border-[#B80C09]"
+                      />
+                      <div className="flex flex-wrap gap-1.5 pt-1">
+                        {['Sennheiser HD 660S', 'Sony WH-1000XM5', 'Audio-Technica ATH-M50x', 'Beyerdynamic DT 990'].map((preset) => (
+                          <button
+                            key={preset}
+                            type="button"
+                            onClick={() => setGearSetup({ ...gearSetup, headphones: preset })}
+                            className="px-2 py-0.5 rounded-lg text-[10px] font-bold bg-white dark:bg-[#231123] text-[#5c435a] dark:text-pink-200 border border-gray-300 dark:border-white/10 hover:border-blue-500"
+                          >
+                            + {preset}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* DAC / Amplificador */}
+                    <div className="flex flex-col gap-2 p-4 rounded-2xl bg-gray-50 dark:bg-black/20 border border-gray-200/70 dark:border-white/10">
+                      <label className="text-xs font-black uppercase text-[#231123] dark:text-white flex items-center gap-2">
+                        <span className="material-symbols-outlined text-[18px] text-emerald-500">speaker</span>
+                        <span>DAC & Amplificación</span>
+                      </label>
+                      <input
+                        type="text"
+                        value={gearSetup.dac}
+                        onChange={(e) => setGearSetup({ ...gearSetup, dac: e.target.value })}
+                        placeholder="Ej. Cambridge Audio DacMagic, Schiit Magni, iFi Zen DAC..."
+                        className="w-full text-xs font-semibold py-2.5 px-3 rounded-xl bg-white dark:bg-[#341b31] border border-gray-300 dark:border-white/20 text-[#231123] dark:text-white focus:outline-hidden focus:border-[#B80C09]"
+                      />
+                      <div className="flex flex-wrap gap-1.5 pt-1">
+                        {['Cambridge Audio DacMagic', 'Schiit Modi/Magni', 'iFi Zen DAC V2', 'FiiO K7 Pro'].map((preset) => (
+                          <button
+                            key={preset}
+                            type="button"
+                            onClick={() => setGearSetup({ ...gearSetup, dac: preset })}
+                            className="px-2 py-0.5 rounded-lg text-[10px] font-bold bg-white dark:bg-[#231123] text-[#5c435a] dark:text-pink-200 border border-gray-300 dark:border-white/10 hover:border-emerald-500"
+                          >
+                            + {preset}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* Formato Favorito */}
+                    <div className="flex flex-col gap-2 p-4 rounded-2xl bg-gray-50 dark:bg-black/20 border border-gray-200/70 dark:border-white/10">
+                      <label className="text-xs font-black uppercase text-[#231123] dark:text-white flex items-center gap-2">
+                        <span className="material-symbols-outlined text-[18px] text-amber-500">graphic_eq</span>
+                        <span>Formato Preferido de Audición</span>
+                      </label>
+                      <input
+                        type="text"
+                        value={gearSetup.favoriteFormat}
+                        onChange={(e) => setGearSetup({ ...gearSetup, favoriteFormat: e.target.value })}
+                        placeholder="Ej. Vinilo 180g Prensado Japonés, FLAC 24-bit/192kHz..."
+                        className="w-full text-xs font-semibold py-2.5 px-3 rounded-xl bg-white dark:bg-[#341b31] border border-gray-300 dark:border-white/20 text-[#231123] dark:text-white focus:outline-hidden focus:border-[#B80C09]"
+                      />
+                      <div className="flex flex-wrap gap-1.5 pt-1">
+                        {['Vinilo 180g Prensado Japonés', 'FLAC Lossless 24-bit/192kHz', 'Master DSD 5.6MHz', 'Cinta Analógica Reel'].map((preset) => (
+                          <button
+                            key={preset}
+                            type="button"
+                            onClick={() => setGearSetup({ ...gearSetup, favoriteFormat: preset })}
+                            className="px-2 py-0.5 rounded-lg text-[10px] font-bold bg-white dark:bg-[#231123] text-[#5c435a] dark:text-pink-200 border border-gray-300 dark:border-white/10 hover:border-amber-500"
+                          >
+                            + {preset}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center justify-end gap-3 pt-2">
+                    <button
+                      type="submit"
+                      className="px-6 py-2.5 rounded-xl bg-[#B80C09] hover:bg-[#960a07] text-white text-xs sm:text-sm font-bold transition-all cursor-pointer shadow-xs flex items-center gap-2"
+                    >
+                      <span className="material-symbols-outlined text-[18px]">save</span>
+                      <span>Guardar Equipamiento en Perfil</span>
+                    </button>
+                  </div>
+                </form>
+              </div>
             </section>
           )}
 
