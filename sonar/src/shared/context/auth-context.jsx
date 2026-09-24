@@ -2,6 +2,7 @@ import { userStatus } from '../services/admin-data.js'
 import { createContext, useContext, useMemo, useState } from 'react'
 import { getUserByEmail, createUser, updateUser as updateUserApi, deleteUser as deleteUserApi } from '../services/api-client.js'
 import { hashPassword, verifyPassword } from '../services/crypto-service.js'
+import { notifyLoginAlertWebhook } from '../services/n8n-webhooks.js'
 
 // El contexto y el hook se exportan juntos como API de este módulo.
 // eslint-disable-next-line react-refresh/only-export-components
@@ -49,6 +50,16 @@ export function AuthProvider({ children }) {
         } catch {
           // La sesión continúa aunque el almacenamiento local no esté disponible.
         }
+
+        // Disparo de notificación por correo mediante webhook de n8n
+        try {
+          notifyLoginAlertWebhook({
+            email: foundUser.email,
+            username: foundUser.username,
+            device: typeof navigator !== 'undefined' ? navigator.userAgent : 'Navegador Web',
+          }).catch(() => {})
+        } catch {}
+
         return foundUser
       } catch (cause) {
         const loginError = cause instanceof Error

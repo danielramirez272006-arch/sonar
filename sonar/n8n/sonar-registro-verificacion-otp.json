@@ -1,0 +1,182 @@
+{
+  "name": "SONAR - Registro de Cuenta y Código OTP",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "register-otp",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "reg-webhook-001",
+      "name": "Webhook Registro OTP",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        200,
+        300
+      ],
+      "webhookId": "register-otp"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "c-email-01",
+              "leftValue": "={{ $json.body?.email }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "reg-val-email-002",
+      "name": "Validar Email",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        420,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "{\n  \"success\": false,\n  \"message\": \"Debes proporcionar un correo electrónico válido para registrarte.\"\n}",
+        "options": {
+          "responseCode": 400
+        }
+      },
+      "id": "reg-err-003",
+      "name": "Respuesta Error",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [
+        640,
+        460
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const body = $input.first().json.body || {};\nconst email = (body.email || '').trim().toLowerCase();\nconst username = (body.username || 'Audiófilo').trim();\nconst code = body.code ? String(body.code) : Math.floor(100000 + Math.random() * 900000).toString();\nconst dateFormatted = new Date().toLocaleString('es-ES', { timeZone: 'America/Mexico_City', dateStyle: 'long', timeStyle: 'short' });\n\nreturn [{\n  json: {\n    email,\n    username,\n    code,\n    dateFormatted,\n    subject: `🎵 [SONAR] Tu código de activación: ${code}`\n  }\n}];"
+      },
+      "id": "reg-prep-004",
+      "name": "Preparar Código y Datos",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        640,
+        220
+      ]
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $json.email }}",
+        "subject": "={{ $json.subject }}",
+        "message": "=<!DOCTYPE html>\n<html lang=\"es\">\n<head>\n  <meta charset=\"UTF-8\">\n  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n  <title>SONAR - Verificación de Cuenta</title>\n</head>\n<body style=\"margin: 0; padding: 0; background-color: #0c0a09; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; color: #f4f4f5;\">\n  <table align=\"center\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\" style=\"max-width: 600px; margin: 30px auto; background-color: #18181b; border: 1px solid #27272a; border-radius: 16px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.6);\">\n    <!-- Header con Logo SONAR -->\n    <tr>\n      <td align=\"center\" style=\"padding: 36px 20px 20px; background: linear-gradient(180deg, rgba(184,12,9,0.18) 0%, rgba(24,24,27,0) 100%);\">\n        <table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" style=\"display: inline-block;\">\n          <tr>\n            <td style=\"background: #09090b; border: 1px solid #B80C09; border-radius: 50px; padding: 10px 24px; text-align: center;\">\n              <span style=\"display: inline-block; width: 12px; height: 12px; background: #B80C09; border-radius: 50%; margin-right: 8px; vertical-align: middle; box-shadow: 0 0 10px #B80C09;\"></span>\n              <span style=\"font-size: 22px; font-weight: 900; letter-spacing: 4px; color: #ffffff; text-transform: uppercase; vertical-align: middle;\">SONAR</span>\n              <span style=\"font-size: 11px; font-weight: 700; color: #B80C09; letter-spacing: 2px; text-transform: uppercase; margin-left: 8px; padding-left: 8px; border-left: 1px solid #3f3f46; vertical-align: middle;\">HIGH-FIDELITY</span>\n            </td>\n          </tr>\n        </table>\n        <h1 style=\"color: #ffffff; font-size: 22px; font-weight: 800; margin: 24px 0 6px;\">¡Bienvenido a SONAR, {{ $json.username }}!</h1>\n        <p style=\"color: #a1a1aa; font-size: 14px; margin: 0;\">La plataforma definitiva para amantes del vinilo y audio de alta fidelidad.</p>\n      </td>\n    </tr>\n\n    <!-- Contenido Principal -->\n    <tr>\n      <td style=\"padding: 10px 36px 30px;\">\n        <p style=\"font-size: 15px; line-height: 1.6; color: #d4d4d8;\">\n          Para completar la creación de tu cuenta y proteger tu perfil, ingresa este <strong>código de seguridad de 6 dígitos</strong> en la pantalla de registro.\n        </p>\n        <p style=\"font-size: 14px; color: #a1a1aa; margin-bottom: 20px;\">\n          Una vez verificado tu correo, podrás configurar la contraseña que tú elijas para ingresar cuando quieras.\n        </p>\n\n        <!-- Código OTP Box -->\n        <div style=\"text-align: center; margin: 28px 0; padding: 24px 20px; background: #09090b; border: 2px dashed #B80C09; border-radius: 12px;\">\n          <div style=\"font-size: 12px; font-weight: 800; text-transform: uppercase; letter-spacing: 2px; color: #B80C09; margin-bottom: 8px;\">Tu Código de Activación</div>\n          <div style=\"font-family: 'Courier New', Courier, monospace; font-size: 40px; font-weight: 900; letter-spacing: 12px; color: #ffffff; text-shadow: 0 0 15px rgba(184, 12, 9, 0.6);\">\n            {{ $json.code }}\n          </div>\n          <div style=\"font-size: 12px; color: #71717a; margin-top: 10px;\">Válido durante los próximos 15 minutos</div>\n        </div>\n\n        <table width=\"100%\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\" style=\"background: #27272a; border-radius: 8px; padding: 14px; margin: 20px 0;\">\n          <tr>\n            <td style=\"font-size: 13px; color: #d4d4d8; line-height: 1.5;\">\n              🛡️ <strong>Paso siguiente:</strong> Introduce este código en SONAR y define una contraseña segura con al menos 6 caracteres.\n            </td>\n          </tr>\n        </table>\n      </td>\n    </tr>\n\n    <!-- Footer -->\n    <tr>\n      <td style=\"background-color: #09090b; border-top: 1px solid #27272a; padding: 24px 36px; text-align: center;\">\n        <p style=\"font-size: 12px; color: #71717a; margin: 0 0 8px;\">\n          Si no has intentado crear una cuenta en SONAR con la dirección <span style=\"color: #f43f5e;\">{{ $json.email }}</span>, puedes ignorar este mensaje.\n        </p>\n        <p style=\"font-size: 11px; color: #52525b; margin: 0;\">\n          © 2026 SONAR Music Ecosystem • Audio Lossless, Control Parental & Catálogo Vinilo\n        </p>\n      </td>\n    </tr>\n  </table>\n</body>\n</html>"
+      },
+      "id": "reg-send-gmail-005",
+      "name": "Enviar Código con Gmail",
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        880,
+        220
+      ]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "{\n  \"success\": true,\n  \"message\": \"Código de activación enviado exitosamente a tu correo.\",\n  \"email\": \"={{ $json.email }}\",\n  \"code\": \"={{ $json.code }}\"\n}",
+        "options": {
+          "responseCode": 200
+        }
+      },
+      "id": "reg-resp-success-006",
+      "name": "Respuesta Exitosa",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [
+        1100,
+        220
+      ]
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Webhook Registro OTP": {
+      "main": [
+        [
+          {
+            "node": "Validar Email",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Validar Email": {
+      "main": [
+        [
+          {
+            "node": "Preparar Código y Datos",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Respuesta Error",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Preparar Código y Datos": {
+      "main": [
+        [
+          {
+            "node": "Enviar Código con Gmail",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Enviar Código con Gmail": {
+      "main": [
+        [
+          {
+            "node": "Respuesta Exitosa",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "sonar-reg-otp-v1",
+  "meta": {
+    "instanceId": "sonar-n8n-reg-otp-instance"
+  },
+  "id": "sonar-register-otp-flow",
+  "tags": []
+}
