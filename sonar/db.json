@@ -3532,7 +3532,7 @@
       "role": "user",
       "avatarUrl": "",
       "avatarBg": "#4B2840",
-      "bio": "Amante del vinilo y el jazz modal.",
+      "bio": "Exploradora de sintetizadores analógicos.",
       "stats": {
         "savedAlbums": 0,
         "reviewsCount": 0,
@@ -3540,8 +3540,9 @@
         "following": 0
       },
       "preferences": [
-        "Jazz & Fusion",
-        "Post-Punk"
+        "Synthwave",
+        "Ambient & Drone",
+        "IDM / Techno"
       ],
       "gear": {
         "headphones": "Auriculares de referencia",
@@ -3553,6 +3554,67 @@
         "Audiófilo Inicial"
       ],
       "createdAt": "2026-09-24T17:27:20.669Z"
+    },
+    {
+      "id": "user-1790270938273",
+      "username": "Daniel Ramirez",
+      "email": "daniel_1790270938005@sonar.local",
+      "password": "sha256$5f889e2b9a6c262ee585ed06c897cf02$a6560ba6818d777c38311790fc58e5e9f14beeba1147d6062b39722be2baffa8",
+      "role": "user",
+      "avatarUrl": "",
+      "avatarBg": "#4B2840",
+      "bio": "Nuevo melómano explorando vinilos y texturas acústicas en Sonar.",
+      "stats": {
+        "savedAlbums": 0,
+        "reviewsCount": 0,
+        "followers": 0,
+        "following": 0
+      },
+      "preferences": [
+        "Folk Acústico",
+        "Art Rock"
+      ],
+      "gear": {
+        "headphones": "Auriculares de referencia",
+        "turntable": "Tocadiscos Direct Drive",
+        "favoriteFormat": "Vinilo 33⅓ RPM"
+      },
+      "badges": [
+        "Melómano Verificado",
+        "Audiófilo Inicial"
+      ],
+      "createdAt": "2026-09-24T17:28:58.273Z"
+    },
+    {
+      "id": "user-1790270938362",
+      "username": "Elena Jazz",
+      "email": "audiophile_1790270938326@sonar.local",
+      "password": "sha256$2b22054b417e50c710c287934c749785$d9522b01e5f30956173871256ae13de0fe82cddf8dbdb6cbb00a28bf1e30b6a7",
+      "role": "user",
+      "avatarUrl": "",
+      "avatarBg": "#B80C09",
+      "bio": "Exploradora de sintetizadores analógicos.",
+      "stats": {
+        "savedAlbums": 0,
+        "reviewsCount": 0,
+        "followers": 0,
+        "following": 0
+      },
+      "preferences": [
+        "Synthwave",
+        "Ambient & Drone",
+        "IDM / Techno"
+      ],
+      "gear": {
+        "headphones": "Auriculares de referencia",
+        "turntable": "Tocadiscos Direct Drive",
+        "favoriteFormat": "Vinilo 33⅓ RPM"
+      },
+      "badges": [
+        "Melómano Verificado",
+        "Audiófilo Inicial"
+      ],
+      "createdAt": "2026-09-24T17:28:58.362Z"
     }
   ],
   "reviews": [

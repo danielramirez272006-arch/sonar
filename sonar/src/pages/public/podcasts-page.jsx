@@ -380,9 +380,14 @@ export const PodcastsPage = () => {
               <form onSubmit={handleUploadSubmit} className="flex flex-col gap-4">
                 {/* Selección de Archivo de Audio */}
                 <div className="flex flex-col gap-1.5">
-                  <label className="text-xs font-extrabold uppercase tracking-wider text-[#342632] dark:text-gray-300">
-                    Archivo de Audio (.mp3, .wav, .m4a, .ogg)
-                  </label>
+                  <div className="flex items-center justify-between">
+                    <label className="text-xs font-extrabold uppercase tracking-wider text-[#342632] dark:text-gray-300">
+                      Archivo de Audio (.mp3, .wav, .m4a, .ogg)
+                    </label>
+                    <span className="text-[11px] text-[#B80C09] font-semibold">
+                      o coloca en public/audio/
+                    </span>
+                  </div>
                   <input
                     type="file"
                     ref={audioInputRef}
@@ -398,10 +403,10 @@ export const PodcastsPage = () => {
                       audiotrack
                     </span>
                     <span className="text-xs font-bold text-[#231123] dark:text-white">
-                      {newPodcast.audioFileName ? newPodcast.audioFileName : 'Haz clic para seleccionar el archivo de audio'}
+                      {newPodcast.audioFileName ? newPodcast.audioFileName : 'Haz clic para seleccionar el archivo de audio desde tu computadora'}
                     </span>
                     <span className="text-[11px] text-gray-500">
-                      {audioUploadState.success ? '✓ Audio cargado correctamente' : 'Formatos: MP3, WAV, AAC, M4A'}
+                      {audioUploadState.success ? '✓ Audio cargado correctamente' : 'Formatos soportados: MP3, WAV, AAC, M4A, OGG'}
                     </span>
                   </div>
                 </div>
