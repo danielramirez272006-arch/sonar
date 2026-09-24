@@ -86,7 +86,7 @@ export const RegisterForm = () => {
   const setValue = (field) => (event) => {
     let val = event.target.value;
     if (field === 'username') {
-      val = val.replace(/\s+/g, '_').toLowerCase();
+      val = val.replace(/\s+/g, '_');
     }
     setFormData({ ...formData, [field]: val });
     if (errorMessage) setErrorMessage('');
