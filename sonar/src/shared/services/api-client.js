@@ -55,7 +55,7 @@ function saveLocalRegisteredUser(user) {
 
 export async function getUsers() {
   try {
-    const apiUsers = (await apiRequest('/users')) || []
+    const apiUsers = ((await apiRequest('/users')) || []).filter(user => user && typeof user === 'object')
     const localUsers = getLocalRegisteredUsers()
     const merged = [...apiUsers]
     for (const u of localUsers) {

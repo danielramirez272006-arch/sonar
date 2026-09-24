@@ -32,9 +32,18 @@ export function AdminDashboardPage({ metrics, reviews = [], users = [], onRefres
   const detailConfig = {
     pendingReviews: { title: 'Reseñas en prioridad', reason: 'Están pendientes de moderación y necesitan una decisión.', items: reviews.filter(review => review.status === 'pending_moderation') },
     flaggedReviews: { title: 'Señales para atención', reason: 'El análisis automático detectó una señal que requiere una segunda escucha.', items: reviews.filter(review => review.aiFlagged === true) },
-    totalReviews: { title: 'Reseñas de esta semana', reason: 'Son las voces que forman el archivo reciente de la comunidad.', items: reviews },
+    totalReviews: { title: 'Archivo de reseñas', reason: 'Consulta todas las reseñas registradas por la comunidad.', items: reviews },
   };
   const selectedDetail = selectedMetric ? detailConfig[selectedMetric] : null;
+  if (selectedDetail) return (
+    <div className="admin-workspace">
+      <header className="admin-workspace__hero">
+        <div><span className="eyebrow">DETALLE DE RESEÑAS</span><h1>{selectedDetail.title}</h1><p>{selectedDetail.reason}</p></div>
+        <div className="admin-workspace__actions"><button type="button" onClick={() => setSelectedMetric(null)}>Volver al resumen</button></div>
+      </header>
+      <ModerationTable {...feedProps} error={currentError} reviews={selectedDetail.items} users={users} compact />
+    </div>
+  );
 
   return (
     <div className="admin-workspace">
@@ -48,10 +57,6 @@ export function AdminDashboardPage({ metrics, reviews = [], users = [], onRefres
       <KpiCards metrics={metrics} busy={feedProps.busy} error={currentError} onSelect={setSelectedMetric} />
       <GrowthPanel users={users} busy={feedProps.busy} error={currentError} />
 
-      {selectedDetail && <section className="dashboard-detail" aria-live="polite">
-        <header><div><span className="eyebrow">DETALLE DE MÉTRICA</span><h2>{selectedDetail.title}</h2><p>{selectedDetail.reason}</p></div><button type="button" onClick={() => setSelectedMetric(null)}>Cerrar</button></header>
-        {selectedDetail.items.length ? <div className="dashboard-detail__list">{selectedDetail.items.map(review => { const user = users.find(item => item.id === review.userId); return <article key={review.id}><div><strong>@{user?.username || `usuario-${review.userId}`}</strong><span>{review.aiFlagged ? 'Señal de IA' : review.status === 'pending_moderation' ? 'Pendiente' : 'Archivo reciente'}</span></div><p>“{review.content}”</p><small>Razón: {review.aiFlagged ? 'la IA marcó esta reseña para revisión humana.' : review.status === 'pending_moderation' ? 'aún no tiene una decisión editorial.' : 'forma parte del archivo de reseñas reciente.'}</small></article> })}</div> : <p className="dashboard-detail__empty">No hay mensajes en esta categoría.</p>}
-      </section>}
 
       <div className="admin-workspace__grid">
         <div className="admin-workspace__main"><PriorityQueue reviews={reviews} users={users} busy={feedProps.busy} onAction={feedProps.onAction} /><ModerationRhythm metrics={metrics} reviews={reviews} /><ActivityChart events={adminEvents(users, reviews)} /></div>

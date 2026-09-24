@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '../../../shared/context/auth-context';
 import { interactionsService } from '../../../shared/services/interactions-service';
 import { ReportModal } from '../../../shared/components/ui/report-modal';
+import { submitCommunityReport } from '../../../shared/services/report-service.js';
 
 export const CommentSection = ({ reviewId, onCommentCountChange }) => {
   const { user } = useAuth();
@@ -53,6 +54,7 @@ export const CommentSection = ({ reviewId, onCommentCountChange }) => {
     setIsSubmitting(true);
     try {
       const commentPayload = {
+        userId: user.id,
         userName: user?.username || user?.name || 'Oyente Sonar',
         userHandle: user?.username ? `@${user.username.toLowerCase().replace(/\s+/g, '_')}` : '@sonar_fan',
         avatarLetter: (user?.username || user?.name || 'S').charAt(0).toUpperCase(),
@@ -97,6 +99,7 @@ export const CommentSection = ({ reviewId, onCommentCountChange }) => {
     setIsSubmittingReply(true);
     try {
       const replyPayload = {
+        userId: user.id,
         userName: user?.username || user?.name || 'Oyente Sonar',
         userHandle: user?.username ? `@${user.username.toLowerCase().replace(/\s+/g, '_')}` : '@sonar_fan',
         avatarLetter: (user?.username || user?.name || 'S').charAt(0).toUpperCase(),
@@ -210,6 +213,14 @@ export const CommentSection = ({ reviewId, onCommentCountChange }) => {
   };
 
   const handleProcessReport = async (reportPayload) => {
+    await submitCommunityReport({
+      authorId: reportingTarget?.userId, authorName: reportingTarget?.userName,
+      reporter: user, contentId: reportingTarget?.id,
+      contentType: reportingTarget?.isReply ? 'reply' : 'comment',
+      contentSnapshot: reportingTarget?.content, reviewId,
+      reason: [reportPayload.reasonTitle, reportPayload.details].filter(Boolean).join(': '),
+      tags: reportPayload.tags,
+    });
     interactionsService.reportComment(userId, {
       ...reportPayload,
       commentId: reportingTarget?.id,

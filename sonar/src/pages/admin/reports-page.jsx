@@ -1,22 +1,40 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
+import { apiRequest } from '../../shared/services/api-client.js'
 import { UserRound, ShieldCheck, Check, Inbox, ArrowUpRight } from 'lucide-react'
 import { reportsFrom, sameId } from '../../shared/services/admin-data.js'
 export function ReportsPage({ users = [], reviews = [], onUserUpdate, onSendToModeration }) {
   const [filter, setFilter] = useState('all')
   const [busy, setBusy] = useState(false)
   const [message, setMessage] = useState('')
-  const all = reportsFrom(users)
+  const [standalone, setStandalone] = useState([])
+  useEffect(() => {
+    let active = true
+    const reload = () => apiRequest('/reports').then(rows => { if (active) setStandalone(Array.isArray(rows) ? rows : []) }).catch(error => { if (active) setMessage(error.message) })
+    reload()
+    const timer = window.setInterval(reload, 30000)
+    window.addEventListener('focus', reload)
+    window.addEventListener('sonar:reports-updated', reload)
+    return () => { active = false; clearInterval(timer); window.removeEventListener('focus', reload); window.removeEventListener('sonar:reports-updated', reload) }
+  }, [])
+  const all = [...reportsFrom(users), ...standalone.map(report => ({ ...report, standalone: true }))]
   const requested = new URLSearchParams(window.location.hash.split('?')[1] || '').get('report')
   const visible = all.filter(report => (filter === 'all' || report.status === filter) && (!requested || sameId(report.id, requested)))
   async function action(report, status, send = false) {
     if (busy) return
     setBusy(true); setMessage('')
     try {
+      if (report.standalone) {
+        const changes = { status, updatedAt: new Date().toISOString() }
+        await apiRequest(`/reports/${encodeURIComponent(report.id)}`, { method: 'PATCH', body: JSON.stringify(changes) })
+        setStandalone(rows => rows.map(row => row.id === report.id ? { ...row, ...changes } : row))
+        setMessage('Reporte actualizado.')
+        return
+      }
       const user = users.find(item => sameId(item.id, report.userId))
-      if (send && report.contentId && reviews.some(review => sameId(review.id, report.contentId))) await onSendToModeration(report.contentId)
+      if (send && report.contentType === 'review' && report.contentId && reviews.some(review => sameId(review.id, report.contentId))) await onSendToModeration(report.contentId)
       const next = (user.conductReports || []).map(item => item.id === report.id ? { ...item, status, updatedAt: new Date().toISOString() } : item)
       await onUserUpdate(user.id, { conductReports: next })
-      if (send) window.location.assign(report.contentId && reviews.some(review => sameId(review.id, report.contentId)) ? `#admin-reviews?review=${encodeURIComponent(report.contentId)}` : `#usuarios?user=${encodeURIComponent(report.userId)}`)
+      if (send) window.location.assign(report.contentType === 'review' && report.contentId && reviews.some(review => sameId(review.id, report.contentId)) ? `#admin-reviews?review=${encodeURIComponent(report.contentId)}` : `#usuarios?user=${encodeURIComponent(report.userId)}`)
       setMessage(send ? 'Reporte revisado. Abre el contenido o el usuario para continuar la moderación.' : 'Reporte actualizado.')
     } catch (error) { setMessage(error.message) } finally { setBusy(false) }
   }
@@ -31,12 +49,12 @@ export function ReportsPage({ users = [], reviews = [], onUserUpdate, onSendToMo
     </div>
     {message && <p className="reports-notice" role="status">{message}</p>}
     {!visible.length && <div className="reports-empty"><span className="reports-empty__icon"><Inbox size={28} strokeWidth={1.5} aria-hidden="true" /></span><h2>{!all.length ? 'Todo en orden por aquí' : 'Sin reportes en esta selección'}</h2><p>{!all.length ? 'Cuando la comunidad envíe un reporte, podrás revisarlo y gestionarlo desde aquí.' : 'Prueba otro estado para consultar los reportes de la comunidad.'}</p>{!!all.length && filter !== 'all' && <button className="reports-reset" onClick={() => setFilter('all')}>Mostrar todos los estados</button>}</div>}
-    {visible.map(report => <article className="admin-report" key={`${report.userId}-${report.id}`}><h3>{report.userName}</h3><p>{report.reason}</p><div className="admin-profile-facts"><span>Reportó: {users.find(user => sameId(user.id, report.reporterId))?.username || report.reporterName || 'No registrado'}</span><span>Contenido: {report.contentType || 'Perfil'}</span><span>{report.createdAt ? new Date(report.createdAt).toLocaleString('es') : 'Sin fecha'}</span><span>{all.filter(item => sameId(item.userId, report.userId)).length} reportes acumulados</span><span>Estado: {{ pending: 'Pendiente', reviewed: 'Revisado', resolved: 'Resuelto' }[report.status]}</span></div><div className="report-actions">
+    {visible.map(report => <article className="admin-report" key={`${report.userId}-${report.id}`}><h3>{report.userName}</h3><p>{report.reason}</p>{report.contentSnapshot && <blockquote className="reports-notice"><strong>Contenido reportado</strong><p>{report.contentSnapshot}</p></blockquote>}<div className="admin-profile-facts"><span>Reportó: {users.find(user => sameId(user.id, report.reporterId))?.username || report.reporterName || 'No registrado'}</span><span>Contenido: {{ review: 'Reseña', comment: 'Comentario', reply: 'Respuesta' }[report.contentType] || 'Perfil'}</span><span>{report.createdAt ? new Date(report.createdAt).toLocaleString('es') : 'Sin fecha'}</span><span>{all.filter(item => sameId(item.userId, report.userId)).length} reportes acumulados</span><span>Estado: {{ pending: 'Pendiente', reviewed: 'Revisado', resolved: 'Resuelto' }[report.status]}</span></div><div className="report-actions">
       <div className="report-actions__group">
-        <a className="report-action" href={`#usuarios?user=${encodeURIComponent(report.userId)}`}><UserRound size={16} aria-hidden="true" /><span>Ver usuario</span></a>
+        {report.userId != null && <a className="report-action" href={`#usuarios?user=${encodeURIComponent(report.userId)}`}><UserRound size={16} aria-hidden="true" /><span>Ver usuario</span></a>}
       </div>
       <div className="report-actions__group report-actions__group--decisions">
-        <button className="report-action report-action--moderate" disabled={busy || report.status === 'resolved'} onClick={() => action(report, 'reviewed', true)}><ShieldCheck size={16} aria-hidden="true" /><span>Enviar a moderación</span></button>
+        <button className="report-action report-action--moderate" disabled={busy || report.status === 'resolved'} onClick={() => action(report, 'reviewed', true)}><ShieldCheck size={16} aria-hidden="true" /><span>{report.standalone ? 'Marcar revisado' : 'Enviar a moderación'}</span></button>
         <button className="report-action report-action--resolve" disabled={busy || report.status === 'resolved'} onClick={() => action(report, 'resolved')}><Check size={16} aria-hidden="true" /><span>Resolver reporte</span></button>
       </div>
     </div></article>)}

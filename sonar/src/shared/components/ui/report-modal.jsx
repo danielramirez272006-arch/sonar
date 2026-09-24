@@ -92,6 +92,7 @@ export const ReportModal = ({
       setDetails('');
       setIsSubmitting(false);
       setIsSuccess(false);
+      setSubmitError('');
 
       if (typeof document !== 'undefined') {
         const originalOverflow = document.body.style.overflow;
@@ -284,7 +285,6 @@ export const ReportModal = ({
                   </label>
 
                   <div className="flex flex-col gap-2">
-                    {submitError && <p role="alert">{submitError}</p>}
                     {REPORT_REASONS.map((reason) => {
                       const isSelected = selectedReasonId === reason.id;
                       const IconComponent = reason.icon;
@@ -404,6 +404,7 @@ export const ReportModal = ({
                 </div>
 
                 {/* Footer Actions */}
+                {submitError && <p role="alert" className="rounded-xl border border-red-400/50 bg-red-950/70 p-3 text-sm text-red-100">{submitError}</p>}
                 <div className="flex items-center justify-end gap-2.5 pt-3 border-t border-white/10 mt-1">
                   <button
                     type="button"

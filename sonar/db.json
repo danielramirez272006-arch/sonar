@@ -3958,6 +3958,37 @@
         "Audiófilo Inicial"
       ],
       "createdAt": "2026-09-24T19:13:18.370Z"
+    },
+    {
+      "id": "user-1790278412808",
+      "username": "google_listener_56",
+      "email": "google_user_56@sonar.local",
+      "password": "sha256$687df4a8f568d70f8700f7bcae0d6a35$2e02315023b00e9393c22338ce320889c35d8541c56ad3217c8afd9115002dc5",
+      "role": "user",
+      "avatarUrl": "",
+      "avatarBg": "#B80C09",
+      "bio": "Nuevo melómano explorando vinilos y texturas acústicas en Sonar.",
+      "stats": {
+        "savedAlbums": 0,
+        "reviewsCount": 0,
+        "followers": 0,
+        "following": 0
+      },
+      "preferences": [
+        "Art Rock",
+        "Electrónica",
+        "Psicodelia"
+      ],
+      "gear": {
+        "headphones": "Auriculares de referencia",
+        "turntable": "Tocadiscos Direct Drive",
+        "favoriteFormat": "Vinilo 33⅓ RPM"
+      },
+      "badges": [
+        "Melómano Verificado",
+        "Audiófilo Inicial"
+      ],
+      "createdAt": "2026-09-24T19:33:32.808Z"
     }
   ],
   "reviews": [
@@ -4037,6 +4068,24 @@
       "aiFlagged": false,
       "createdAt": "2026-09-24T17:05:10.390Z",
       "id": "hFg0cif"
+    },
+    {
+      "userId": "admin-1",
+      "userName": "Administrador",
+      "albumId": "9896728",
+      "albumTitle": "To Pimp a Butterfly",
+      "parentAlbum": "To Pimp a Butterfly",
+      "type": "album",
+      "trackTitle": "",
+      "artist": "Kendrick Lamar",
+      "cover": "https://cdn-images.dzcdn.net/images/cover/00dd0da365a94b1829302d6b7fec70e6/1000x1000-000000-80-0-0.jpg",
+      "rating": 4,
+      "content": "me parece que daniel es gay\n",
+      "hasSpoilers": true,
+      "status": "pending_moderation",
+      "aiFlagged": false,
+      "createdAt": "2026-09-24T19:31:38.562Z",
+      "id": "aOAdDX5"
     }
   ],
   "featuredReleases": [],
@@ -4048,11 +4097,12 @@
       "description": "lo mas bacano",
       "startDate": "2026-09-17",
       "endDate": "2026-10-05",
-      "status": "draft",
-      "updatedAt": "2026-09-24T17:25:52.041Z",
+      "status": "published",
+      "updatedAt": "2026-09-24T19:25:53.081Z",
       "id": "38f4f9df-e59d-4591-b797-a1b059c5131a",
       "createdAt": "2026-09-24T17:25:52.041Z"
     }
   ],
-  "music": []
+  "music": [],
+  "reports": []
 }

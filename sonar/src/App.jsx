@@ -75,10 +75,19 @@ export function AdminConsole() {
         searchRef.current?.focus()
       }
     }
+    function reloadReports() {
+      if (!cancelled) loadData().catch(cause => setError(cause.message))
+    }
+    window.addEventListener('focus', reloadReports)
+    window.addEventListener('sonar:reports-updated', reloadReports)
+    const reportRefresh = window.setInterval(reloadReports, 30000)
     window.addEventListener('hashchange', onHashChange)
     window.addEventListener('keydown', onShortcut)
     return () => {
       cancelled = true
+      window.clearInterval(reportRefresh)
+      window.removeEventListener('focus', reloadReports)
+      window.removeEventListener('sonar:reports-updated', reloadReports)
       window.removeEventListener('hashchange', onHashChange)
       window.removeEventListener('keydown', onShortcut)
     }
