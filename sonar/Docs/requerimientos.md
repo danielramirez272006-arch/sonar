@@ -303,7 +303,7 @@ Revisar cada recurso administrable.
 * [x] CREATE.
 * [x] READ.
 * [x] UPDATE.
-* [ ] DELETE.
+* [x] DELETE.
 
 ## Otros recursos
 

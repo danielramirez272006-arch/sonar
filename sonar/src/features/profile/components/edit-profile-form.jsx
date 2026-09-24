@@ -112,8 +112,11 @@ export const ICON_CHOICES = [
 ];
 
 export const EditProfileForm = ({ initialData = {}, onSave = () => {} }) => {
-  const { changePassword } = useAuth();
-  const [activeTab, setActiveTab] = useState('profile'); // 'profile' | 'gear' | 'security'
+  const { changePassword, deleteAccount } = useAuth();
+  const [activeTab, setActiveTab] = useState('profile'); // 'profile' | 'gear' | 'security' | 'danger'
+  const [deleteConfirmText, setDeleteConfirmText] = useState('');
+  const [deleteError, setDeleteError] = useState(null);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   const [formData, setFormData] = useState({
     username: initialData.username || initialData.name || '',
@@ -308,6 +311,19 @@ export const EditProfileForm = ({ initialData = {}, onSave = () => {} }) => {
         >
           <Lock size={16} />
           <span>Seguridad & Cifrado</span>
+        </button>
+
+        <button
+          type="button"
+          onClick={() => setActiveTab('danger')}
+          className={`px-4 py-2 rounded-xl text-xs sm:text-sm font-bold transition-all cursor-pointer flex items-center gap-2 ${
+            activeTab === 'danger'
+              ? 'bg-rose-600 text-white shadow-xs'
+              : 'bg-gray-100 dark:bg-white/5 text-rose-600 dark:text-rose-400 hover:bg-rose-100 dark:hover:bg-rose-950/30'
+          }`}
+        >
+          <Trash2 size={16} />
+          <span>Eliminar Cuenta</span>
         </button>
       </div>
 
@@ -783,6 +799,74 @@ export const EditProfileForm = ({ initialData = {}, onSave = () => {} }) => {
             {isChangingPass ? 'Cifrando con SHA-256...' : 'Actualizar Contraseña Cifrada'}
           </Button>
         </form>
+      )}
+
+      {/* TAB 4: ELIMINAR CUENTA (ZONA DE PELIGRO - USER CRUD DELETE) */}
+      {activeTab === 'danger' && (
+        <div className="flex flex-col gap-6">
+          <div className="p-6 rounded-3xl bg-rose-500/10 border border-rose-500/30 flex flex-col gap-4">
+            <div className="flex items-center gap-3 text-rose-600 dark:text-rose-400">
+              <Trash2 className="w-6 h-6 shrink-0" />
+              <div>
+                <h4 className="text-base font-black">Zona de Peligro: Eliminar Cuenta Permanentemente</h4>
+                <p className="text-xs text-rose-700/80 dark:text-rose-300/80 mt-0.5">
+                  Esta acción es irreversible. Se eliminará tu perfil, configuración, preferencias y registros de sesión en Sonar.
+                </p>
+              </div>
+            </div>
+
+            {deleteError && (
+              <div className="p-3 rounded-xl bg-rose-500/20 border border-rose-500/40 text-rose-700 dark:text-rose-200 text-xs font-bold">
+                {deleteError}
+              </div>
+            )}
+
+            <div className="flex flex-col gap-2 pt-2 border-t border-rose-500/20">
+              <label className="text-xs font-bold text-[#231123] dark:text-gray-200">
+                Para confirmar la eliminación, escribe <span className="font-mono font-extrabold text-rose-600 dark:text-rose-400">ELIMINAR MI CUENTA</span>:
+              </label>
+              <input
+                type="text"
+                value={deleteConfirmText}
+                onChange={(e) => setDeleteConfirmText(e.target.value)}
+                placeholder="ELIMINAR MI CUENTA"
+                className="w-full px-4 py-2.5 rounded-2xl border border-rose-300 dark:border-rose-900 bg-white dark:bg-[#231123] text-sm text-[#231123] dark:text-white"
+              />
+            </div>
+
+            <div className="flex justify-end gap-3 pt-2">
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => setActiveTab('profile')}
+                className="cursor-pointer"
+              >
+                Cancelar
+              </Button>
+              <Button
+                type="button"
+                disabled={deleteConfirmText.trim() !== 'ELIMINAR MI CUENTA' || isDeleting}
+                onClick={async () => {
+                  setDeleteError(null);
+                  setIsDeleting(true);
+                  try {
+                    await deleteAccount();
+                  } catch (err) {
+                    setDeleteError(err.message || 'No se pudo eliminar la cuenta.');
+                    setIsDeleting(false);
+                  }
+                }}
+                className={`px-6 py-2.5 rounded-2xl text-xs font-bold text-white transition-all cursor-pointer ${
+                  deleteConfirmText.trim() === 'ELIMINAR MI CUENTA'
+                    ? 'bg-rose-600 hover:bg-rose-700 shadow-md'
+                    : 'bg-gray-400 dark:bg-gray-700 opacity-50 cursor-not-allowed'
+                }`}
+              >
+                {isDeleting ? 'Eliminando cuenta...' : 'Confirmar y Eliminar Definitivamente'}
+              </Button>
+            </div>
+          </div>
+        </div>
       )}
     </div>
   );
