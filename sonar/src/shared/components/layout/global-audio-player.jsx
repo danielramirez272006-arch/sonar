@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { usePlayer } from '../../context/player-context';
 import { useAuth } from '../../context/auth-context';
+import { useAccessibility } from '../../context/accessibility-context';
 import { getTracksForAlbum } from '../../services/deezer-service';
 import { interactionsService } from '../../services/interactions-service';
 
@@ -19,6 +20,7 @@ export const GlobalAudioPlayer = () => {
     openReviewModal,
   } = usePlayer();
 
+  const { announce } = useAccessibility();
   const { user } = useAuth();
   const userId = user?.id || null;
 
@@ -93,6 +95,12 @@ export const GlobalAudioPlayer = () => {
     return () => window.removeEventListener('hashchange', onHashChange);
   }, []);
 
+  useEffect(() => {
+    if (currentTrack?.title) {
+      announce(`Reproduciendo ahora: ${currentTrack.title} de ${currentTrack.artist || 'Artista'}`);
+    }
+  }, [currentTrack?.title, currentTrack?.artist, announce]);
+
   const isVinylPage = currentHash === '#album' || currentHash === '#vinilo' || currentHash === '#vinyl-mode';
   if (!currentTrack || isVinylPage) return null;
 
@@ -104,21 +112,15 @@ export const GlobalAudioPlayer = () => {
 
   const handleToggleSaveCurrent = (e) => {
     e?.stopPropagation();
-    if (!user) {
-      window.location.hash = '#login';
-      return;
-    }
-    interactionsService.toggleSaveAlbum(userId, currentTrack, 'Favoritos');
+    const effectiveId = userId || 'guest_user';
+    interactionsService.toggleSaveAlbum(effectiveId, currentTrack, 'Favoritos');
     refreshSavedMap();
   };
 
   const handleToggleSaveItem = (item, e) => {
     e?.stopPropagation();
-    if (!user) {
-      window.location.hash = '#login';
-      return;
-    }
-    interactionsService.toggleSaveAlbum(userId, {
+    const effectiveId = userId || 'guest_user';
+    interactionsService.toggleSaveAlbum(effectiveId, {
       ...item,
       album: currentTrack.album || currentTrack.title,
       artist: item.artist || currentTrack.artist,

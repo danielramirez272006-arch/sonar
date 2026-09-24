@@ -26,18 +26,18 @@ export const AccessibilityWidget = () => {
 
   return (
     <>
-      {/* Botón Flotante Discreto de Accesibilidad (Esquina Inferior Izquierda) */}
+      {/* Pestaña lateral discreta en el borde izquierdo (100% libre del reproductor inferior) */}
       <button
         type="button"
         onClick={toggleA11yWidget}
         aria-label="Abrir opciones de accesibilidad (Atajo: Alt + A)"
         title="Opciones de Accesibilidad (Alt + A)"
-        className="fixed bottom-24 left-4 sm:bottom-6 sm:left-6 z-[99990] w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-[#231123] dark:bg-white text-white dark:text-[#231123] shadow-2xl border-2 border-[#B80C09] hover:scale-105 active:scale-95 transition-all flex items-center justify-center cursor-pointer group focus:outline-3 focus:outline-[#B80C09]"
+        className="fixed top-1/2 -translate-y-1/2 left-0 z-[9990] pl-2 pr-2.5 py-3 rounded-r-2xl bg-[#231123]/90 hover:bg-[#B80C09] text-white backdrop-blur-md shadow-xl border-y border-r border-white/20 transition-all duration-300 hover:translate-x-1 cursor-pointer group focus:outline-2 focus:outline-[#B80C09]"
       >
-        <span className="material-symbols-outlined text-[24px] sm:text-[28px] text-[#B80C09] group-hover:rotate-12 transition-transform">
+        <span className="material-symbols-outlined text-[20px] text-[#B80C09] group-hover:text-white transition-colors">
           accessibility_new
         </span>
-        <span className="sr-only">Menú de Accesibilidad</span>
+        <span className="sr-only">Opciones de Accesibilidad</span>
       </button>
 
       {/* Modal / Panel de Accesibilidad */}
