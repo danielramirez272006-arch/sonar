@@ -107,11 +107,8 @@ export const UserDashboardPage = () => {
   };
 
   const handleToggleSaveAlbum = (album, tag = 'Favoritos') => {
-    if (!user) {
-      window.location.hash = '#login';
-      return;
-    }
-    const res = interactionsService.toggleSaveAlbum(userId, album, tag);
+    const effectiveId = userId || 'guest_user';
+    const res = interactionsService.toggleSaveAlbum(effectiveId, album, tag);
     setSavedAlbums(res.savedAlbums);
   };
 
