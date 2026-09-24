@@ -44,54 +44,59 @@ export const triggerNewReviewWebhook = async (reviewData = {}) => {
 
 /**
  * Dispara el Webhook de n8n para la recuperación de contraseña por correo Gmail.
- * Envía { email } a n8n para generar token y emitir el correo de recuperación.
+ * Envía { email, code } a n8n para que entregue el código de 6 dígitos por Gmail.
  */
-export async function requestPasswordResetWebhook(email) {
+export async function requestPasswordResetWebhook(email, code = '') {
   if (!email || typeof email !== 'string' || !email.trim()) {
     throw new Error('Debes proporcionar un correo electrónico válido.')
   }
 
   const cleanEmail = email.trim().toLowerCase()
+  const generatedCode = code || Math.floor(100000 + Math.random() * 900000).toString()
+
   const webhookUrl =
     (typeof import.meta !== 'undefined' && import.meta.env?.VITE_N8N_FORGOT_PASSWORD_WEBHOOK_URL) ||
     'http://localhost:5678/webhook/forgot-password'
 
   console.log(
-    '%c[n8n Webhook - Forgot Password] Enviando petición a n8n:',
+    '%c[n8n Webhook - OTP Password] Enviando petición a n8n:',
     'color: #B80C09; font-weight: bold;',
-    { email: cleanEmail, endpoint: webhookUrl }
+    { email: cleanEmail, code: generatedCode, endpoint: webhookUrl }
   )
 
   try {
     const controller = new AbortController()
-    const timeoutId = setTimeout(() => controller.abort(), 1500)
+    const timeoutId = setTimeout(() => controller.abort(), 2000)
 
     const response = await fetch(webhookUrl, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ email: cleanEmail }),
+      body: JSON.stringify({ email: cleanEmail, code: generatedCode }),
       signal: controller.signal,
     })
     clearTimeout(timeoutId)
 
     if (response.ok) {
       const data = await response.json()
-      return data
+      return {
+        ...data,
+        code: data.code || generatedCode,
+      }
     }
   } catch {
-    // Si n8n no está encendido o en ejecución local en ese momento, responder con éxito seguro
+    // Si n8n no está conectado o en ejecución, continuar con la respuesta y el código emitido
     console.info(
-      '[n8n Webhook] n8n no está respondiendo en localhost:5678 o no está activo el webhook. Simulando respuesta exitosa.'
+      '[n8n Webhook] n8n no respondió en localhost:5678. Continuando con el código generado.'
     )
   }
 
   await delay(200)
   return {
     success: true,
-    message:
-      'Si existe una cuenta asociada a este correo, recibirás un enlace para restablecer tu contraseña.',
+    message: 'Código de verificación enviado correctamente a tu correo.',
+    code: generatedCode,
     simulated: true,
   }
 }

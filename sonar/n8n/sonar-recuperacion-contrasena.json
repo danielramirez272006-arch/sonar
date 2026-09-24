@@ -1,5 +1,5 @@
 {
-  "name": "SONAR - Recuperación de contraseña",
+  "name": "SONAR - Código de Recuperación OTP",
   "nodes": [
     {
       "parameters": {
@@ -55,7 +55,7 @@
     {
       "parameters": {
         "respondWith": "json",
-        "responseBody": "{\n  \"success\": false,\n  \"message\": \"Debes proporcionar un correo electrónico.\"\n}",
+        "responseBody": "{\n  \"success\": false,\n  \"message\": \"Debes proporcionar un correo electrónico válido.\"\n}",
         "options": {
           "responseCode": 400
         }
@@ -71,10 +71,10 @@
     },
     {
       "parameters": {
-        "jsCode": "const email = $input.first().json.body.email;\n\nfunction generateRandomToken(length = 48) {\n  const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';\n  let result = '';\n  for (let i = 0; i < length; i++) {\n    result += chars.charAt(Math.floor(Math.random() * chars.length));\n  }\n  return result + Date.now().toString(36);\n}\n\nconst token = generateRandomToken();\nconst expiresAt = new Date(Date.now() + 15 * 60 * 1000).toISOString();\n\nreturn [\n  {\n    json: {\n      email: email.trim().toLowerCase(),\n      token,\n      expiresAt\n    }\n  }\n];"
+        "jsCode": "const body = $input.first().json.body || {};\nconst email = (body.email || '').trim().toLowerCase();\n// Usar el código enviado por la app o generar uno de 6 dígitos si no viene\nconst code = body.code ? String(body.code) : Math.floor(100000 + Math.random() * 900000).toString();\nconst expiresAt = new Date(Date.now() + 15 * 60 * 1000).toISOString();\n\nreturn [\n  {\n    json: {\n      email,\n      code,\n      expiresAt\n    }\n  }\n];"
       },
       "id": "a57620d4-7c30-4e58-bb12-9c1691a5db92",
-      "name": "Generar Token",
+      "name": "Preparar Código OTP",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
@@ -84,64 +84,23 @@
     },
     {
       "parameters": {
-        "assignments": {
-          "assignments": [
-            {
-              "id": "7649f7b1-2ff0-4a81-9988-bb78c66e4a29",
-              "name": "email",
-              "value": "={{ $json.email }}",
-              "type": "string"
-            },
-            {
-              "id": "bb498bc3-b1d7-46a2-947b-70c8680ad9a4",
-              "name": "token",
-              "value": "={{ $json.token }}",
-              "type": "string"
-            },
-            {
-              "id": "cc894d01-e631-419b-a012-61d02c5fbd18",
-              "name": "expiresAt",
-              "value": "={{ $json.expiresAt }}",
-              "type": "string"
-            },
-            {
-              "id": "1e326b42-747d-411a-85d1-13c54aa8679f",
-              "name": "resetUrl",
-              "value": "={{ 'http://localhost:5173/reset-password?token=' + $json.token }}",
-              "type": "string"
-            }
-          ]
-        },
-        "options": {}
-      },
-      "id": "3184ab67-ec8f-4318-b2de-5ce869151528",
-      "name": "Crear enlace recuperación",
-      "type": "n8n-nodes-base.set",
-      "typeVersion": 3.4,
-      "position": [
-        900,
-        220
-      ]
-    },
-    {
-      "parameters": {
         "sendTo": "={{ $json.email }}",
-        "subject": "SONAR - Recuperación de contraseña",
-        "message": "=<!DOCTYPE html>\n<html>\n<head>\n  <meta charset=\"utf-8\">\n  <style>\n    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; background-color: #fcf8fa; color: #231123; padding: 20px; }\n    .container { max-width: 560px; margin: 0 auto; background: #ffffff; padding: 32px; border-radius: 12px; border: 1px solid #ebd9ea; }\n    .header { font-size: 20px; font-weight: 800; color: #5c1d5e; margin-bottom: 16px; }\n    .button { display: inline-block; padding: 12px 24px; background-color: #B80C09; color: #ffffff !important; text-decoration: none; border-radius: 6px; font-weight: bold; margin: 20px 0; }\n    .footer { font-size: 12px; color: #856f80; margin-top: 24px; border-top: 1px solid #ebd9ea; padding-top: 16px; }\n  </style>\n</head>\n<body>\n  <div class=\"container\">\n    <div class=\"header\">SONAR</div>\n    <p>Hola,</p>\n    <p>Recibimos una solicitud para restablecer tu contraseña de SONAR.</p>\n    <p>Haz clic en el siguiente enlace para crear una nueva contraseña:</p>\n    <p>\n      <a href=\"{{ $json.resetUrl }}\" class=\"button\">Restablecer contraseña</a>\n    </p>\n    <p style=\"font-size: 13px; color: #5c435a;\">\n      O copia y pega este enlace en tu navegador:<br>\n      <a href=\"{{ $json.resetUrl }}\" style=\"color: #5c1d5e;\">{{ $json.resetUrl }}</a>\n    </p>\n    <p style=\"font-weight: 600; color: #B80C09;\">Este enlace expirará en 15 minutos.</p>\n    <p class=\"footer\">Si no solicitaste este cambio, puedes ignorar este correo de forma segura.</p>\n  </div>\n</body>\n</html>"
+        "subject": "SONAR - Tu código de recuperación: {{ $json.code }}",
+        "message": "=<!DOCTYPE html>\n<html>\n<head>\n  <meta charset=\"utf-8\">\n  <style>\n    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; background-color: #fcf8fa; color: #231123; padding: 20px; }\n    .container { max-width: 520px; margin: 0 auto; background: #ffffff; padding: 32px; border-radius: 12px; border: 1px solid #ebd9ea; text-align: center; }\n    .header { font-size: 22px; font-weight: 800; color: #5c1d5e; margin-bottom: 12px; }\n    .code-box { display: inline-block; padding: 16px 32px; background-color: #fdf2f8; border: 2px solid #fbcfe8; border-radius: 10px; font-size: 32px; font-weight: 900; letter-spacing: 8px; color: #5c1d5e; font-family: monospace; margin: 24px 0; }\n    .notice { font-size: 13px; color: #B80C09; font-weight: 600; margin-top: 12px; }\n    .footer { font-size: 12px; color: #856f80; margin-top: 28px; border-top: 1px solid #ebd9ea; padding-top: 16px; }\n  </style>\n</head>\n<body>\n  <div class=\"container\">\n    <div class=\"header\">SONAR</div>\n    <p style=\"font-size: 15px; color: #493547;\">Recibimos una solicitud para restablecer tu contraseña.</p>\n    <p style=\"font-size: 14px; color: #5c435a;\">Ingresa el siguiente código de 6 dígitos en la página de SONAR:</p>\n    <div class=\"code-box\">{{ $json.code }}</div>\n    <p class=\"notice\">Este código es válido por 15 minutos.</p>\n    <p class=\"footer\">Si no solicitaste este código, puedes ignorar este correo de forma segura.</p>\n  </div>\n</body>\n</html>"
       },
       "id": "e9124a61-9c31-41bb-92e3-2e0618db0d34",
-      "name": "Enviar correo recuperación",
+      "name": "Enviar código con Gmail",
       "type": "n8n-nodes-base.gmail",
       "typeVersion": 2.1,
       "position": [
-        1120,
+        920,
         220
       ]
     },
     {
       "parameters": {
         "respondWith": "json",
-        "responseBody": "{\n  \"success\": true,\n  \"message\": \"Si existe una cuenta asociada a este correo, recibirás un enlace para restablecer tu contraseña.\"\n}",
+        "responseBody": "{\n  \"success\": true,\n  \"message\": \"Código de verificación enviado correctamente a tu correo.\",\n  \"code\": \"={{ $json.code }}\"\n}",
         "options": {
           "responseCode": 200
         }
@@ -151,7 +110,7 @@
       "type": "n8n-nodes-base.respondToWebhook",
       "typeVersion": 1.1,
       "position": [
-        1340,
+        1140,
         220
       ]
     }
@@ -173,7 +132,7 @@
       "main": [
         [
           {
-            "node": "Generar Token",
+            "node": "Preparar Código OTP",
             "type": "main",
             "index": 0
           }
@@ -187,29 +146,18 @@
         ]
       ]
     },
-    "Generar Token": {
+    "Preparar Código OTP": {
       "main": [
         [
           {
-            "node": "Crear enlace recuperación",
+            "node": "Enviar código con Gmail",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "Crear enlace recuperación": {
-      "main": [
-        [
-          {
-            "node": "Enviar correo recuperación",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Enviar correo recuperación": {
+    "Enviar código con Gmail": {
       "main": [
         [
           {
@@ -225,10 +173,10 @@
   "settings": {
     "executionOrder": "v1"
   },
-  "versionId": "b182ef62-9721-4328-b9a3-5c20d6f28120",
+  "versionId": "c8921e54-28b9-4a41-863a-23b9d8e12154",
   "meta": {
-    "instanceId": "sonar-n8n-automation-instance"
+    "instanceId": "sonar-n8n-otp-instance"
   },
-  "id": "sonar-password-recovery-flow",
+  "id": "sonar-password-recovery-otp-flow",
   "tags": []
 }
