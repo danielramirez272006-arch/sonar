@@ -20,6 +20,7 @@ import BlogPage from '../../pages/public/blog-page';
 import RecordLabelsPage from '../../pages/public/record-labels-page';
 import EditorialGuidelinesPage from '../../pages/public/editorial-guidelines-page';
 import PodcastsPage from '../../pages/public/podcasts-page';
+import NewsPage from '../../pages/public/news-page';
 import VinylModePage from '../../pages/public/vinyl-mode-page';
 import RssPage from '../../pages/public/rss-page';
 
@@ -120,6 +121,9 @@ export const AppRouter = () => {
     }
     if (rawPath === 'podcasts' || rawPath === 'podcast') {
       return <PodcastsPage />;
+    }
+    if (rawPath === 'noticias' || rawPath === 'news' || rawPath === 'radar') {
+      return <NewsPage />;
     }
     if (rawPath === 'album' || rawPath === 'vinyl' || rawPath === 'tocadiscos') {
       return <VinylModePage />;

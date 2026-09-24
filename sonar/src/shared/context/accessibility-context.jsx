@@ -6,12 +6,17 @@ const STORAGE_KEY = 'sonar_a11y_settings';
 
 const DEFAULT_SETTINGS = {
   fontSize: 'normal', // 'normal' | 'large' | 'xlarge'
+  lineSpacing: 'normal', // 'normal' | 'relaxed' | 'loose'
+  readingGuide: false,
+  sepiaMode: false,
+  grayscaleMode: false,
   highContrast: false,
   colorBlindness: 'none', // 'none' | 'protanopia' | 'deuteranopia' | 'tritanopia' | 'achromatopsia'
   dyslexicFont: false,
   reducedMotion: false,
   highlightLinks: false,
   bigCursor: false,
+  audioCues: false,
   ttsVolume: 1,
   ttsRate: 1,
 };
@@ -51,6 +56,25 @@ export const AccessibilityProvider = ({ children }) => {
     root.classList.remove('a11y-font-large', 'a11y-font-xlarge');
     if (settings.fontSize === 'large') root.classList.add('a11y-font-large');
     if (settings.fontSize === 'xlarge') root.classList.add('a11y-font-xlarge');
+
+    // Clases de espaciado de texto e interlineado
+    root.classList.remove('a11y-spacing-relaxed', 'a11y-spacing-loose');
+    if (settings.lineSpacing === 'relaxed') root.classList.add('a11y-spacing-relaxed');
+    if (settings.lineSpacing === 'loose') root.classList.add('a11y-spacing-loose');
+
+    // Modo Sepia / Calidez visual
+    if (settings.sepiaMode) {
+      root.classList.add('a11y-sepia-mode');
+    } else {
+      root.classList.remove('a11y-sepia-mode');
+    }
+
+    // Modo Escala de Grises / Monocromático
+    if (settings.grayscaleMode) {
+      root.classList.add('a11y-grayscale');
+    } else {
+      root.classList.remove('a11y-grayscale');
+    }
 
     // Alto contraste
     if (settings.highContrast) {
@@ -222,6 +246,77 @@ export const AccessibilityProvider = ({ children }) => {
     [isSpeaking, currentSpeakingText, settings.ttsVolume, settings.ttsRate, stopSpeaking, announce]
   );
 
+  // Sintetizador Web Audio API para micro-sonidos accesibles (Audio Cues)
+  const audioCtxRef = useRef(null);
+  const playAudioCue = useCallback(
+    (type = 'click') => {
+      if (!settings.audioCues || typeof window === 'undefined') return;
+
+      try {
+        const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+        if (!AudioContextClass) return;
+
+        if (!audioCtxRef.current || audioCtxRef.current.state === 'closed') {
+          audioCtxRef.current = new AudioContextClass();
+        }
+
+        const ctx = audioCtxRef.current;
+        if (ctx.state === 'suspended') {
+          ctx.resume();
+        }
+
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        const now = ctx.currentTime;
+
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+
+        if (type === 'click' || type === 'toggle') {
+          // Sonido sutil tipo pop
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(520, now);
+          osc.frequency.exponentialRampToValueAtTime(780, now + 0.05);
+          gain.gain.setValueAtTime(0.06, now);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.06);
+          osc.start(now);
+          osc.stop(now + 0.06);
+        } else if (type === 'success' || type === 'like') {
+          // Acorde brillante ascendente
+          osc.type = 'triangle';
+          osc.frequency.setValueAtTime(440, now); // A4
+          osc.frequency.setValueAtTime(554.37, now + 0.06); // C#5
+          osc.frequency.setValueAtTime(659.25, now + 0.12); // E5
+          gain.gain.setValueAtTime(0.08, now);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.25);
+          osc.start(now);
+          osc.stop(now + 0.25);
+        } else if (type === 'play') {
+          // Tono suave armónico
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(329.63, now); // E4
+          osc.frequency.exponentialRampToValueAtTime(493.88, now + 0.1); // B4
+          gain.gain.setValueAtTime(0.07, now);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.15);
+          osc.start(now);
+          osc.stop(now + 0.15);
+        } else if (type === 'alert') {
+          // Alerta suave
+          osc.type = 'sawtooth';
+          osc.frequency.setValueAtTime(300, now);
+          osc.frequency.setValueAtTime(220, now + 0.08);
+          gain.gain.setValueAtTime(0.05, now);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.18);
+          osc.start(now);
+          osc.stop(now + 0.18);
+        }
+      } catch {
+        // Ignorar si el navegador bloquea audio antes de interacción
+      }
+    },
+    [settings.audioCues]
+  );
+
   const value = {
     settings,
     updateSetting,
@@ -238,6 +333,7 @@ export const AccessibilityProvider = ({ children }) => {
     stopSpeaking,
     isSpeaking,
     currentSpeakingText,
+    playAudioCue,
   };
 
   return <AccessibilityContext.Provider value={value}>{children}</AccessibilityContext.Provider>;

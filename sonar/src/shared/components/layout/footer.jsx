@@ -77,6 +77,7 @@ export const Footer = () => {
                   </a>
                 </li>
               )}
+              <li><a href="#noticias" className="text-[#3c253a] dark:text-[#d8c5d3] hover:text-[#B80C09] dark:hover:text-[#ff6b68] font-semibold transition-colors">Noticias & Radar</a></li>
               <li><a href="#blog" className="text-[#3c253a] dark:text-[#d8c5d3] hover:text-[#B80C09] dark:hover:text-[#ff6b68] font-semibold transition-colors">Blog Sonar</a></li>
               <li><a href="#labels" className="text-[#3c253a] dark:text-[#d8c5d3] hover:text-[#B80C09] dark:hover:text-[#ff6b68] font-semibold transition-colors">Directorio de Sellos</a></li>
             </ul>

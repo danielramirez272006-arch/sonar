@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useState, useRef, useEffect, useCallback } from 'react';
 import { resolvePlayablePreview } from '../services/deezer-service';
 import { interactionsService } from '../services/interactions-service';
+import { resolveAccurateCoverForTrack } from '../services/recommendations-service';
 
 const PlayerContext = createContext();
 
@@ -86,9 +87,13 @@ export const PlayerProvider = ({ children }) => {
       title: track.title || track.albumTitle || 'Pista de Sonar',
       artist: track.artist || 'Artista',
       album: track.album || track.albumTitle || track.title || '',
-      cover: track.cover || track.cover_medium || track.cover_xl || 'https://cdn-images.dzcdn.net/images/cover/a175af9b7d329bc678cb4d26fc13d6de/500x500-000000-80-0-0.jpg',
+      cover: resolveAccurateCoverForTrack(track),
       preview: track.preview || track.previewUrl || null,
       deezerId: track.deezerId || track.albumId || (typeof track.id === 'number' ? track.id : null),
+      isPodcast: track.isPodcast || track.type === 'podcast' || Boolean(track.audioUrl),
+      audioUrl: track.audioUrl || track.preview,
+      description: track.description,
+      hosts: track.hosts,
     };
 
     // Si ya es la pista activa y tiene audio cargado

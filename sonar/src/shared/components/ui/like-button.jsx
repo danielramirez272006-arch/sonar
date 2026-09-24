@@ -79,18 +79,19 @@ export const LikeButton = ({
       {/* Botón Principal */}
       <motion.button
         type="button"
-        whileTap={{ scale: 0.8 }}
+        whileTap={{ scale: 0.85 }}
+        whileHover={{ scale: 1.05 }}
         onClick={handleClick}
-        className={`flex items-center gap-1.5 transition-colors cursor-pointer group ${
+        className={`px-3 py-1.5 rounded-full flex items-center gap-1.5 transition-all cursor-pointer select-none ${
           isLiked
-            ? 'text-[#B80C09] font-bold'
-            : 'text-[#5c435a] dark:text-[#B89CB0] hover:text-[#B80C09]'
+            ? 'bg-rose-500/15 dark:bg-rose-500/25 text-[#B80C09] dark:text-rose-300 border border-rose-500/30 shadow-xs font-black'
+            : 'bg-black/5 dark:bg-white/5 hover:bg-rose-50 dark:hover:bg-rose-950/40 text-[#5c435a] dark:text-[#B89CB0] hover:text-[#B80C09] dark:hover:text-rose-400 border border-black/5 dark:border-white/10 hover:border-rose-200 dark:hover:border-rose-900/40'
         }`}
       >
         <motion.div
           animate={isLiked ? { scale: [1, 1.35, 1] } : { scale: 1 }}
           transition={{ duration: 0.3, ease: 'easeOut' }}
-          className="flex items-center justify-center"
+          className="flex items-center justify-center shrink-0"
         >
           <svg
             width={currentIconSize}
@@ -98,7 +99,7 @@ export const LikeButton = ({
             viewBox="0 0 24 24"
             fill={isLiked ? '#B80C09' : 'none'}
             stroke={isLiked ? '#B80C09' : 'currentColor'}
-            strokeWidth="2"
+            strokeWidth="2.2"
             strokeLinecap="round"
             strokeLinejoin="round"
             className="transition-colors duration-200"
@@ -108,7 +109,7 @@ export const LikeButton = ({
         </motion.div>
 
         {showCount && (
-          <span className="select-none text-xs sm:text-sm font-semibold transition-colors">
+          <span className="font-mono text-xs sm:text-sm font-bold transition-colors">
             {likesCount}
           </span>
         )}

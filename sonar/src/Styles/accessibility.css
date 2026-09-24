@@ -1,5 +1,6 @@
 /* =========================================================
    SONAR ACCESSIBILITY SYSTEM (WCAG 2.1 AA/AAA)
+   Diseño robusto, sin colisiones de apilamiento ni distorsión de iconos
    ========================================================= */
 
 /* --- Salto al Contenido Principal (Skip Link) --- */
@@ -27,25 +28,99 @@
 
 /* --- Modificadores de Tamaño de Fuente --- */
 html.a11y-font-large {
-  font-size: 115% !important;
+  font-size: 112% !important;
 }
 
 html.a11y-font-xlarge {
-  font-size: 130% !important;
+  font-size: 122% !important;
+}
+
+/* --- Espaciado de Texto e Interlineado (WCAG 1.4.12) --- */
+html.a11y-spacing-relaxed p,
+html.a11y-spacing-relaxed article,
+html.a11y-spacing-relaxed blockquote,
+html.a11y-spacing-relaxed .prose {
+  line-height: 1.85 !important;
+  letter-spacing: 0.025em !important;
+  word-spacing: 0.05em !important;
+}
+
+html.a11y-spacing-loose p,
+html.a11y-spacing-loose article,
+html.a11y-spacing-loose blockquote,
+html.a11y-spacing-loose .prose {
+  line-height: 2.1 !important;
+  letter-spacing: 0.05em !important;
+  word-spacing: 0.08em !important;
 }
 
 /* --- Tipografía para Dislexia y Mayor Legibilidad --- */
 html.a11y-dyslexic-font body,
-html.a11y-dyslexic-font * {
-  font-family: 'Comic Sans MS', 'Trebuchet MS', 'Verdana', sans-serif !important;
-  letter-spacing: 0.05em !important;
-  word-spacing: 0.12em !important;
-  line-height: 1.75 !important;
+html.a11y-dyslexic-font p,
+html.a11y-dyslexic-font h1,
+html.a11y-dyslexic-font h2,
+html.a11y-dyslexic-font h3,
+html.a11y-dyslexic-font h4,
+html.a11y-dyslexic-font h5,
+html.a11y-dyslexic-font h6,
+html.a11y-dyslexic-font a,
+html.a11y-dyslexic-font label,
+html.a11y-dyslexic-font input,
+html.a11y-dyslexic-font textarea,
+html.a11y-dyslexic-font select,
+html.a11y-dyslexic-font button,
+html.a11y-dyslexic-font li,
+html.a11y-dyslexic-font td,
+html.a11y-dyslexic-font th,
+html.a11y-dyslexic-font blockquote,
+html.a11y-dyslexic-font span:not(.material-symbols-outlined):not([class*="material-symbols"]):not([class*="lucide"]):not(.material-icons) {
+  font-family: 'OpenDyslexic', 'Comic Sans MS', 'Trebuchet MS', 'Verdana', sans-serif !important;
+  letter-spacing: 0.035em !important;
+  word-spacing: 0.07em !important;
+}
+
+/* Blindaje de fuentes de íconos para que NUNCA se transformen en texto plano */
+html.a11y-dyslexic-font .material-symbols-outlined,
+html.a11y-dyslexic-font .material-symbols-sharp,
+html.a11y-dyslexic-font .material-symbols-rounded,
+html.a11y-dyslexic-font [class*="material-symbols"],
+html.a11y-dyslexic-font [class*="lucide"],
+html.a11y-dyslexic-font .material-icons,
+.material-symbols-outlined,
+[class*="material-symbols"] {
+  font-family: 'Material Symbols Outlined' !important;
+  font-style: normal !important;
+  letter-spacing: normal !important;
+  word-spacing: normal !important;
+  text-transform: none !important;
+  display: inline-block;
+  white-space: nowrap;
+  word-wrap: normal;
+  direction: ltr;
+  -webkit-font-feature-settings: 'liga';
+  font-feature-settings: 'liga';
+  -webkit-font-smoothing: antialiased;
 }
 
 /* --- Modo Alto Contraste (WCAG AAA) --- */
 html.a11y-high-contrast {
-  filter: contrast(135%);
+  --bg-page: #000000 !important;
+  --bg-page-gradient: #000000 !important;
+  --bg-surface: #0a0a0a !important;
+  --bg-surface-secondary: #141414 !important;
+  --bg-card: #0d0d0d !important;
+  --bg-card-hover: #1a1a1a !important;
+  --bg-input: #000000 !important;
+  --bg-navbar: #000000 !important;
+  --bg-footer: #000000 !important;
+  --border-subtle: #ffffff !important;
+  --border-medium: #ffffff !important;
+  --text-main: #ffffff !important;
+  --text-secondary: #f0f0f0 !important;
+  --text-muted: #d0d0d0 !important;
+  --color-sonar-base: #000000 !important;
+  --color-sonar-surface: #121212 !important;
+  --color-sonar-text: #ffffff !important;
 }
 
 html.a11y-high-contrast body {
@@ -53,30 +128,42 @@ html.a11y-high-contrast body {
   color: #ffffff !important;
 }
 
-html.a11y-high-contrast button,
-html.a11y-high-contrast a {
-  outline: 2px solid #ffff00 !important;
-}
-
-html.a11y-high-contrast article,
-html.a11y-high-contrast section,
-html.a11y-high-contrast header,
 html.a11y-high-contrast nav,
+html.a11y-high-contrast header,
 html.a11y-high-contrast footer,
-html.a11y-high-contrast div[class*="rounded"] {
+html.a11y-high-contrast main,
+html.a11y-high-contrast [role="dialog"],
+html.a11y-high-contrast .glass-panel,
+html.a11y-high-contrast .bg-white,
+html.a11y-high-contrast .dark\:bg-\[\#231123\],
+html.a11y-high-contrast .dark\:bg-\[\#2e192c\],
+html.a11y-high-contrast .dark\:bg-\[\#4B2840\] {
   border-color: #ffffff !important;
 }
 
-/* --- Resaltado de Enlaces y Elementos Interactivos --- */
-html.a11y-highlight-links a,
-html.a11y-highlight-links button,
-html.a11y-highlight-links [role="button"],
-html.a11y-highlight-links input,
-html.a11y-highlight-links select,
-html.a11y-highlight-links textarea {
-  outline: 2.5px dashed #B80C09 !important;
+html.a11y-high-contrast button:focus-visible,
+html.a11y-high-contrast a:focus-visible,
+html.a11y-high-contrast input:focus-visible,
+html.a11y-high-contrast select:focus-visible,
+html.a11y-high-contrast textarea:focus-visible {
+  outline: 3px solid #ffea00 !important;
   outline-offset: 2px !important;
+}
+
+/* --- Resaltado de Enlaces (WCAG 1.4.1) --- */
+html.a11y-highlight-links a {
   text-decoration: underline !important;
+  text-decoration-thickness: 2px !important;
+  text-underline-offset: 3px !important;
+}
+
+html.a11y-highlight-links button:focus-visible,
+html.a11y-highlight-links [role="button"]:focus-visible,
+html.a11y-highlight-links input:focus-visible,
+html.a11y-highlight-links select:focus-visible,
+html.a11y-highlight-links textarea:focus-visible {
+  outline: 3px dashed #B80C09 !important;
+  outline-offset: 2px !important;
 }
 
 /* --- Cursor Grande y de Alta Visibilidad --- */
@@ -106,24 +193,7 @@ html.a11y-reduced-motion *::after {
   scroll-behavior: auto !important;
 }
 
-/* --- Filtros de Daltonismo (Color Blindness Simulation / Correction) --- */
-html.a11y-cb-protanopia {
-  filter: url('#sonar-filter-protanopia') !important;
-}
-
-html.a11y-cb-deuteranopia {
-  filter: url('#sonar-filter-deuteranopia') !important;
-}
-
-html.a11y-cb-tritanopia {
-  filter: url('#sonar-filter-tritanopia') !important;
-}
-
-html.a11y-cb-achromatopsia {
-  filter: grayscale(100%) contrast(110%) !important;
-}
-
-/* --- Anunciador ARIA Live (Oculto a la vista, leído por lectores de pantalla) --- */
+/* --- Anunciador ARIA Live --- */
 .sonar-sr-only {
   position: absolute !important;
   width: 1px !important;

@@ -111,11 +111,97 @@ export async function requestPasswordResetWebhook(email, code = '') {
   }
 }
 
+/**
+ * Dispara el Webhook de n8n para la suscripción al Boletín Semanal (Newsletter).
+ * Envía { email, name, topics } a n8n para registrar al usuario y disparar el correo de bienvenida.
+ */
+export async function subscribeNewsletterWebhook({ email, name = '', topics = [] }) {
+  if (!email || typeof email !== 'string' || !email.trim()) {
+    throw new Error('Debes proporcionar un correo electrónico válido.')
+  }
+
+  const cleanEmail = email.trim().toLowerCase()
+  const cleanName = name.trim() || 'Melómano de Sonar'
+  const selectedTopics = Array.isArray(topics) && topics.length > 0 ? topics : ['Lanzamientos', 'Hi-Fi', 'Festivales']
+
+  const payload = {
+    email: cleanEmail,
+    name: cleanName,
+    topics: selectedTopics,
+    subscribedAt: new Date().toISOString(),
+  }
+
+  // Guardar en localStorage para persistencia local de suscriptores
+  try {
+    const existing = JSON.parse(localStorage.getItem('sonar_newsletter_subscribers') || '[]')
+    if (!existing.some(s => s.email === cleanEmail)) {
+      existing.push(payload)
+      localStorage.setItem('sonar_newsletter_subscribers', JSON.stringify(existing))
+    }
+  } catch {
+    // Ignorar error de storage
+  }
+
+  const configuredUrl =
+    typeof import.meta !== 'undefined' && import.meta.env?.VITE_N8N_NEWSLETTER_WEBHOOK_URL
+
+  const endpoints = configuredUrl
+    ? [configuredUrl]
+    : [
+        'http://localhost:5678/webhook-test/newsletter',
+        'http://localhost:5678/webhook/newsletter',
+      ]
+
+  for (const endpoint of endpoints) {
+    try {
+      console.log(
+        '%c[n8n Webhook - Newsletter] Enviando suscripción a n8n:',
+        'color: #B80C09; font-weight: bold;',
+        { payload, endpoint }
+      )
+
+      const controller = new AbortController()
+      const timeoutId = setTimeout(() => controller.abort(), 2500)
+
+      const response = await fetch(endpoint, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(payload),
+        signal: controller.signal,
+      })
+      clearTimeout(timeoutId)
+
+      if (response.ok) {
+        const data = await response.json()
+        return {
+          success: true,
+          ...data,
+          message: data.message || `¡Suscripción confirmada! Te hemos enviado un correo de bienvenida a ${cleanEmail}.`,
+          subscriber: payload,
+        }
+      }
+    } catch {
+      // Intentar el siguiente endpoint o pasar al fallback
+    }
+  }
+
+  await delay(300)
+  return {
+    success: true,
+    message: `¡Suscripción confirmada! Te hemos registrado al boletín semanal con tu correo ${cleanEmail}.`,
+    subscriber: payload,
+    simulated: true,
+  }
+}
+
 export default {
   sendReviewToModeration,
   notifyReviewCreated,
   triggerNewReviewWebhook,
   requestPasswordResetWebhook,
+  subscribeNewsletterWebhook,
 }
 
 

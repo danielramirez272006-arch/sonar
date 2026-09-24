@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Blobatar } from '@blobatar/react';
+import 'blobatar/motion.css';
+import 'blobatar/gaze.css';
 import { Disc, Headphones, Radio, Volume2, Mic, Flame } from 'lucide-react';
 
 const sizeMap = {
@@ -34,6 +36,7 @@ export const Avatar = ({
   avatarStyle = 'blobatar',
   avatarIcon,
   size = 'md',
+  animate = 'always',
   className = '',
   onClick,
 }) => {
@@ -100,7 +103,7 @@ export const Avatar = ({
           className="text-white drop-shadow-md"
         />
       ) : (
-        <Blobatar hue={avatarHue} tone={avatarTone} name={effectiveSeed} size={currentSize.num} animate="hover" />
+        <Blobatar hue={avatarHue} tone={avatarTone} name={effectiveSeed} size={currentSize.num} animate={animate} />
       )}
     </motion.div>
   );

@@ -379,15 +379,16 @@ export const ReviewFeedCard = ({
             type="button"
             onClick={handleOpenReportReview}
             disabled={isReviewReported}
-            title="Reportar esta reseña a moderación"
-            className={`flex items-center gap-1 text-[11px] font-medium transition-colors cursor-pointer ${
+            title={isReviewReported ? 'Reseña reportada a moderación' : 'Reportar esta reseña a moderación'}
+            aria-label={isReviewReported ? 'Reseña reportada' : 'Reportar reseña'}
+            className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl text-xs font-semibold transition-all cursor-pointer shrink-0 ${
               isReviewReported
-                ? 'text-amber-500/70 cursor-not-allowed'
-                : 'text-[#5c435a]/60 dark:text-[#B89CB0]/60 hover:text-red-500'
+                ? 'bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20 cursor-not-allowed'
+                : 'text-[#5c435a]/70 dark:text-[#B89CB0]/70 hover:text-[#B80C09] hover:bg-rose-500/10 dark:hover:bg-rose-500/15'
             }`}
           >
-            <span className="material-symbols-outlined text-[15px]">flag</span>
-            <span className="hidden sm:inline">{isReviewReported ? 'Reportada' : 'Reportar'}</span>
+            <span className="material-symbols-outlined text-[15px] text-[#B80C09] shrink-0">flag</span>
+            <span>{isReviewReported ? 'Reportada' : 'Reportar'}</span>
           </button>
         )}
       </div>
