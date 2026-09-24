@@ -10,6 +10,7 @@ import { searchAlbums } from '../../services/deezer-service';
 export const Navbar = ({
   links = [
     { id: 'explore', label: 'Explorar', path: '#explore' },
+    { id: 'noticias', label: 'Noticias', path: '#noticias' },
     { id: 'community', label: 'Comunidad', path: '#community' },
   ],
   onNavigate = () => {},

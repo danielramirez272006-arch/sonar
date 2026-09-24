@@ -28,7 +28,70 @@ export const HIGH_RES_FALLBACK_COVERS = [
 
 export const DEFAULT_FALLBACK_COVER = HIGH_RES_FALLBACK_COVERS[0];
 
+export const KNOWN_COVER_MAPPINGS = [
+  {
+    keywords: ['in rainbows', '15 step', 'nude', 'reckoner', 'bodysnatchers', 'weird fishes', 'videotape', 'all i need', 'faust arp', 'house of cards', 'jigsaw falling'],
+    cover: 'https://cdn-images.dzcdn.net/images/cover/a175af9b7d329bc678cb4d26fc13d6de/500x500-000000-80-0-0.jpg',
+  },
+  {
+    keywords: ['currents', 'let it happen', 'the less i know the better', 'tame impala', 'eventually', 'nangs', 'the moment', 'yes i\'m changing', 'past life'],
+    cover: 'https://cdn-images.dzcdn.net/images/cover/de5b9b704cd4ec36f8bf49beb3e17ba2/500x500-000000-80-0-0.jpg',
+  },
+  {
+    keywords: ['to pimp a butterfly', 'kendrick lamar', 'king kunta', 'alright', 'wesley', 'these walls', 'u', 'i', 'the blacker the berry', 'mortal man'],
+    cover: 'https://cdn-images.dzcdn.net/images/cover/00dd0da365a94b1829302d6b7fec70e6/500x500-000000-80-0-0.jpg',
+  },
+  {
+    keywords: ['discovery', 'daft punk', 'one more time', 'aerodynamic', 'digital love', 'harder, better, faster', 'harder better', 'crescendolls', 'nightvision', 'superheroes', 'high life', 'something about us', 'voyager', 'veridis quo', 'short circuit', 'face to face', 'too long'],
+    cover: 'https://cdn-images.dzcdn.net/images/cover/5718f7c81c27e0b2417e2a4c45224f8a/500x500-000000-80-0-0.jpg',
+  },
+  {
+    keywords: ['kid a', 'idioteque', 'everything in its right place', 'the national anthem', 'how to disappear completely', 'treefingers', 'optimistic', 'in limbo', 'morning bell', 'motion picture soundtrack'],
+    cover: 'https://cdn-images.dzcdn.net/images/cover/e5925065cdb1cefbc3bd75af4a1f1801/500x500-000000-80-0-0.jpg',
+  },
+  {
+    keywords: ['vespertine', 'björk', 'bjork', 'hidden place', 'pagan poetry', 'cocoon', 'it\'s not up to you', 'undo', 'frosti', 'aurora', 'unison'],
+    cover: 'https://cdn-images.dzcdn.net/images/cover/4bd6b0232c2092faf145101453cb1051/500x500-000000-80-0-0.jpg',
+  },
+  {
+    keywords: ['blonde', 'frank ocean', 'nikes', 'ivy', 'pink + white', 'pink and white', 'nights', 'white ferrari', 'solo', 'self control', 'godspeed', 'seigfried'],
+    cover: 'https://cdn-images.dzcdn.net/images/cover/aa7e6de00b0810f5051aa60b489f58d8/500x500-000000-80-0-0.jpg',
+  },
+  {
+    keywords: ['abbey road', 'the beatles', 'beatles', 'come together', 'here comes the sun', 'something', 'maxwell', 'oh! darling', 'octopus', 'golden slumbers'],
+    cover: 'https://cdn-images.dzcdn.net/images/cover/aa94ab293730bb7845d2aa8c672b2c29/500x500-000000-80-0-0.jpg',
+  },
+  {
+    keywords: ['melodrama', 'lorde', 'green light', 'supercut', 'liability', 'perfect places', 'sober', 'the louvre', 'homemade dynamite'],
+    cover: 'https://cdn-images.dzcdn.net/images/cover/0c424dbe627530cd06a6fd408baba3f3/500x500-000000-80-0-0.jpg',
+  },
+  {
+    keywords: ['motomami', 'rosalía', 'rosalia', 'saoko', 'candy', 'la fama', 'chicken teriyaki', 'hentai', 'bizcochito', 'bulerías', 'sakura'],
+    cover: 'https://cdn-images.dzcdn.net/images/cover/66ae12120936d9660d3e30a7db7627b8/500x500-000000-80-0-0.jpg',
+  },
+  {
+    keywords: ['dark side of the moon', 'pink floyd', 'money', 'time', 'us and them', 'breathe', 'the great gig in the sky', 'eclipse', 'brain damage'],
+    cover: 'https://cdn-images.dzcdn.net/images/cover/e635a8510c1a74bc089b3566ebbb9cb8/500x500-000000-80-0-0.jpg',
+  },
+];
+
 export const getFallbackCoverForAlbum = (albumOrTitle) => {
+  if (!albumOrTitle) return DEFAULT_FALLBACK_COVER;
+
+  const textToSearch = (
+    typeof albumOrTitle === 'string'
+      ? albumOrTitle
+      : `${albumOrTitle.title || ''} ${albumOrTitle.album || ''} ${albumOrTitle.albumTitle || ''} ${albumOrTitle.artist || ''}`
+  ).toLowerCase();
+
+  // 1. Coincidencia exacta o por palabras clave con álbumes oficiales
+  for (const mapping of KNOWN_COVER_MAPPINGS) {
+    if (mapping.keywords.some((kw) => textToSearch.includes(kw))) {
+      return mapping.cover;
+    }
+  }
+
+  // 2. Hash determinista sobre portadas de alta fidelidad
   const seed = typeof albumOrTitle === 'string' ? albumOrTitle : (albumOrTitle?.title || albumOrTitle?.album || 'sonar');
   let hash = 0;
   for (let i = 0; i < seed.length; i++) {
@@ -37,6 +100,23 @@ export const getFallbackCoverForAlbum = (albumOrTitle) => {
   }
   const index = Math.abs(hash) % HIGH_RES_FALLBACK_COVERS.length;
   return HIGH_RES_FALLBACK_COVERS[index];
+};
+
+export const resolveAccurateCoverForTrack = (track) => {
+  if (!track) return DEFAULT_FALLBACK_COVER;
+
+  // Si ya tiene una carátula específica válida
+  if (track.cover && typeof track.cover === 'string' && track.cover.startsWith('http') && !track.cover.includes('empty')) {
+    // Si la carátula existente es el genérico de In Rainbows pero el track es de otro álbum/artista, corregir
+    const trackText = `${track.title || ''} ${track.album || ''} ${track.artist || ''}`.toLowerCase();
+    const isRadioheadInRainbows = trackText.includes('in rainbows') || trackText.includes('15 step') || trackText.includes('reckoner');
+    if (track.cover.includes('a175af9b7d329bc678cb4d26fc13d6de') && !isRadioheadInRainbows) {
+      return getFallbackCoverForAlbum(track);
+    }
+    return track.cover;
+  }
+
+  return getFallbackCoverForAlbum(track);
 };
 
 export const handleImageFallbackError = (e, albumOrTitle) => {

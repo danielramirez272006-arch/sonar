@@ -27,6 +27,7 @@ import { AriaLiveAnnouncer } from './shared/components/a11y/aria-live-announcer.
 import { AccessibilityWidget } from './shared/components/a11y/accessibility-widget.jsx'
 import { KeyboardShortcutsModal } from './shared/components/a11y/keyboard-shortcuts-modal.jsx'
 import { ReadingGuide } from './shared/components/a11y/reading-guide.jsx'
+import { A11yScreenOverlay } from './shared/components/a11y/a11y-screen-overlay.jsx'
 import "./Styles/App.css";
 import './Styles/admin.css'
 import './Styles/admin-dashboard.css'
@@ -252,6 +253,7 @@ export default function App() {
             <PlayerProvider>
               <SkipToContent />
               <ColorBlindnessFilters />
+              <A11yScreenOverlay />
               <AriaLiveAnnouncer />
               <AppRouter />
               <GlobalAudioPlayer />

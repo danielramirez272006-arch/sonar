@@ -1,3 +1,5 @@
+import { resolveAccurateCoverForTrack, getFallbackCoverForAlbum } from './recommendations-service';
+
 const BASE_URL = '/api/deezer';
 
 /**
@@ -179,23 +181,31 @@ export const searchAlbums = async (query) => {
     if (response.ok) {
       const data = await response.json();
       if (data.data && Array.isArray(data.data) && data.data.length > 0) {
-        return data.data.map((item) => ({
-          id: item.id,
-          title: item.title,
-          artist: item.artist?.name || 'Artista',
-          album: item.album?.title || item.title,
-          albumTitle: item.album?.title || item.title,
-          cover: item.album?.cover_big || item.album?.cover_medium || item.album?.cover || item.artist?.picture_big || '',
-          cover_xl: item.album?.cover_xl || item.album?.cover_big || '',
-          cover_medium: item.album?.cover_medium || item.album?.cover || '',
-          genre: 'Música',
-          year: item.album?.release_date ? item.album.release_date.substring(0, 4) : '2024',
-          rating: (4.5 + ((item.id % 5) * 0.1)).toFixed(1),
-          duration: item.duration,
-          preview: item.preview,
-          link: item.link,
-          type: 'track',
-        }));
+        return data.data.map((item) => {
+          const rawObj = {
+            id: item.id,
+            title: item.title,
+            artist: item.artist?.name || 'Artista',
+            album: item.album?.title || item.title,
+            albumTitle: item.album?.title || item.title,
+            cover: item.album?.cover_big || item.album?.cover_medium || item.album?.cover || item.artist?.picture_big || '',
+            cover_xl: item.album?.cover_xl || item.album?.cover_big || '',
+            cover_medium: item.album?.cover_medium || item.album?.cover || '',
+            genre: 'Música',
+            year: item.album?.release_date ? item.album.release_date.substring(0, 4) : '2024',
+            rating: (4.5 + ((item.id % 5) * 0.1)).toFixed(1),
+            duration: item.duration,
+            preview: item.preview,
+            link: item.link,
+            type: 'track',
+          };
+          const accurateCover = resolveAccurateCoverForTrack(rawObj);
+          return {
+            ...rawObj,
+            cover: accurateCover,
+            cover_medium: accurateCover,
+          };
+        });
       }
     }
     
@@ -216,23 +226,31 @@ export const searchAlbums = async (query) => {
       if (response.ok) {
         const data = await response.json();
         if (data.data && Array.isArray(data.data) && data.data.length > 0) {
-          return data.data.map((item) => ({
-            id: item.id,
-            title: item.title,
-            artist: item.artist?.name || 'Artista',
-            album: item.album?.title || item.title,
-            albumTitle: item.album?.title || item.title,
-            cover: item.album?.cover_big || item.album?.cover_medium || item.album?.cover || '',
-            cover_xl: item.album?.cover_xl || item.album?.cover_big || '',
-            cover_medium: item.album?.cover_medium || item.album?.cover || '',
-            genre: 'Música',
-            year: '2024',
-            rating: (4.5 + ((item.id % 5) * 0.1)).toFixed(1),
-            duration: item.duration,
-            preview: item.preview,
-            link: item.link,
-            type: 'track',
-          }));
+          return data.data.map((item) => {
+            const rawObj = {
+              id: item.id,
+              title: item.title,
+              artist: item.artist?.name || 'Artista',
+              album: item.album?.title || item.title,
+              albumTitle: item.album?.title || item.title,
+              cover: item.album?.cover_big || item.album?.cover_medium || item.album?.cover || '',
+              cover_xl: item.album?.cover_xl || item.album?.cover_big || '',
+              cover_medium: item.album?.cover_medium || item.album?.cover || '',
+              genre: 'Música',
+              year: '2024',
+              rating: (4.5 + ((item.id % 5) * 0.1)).toFixed(1),
+              duration: item.duration,
+              preview: item.preview,
+              link: item.link,
+              type: 'track',
+            };
+            const accurateCover = resolveAccurateCoverForTrack(rawObj);
+            return {
+              ...rawObj,
+              cover: accurateCover,
+              cover_medium: accurateCover,
+            };
+          });
         }
       }
     }
@@ -294,7 +312,7 @@ export const getTrackById = async (trackId) => {
     const response = await fetch(`${BASE_URL}/track/${trackId}`);
     if (!response.ok) throw new Error(`HTTP ${response.status}`);
     const track = await response.json();
-    return {
+    const rawObj = {
       id: track.id,
       title: track.title,
       artist: track.artist?.name || 'Artista',
@@ -304,6 +322,12 @@ export const getTrackById = async (trackId) => {
       preview: track.preview,
       duration: track.duration,
       link: track.link,
+    };
+    const accurateCover = resolveAccurateCoverForTrack(rawObj);
+    return {
+      ...rawObj,
+      cover: accurateCover,
+      cover_medium: accurateCover,
     };
   } catch (error) {
     console.error("Error al obtener canción por ID de Deezer:", error);
@@ -320,17 +344,25 @@ export const searchTracks = async (query) => {
     const response = await fetch(`${BASE_URL}/search?q=${encodeURIComponent(query.trim())}`);
     if (!response.ok) throw new Error(`HTTP ${response.status}`);
     const data = await response.json();
-    return (data.data || []).map((track) => ({
-      id: track.id,
-      title: track.title,
-      artist: track.artist?.name || 'Artista',
-      album: track.album?.title || '',
-      cover: track.album?.cover_medium || track.album?.cover || '',
-      cover_xl: track.album?.cover_xl || track.album?.cover_big || '',
-      preview: track.preview,
-      duration: track.duration,
-      link: track.link,
-    }));
+    return (data.data || []).map((track) => {
+      const rawObj = {
+        id: track.id,
+        title: track.title,
+        artist: track.artist?.name || 'Artista',
+        album: track.album?.title || '',
+        cover: track.album?.cover_medium || track.album?.cover || '',
+        cover_xl: track.album?.cover_xl || track.album?.cover_big || '',
+        preview: track.preview,
+        duration: track.duration,
+        link: track.link,
+      };
+      const accurateCover = resolveAccurateCoverForTrack(rawObj);
+      return {
+        ...rawObj,
+        cover: accurateCover,
+        cover_medium: accurateCover,
+      };
+    });
   } catch (error) {
     console.error("Error al buscar canciones en Deezer:", error);
     return [];
@@ -360,7 +392,7 @@ export const searchArtists = async (query) => {
           const topData = await topRes.json();
           if (topData.data && topData.data.length > 0) {
             topData.data.forEach((track) => {
-              results.push({
+              const rawObj = {
                 id: track.id,
                 title: track.title,
                 artist: artist.name,
@@ -375,6 +407,12 @@ export const searchArtists = async (query) => {
                 type: 'track',
                 artistId: artist.id,
                 rating: (4.6 + ((track.id % 4) * 0.1)).toFixed(1),
+              };
+              const accurateCover = resolveAccurateCoverForTrack(rawObj);
+              results.push({
+                ...rawObj,
+                cover: accurateCover,
+                cover_medium: accurateCover,
               });
             });
           }
@@ -464,20 +502,27 @@ export const getTracksForAlbum = async (item) => {
     try {
       const tracks = await getAlbumTracks(albumId);
       if (tracks && tracks.length > 0) {
-        return tracks.map((t, index) => ({
-          id: t.id,
-          trackNumber: index + 1,
-          title: t.title,
-          artist: t.artist || artistName,
-          album: albumName,
-          albumTitle: albumName,
-          cover: item.cover || item.cover_medium,
-          cover_medium: item.cover_medium || item.cover,
-          duration: t.duration || 180,
-          preview: t.preview,
-          link: t.link,
-          type: 'track',
-        }));
+        return tracks.map((t, index) => {
+          const trackObj = {
+            id: t.id,
+            trackNumber: index + 1,
+            title: t.title,
+            artist: t.artist || artistName,
+            album: albumName,
+            albumTitle: albumName,
+            cover: item.cover || item.cover_medium,
+            duration: t.duration || 180,
+            preview: t.preview,
+            link: t.link,
+            type: 'track',
+          };
+          const accurateCover = resolveAccurateCoverForTrack(trackObj);
+          return {
+            ...trackObj,
+            cover: accurateCover,
+            cover_medium: accurateCover,
+          };
+        });
       }
     } catch (e) {
       console.warn('Error obteniendo canciones del álbum Deezer:', e);
@@ -490,20 +535,27 @@ export const getTracksForAlbum = async (item) => {
       const query = `${albumName} ${artistName}`.trim();
       const results = await searchTracks(query);
       if (results && results.length > 0) {
-        return results.slice(0, 15).map((t, index) => ({
-          id: t.id,
-          trackNumber: index + 1,
-          title: t.title,
-          artist: t.artist || artistName,
-          album: t.album || albumName,
-          albumTitle: t.album || albumName,
-          cover: t.cover || item.cover,
-          cover_medium: t.cover_medium || item.cover_medium || item.cover,
-          duration: t.duration || 180,
-          preview: t.preview,
-          link: t.link,
-          type: 'track',
-        }));
+        return results.slice(0, 15).map((t, index) => {
+          const trackObj = {
+            id: t.id,
+            trackNumber: index + 1,
+            title: t.title,
+            artist: t.artist || artistName,
+            album: t.album || albumName,
+            albumTitle: t.album || albumName,
+            cover: t.cover || item.cover,
+            duration: t.duration || 180,
+            preview: t.preview,
+            link: t.link,
+            type: 'track',
+          };
+          const accurateCover = resolveAccurateCoverForTrack(trackObj);
+          return {
+            ...trackObj,
+            cover: accurateCover,
+            cover_medium: accurateCover,
+          };
+        });
       }
     } catch (e) {
       console.warn('Error buscando canciones para el álbum:', e);
@@ -513,36 +565,38 @@ export const getTracksForAlbum = async (item) => {
   // 3. Fallbacks de repertorio estándar
   const lowerTitle = (albumName || '').toLowerCase();
   if (lowerTitle.includes('discovery') || lowerTitle.includes('daft punk')) {
+    const daftCover = 'https://cdn-images.dzcdn.net/images/cover/5718f7c81c27e0b2417e2a4c45224f8a/500x500-000000-80-0-0.jpg';
     return [
-      { id: 3135556, trackNumber: 1, title: 'One More Time', artist: 'Daft Punk', album: 'Discovery', duration: 320, cover: item.cover, preview: item.preview, type: 'track' },
-      { id: 3135557, trackNumber: 2, title: 'Aerodynamic', artist: 'Daft Punk', album: 'Discovery', duration: 207, cover: item.cover, preview: item.preview, type: 'track' },
-      { id: 3135558, trackNumber: 3, title: 'Digital Love', artist: 'Daft Punk', album: 'Discovery', duration: 298, cover: item.cover, preview: item.preview, type: 'track' },
-      { id: 3135559, trackNumber: 4, title: 'Harder, Better, Faster, Stronger', artist: 'Daft Punk', album: 'Discovery', duration: 224, cover: item.cover, preview: item.preview, type: 'track' },
-      { id: 3135560, trackNumber: 5, title: 'Crescendolls', artist: 'Daft Punk', album: 'Discovery', duration: 211, cover: item.cover, preview: item.preview, type: 'track' },
-      { id: 3135561, trackNumber: 6, title: 'Nightvision', artist: 'Daft Punk', album: 'Discovery', duration: 104, cover: item.cover, preview: item.preview, type: 'track' },
-      { id: 3135562, trackNumber: 7, title: 'Superheroes', artist: 'Daft Punk', album: 'Discovery', duration: 237, cover: item.cover, preview: item.preview, type: 'track' },
-      { id: 3135563, trackNumber: 8, title: 'High Life', artist: 'Daft Punk', album: 'Discovery', duration: 201, cover: item.cover, preview: item.preview, type: 'track' },
-      { id: 3135564, trackNumber: 9, title: 'Something About Us', artist: 'Daft Punk', album: 'Discovery', duration: 231, cover: item.cover, preview: item.preview, type: 'track' },
-      { id: 3135565, trackNumber: 10, title: 'Voyager', artist: 'Daft Punk', album: 'Discovery', duration: 227, cover: item.cover, preview: item.preview, type: 'track' },
-      { id: 3135566, trackNumber: 11, title: 'Veridis Quo', artist: 'Daft Punk', album: 'Discovery', duration: 344, cover: item.cover, preview: item.preview, type: 'track' },
-      { id: 3135567, trackNumber: 12, title: 'Short Circuit', artist: 'Daft Punk', album: 'Discovery', duration: 206, cover: item.cover, preview: item.preview, type: 'track' },
-      { id: 3135568, trackNumber: 13, title: 'Face to Face', artist: 'Daft Punk', album: 'Discovery', duration: 238, cover: item.cover, preview: item.preview, type: 'track' },
-      { id: 3135569, trackNumber: 14, title: 'Too Long', artist: 'Daft Punk', album: 'Discovery', duration: 600, cover: item.cover, preview: item.preview, type: 'track' },
+      { id: 3135556, trackNumber: 1, title: 'One More Time', artist: 'Daft Punk', album: 'Discovery', duration: 320, cover: daftCover, preview: item.preview, type: 'track' },
+      { id: 3135557, trackNumber: 2, title: 'Aerodynamic', artist: 'Daft Punk', album: 'Discovery', duration: 207, cover: daftCover, preview: item.preview, type: 'track' },
+      { id: 3135558, trackNumber: 3, title: 'Digital Love', artist: 'Daft Punk', album: 'Discovery', duration: 298, cover: daftCover, preview: item.preview, type: 'track' },
+      { id: 3135559, trackNumber: 4, title: 'Harder, Better, Faster, Stronger', artist: 'Daft Punk', album: 'Discovery', duration: 224, cover: daftCover, preview: item.preview, type: 'track' },
+      { id: 3135560, trackNumber: 5, title: 'Crescendolls', artist: 'Daft Punk', album: 'Discovery', duration: 211, cover: daftCover, preview: item.preview, type: 'track' },
+      { id: 3135561, trackNumber: 6, title: 'Nightvision', artist: 'Daft Punk', album: 'Discovery', duration: 104, cover: daftCover, preview: item.preview, type: 'track' },
+      { id: 3135562, trackNumber: 7, title: 'Superheroes', artist: 'Daft Punk', album: 'Discovery', duration: 237, cover: daftCover, preview: item.preview, type: 'track' },
+      { id: 3135563, trackNumber: 8, title: 'High Life', artist: 'Daft Punk', album: 'Discovery', duration: 201, cover: daftCover, preview: item.preview, type: 'track' },
+      { id: 3135564, trackNumber: 9, title: 'Something About Us', artist: 'Daft Punk', album: 'Discovery', duration: 231, cover: daftCover, preview: item.preview, type: 'track' },
+      { id: 3135565, trackNumber: 10, title: 'Voyager', artist: 'Daft Punk', album: 'Discovery', duration: 227, cover: daftCover, preview: item.preview, type: 'track' },
+      { id: 3135566, trackNumber: 11, title: 'Veridis Quo', artist: 'Daft Punk', album: 'Discovery', duration: 344, cover: daftCover, preview: item.preview, type: 'track' },
+      { id: 3135567, trackNumber: 12, title: 'Short Circuit', artist: 'Daft Punk', album: 'Discovery', duration: 206, cover: daftCover, preview: item.preview, type: 'track' },
+      { id: 3135568, trackNumber: 13, title: 'Face to Face', artist: 'Daft Punk', album: 'Discovery', duration: 238, cover: daftCover, preview: item.preview, type: 'track' },
+      { id: 3135569, trackNumber: 14, title: 'Too Long', artist: 'Daft Punk', album: 'Discovery', duration: 600, cover: daftCover, preview: item.preview, type: 'track' },
     ];
   }
 
   if (lowerTitle.includes('in rainbows') || lowerTitle.includes('radiohead')) {
+    const radioheadCover = 'https://cdn-images.dzcdn.net/images/cover/a175af9b7d329bc678cb4d26fc13d6de/500x500-000000-80-0-0.jpg';
     return [
-      { id: 138546803, trackNumber: 1, title: '15 Step', artist: 'Radiohead', album: 'In Rainbows', duration: 237, cover: item.cover, preview: item.preview, type: 'track' },
-      { id: 138546804, trackNumber: 2, title: 'Bodysnatchers', artist: 'Radiohead', album: 'In Rainbows', duration: 242, cover: item.cover, preview: item.preview, type: 'track' },
-      { id: 138546805, trackNumber: 3, title: 'Nude', artist: 'Radiohead', album: 'In Rainbows', duration: 255, cover: item.cover, preview: item.preview, type: 'track' },
-      { id: 138546806, trackNumber: 4, title: 'Weird Fishes/Arpeggi', artist: 'Radiohead', album: 'In Rainbows', duration: 318, cover: item.cover, preview: item.preview, type: 'track' },
-      { id: 138546807, trackNumber: 5, title: 'All I Need', artist: 'Radiohead', album: 'In Rainbows', duration: 228, cover: item.cover, preview: item.preview, type: 'track' },
-      { id: 138546808, trackNumber: 6, title: 'Faust Arp', artist: 'Radiohead', album: 'In Rainbows', duration: 129, cover: item.cover, preview: item.preview, type: 'track' },
-      { id: 138546809, trackNumber: 7, title: 'Reckoner', artist: 'Radiohead', album: 'In Rainbows', duration: 290, cover: item.cover, preview: item.preview, type: 'track' },
-      { id: 138546810, trackNumber: 8, title: 'House of Cards', artist: 'Radiohead', album: 'In Rainbows', duration: 328, cover: item.cover, preview: item.preview, type: 'track' },
-      { id: 138546811, trackNumber: 9, title: 'Jigsaw Falling Into Place', artist: 'Radiohead', album: 'In Rainbows', duration: 249, cover: item.cover, preview: item.preview, type: 'track' },
-      { id: 138546812, trackNumber: 10, title: 'Videotape', artist: 'Radiohead', album: 'In Rainbows', duration: 279, cover: item.cover, preview: item.preview, type: 'track' },
+      { id: 138546803, trackNumber: 1, title: '15 Step', artist: 'Radiohead', album: 'In Rainbows', duration: 237, cover: radioheadCover, preview: item.preview, type: 'track' },
+      { id: 138546804, trackNumber: 2, title: 'Bodysnatchers', artist: 'Radiohead', album: 'In Rainbows', duration: 242, cover: radioheadCover, preview: item.preview, type: 'track' },
+      { id: 138546805, trackNumber: 3, title: 'Nude', artist: 'Radiohead', album: 'In Rainbows', duration: 255, cover: radioheadCover, preview: item.preview, type: 'track' },
+      { id: 138546806, trackNumber: 4, title: 'Weird Fishes/Arpeggi', artist: 'Radiohead', album: 'In Rainbows', duration: 318, cover: radioheadCover, preview: item.preview, type: 'track' },
+      { id: 138546807, trackNumber: 5, title: 'All I Need', artist: 'Radiohead', album: 'In Rainbows', duration: 228, cover: radioheadCover, preview: item.preview, type: 'track' },
+      { id: 138546808, trackNumber: 6, title: 'Faust Arp', artist: 'Radiohead', album: 'In Rainbows', duration: 129, cover: radioheadCover, preview: item.preview, type: 'track' },
+      { id: 138546809, trackNumber: 7, title: 'Reckoner', artist: 'Radiohead', album: 'In Rainbows', duration: 290, cover: radioheadCover, preview: item.preview, type: 'track' },
+      { id: 138546810, trackNumber: 8, title: 'House of Cards', artist: 'Radiohead', album: 'In Rainbows', duration: 328, cover: radioheadCover, preview: item.preview, type: 'track' },
+      { id: 138546811, trackNumber: 9, title: 'Jigsaw Falling Into Place', artist: 'Radiohead', album: 'In Rainbows', duration: 249, cover: radioheadCover, preview: item.preview, type: 'track' },
+      { id: 138546812, trackNumber: 10, title: 'Videotape', artist: 'Radiohead', album: 'In Rainbows', duration: 279, cover: radioheadCover, preview: item.preview, type: 'track' },
     ];
   }
 
