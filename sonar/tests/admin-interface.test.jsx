@@ -2,16 +2,17 @@
 import { afterEach, beforeEach, expect, it, vi } from 'vitest'
 import { act, cleanup, fireEvent, render, screen, waitFor } from '@testing-library/react'
 import App from '../src/App.jsx'
-import { getReviews, getUsers, getPendingReviews, updateReview } from '../src/shared/services/api-client.js'
+import { apiRequest, getReviews, getUsers, getPendingReviews, updateReview } from '../src/shared/services/api-client.js'
 
 vi.mock('../src/shared/components/ui/blobatar-avatar.jsx', () => ({ BlobatarAvatar: () => <span /> }))
 vi.mock('../src/shared/services/deezer-service.js', () => ({ getAlbumById: async () => null, DEFAULT_DEEZER_ALBUMS: [], searchAlbums: async () => [] }))
 vi.mock('../src/shared/services/api-client.js', () => ({
-  getReviews: vi.fn(), getUsers: vi.fn(), getPendingReviews: vi.fn(), updateReview: vi.fn(),
+  apiRequest: vi.fn(), getReviews: vi.fn(), getUsers: vi.fn(), getPendingReviews: vi.fn(), updateReview: vi.fn(),
 }))
 
 beforeEach(() => {
   vi.resetAllMocks()
+  apiRequest.mockResolvedValue([])
   window.localStorage.setItem('sonar_auth_user', JSON.stringify({ id: '1', username: 'Mateo', role: 'admin' }))
   window.history.replaceState(null, '', '/#admin')
   const reviews = [{ id: '101', userId: '1', albumId: 'album_01', rating: 4.7, content: 'Una gran escucha.', status: 'pending_moderation', aiFlagged: false }]
@@ -25,6 +26,33 @@ beforeEach(() => {
   })
 })
 afterEach(cleanup)
+
+it('keeps the admin dashboard visible after loading null records from JSON Server', async () => {
+  getUsers.mockResolvedValue([null, { id: '1', username: 'Mateo', role: 'admin' }, null])
+  getReviews.mockResolvedValue([null, { id: '101', userId: '1', content: 'Una gran escucha.', status: 'approved' }])
+  getPendingReviews.mockResolvedValue([null])
+  render(<App />)
+  await screen.findAllByText('Mateo')
+  expect(screen.getByRole('heading', { name: /Tu mesa de/ })).toBeTruthy()
+  await act(async () => {
+    window.history.replaceState(null, '', '/#moderacion')
+    window.dispatchEvent(new Event('hashchange'))
+  })
+  await screen.findByText('Todo en armonía')
+})
+
+it('navigates from catalog back to admin without mixing the previous page with the new route', async () => {
+  window.history.replaceState(null, '', '/#admin-catalog-releases')
+  render(<App />)
+  await screen.findByRole('heading', { name: 'Lanzamientos destacados' })
+  for (const [hash, heading] of [['#admin', /Tu mesa de/], ['#admin-catalog-announcements', 'Anuncios'], ['#usuarios', 'Gestión de usuarios']]) {
+    await act(async () => {
+      window.history.replaceState(null, '', '/' + hash)
+      window.dispatchEvent(new Event('hashchange'))
+    })
+    await screen.findByRole('heading', { name: heading })
+  }
+})
 
 it('saltar al contenido conserva la pantalla de moderación', async () => {
   window.history.replaceState(null, '', '/#moderacion')

@@ -1,3 +1,6 @@
+import { CatalogPage } from './pages/admin/catalog-page.jsx'
+import { catalogTypes } from './shared/services/catalog-service.js'
+import './Styles/admin-catalog.css'
 import { ReportsPage } from './pages/admin/reports-page.jsx'
 import { dashboardMetrics } from './shared/services/admin-data.js'
 import { useCallback, useEffect, useRef, useState } from 'react'
@@ -26,8 +29,11 @@ export function AdminConsole() {
   const { isDark, toggleTheme } = useTheme()
   const dashboard = useAdminDashboard()
   const moderation = useModeration()
-  const routeParams = new URLSearchParams(window.location.hash.split('?')[1] || '')
-  const [page, setPage] = useState(() => window.location.hash === '#moderacion' ? 'moderacion' : window.location.hash.split('?')[0] === '#usuarios' ? 'usuarios' : window.location.hash.startsWith('#admin-reports') ? 'reports' : window.location.hash.startsWith('#admin-reviews') ? 'reviews' : 'dashboard')
+  const [adminHash, setAdminHash] = useState(() => window.location.hash)
+  const catalogType = adminHash.split('?')[0].replace('#admin-catalog-', '')
+  const routeParams = new URLSearchParams(adminHash.split('?')[1] || '')
+  const baseRoute = adminHash.split('?')[0]
+  const page = Object.hasOwn(catalogTypes, catalogType) ? 'catalog' : baseRoute === '#moderacion' ? 'moderacion' : baseRoute === '#usuarios' ? 'usuarios' : baseRoute === '#admin-reports' ? 'reports' : baseRoute === '#admin-reviews' ? 'reviews' : 'dashboard'
   const [data, setData] = useState({ users: [], reviews: [] })
   const [query, setQuery] = useState('')
   const [error, setError] = useState(null)
@@ -38,7 +44,9 @@ export function AdminConsole() {
   const actionLock = useRef(false)
   const loadData = useCallback(async () => {
     const [users, reviews] = await Promise.all([getUsers(), getReviews()])
-    setData({ users, reviews })
+    // JSON Server can return null entries left by imported/merged data.
+    const validRecords = rows => Array.isArray(rows) ? rows.filter(row => row && typeof row === 'object' && !Array.isArray(row)) : []
+    setData({ users: validRecords(users), reviews: validRecords(reviews) })
   }, [])
 
   useEffect(() => {
@@ -47,8 +55,10 @@ export function AdminConsole() {
       if (!cancelled) return loadData()
     }).catch(cause => setError(cause.message))
     function onHashChange() {
-      if (!['#dashboard', '#moderacion', '#usuarios', '#admin', ''].includes(window.location.hash)) return
-      setPage(window.location.hash === '#moderacion' ? 'moderacion' : window.location.hash.split('?')[0] === '#usuarios' ? 'usuarios' : 'dashboard')
+      const nextHash = window.location.hash
+      const base = nextHash.split('?')[0]
+      if (!['#dashboard', '#moderacion', '#usuarios', '#admin', '#admin-reports', '#admin-reviews', ''].includes(base) && !base.startsWith('#admin-catalog-')) return
+      setAdminHash(nextHash)
       setQuery('')
     }
     function onShortcut(event) {
@@ -168,6 +178,7 @@ export function AdminConsole() {
         </div>
         <div className="nav-row shell dark:bg-sonar-base dark:border-sonar-surface">
           <nav aria-label="Administración">
+            <a href="#admin-catalog-releases" aria-current={page === 'catalog' ? 'page' : undefined}>Catálogos</a>
             <a href="#admin-reports" aria-current={page === 'reports' ? 'page' : undefined}>Reportes</a>
             <a href="#usuarios" aria-current={page === 'usuarios' ? 'page' : undefined}>Usuarios</a>
             <a
@@ -195,7 +206,7 @@ export function AdminConsole() {
       <main id="contenido" tabIndex={-1} className="shell main-content transition-colors duration-300 dark:bg-sonar-base dark:text-sonar-text">
         {currentError && <div className="error-banner" role="alert"><div><strong>No pudimos completar la consulta.</strong><p>{currentError} Comprueba que la API local esté disponible.</p></div><button onClick={refresh} disabled={loading}>Reintentar</button></div>}
         <div className="live-notice" role="status">{notice}</div>
-        {page === 'reports' ? <ReportsPage users={data.users} reviews={data.reviews} onUserUpdate={handleUserUpdate} onSendToModeration={sendToModeration} /> : page === 'reviews' ? <ModerationTable key={window.location.hash} {...shared} compact={!routeParams.has('review')} reviews={routeParams.get('review') ? data.reviews.filter(review => String(review.id) === routeParams.get('review')) : data.reviews} initialFilter={routeParams.get('filter') || 'all'} /> : page === 'dashboard' ? <AdminDashboardPage {...shared} reviews={data.reviews} metrics={dashboardMetrics(data.users, data.reviews)} onRefresh={refresh} onExport={exportCsv} error={currentError} /> : page === 'usuarios' ? <UsersPage reviews={data.reviews} initialUserId={routeParams.get('user')} users={data.users} onUserUpdate={handleUserUpdate} /> : <ModerationPage {...shared} allReviews={data.reviews} reviews={moderation.reviews} onRefresh={refresh} error={currentError} />}
+        {page === 'catalog' ? <CatalogPage key={catalogType} type={catalogType} /> : page === 'reports' ? <ReportsPage users={data.users} reviews={data.reviews} onUserUpdate={handleUserUpdate} onSendToModeration={sendToModeration} /> : page === 'reviews' ? <ModerationTable key={window.location.hash} {...shared} compact={!routeParams.has('review')} reviews={routeParams.get('review') ? data.reviews.filter(review => String(review.id) === routeParams.get('review')) : data.reviews} initialFilter={routeParams.get('filter') || 'all'} /> : page === 'dashboard' ? <AdminDashboardPage {...shared} reviews={data.reviews} metrics={dashboardMetrics(data.users, data.reviews)} onRefresh={refresh} onExport={exportCsv} error={currentError} /> : page === 'usuarios' ? <UsersPage reviews={data.reviews} initialUserId={routeParams.get('user')} users={data.users} onUserUpdate={handleUserUpdate} /> : <ModerationPage {...shared} allReviews={data.reviews} reviews={moderation.reviews} onRefresh={refresh} error={currentError} />}
       </main>
       <footer className="console-footer">
         <div className="console-footer__inner shell">

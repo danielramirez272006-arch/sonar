@@ -3032,5 +3032,21 @@
       "aiFlagged": false,
       "createdAt": "2026-09-23T20:27:18.883Z"
     }
-  ]
+  ],
+  "featuredReleases": [],
+  "recordLabels": [],
+  "vinylEditions": [],
+  "announcements": [
+    {
+      "title": "Daniel triple h",
+      "description": "lo mas bacano",
+      "startDate": "2026-09-17",
+      "endDate": "2026-10-05",
+      "status": "draft",
+      "updatedAt": "2026-09-24T17:25:52.041Z",
+      "id": "38f4f9df-e59d-4591-b797-a1b059c5131a",
+      "createdAt": "2026-09-24T17:25:52.041Z"
+    }
+  ],
+  "music": []
 }

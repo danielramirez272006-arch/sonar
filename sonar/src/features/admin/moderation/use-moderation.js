@@ -29,8 +29,9 @@ export function useModeration() {
     if (!Array.isArray(pendingReviews)) {
       throw new Error('La API no devolvió una lista válida de reseñas pendientes.')
     }
-    setReviews(pendingReviews)
-    return pendingReviews
+    const validReviews = pendingReviews.filter(review => review && typeof review === 'object' && !Array.isArray(review))
+    setReviews(validReviews)
+    return validReviews
   }, [])
 
   const loadPendingReviews = useCallback(() => {
