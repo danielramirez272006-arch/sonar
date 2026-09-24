@@ -6,6 +6,7 @@ import PageTransition from '../components/ui/page-transition';
 import HomePage from '../../pages/public/home-page';
 import LoginPage from '../../pages/public/login-page';
 import RegisterPage from '../../pages/public/register-page';
+import ForgotPasswordPage from '../../pages/public/forgot-password-page';
 import CommunityPage from '../../pages/public/community-page';
 import AlbumDetailPage from '../../pages/public/album-detail-page';
 import AboutPage from '../../pages/public/about-page';
@@ -80,6 +81,14 @@ export const AppRouter = () => {
     }
     if (rawPath === 'register') {
       return <RegisterPage />;
+    }
+    if (
+      rawPath === 'forgot-password' ||
+      rawPath === 'recuperar-password' ||
+      rawPath === 'recuperar-contrasena' ||
+      rawPath === 'reset-password'
+    ) {
+      return <ForgotPasswordPage />;
     }
     if (rawPath === 'community') {
       return <CommunityPage />;
