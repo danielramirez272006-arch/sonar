@@ -1,6 +1,10 @@
+import { ReportsPage } from './pages/admin/reports-page.jsx'
+import { dashboardMetrics } from './shared/services/admin-data.js'
 import { useCallback, useEffect, useRef, useState } from 'react'
+import { ConsoleSearch } from './features/admin/console-search.jsx'
+import { ModerationTable } from './features/admin/moderation/components/moderation-table.jsx'
 import { BrowserRouter } from 'react-router-dom'
-import { getReviews, getUsers, updateUser } from './shared/services/api-client.js'
+import { getReviews, getUsers, updateUser, updateReview } from './shared/services/api-client.js'
 import { analyzeReview } from './shared/services/ia-service.js'
 import { useAdminDashboard, useModeration } from './features/admin/index.js'
 import { AdminDashboardPage } from './pages/admin/admin-dashboard-page.jsx'
@@ -22,7 +26,8 @@ export function AdminConsole() {
   const { isDark, toggleTheme } = useTheme()
   const dashboard = useAdminDashboard()
   const moderation = useModeration()
-  const [page, setPage] = useState(() => window.location.hash === '#moderacion' ? 'moderacion' : window.location.hash === '#usuarios' ? 'usuarios' : 'dashboard')
+  const routeParams = new URLSearchParams(window.location.hash.split('?')[1] || '')
+  const [page, setPage] = useState(() => window.location.hash === '#moderacion' ? 'moderacion' : window.location.hash.split('?')[0] === '#usuarios' ? 'usuarios' : window.location.hash.startsWith('#admin-reports') ? 'reports' : window.location.hash.startsWith('#admin-reviews') ? 'reviews' : 'dashboard')
   const [data, setData] = useState({ users: [], reviews: [] })
   const [query, setQuery] = useState('')
   const [error, setError] = useState(null)
@@ -43,7 +48,7 @@ export function AdminConsole() {
     }).catch(cause => setError(cause.message))
     function onHashChange() {
       if (!['#dashboard', '#moderacion', '#usuarios', '#admin', ''].includes(window.location.hash)) return
-      setPage(window.location.hash === '#moderacion' ? 'moderacion' : window.location.hash === '#usuarios' ? 'usuarios' : 'dashboard')
+      setPage(window.location.hash === '#moderacion' ? 'moderacion' : window.location.hash.split('?')[0] === '#usuarios' ? 'usuarios' : 'dashboard')
       setQuery('')
     }
     function onShortcut(event) {
@@ -124,6 +129,11 @@ export function AdminConsole() {
     setTimeout(() => URL.revokeObjectURL(url), 1000)
   }
 
+  async function sendToModeration(id) {
+    await updateReview(id, { status: 'pending_moderation' })
+    await Promise.all([loadData(), moderation.refresh()])
+  }
+
   const loading = busy || dashboard.isLoading || moderation.isLoading
   const currentError = error || dashboard.error || moderation.error
   const shared = { users: data.users, query, busy: loading, onAction: handleAction, analyses, onUserUpdate: handleUserUpdate }
@@ -141,18 +151,7 @@ export function AdminConsole() {
               <small className="dark:text-[#DCDCDD]/70">AUDIOPHILE CURATION HUB</small>
             </span>
           </a>
-          <div className="global-search dark:bg-sonar-base dark:border-sonar-surface">
-            <span aria-hidden="true" className="text-[#B80C09] dark:text-[#ff4d4a]">⌕</span>
-            <input
-              ref={searchRef}
-              value={query}
-              onChange={event => setQuery(event.target.value)}
-              placeholder="Buscar por usuario o álbum…"
-              aria-label="Buscar reseñas por usuario o álbum"
-              className="dark:bg-sonar-base dark:text-sonar-text dark:placeholder-gray-400"
-            />
-            {query ? <button className="clear-search dark:text-sonar-text hover:text-[#B80C09]" aria-label="Limpiar búsqueda" onClick={() => { setQuery(''); searchRef.current?.focus() }}>×</button> : <kbd className="dark:border-white/10 dark:text-sonar-text">Ctrl K</kbd>}
-          </div>
+          <ConsoleSearch users={data.users} reviews={data.reviews} query={query} setQuery={setQuery} inputRef={searchRef} />
           <div className="console-mode flex items-center gap-3">
             <span className="status-dot" /> <span className="dark:text-sonar-text">Entorno de prueba</span> <span className="avatar small dark:bg-sonar-base dark:text-sonar-text border dark:border-white/10">S</span>
             <button
@@ -169,6 +168,8 @@ export function AdminConsole() {
         </div>
         <div className="nav-row shell dark:bg-sonar-base dark:border-sonar-surface">
           <nav aria-label="Administración">
+            <a href="#admin-reports" aria-current={page === 'reports' ? 'page' : undefined}>Reportes</a>
+            <a href="#usuarios" aria-current={page === 'usuarios' ? 'page' : undefined}>Usuarios</a>
             <a
               className={`${page === 'dashboard' ? 'active dark:bg-sonar-surface dark:text-sonar-text dark:border dark:border-[#B80C09]/40 font-bold' : 'dark:text-sonar-text dark:hover:bg-sonar-surface/60'}`}
               aria-current={page === 'dashboard' ? 'page' : undefined}
@@ -194,12 +195,21 @@ export function AdminConsole() {
       <main id="contenido" tabIndex={-1} className="shell main-content transition-colors duration-300 dark:bg-sonar-base dark:text-sonar-text">
         {currentError && <div className="error-banner" role="alert"><div><strong>No pudimos completar la consulta.</strong><p>{currentError} Comprueba que la API local esté disponible.</p></div><button onClick={refresh} disabled={loading}>Reintentar</button></div>}
         <div className="live-notice" role="status">{notice}</div>
-        {page === 'dashboard' ? <AdminDashboardPage {...shared} reviews={data.reviews} metrics={dashboard.metrics} onRefresh={refresh} onExport={exportCsv} error={currentError} /> : page === 'usuarios' ? <UsersPage users={data.users} onUserUpdate={handleUserUpdate} /> : <ModerationPage {...shared} reviews={moderation.reviews} onRefresh={refresh} error={currentError} />}
+        {page === 'reports' ? <ReportsPage users={data.users} reviews={data.reviews} onUserUpdate={handleUserUpdate} onSendToModeration={sendToModeration} /> : page === 'reviews' ? <ModerationTable key={window.location.hash} {...shared} compact={!routeParams.has('review')} reviews={routeParams.get('review') ? data.reviews.filter(review => String(review.id) === routeParams.get('review')) : data.reviews} initialFilter={routeParams.get('filter') || 'all'} /> : page === 'dashboard' ? <AdminDashboardPage {...shared} reviews={data.reviews} metrics={dashboardMetrics(data.users, data.reviews)} onRefresh={refresh} onExport={exportCsv} error={currentError} /> : page === 'usuarios' ? <UsersPage reviews={data.reviews} initialUserId={routeParams.get('user')} users={data.users} onUserUpdate={handleUserUpdate} /> : <ModerationPage {...shared} reviews={moderation.reviews} onRefresh={refresh} error={currentError} />}
       </main>
-      <footer className="console-footer shell dark:bg-sonar-surface dark:border-white/10">
-        <div><strong>SONAR<span className="red-dot text-[#B80C09]"> •</span></strong><p className="dark:text-[#DCDCDD]/80">Un espacio para escuchar con atención.<br />Y compartir con criterio.</p></div>
-        <div><a href="#dashboard" className="dark:text-sonar-text hover:text-[#B80C09] dark:hover:text-[#ff4d4a] transition-colors">Centro de control</a><a href="#moderacion" className="dark:text-sonar-text hover:text-[#B80C09] dark:hover:text-[#ff4d4a] transition-colors">Moderación de reseñas</a><a href="#explore" className="dark:text-sonar-text hover:text-[#B80C09] dark:hover:text-[#ff4d4a] transition-colors">Portal Público</a></div>
-        <span className="edition dark:text-[#DCDCDD]/70">CURADO CON CRITERIO<br /><b className="dark:text-sonar-text font-bold">EDICIÓN AUDIÓFILA</b><small className="dark:text-[#DCDCDD]/50">© {new Date().getFullYear()} SONAR</small></span>
+      <footer className="console-footer">
+        <div className="console-footer__inner shell">
+          <div className="console-footer__brand">
+            <a href="#explore" className="console-footer__logo" aria-label="Sonar · Ir al portal público"><AnimatedLogo /></a>
+            <p>Un espacio para escuchar con atención.<br />Y compartir con criterio.</p>
+          </div>
+          <nav className="console-footer__links" aria-label="Enlaces del pie de página">
+            <a href="#dashboard">Centro de control</a>
+            <a href="#moderacion">Moderación de reseñas</a>
+            <a href="#explore">Portal Público</a>
+          </nav>
+          <div className="edition">CURADO CON CRITERIO<br /><b>EDICIÓN AUDIÓFILA</b><small>© {new Date().getFullYear()} SONAR</small></div>
+        </div>
       </footer>
     </div>
   )

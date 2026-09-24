@@ -1,7 +1,7 @@
 const primaryCards = [
   ['pendingReviews', 'En espera', 'Reseñas por decidir', 'Prioridad'],
   ['flaggedReviews', 'Señales de IA', 'Requieren una segunda escucha', 'Atención'],
-  ['totalReviews', 'Nuevas voces', 'Reseñas en el archivo', 'Esta semana'],
+  ['totalReviews', 'Nuevas voces', 'Reseñas en el archivo', 'Archivo'],
 ];
 
 export function KpiCards({ metrics, busy, error, onSelect }) {
@@ -17,6 +17,9 @@ export function KpiCards({ metrics, busy, error, onSelect }) {
         ))}
       </div>
       <div className="dashboard-metrics__secondary" aria-label="Métricas secundarias">
+        <a href="#usuarios"><b>{error ? '—' : busy ? '…' : metrics?.newUsers ?? 0}</b> nuevos usuarios / 7 días</a>
+        <a href="#admin-reports"><b>{error ? '—' : busy ? '…' : metrics?.pendingReports ?? 0}</b> reportes pendientes</a>
+        <a href="#usuarios"><b>{error ? '—' : busy ? '…' : metrics?.sanctionedUsers ?? 0}</b> usuarios sancionados</a>
         <span><b>{error ? '—' : metrics?.totalUsers ?? 0}</b> miembros</span>
         <span><b>{error ? '—' : metrics?.approvedReviews ?? 0}</b> aprobadas</span>
         <span><b>{error ? '—' : metrics?.rejectedReviews ?? 0}</b> rechazadas</span>

@@ -8,8 +8,8 @@ import { interactionsService } from '../../services/interactions-service';
 import { createReview } from '../../services/api-client';
 
 export const ReviewModal = () => {
+  const { user } = useAuth();
   const { reviewModalAlbum, closeReviewModal } = usePlayer();
-  const { user } = useAuth() || {};
   const [toastMessage, setToastMessage] = useState(null);
 
   useEffect(() => {

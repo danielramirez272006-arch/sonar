@@ -248,11 +248,12 @@ export const searchAlbums = async (query) => {
  * Obtiene detalles de un álbum por ID
  */
 export const getAlbumById = async (id) => {
-  if (!id) return null;
+  if (!/^\d+$/.test(String(id))) return null;
   try {
-    const response = await fetch(`${BASE_URL}/album/${id}`);
+    const response = await fetch(`${BASE_URL}/album/${id}`, { signal: AbortSignal.timeout(10000) });
     if (!response.ok) throw new Error(`HTTP ${response.status}`);
     const data = await response.json();
+    if (data.error || !data.id || !data.title) return null;
     return formatDeezerAlbum(data);
   } catch (error) {
     console.error("Error al obtener álbum de Deezer:", error);

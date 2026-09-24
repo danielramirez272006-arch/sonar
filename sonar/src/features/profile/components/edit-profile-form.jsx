@@ -19,6 +19,7 @@ import {
 import Input from '../../../shared/components/ui/input';
 import Button from '../../../shared/components/ui/button';
 import Avatar from '../../../shared/components/ui/avatar';
+import { BlobatarAvatar } from '../../../shared/components/ui/blobatar-avatar';
 import { GENRE_OPTIONS } from '../../../shared/services/recommendations-service';
 
 // 24 colores sólidos organizados armónicamente
@@ -109,6 +110,8 @@ export const EditProfileForm = ({ initialData = {}, onSave = () => {} }) => {
     avatarSeed: initialData.avatarSeed || initialData.username || 'vinyl-master',
     avatarIcon: initialData.avatarIcon || 'headphones',
     avatarUrl: initialData.avatarUrl || '',
+    avatarHue: initialData.avatarHue ?? 18,
+    avatarTone: initialData.avatarTone ?? 'vivid',
     preferences: initialData.preferences || ['Art Rock', 'Electrónica'],
   });
 

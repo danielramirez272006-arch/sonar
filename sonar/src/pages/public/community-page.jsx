@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useReviews } from '../../features/reviews/use-reviews.js';
 import Navbar from '../../shared/components/layout/navbar';
 import Footer from '../../shared/components/layout/footer';
 import ReviewFeedCard from '../../features/reviews/components/review-feed-card';
