@@ -1255,6 +1255,53 @@
         "IDM / Techno"
       ],
       "createdAt": "2026-09-24T14:44:19.723Z"
+    },
+    {
+      "id": "user-1790262393409",
+      "username": "audiophile_951",
+      "email": "spotify_user_951@sonar.local",
+      "password": "social_mock_login_123",
+      "role": "user",
+      "avatarUrl": "",
+      "avatarBg": "#7c3aed",
+      "bio": "Nuevo melómano explorando vinilos y texturas acústicas en Sonar.",
+      "stats": {
+        "savedAlbums": 0,
+        "reviewsCount": 0,
+        "followers": 0,
+        "following": 0
+      },
+      "preferences": [
+        "Psicodelia",
+        "Synthwave"
+      ],
+      "createdAt": "2026-09-24T15:06:33.410Z"
+    },
+    {
+      "id": "user-1790262405952",
+      "username": "audiophile_351",
+      "email": "spotify_user_351@sonar.local",
+      "password": "social_mock_login_123",
+      "role": "user",
+      "avatarUrl": "",
+      "avatarBg": "AZUL",
+      "bio": "Nuevo melómano explorando vinilos y texturas acústicas en Sonar.",
+      "stats": {
+        "savedAlbums": 0,
+        "reviewsCount": 0,
+        "followers": 0,
+        "following": 0
+      },
+      "preferences": [
+        "Art Rock",
+        "Jazz & Fusion"
+      ],
+      "createdAt": "2026-09-24T15:06:45.952Z",
+      "avatarHue": 326,
+      "avatarTone": 0.52,
+      "avatarStyle": "blobatar",
+      "avatarSeed": "cyber-audio",
+      "avatarIcon": "headphones"
     }
   ],
   "reviews": [
