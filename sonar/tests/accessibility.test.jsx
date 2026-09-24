@@ -45,16 +45,27 @@ describe('SONAR Accessibility System (WCAG 2.1 AA/AAA)', () => {
   });
 
   const TestConsumer = () => {
-    const { settings, updateSetting, resetAllSettings, announce, isSpeaking } = useAccessibility();
+    const { settings, updateSetting, resetAllSettings, announce, isSpeaking, playAudioCue } = useAccessibility();
     return (
       <div>
         <span data-testid="font-size">{settings.fontSize}</span>
         <span data-testid="high-contrast">{String(settings.highContrast)}</span>
         <span data-testid="dyslexic">{String(settings.dyslexicFont)}</span>
+        <span data-testid="line-spacing">{settings.lineSpacing}</span>
+        <span data-testid="sepia">{String(settings.sepiaMode)}</span>
+        <span data-testid="grayscale">{String(settings.grayscaleMode)}</span>
+        <span data-testid="reading-guide">{String(settings.readingGuide)}</span>
+        <span data-testid="audio-cues">{String(settings.audioCues)}</span>
         <span data-testid="speaking">{String(isSpeaking)}</span>
         <button onClick={() => updateSetting('fontSize', 'large')}>Aumentar Fuente</button>
         <button onClick={() => updateSetting('highContrast', true)}>Activar Contraste</button>
         <button onClick={() => updateSetting('dyslexicFont', true)}>Activar Dislexia</button>
+        <button onClick={() => updateSetting('lineSpacing', 'relaxed')}>Espaciado Relajado</button>
+        <button onClick={() => updateSetting('sepiaMode', true)}>Activar Sepia</button>
+        <button onClick={() => updateSetting('grayscaleMode', true)}>Activar Grayscale</button>
+        <button onClick={() => updateSetting('readingGuide', true)}>Activar Guía</button>
+        <button onClick={() => updateSetting('audioCues', true)}>Activar Audio Cues</button>
+        <button onClick={() => playAudioCue('click')}>Sonar Click</button>
         <button onClick={() => announce('Mensaje accesible de prueba')}>Anunciar</button>
         <button onClick={resetAllSettings}>Restablecer Todo</button>
       </div>
@@ -86,11 +97,38 @@ describe('SONAR Accessibility System (WCAG 2.1 AA/AAA)', () => {
     expect(screen.getByTestId('dyslexic').textContent).toBe('true');
     expect(document.documentElement.classList.contains('a11y-dyslexic-font')).toBe(true);
 
+    // Activar espaciado relajado
+    fireEvent.click(screen.getByText('Espaciado Relajado'));
+    expect(screen.getByTestId('line-spacing').textContent).toBe('relaxed');
+    expect(document.documentElement.classList.contains('a11y-spacing-relaxed')).toBe(true);
+
+    // Activar modo Sepia
+    fireEvent.click(screen.getByText('Activar Sepia'));
+    expect(screen.getByTestId('sepia').textContent).toBe('true');
+    expect(document.documentElement.classList.contains('a11y-sepia-mode')).toBe(true);
+
+    // Activar modo Monocromático
+    fireEvent.click(screen.getByText('Activar Grayscale'));
+    expect(screen.getByTestId('grayscale').textContent).toBe('true');
+    expect(document.documentElement.classList.contains('a11y-grayscale')).toBe(true);
+
+    // Activar Guía de Lectura
+    fireEvent.click(screen.getByText('Activar Guía'));
+    expect(screen.getByTestId('reading-guide').textContent).toBe('true');
+
+    // Activar Audio Cues y emitir sonido
+    fireEvent.click(screen.getByText('Activar Audio Cues'));
+    expect(screen.getByTestId('audio-cues').textContent).toBe('true');
+    fireEvent.click(screen.getByText('Sonar Click'));
+
     // Restablecer todo
     fireEvent.click(screen.getByText('Restablecer Todo'));
     expect(screen.getByTestId('font-size').textContent).toBe('normal');
     expect(screen.getByTestId('high-contrast').textContent).toBe('false');
     expect(screen.getByTestId('dyslexic').textContent).toBe('false');
+    expect(screen.getByTestId('line-spacing').textContent).toBe('normal');
+    expect(screen.getByTestId('sepia').textContent).toBe('false');
+    expect(screen.getByTestId('grayscale').textContent).toBe('false');
   });
 
   it('renderiza el widget flotante de accesibilidad y abre el panel de configuración', () => {

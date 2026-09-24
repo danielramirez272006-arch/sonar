@@ -23,6 +23,7 @@ import { ColorBlindnessFilters } from './shared/components/a11y/color-blindness-
 import { AriaLiveAnnouncer } from './shared/components/a11y/aria-live-announcer.jsx'
 import { AccessibilityWidget } from './shared/components/a11y/accessibility-widget.jsx'
 import { KeyboardShortcutsModal } from './shared/components/a11y/keyboard-shortcuts-modal.jsx'
+import { ReadingGuide } from './shared/components/a11y/reading-guide.jsx'
 import "./Styles/App.css";
 import './Styles/admin.css'
 import './Styles/admin-dashboard.css'
@@ -237,6 +238,7 @@ export default function App() {
               <ReviewModal />
               <AccessibilityWidget />
               <KeyboardShortcutsModal />
+              <ReadingGuide />
             </PlayerProvider>
           </ThemeProvider>
         </AuthProvider>

@@ -34,6 +34,35 @@ html.a11y-font-xlarge {
   font-size: 130% !important;
 }
 
+/* --- Espaciado de Texto e Interlineado Relajado / Amplio (WCAG 1.4.12) --- */
+html.a11y-spacing-relaxed p,
+html.a11y-spacing-relaxed span,
+html.a11y-spacing-relaxed article,
+html.a11y-spacing-relaxed blockquote {
+  line-height: 1.85 !important;
+  letter-spacing: 0.03em !important;
+  word-spacing: 0.06em !important;
+}
+
+html.a11y-spacing-loose p,
+html.a11y-spacing-loose span,
+html.a11y-spacing-loose article,
+html.a11y-spacing-loose blockquote {
+  line-height: 2.2 !important;
+  letter-spacing: 0.07em !important;
+  word-spacing: 0.12em !important;
+}
+
+/* --- Modo Sepia / Confort Visual y Filtro de Luz Azul --- */
+html.a11y-sepia-mode {
+  filter: sepia(35%) saturate(90%) contrast(96%) brightness(96%) !important;
+}
+
+/* --- Modo Escala de Grises / Monocromático (Bajo Estímulo) --- */
+html.a11y-grayscale {
+  filter: grayscale(100%) contrast(105%) !important;
+}
+
 /* --- Tipografía para Dislexia y Mayor Legibilidad --- */
 html.a11y-dyslexic-font body,
 html.a11y-dyslexic-font * {
