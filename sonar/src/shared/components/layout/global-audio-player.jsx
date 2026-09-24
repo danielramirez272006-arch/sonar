@@ -646,7 +646,15 @@ export const GlobalAudioPlayer = () => {
                   isLoadingLyrics ? (
                     <div className="py-6 flex items-center justify-center gap-2 text-xs text-amber-300">
                       <div className="w-4 h-4 border-2 border-amber-400 border-t-transparent rounded-full animate-spin" />
-                      <span>Buscando letras oficiales en LRCLIB API...</span>
+                      <span>Buscando letras oficiales en LRCLIB & base de datos Sonar...</span>
+                    </div>
+                  ) : lyricsData?.instrumental ? (
+                    <div className="py-6 flex flex-col items-center justify-center gap-2 text-center text-amber-200/90">
+                      <span className="material-symbols-outlined text-[28px] text-amber-400">music_off</span>
+                      <p className="text-sm font-bold text-white">Pieza Instrumental</p>
+                      <p className="text-xs text-gray-300 max-w-sm">
+                        {lyricsData.plainLyrics || 'Esta pista es una composición instrumental pura sin letra vocal registrada.'}
+                      </p>
                     </div>
                   ) : lyricsData?.plainLyrics ? (
                     <div className="space-y-2">
@@ -661,13 +669,49 @@ export const GlobalAudioPlayer = () => {
                       </div>
                     </div>
                   ) : (
-                    <div className="py-4 text-center space-y-1">
-                      <p className="text-gray-300 font-semibold">No se encontró letra registrada para esta canción.</p>
-                      <p className="text-[11px] text-gray-400">
-                        {isPodcast
-                          ? 'Para episodios de podcast, consulta la pestaña de Ficha Técnica.'
-                          : 'Puedes escuchar la muestra de audio en alta fidelidad.'}
-                      </p>
+                    <div className="py-5 text-center space-y-2.5">
+                      <span className="material-symbols-outlined text-[26px] text-amber-400/80">lyrics</span>
+                      <div>
+                        <p className="text-gray-200 font-bold text-xs">Letra no disponible temporalmente</p>
+                        <p className="text-[11px] text-gray-400 mt-0.5">
+                          {isPodcast
+                            ? 'Para episodios de podcast, consulta la pestaña de Ficha Técnica.'
+                            : 'No se encontró transcripción abierta para esta canción.'}
+                        </p>
+                      </div>
+
+                      <div className="flex items-center justify-center gap-2 pt-1">
+                        <button
+                          type="button"
+                          onClick={() => {
+                            if (!currentTrack) return;
+                            setIsLoadingLyrics(true);
+                            getLyricsForTrack({
+                              title: currentTrack.title,
+                              artist: currentTrack.artist,
+                              album: currentTrack.album,
+                              duration: duration || currentTrack.duration,
+                            })
+                              .then((res) => setLyricsData(res))
+                              .catch(() => {})
+                              .finally(() => setIsLoadingLyrics(false));
+                          }}
+                          className="px-3 py-1.5 rounded-lg bg-amber-400/20 hover:bg-amber-400/30 text-amber-300 text-[11px] font-bold flex items-center gap-1 cursor-pointer transition-colors"
+                        >
+                          <span className="material-symbols-outlined text-[13px]">refresh</span>
+                          <span>Reintentar Búsqueda</span>
+                        </button>
+
+                        <a
+                          href={`https://www.google.com/search?q=${encodeURIComponent(`${currentTrack.artist} ${currentTrack.title} lyrics`)}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="px-3 py-1.5 rounded-lg bg-white/10 hover:bg-white/20 text-white text-[11px] font-bold flex items-center gap-1 cursor-pointer transition-colors"
+                        >
+                          <span className="material-symbols-outlined text-[13px]">open_in_new</span>
+                          <span>Buscar en Google</span>
+                        </a>
+                      </div>
                     </div>
                   )
                 ) : (

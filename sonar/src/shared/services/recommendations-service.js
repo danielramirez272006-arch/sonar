@@ -13,6 +13,10 @@ export const GENRE_OPTIONS = [
   'Folk Acústico',
   'IDM / Techno',
   'Neo-Soul',
+  'Infantil & Familiar',
+  'Bandas Sonoras & Animación',
+  'Música Clásica Infantil',
+  'Pop Familiar',
 ];
 
 export const HIGH_RES_FALLBACK_COVERS = [
@@ -273,7 +277,7 @@ export const CATALOG_RECOMMENDATIONS = [
     description: 'Producción cavernosa y legendaria de Martin Hannett.',
   },
 
-  // Hip-Hop Experimental
+  // Hip-Hop Experimental (Explícito)
   {
     id: 'rec-22',
     deezerId: 9896728,
@@ -283,10 +287,12 @@ export const CATALOG_RECOMMENDATIONS = [
     genre: 'Hip-Hop Experimental',
     cover: 'https://cdn-images.dzcdn.net/images/cover/00dd0da365a94b1829302d6b7fec70e6/500x500-000000-80-0-0.jpg',
     rating: 5.0,
+    explicit: true,
+    explicit_lyrics: true,
     description: 'Fusión monumental de jazz libre, funk y narrativa visceral.',
   },
 
-  // R&B / Neo-Soul
+  // R&B / Neo-Soul (Explícito)
   {
     id: 'rec-23',
     deezerId: 344137457,
@@ -296,7 +302,59 @@ export const CATALOG_RECOMMENDATIONS = [
     genre: 'Neo-Soul',
     cover: 'https://cdn-images.dzcdn.net/images/cover/aa7e6de00b0810f5051aa60b489f58d8/500x500-000000-80-0-0.jpg',
     rating: 4.9,
+    explicit: true,
+    explicit_lyrics: true,
     description: 'Minimalismo y pureza vocal en cinta analógica.',
+  },
+
+  // Selección Infantil, Familiar y Bandas Sonoras Seguras (Junior Mode)
+  {
+    id: 'rec-junior-1',
+    deezerId: 302127,
+    title: 'Discovery (Interstella 5555)',
+    artist: 'Daft Punk',
+    year: '2001',
+    genre: 'Electrónica',
+    cover: 'https://cdn-images.dzcdn.net/images/cover/5718f7c81c27e0b2417e2a4c45224f8a/500x500-000000-80-0-0.jpg',
+    rating: 4.9,
+    isKidSafe: true,
+    description: 'Odisea animada y electrónica brillante apta para toda la familia.',
+  },
+  {
+    id: 'rec-junior-2',
+    deezerId: 12047952,
+    title: 'Abbey Road & Yellow Submarine',
+    artist: 'The Beatles',
+    year: '1969',
+    genre: 'Art Rock',
+    cover: 'https://cdn-images.dzcdn.net/images/cover/aa94ab293730bb7845d2aa8c672b2c29/500x500-000000-80-0-0.jpg',
+    rating: 4.9,
+    isKidSafe: true,
+    description: 'Melodías icónicas, luminosas y mágicas ideales para jóvenes melómanos.',
+  },
+  {
+    id: 'rec-junior-3',
+    deezerId: 118260,
+    title: 'A Charlie Brown Jazz & Classics',
+    artist: 'Vince Guaraldi Trio',
+    year: '1965',
+    genre: 'Jazz & Fusion',
+    cover: 'https://cdn-images.dzcdn.net/images/cover/11075d5a71120a1ce2d94cf219d266e7/500x500-000000-80-0-0.jpg',
+    rating: 4.9,
+    isKidSafe: true,
+    description: 'Piano acústico suave y composiciones llenas de calidez y nostalgia familiar.',
+  },
+  {
+    id: 'rec-junior-4',
+    deezerId: 14880659,
+    title: 'Studio Ghibli Symphonic Suite',
+    artist: 'Joe Hisaishi & New Japan Philharmonic',
+    year: '2008',
+    genre: 'Bandas Sonoras & Animación',
+    cover: 'https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=600&auto=format&fit=crop&q=80',
+    rating: 5.0,
+    isKidSafe: true,
+    description: 'Composiciones orquestales inolvidables para El Viaje de Chihiro y Totoro.',
   },
 ];
 
@@ -304,20 +362,31 @@ export const CATALOG_RECOMMENDATIONS = [
  * Obtiene recomendaciones adaptadas a los gustos y preferencias de un usuario.
  */
 export function getRecommendationsForUser(user, activeGenreFilter = null) {
+  const isJunior = user?.accountType === 'junior' || Boolean(user?.parentalControl?.enabled && user?.parentalControl?.blockExplicit);
+  
   const preferences = user?.preferences && user.preferences.length > 0
     ? user.preferences
-    : ['Art Rock', 'Electrónica'];
+    : (isJunior ? ['Bandas Sonoras & Animación', 'Electrónica', 'Jazz & Fusion'] : ['Art Rock', 'Electrónica']);
+
+  let catalog = CATALOG_RECOMMENDATIONS;
+  if (isJunior) {
+    // Si el usuario es Junior o tiene filtro parental activo, filtrar o priorizar contenido seguro
+    catalog = catalog.filter((album) => !album.explicit && !album.explicit_lyrics);
+  }
 
   // Puntuamos el catálogo según coincidencias con las preferencias del usuario
-  const scored = CATALOG_RECOMMENDATIONS.map((album) => {
+  const scored = catalog.map((album) => {
     const isPreferred = preferences.some(
-      (pref) => pref.toLowerCase() === album.genre.toLowerCase()
+      (pref) => pref.toLowerCase() === album.genre.toLowerCase() || album.genre.toLowerCase().includes(pref.toLowerCase())
     );
 
     let matchPercentage = 80;
     let matchReason = '';
 
-    if (isPreferred) {
+    if (album.isKidSafe && isJunior) {
+      matchPercentage = 98;
+      matchReason = 'Contenido 100% seguro y recomendado para Melómanos Junior';
+    } else if (isPreferred) {
       matchPercentage = Math.min(99, Math.round(92 + album.rating * 1.5));
       matchReason = `Recomendado porque disfrutas de ${album.genre}`;
     } else {
@@ -330,7 +399,7 @@ export function getRecommendationsForUser(user, activeGenreFilter = null) {
       isPreferred,
       matchPercentage,
       matchReason,
-      matchScore: isPreferred ? 100 + album.rating * 10 : album.rating * 10,
+      matchScore: (album.isKidSafe && isJunior ? 120 : (isPreferred ? 100 : 0)) + album.rating * 10,
     };
   });
 
@@ -341,4 +410,11 @@ export function getRecommendationsForUser(user, activeGenreFilter = null) {
 
   // Ordenamos primero los que coinciden con los gustos del usuario, luego por calificación
   return filtered.sort((a, b) => b.matchScore - a.matchScore);
+}
+
+/**
+ * Retorna selección exclusiva de álbumes familiares y para niños
+ */
+export function getKidFriendlyRecommendations() {
+  return CATALOG_RECOMMENDATIONS.filter((album) => album.isKidSafe || (!album.explicit && !album.explicit_lyrics));
 }
