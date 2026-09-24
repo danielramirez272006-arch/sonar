@@ -18,7 +18,7 @@ it('propagates API failures instead of confirming an unsaved report', async () =
   await expect(submitCommunityReport(input)).rejects.toThrow('Offline')
 })
 it('rejects duplicate pending reports', async () => {
-  apiRequest.mockResolvedValueOnce({ id: 'author', conductReports: [{ contentId: 'comment-1', contentType: 'comment', reporterId: 'reader', status: 'pending' }] }])
+  apiRequest.mockResolvedValueOnce([{ id: 'author', conductReports: [{ contentId: 'comment-1', contentType: 'comment', reporterId: 'reader', status: 'pending' }] }])
   await expect(submitCommunityReport(input)).rejects.toThrow('Ya tienes')
   expect(apiRequest).toHaveBeenCalledTimes(1)
 })

@@ -1,9 +1,10 @@
-﻿/** @vitest-environment jsdom */
+/** @vitest-environment jsdom */
 import { afterEach, expect, it, vi } from 'vitest'
 import { cleanup, fireEvent, render, screen } from '@testing-library/react'
 import { SanctionPanel } from '../src/features/admin/sanction-panel.jsx'
 import { ReportsPage } from '../src/pages/admin/reports-page.jsx'
 vi.mock('../src/shared/context/auth-context.jsx', () => ({ useAuth: () => ({ user: { id: 'a', username: 'Admin' } }) }))
+vi.mock('../src/shared/services/api-client.js', () => ({ apiRequest: vi.fn().mockResolvedValue([]) }))
 afterEach(cleanup)
 it('requires confirmation before saving a sanction', async () => {
   const save = vi.fn().mockResolvedValue({})
@@ -17,7 +18,7 @@ it('requires confirmation before saving a sanction', async () => {
 })
 it('keeps report pending if sending to moderation fails', async () => {
   const save = vi.fn()
-  render(<ReportsPage users={[{ id: 'u', username: 'Mateo', conductReports: [{ id: 'r', status: 'pending', contentId: '10', reason: 'Insultos' }] }]} reviews={[{ id: '10', content: 'Texto reportado' }]} onUserUpdate={save} onSendToModeration={vi.fn().mockRejectedValue(new Error('Sin conexión'))} />)
+  render(<ReportsPage users={[{ id: 'u', username: 'Mateo', conductReports: [{ id: 'r', status: 'pending', contentType: 'review', contentId: '10', reason: 'Insultos' }] }]} reviews={[{ id: '10', content: 'Texto reportado' }]} onUserUpdate={save} onSendToModeration={vi.fn().mockRejectedValue(new Error('Sin conexión'))} />)
   fireEvent.click(screen.getByText('Enviar a moderación'))
   await screen.findByText('Sin conexión')
   expect(save).not.toHaveBeenCalled()
