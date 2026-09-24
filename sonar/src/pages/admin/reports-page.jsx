@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { UserRound, ShieldCheck, Check } from 'lucide-react'
+import { UserRound, ShieldCheck, Check, Inbox, ArrowUpRight } from 'lucide-react'
 import { reportsFrom, sameId } from '../../shared/services/admin-data.js'
 export function ReportsPage({ users = [], reviews = [], onUserUpdate, onSendToModeration }) {
   const [filter, setFilter] = useState('all')
@@ -20,7 +20,17 @@ export function ReportsPage({ users = [], reviews = [], onUserUpdate, onSendToMo
       setMessage(send ? 'Reporte revisado. Abre el contenido o el usuario para continuar la moderación.' : 'Reporte actualizado.')
     } catch (error) { setMessage(error.message) } finally { setBusy(false) }
   }
-  return <section className="admin-panel"><header><h1>Reportes de la comunidad</h1><p>Revisa el contexto antes de decidir.</p><a href="#admin-reports">Ver todos los reportes</a></header><div className="admin-filters">{[['all', 'Todos'], ['pending', 'Pendientes'], ['reviewed', 'Revisados'], ['resolved', 'Resueltos']].map(([key, label]) => <button key={key} aria-pressed={filter === key} onClick={() => setFilter(key)}>{label}</button>)}</div>{message && <p role="status">{message}</p>}{!visible.length && <p>No hay reportes en esta selección.</p>}
+  return <section className="admin-panel reports-workspace" aria-labelledby="reports-title">
+    <header className="reports-heading">
+      <div><span className="reports-eyebrow">COMUNIDAD · MODERACIÓN</span><h1 id="reports-title">Reportes de la comunidad</h1><p>Revisa el contexto y decide el siguiente paso.</p></div>
+      <div className="reports-pending"><span className="reports-pending__dot" aria-hidden="true" /><strong>{all.filter(report => report.status === 'pending').length}</strong> pendientes</div>
+    </header>
+    <div className="reports-toolbar">
+      <div className="admin-filters reports-filters" role="group" aria-label="Filtrar reportes por estado">{[['all', 'Todos'], ['pending', 'Pendientes'], ['reviewed', 'Revisados'], ['resolved', 'Resueltos']].map(([key, label]) => <button key={key} aria-pressed={filter === key} onClick={() => setFilter(key)}>{label}<span>{all.filter(report => key === 'all' || report.status === key).length}</span></button>)}</div>
+      {requested && <a className="reports-all" href="#admin-reports" onClick={() => setFilter('all')}>Ver todos los reportes <ArrowUpRight size={16} aria-hidden="true" /></a>}
+    </div>
+    {message && <p className="reports-notice" role="status">{message}</p>}
+    {!visible.length && <div className="reports-empty"><span className="reports-empty__icon"><Inbox size={28} strokeWidth={1.5} aria-hidden="true" /></span><h2>{!all.length ? 'Todo en orden por aquí' : 'Sin reportes en esta selección'}</h2><p>{!all.length ? 'Cuando la comunidad envíe un reporte, podrás revisarlo y gestionarlo desde aquí.' : 'Prueba otro estado para consultar los reportes de la comunidad.'}</p>{!!all.length && filter !== 'all' && <button className="reports-reset" onClick={() => setFilter('all')}>Mostrar todos los estados</button>}</div>}
     {visible.map(report => <article className="admin-report" key={`${report.userId}-${report.id}`}><h3>{report.userName}</h3><p>{report.reason}</p><div className="admin-profile-facts"><span>Reportó: {users.find(user => sameId(user.id, report.reporterId))?.username || report.reporterName || 'No registrado'}</span><span>Contenido: {report.contentType || 'Perfil'}</span><span>{report.createdAt ? new Date(report.createdAt).toLocaleString('es') : 'Sin fecha'}</span><span>{all.filter(item => sameId(item.userId, report.userId)).length} reportes acumulados</span><span>Estado: {{ pending: 'Pendiente', reviewed: 'Revisado', resolved: 'Resuelto' }[report.status]}</span></div><div className="report-actions">
       <div className="report-actions__group">
         <a className="report-action" href={`#usuarios?user=${encodeURIComponent(report.userId)}`}><UserRound size={16} aria-hidden="true" /><span>Ver usuario</span></a>
