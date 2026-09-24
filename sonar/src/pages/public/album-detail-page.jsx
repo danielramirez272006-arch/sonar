@@ -85,16 +85,22 @@ export const AlbumDetailPage = () => {
     },
   ]);
 
-  useEffect(() => {
+  const syncSavedStatus = () => {
     setIsSaved(interactionsService.isAlbumSaved(userId, mockAlbum.title));
+  };
+
+  useEffect(() => {
+    syncSavedStatus();
+    const handleCollectionChange = () => {
+      syncSavedStatus();
+    };
+    window.addEventListener('sonar:collection-changed', handleCollectionChange);
+    return () => window.removeEventListener('sonar:collection-changed', handleCollectionChange);
   }, [userId]);
 
   const handleToggleSave = () => {
-    if (!user) {
-      window.location.hash = '#login';
-      return;
-    }
-    const res = interactionsService.toggleSaveAlbum(userId, {
+    const effectiveId = user?.id || 'guest_user';
+    const res = interactionsService.toggleSaveAlbum(effectiveId, {
       id: mockAlbum.id,
       title: mockAlbum.title,
       artist: mockAlbum.artist,
@@ -102,12 +108,33 @@ export const AlbumDetailPage = () => {
       year: mockAlbum.year,
       genre: mockAlbum.genre,
       rating: mockAlbum.rating,
+      type: 'album',
     });
     setIsSaved(res.isSaved);
     setToastMessage(
       res.isSaved
         ? `¡${mockAlbum.title} agregado a tus álbumes guardados!`
         : `Eliminado de tus colecciones.`
+    );
+  };
+
+  const handleToggleSaveTrack = (track) => {
+    const effectiveId = user?.id || 'guest_user';
+    const res = interactionsService.toggleSaveAlbum(effectiveId, {
+      id: track.id,
+      trackId: track.id,
+      deezerId: mockAlbum.deezerId,
+      title: track.title,
+      artist: mockAlbum.artist,
+      album: mockAlbum.title,
+      cover: mockAlbum.cover,
+      duration: track.duration,
+      type: 'track',
+    });
+    setToastMessage(
+      res.isSaved
+        ? `¡Canción "${track.title}" guardada en tu colección!`
+        : `Canción "${track.title}" eliminada de tu colección.`
     );
   };
 
@@ -299,6 +326,32 @@ export const AlbumDetailPage = () => {
                       </div>
 
                       <div className="flex items-center gap-2 shrink-0">
+                        <button
+                          type="button"
+                          onClick={() => handleToggleSaveTrack(track)}
+                          className={`w-8 h-8 rounded-full flex items-center justify-center transition-colors cursor-pointer ${
+                            interactionsService.isAlbumSaved(userId, { id: track.id, title: track.title, artist: mockAlbum.artist })
+                              ? 'bg-[#B80C09] text-white shadow-xs'
+                              : 'bg-gray-100 dark:bg-white/10 hover:bg-[#B80C09] hover:text-white text-[#231123] dark:text-white'
+                          }`}
+                          title={
+                            interactionsService.isAlbumSaved(userId, { id: track.id, title: track.title, artist: mockAlbum.artist })
+                              ? 'Quitar canción de mi colección'
+                              : 'Guardar canción en mi colección'
+                          }
+                        >
+                          <span
+                            className="material-symbols-outlined text-[16px]"
+                            style={{
+                              fontVariationSettings: interactionsService.isAlbumSaved(userId, { id: track.id, title: track.title, artist: mockAlbum.artist })
+                                ? "'FILL' 1"
+                                : "'FILL' 0",
+                            }}
+                          >
+                            bookmark
+                          </span>
+                        </button>
+
                         <button
                           type="button"
                           onClick={() =>

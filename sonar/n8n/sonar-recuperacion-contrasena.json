@@ -1,0 +1,182 @@
+{
+  "name": "SONAR - Código de Recuperación OTP",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "forgot-password",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "8a32b2e4-c5a1-432e-a4b7-5085e94b1621",
+      "name": "Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        220,
+        300
+      ],
+      "webhookId": "forgot-password"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "d7426fe4-0a84-48b4-9dae-379a957d1973",
+              "leftValue": "={{ $json.body?.email }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "c1f71a9b-7e61-4623-88be-00b8c6e21683",
+      "name": "Validar Email",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        440,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "{\n  \"success\": false,\n  \"message\": \"Debes proporcionar un correo electrónico válido.\"\n}",
+        "options": {
+          "responseCode": 400
+        }
+      },
+      "id": "9d137b01-f18c-4f93-b67e-128ca8433d7b",
+      "name": "Respond Error",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [
+        680,
+        460
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const body = $input.first().json.body || {};\nconst email = (body.email || '').trim().toLowerCase();\n// Usar el código enviado por la app o generar uno de 6 dígitos si no viene\nconst code = body.code ? String(body.code) : Math.floor(100000 + Math.random() * 900000).toString();\nconst expiresAt = new Date(Date.now() + 15 * 60 * 1000).toISOString();\n\nreturn [\n  {\n    json: {\n      email,\n      code,\n      expiresAt\n    }\n  }\n];"
+      },
+      "id": "a57620d4-7c30-4e58-bb12-9c1691a5db92",
+      "name": "Preparar Código OTP",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        680,
+        220
+      ]
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $json.email }}",
+        "subject": "SONAR - Tu código de recuperación: {{ $json.code }}",
+        "message": "=<!DOCTYPE html>\n<html>\n<head>\n  <meta charset=\"utf-8\">\n  <style>\n    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; background-color: #fcf8fa; color: #231123; padding: 20px; }\n    .container { max-width: 520px; margin: 0 auto; background: #ffffff; padding: 32px; border-radius: 12px; border: 1px solid #ebd9ea; text-align: center; }\n    .header { font-size: 22px; font-weight: 800; color: #5c1d5e; margin-bottom: 12px; }\n    .code-box { display: inline-block; padding: 16px 32px; background-color: #fdf2f8; border: 2px solid #fbcfe8; border-radius: 10px; font-size: 32px; font-weight: 900; letter-spacing: 8px; color: #5c1d5e; font-family: monospace; margin: 24px 0; }\n    .notice { font-size: 13px; color: #B80C09; font-weight: 600; margin-top: 12px; }\n    .footer { font-size: 12px; color: #856f80; margin-top: 28px; border-top: 1px solid #ebd9ea; padding-top: 16px; }\n  </style>\n</head>\n<body>\n  <div class=\"container\">\n    <div class=\"header\">SONAR</div>\n    <p style=\"font-size: 15px; color: #493547;\">Recibimos una solicitud para restablecer tu contraseña.</p>\n    <p style=\"font-size: 14px; color: #5c435a;\">Ingresa el siguiente código de 6 dígitos en la página de SONAR:</p>\n    <div class=\"code-box\">{{ $json.code }}</div>\n    <p class=\"notice\">Este código es válido por 15 minutos.</p>\n    <p class=\"footer\">Si no solicitaste este código, puedes ignorar este correo de forma segura.</p>\n  </div>\n</body>\n</html>"
+      },
+      "id": "e9124a61-9c31-41bb-92e3-2e0618db0d34",
+      "name": "Enviar código con Gmail",
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        920,
+        220
+      ]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "{\n  \"success\": true,\n  \"message\": \"Código de verificación enviado correctamente a tu correo.\",\n  \"code\": \"={{ $json.code }}\"\n}",
+        "options": {
+          "responseCode": 200
+        }
+      },
+      "id": "761dae93-6b71-46c9-b7b5-231365ad4f93",
+      "name": "Respond Success",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [
+        1140,
+        220
+      ]
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Validar Email",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Validar Email": {
+      "main": [
+        [
+          {
+            "node": "Preparar Código OTP",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Respond Error",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Preparar Código OTP": {
+      "main": [
+        [
+          {
+            "node": "Enviar código con Gmail",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Enviar código con Gmail": {
+      "main": [
+        [
+          {
+            "node": "Respond Success",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "c8921e54-28b9-4a41-863a-23b9d8e12154",
+  "meta": {
+    "instanceId": "sonar-n8n-otp-instance"
+  },
+  "id": "sonar-password-recovery-otp-flow",
+  "tags": []
+}

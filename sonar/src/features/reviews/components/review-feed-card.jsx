@@ -391,7 +391,6 @@ export const ReviewFeedCard = ({
           />
         )}
       </AnimatePresence>
-
       {/* Modal de Reporte para la Reseña */}
       <ReportModal
         isOpen={isReportingReview}

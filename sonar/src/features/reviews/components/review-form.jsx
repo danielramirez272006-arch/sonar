@@ -18,90 +18,90 @@ export const ReviewForm = ({
 
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState('');
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (busy) return;
-    if (!rating || !reviewText.trim()) { setError('Añade una calificación y el texto de tu reseña.'); return; }
-    setBusy(true); setError('');
-    try { await onSubmit({
-      type: reviewType,
-      trackTitle: reviewType === 'track' ? (currentTrackTitle.trim() || albumTitle) : '',
-      albumTitle, artistName,
-      rating,
-      reviewText,
-      hasSpoilers,
-    }); setReviewText(''); }
-    catch (cause) { setError(cause.message || 'No se pudo guardar la reseña.'); }
-    finally { setBusy(false); }
+    if (!rating || !reviewText.trim()) {
+      setError('Añade una calificación y el texto de tu reseña.');
+      return;
+    }
+    setBusy(true);
+    setError('');
+    try {
+      await onSubmit({
+        type: reviewType,
+        trackTitle: reviewType === 'track' ? (currentTrackTitle.trim() || albumTitle) : '',
+        albumTitle,
+        artistName,
+        rating,
+        reviewText,
+        hasSpoilers,
+      });
+      setReviewText('');
+    } catch (cause) {
+      setError(cause.message || 'No se pudo guardar la reseña.');
+    } finally {
+      setBusy(false);
+    }
   };
 
   const isTrackMode = reviewType === 'track';
 
   return (
     <div className="w-full max-w-2xl p-5 sm:p-7 md:p-8 rounded-3xl bg-white dark:bg-[#4B2840] border border-[#e6d5e2] dark:border-white/10 shadow-[0_10px_35px_-5px_rgba(75,40,64,0.12)] dark:shadow-[0_20px_50px_-10px_rgba(0,0,0,0.7)] transition-colors duration-300 relative">
-      {/* Botón flotante superior derecho para cerrar el formulario */}
+      {/* Botón de Salir Visible */}
       {onClose && (
         <button
           type="button"
           onClick={onClose}
-          className="absolute top-4 right-4 sm:top-6 sm:right-6 w-9 h-9 rounded-full bg-gray-100 hover:bg-[#B80C09] text-gray-700 hover:text-white dark:bg-white/10 dark:hover:bg-[#B80C09] dark:text-white flex items-center justify-center transition-all cursor-pointer border border-gray-200 dark:border-white/15 shadow-sm z-20"
-          title="Cerrar (Esc)"
-          aria-label="Cerrar formulario de crítica"
+          className="absolute top-4 right-4 w-9 h-9 rounded-full bg-gray-100 hover:bg-gray-200 dark:bg-white/10 dark:hover:bg-white/20 text-[#231123] dark:text-white flex items-center justify-center transition-colors cursor-pointer shadow-xs z-10"
+          aria-label="Cerrar formulario"
+          title="Cerrar"
         >
-          <span className="material-symbols-outlined text-[20px]">close</span>
+          <span className="material-symbols-outlined text-[18px]">close</span>
         </button>
       )}
 
-      {/* Header del Formulario */}
-      <div className="flex flex-col gap-2 pb-4 border-b border-[#e6d5e2]/80 dark:border-white/10 pr-12">
-        <div className="flex items-center gap-2">
-          <span className="text-xs uppercase tracking-widest text-[#B80C09] font-extrabold flex items-center gap-1.5">
-            <span className="material-symbols-outlined text-[16px]">rate_review</span>
-            <span>Nueva Crítica Sonar</span>
-          </span>
+      {/* Cabecera Informativa con Contexto de Álbum/Artista */}
+      <div className="flex flex-col gap-1 pb-4 border-b border-[#e6d5e2] dark:border-white/10 text-left pr-10">
+        <span className="text-xs uppercase tracking-widest text-[#B80C09] font-extrabold">
+          Publicar Crítica Musical
+        </span>
+        <h3 className="text-xl sm:text-2xl font-black text-[#231123] dark:text-white tracking-tight">
+          {albumTitle}
+        </h3>
+        <span className="text-xs sm:text-sm font-semibold text-[#5c435a] dark:text-[#B89CB0]">
+          por {artistName}
+        </span>
+      </div>
 
-          <span className={`text-[10px] font-black uppercase px-2 py-0.5 rounded-md border ${
-            isTrackMode
-              ? 'bg-rose-50 dark:bg-[#B80C09]/20 text-[#B80C09] dark:text-rose-300 border-[#B80C09]/30'
-              : 'bg-purple-50 dark:bg-purple-950/40 text-purple-700 dark:text-purple-300 border-purple-300 dark:border-purple-800'
-          }`}>
-            {isTrackMode ? '🎵 Canción' : '💿 Álbum'}
-          </span>
-        </div>
-
-        <h2 className="text-xl sm:text-2xl lg:text-3xl font-extrabold text-[#231123] dark:text-white tracking-tight">
-          {isTrackMode ? 'Criticar Canción Individual' : 'Criticar Álbum Completo'}
-        </h2>
-
-        <p className="text-xs sm:text-sm text-[#5c435a] dark:text-[#B89CB0]">
-          {isTrackMode ? (
-            <>Analizando canción de <strong className="text-[#231123] dark:text-white">{artistName}</strong></>
-          ) : (
-            <>Analizando disco <strong className="text-[#231123] dark:text-white">{albumTitle}</strong> de <span className="text-[#5c1d5e] dark:text-pink-300 font-medium">{artistName}</span></>
-          )}
-        </p>
-
-        {/* Selector de Modo: Canción vs Álbum */}
-        <div className="grid grid-cols-2 gap-2 mt-2 p-1 rounded-2xl bg-gray-100 dark:bg-black/30 border border-gray-200 dark:border-white/10">
+      {/* Selector de Modo: Reseñar Canción Específica vs Álbum Completo */}
+      <div className="flex flex-col gap-2 pt-4 text-left">
+        <label className="text-xs font-bold uppercase tracking-wider text-[#5c435a] dark:text-[#B89CB0]">
+          ¿Qué deseas calificar y analizar?
+        </label>
+        <div className="grid grid-cols-2 gap-2 p-1 rounded-2xl bg-gray-100 dark:bg-[#231123]/80 border border-[#e6d5e2] dark:border-white/10">
           <button
             type="button"
             onClick={() => setReviewType('track')}
-            className={`py-2 px-3 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-1.5 cursor-pointer ${
+            className={`py-2.5 px-3 rounded-xl text-xs sm:text-sm font-bold transition-all cursor-pointer flex items-center justify-center gap-1.5 ${
               isTrackMode
-                ? 'bg-[#B80C09] text-white shadow-sm'
-                : 'text-[#5c435a] dark:text-gray-300 hover:text-[#231123] dark:hover:text-white'
+                ? 'bg-white dark:bg-[#4B2840] text-[#B80C09] dark:text-rose-300 shadow-sm border border-[#B80C09]/20'
+                : 'text-[#5c435a] dark:text-gray-300 hover:text-[#231123]'
             }`}
           >
             <span className="material-symbols-outlined text-[16px]">music_note</span>
-            <span>Canción Individual</span>
+            <span>Canción Específica</span>
           </button>
+
           <button
             type="button"
             onClick={() => setReviewType('album')}
-            className={`py-2 px-3 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-1.5 cursor-pointer ${
+            className={`py-2.5 px-3 rounded-xl text-xs sm:text-sm font-bold transition-all cursor-pointer flex items-center justify-center gap-1.5 ${
               !isTrackMode
-                ? 'bg-[#B80C09] text-white shadow-sm'
-                : 'text-[#5c435a] dark:text-gray-300 hover:text-[#231123] dark:hover:text-white'
+                ? 'bg-white dark:bg-[#4B2840] text-[#B80C09] dark:text-rose-300 shadow-sm border border-[#B80C09]/20'
+                : 'text-[#5c435a] dark:text-gray-300 hover:text-[#231123]'
             }`}
           >
             <span className="material-symbols-outlined text-[16px]">album</span>
@@ -201,6 +201,12 @@ export const ReviewForm = ({
           </div>
         </div>
 
+        {error && (
+          <p role="alert" className="p-3 rounded-xl bg-red-500/10 text-red-600 dark:text-red-400 border border-red-500/20 text-xs font-bold">
+            {error}
+          </p>
+        )}
+
         {/* Botones de Acción: Cancelar y Publicar */}
         <div className="flex items-center justify-end gap-3 pt-2">
           {onClose && (
@@ -214,10 +220,11 @@ export const ReviewForm = ({
           )}
 
           <motion.button
-            type="submit" disabled={busy}
+            type="submit"
+            disabled={busy}
             whileHover={{ scale: 1.01 }}
             whileTap={{ scale: 0.98 }}
-            className="flex-1 py-3.5 px-6 rounded-2xl bg-[#B80C09] text-white text-xs sm:text-sm font-black uppercase tracking-wider shadow-[0_8px_20px_-4px_rgba(184,12,9,0.35)] hover:bg-[#9c0a07] transition-all cursor-pointer flex items-center justify-center gap-2"
+            className="flex-1 py-3.5 px-6 rounded-2xl bg-[#B80C09] text-white text-xs sm:text-sm font-black uppercase tracking-wider shadow-[0_8px_20px_-4px_rgba(184,12,9,0.35)] hover:bg-[#9c0a07] disabled:opacity-50 transition-all cursor-pointer flex items-center justify-center gap-2"
           >
             <span className="material-symbols-outlined text-[18px]">
               {isTrackMode ? 'music_note' : 'album'}
@@ -227,7 +234,7 @@ export const ReviewForm = ({
             </span>
           </motion.button>
         </div>
-      {error && <p role="alert">{error}</p>}</form>
+      </form>
     </div>
   );
 };

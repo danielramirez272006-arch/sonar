@@ -8,8 +8,8 @@ import { interactionsService } from '../../services/interactions-service';
 import { createReview } from '../../services/api-client';
 
 export const ReviewModal = () => {
+  const { user } = useAuth();
   const { reviewModalAlbum, closeReviewModal } = usePlayer();
-  const { user } = useAuth() || {};
   const [toastMessage, setToastMessage] = useState(null);
 
   useEffect(() => {
@@ -130,7 +130,7 @@ export const ReviewModal = () => {
     });
     interactionsService.addUserReview(effectiveUserId, { ...saved, userHandle: effectiveUserHandle });
     window.dispatchEvent(new CustomEvent('sonar:review-created', { detail: saved }));
-    setToastMessage('Cr?tica enviada a moderaci?n para ' + targetTitle + '.');
+    setToastMessage('Crítica enviada a moderación para ' + targetTitle + '.');
     setTimeout(() => {
       closeReviewModal();
     }, 1200);

@@ -14,6 +14,7 @@ export const Navbar = ({
   ],
   onNavigate = () => {},
   onSearch = null,
+  showSearch = true,
 }) => {
   const [activeTab, setActiveTab] = useState(() => {
     const hash = window.location.hash.replace(/^#/, '');
@@ -148,133 +149,135 @@ export const Navbar = ({
         </div>
 
         {/* Centro: Barra de búsqueda rápida superior (Básica con mini preview) */}
-        <div ref={navDropdownRef} className="hidden md:flex relative flex-1 max-w-[340px] mx-2 lg:mx-4">
-          <form onSubmit={handleNavSearchSubmit} className="w-full">
-            <div className="relative w-full">
-              <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 dark:text-gray-400 text-[18px] pointer-events-none">
-                search
-              </span>
-              <input
-                type="text"
-                placeholder="Buscar canciones o artistas en Sonar..."
-                value={navSearch}
-                onChange={handleNavSearchChange}
-                onFocus={() => {
-                  if (navResults.length > 0) setIsNavDropdownOpen(true);
-                }}
-                className="w-full pl-9 pr-14 py-1.5 rounded-full text-xs font-medium bg-[#f6ebf4] dark:bg-white/5 border border-[#e6d5e2] dark:border-white/10 text-[#231123] dark:text-white placeholder-[#876a84] dark:placeholder-gray-400 focus:outline-none focus:border-[#B80C09] focus:bg-white dark:focus:bg-[#251225] transition-all"
-              />
-              <div className="absolute right-2.5 top-1/2 -translate-y-1/2 flex items-center gap-1">
-                {isNavSearching && (
-                  <div className="w-3.5 h-3.5 border-2 border-[#B80C09] border-t-transparent rounded-full animate-spin" />
-                )}
-                {navSearch && (
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setNavSearch('');
-                      setNavResults([]);
-                      setIsNavDropdownOpen(false);
-                    }}
-                    className="text-gray-400 hover:text-[#B80C09] text-xs cursor-pointer px-1"
-                  >
-                    ✕
-                  </button>
-                )}
+        {showSearch && (
+          <div ref={navDropdownRef} className="hidden md:flex relative flex-1 max-w-[340px] mx-2 lg:mx-4">
+            <form onSubmit={handleNavSearchSubmit} className="w-full">
+              <div className="relative w-full">
+                <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 dark:text-gray-400 text-[18px] pointer-events-none">
+                  search
+                </span>
+                <input
+                  type="text"
+                  placeholder="Buscar canciones o artistas en Sonar..."
+                  value={navSearch}
+                  onChange={handleNavSearchChange}
+                  onFocus={() => {
+                    if (navResults.length > 0) setIsNavDropdownOpen(true);
+                  }}
+                  className="w-full pl-9 pr-14 py-1.5 rounded-full text-xs font-medium bg-[#f6ebf4] dark:bg-white/5 border border-[#e6d5e2] dark:border-white/10 text-[#231123] dark:text-white placeholder-[#876a84] dark:placeholder-gray-400 focus:outline-none focus:border-[#B80C09] focus:bg-white dark:focus:bg-[#251225] transition-all"
+                />
+                <div className="absolute right-2.5 top-1/2 -translate-y-1/2 flex items-center gap-1">
+                  {isNavSearching && (
+                    <div className="w-3.5 h-3.5 border-2 border-[#B80C09] border-t-transparent rounded-full animate-spin" />
+                  )}
+                  {navSearch && (
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setNavSearch('');
+                        setNavResults([]);
+                        setIsNavDropdownOpen(false);
+                      }}
+                      className="text-gray-400 hover:text-[#B80C09] text-xs cursor-pointer px-1"
+                    >
+                      ✕
+                    </button>
+                  )}
+                </div>
               </div>
-            </div>
-          </form>
+            </form>
 
-          {/* Menú Flotante Mini de Resultados Rápidos en Navbar */}
-          <AnimatePresence>
-            {isNavDropdownOpen && navResults.length > 0 && (
-              <motion.div
-                initial={{ opacity: 0, y: -4, scale: 0.98 }}
-                animate={{ opacity: 1, y: 0, scale: 1 }}
-                exit={{ opacity: 0, y: -4, scale: 0.98 }}
-                transition={{ duration: 0.15 }}
-                className="absolute top-full left-0 right-0 mt-1.5 p-1.5 rounded-2xl bg-white/95 dark:bg-[#221022]/95 backdrop-blur-2xl border border-[#e6d5e2] dark:border-white/10 shadow-[0_15px_35px_rgba(0,0,0,0.3)] z-50 flex flex-col gap-1"
-              >
-                <div className="px-2 py-1 text-[10px] font-black uppercase tracking-wider text-[#5c435a] dark:text-gray-400 border-b border-gray-100 dark:border-white/5 flex items-center justify-between">
-                  <span>CANCIONES EN DEEZER</span>
+            {/* Menú Flotante Mini de Resultados Rápidos en Navbar */}
+            <AnimatePresence>
+              {isNavDropdownOpen && navResults.length > 0 && (
+                <motion.div
+                  initial={{ opacity: 0, y: -4, scale: 0.98 }}
+                  animate={{ opacity: 1, y: 0, scale: 1 }}
+                  exit={{ opacity: 0, y: -4, scale: 0.98 }}
+                  transition={{ duration: 0.15 }}
+                  className="absolute top-full left-0 right-0 mt-1.5 p-1.5 rounded-2xl bg-white/95 dark:bg-[#221022]/95 backdrop-blur-2xl border border-[#e6d5e2] dark:border-white/10 shadow-[0_15px_35px_rgba(0,0,0,0.3)] z-50 flex flex-col gap-1"
+                >
+                  <div className="px-2 py-1 text-[10px] font-black uppercase tracking-wider text-[#5c435a] dark:text-gray-400 border-b border-gray-100 dark:border-white/5 flex items-center justify-between">
+                    <span>CANCIONES EN DEEZER</span>
+                    <button
+                      type="button"
+                      onClick={handleNavSearchSubmit}
+                      className="text-[9px] font-bold text-[#B80C09] hover:underline cursor-pointer flex items-center gap-0.5"
+                      title="Ver todas las canciones"
+                    >
+                      <span>ENTER PARA VER MÁS</span>
+                      <span className="material-symbols-outlined text-[11px]">arrow_forward</span>
+                    </button>
+                  </div>
+
+                  {navResults.map((song) => {
+                    const isItemPlaying = (currentTrack?.id === song.id || currentTrack?.title === song.title) && isPlaying;
+                    return (
+                      <div
+                        key={song.id}
+                        className="group flex items-center justify-between p-1.5 rounded-xl hover:bg-[#fff0f4] dark:hover:bg-white/10 transition-colors"
+                      >
+                        <div
+                          onClick={() => handleSelectNavAlbum(song)}
+                          className="flex items-center gap-2 min-w-0 flex-1 cursor-pointer"
+                        >
+                          <img
+                            src={song.cover}
+                            alt={song.title}
+                            className="w-8 h-8 rounded-lg object-cover shadow-2xs shrink-0"
+                          />
+                          <div className="flex flex-col min-w-0">
+                            <span className="text-xs font-bold text-[#231123] dark:text-white truncate group-hover:text-[#B80C09] transition-colors">
+                              {song.title}
+                            </span>
+                            <span className="text-[10px] text-[#5c435a] dark:text-[#B89CB0] truncate">
+                              {song.artist} {song.album && song.album !== song.title ? `· ${song.album}` : ''}
+                            </span>
+                          </div>
+                        </div>
+
+                        {/* Mini Botón Play Directo en Navbar */}
+                        <button
+                          type="button"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            toggleTrack({
+                              id: song.id,
+                              trackId: song.id,
+                              deezerId: song.id,
+                              title: song.title,
+                              artist: song.artist,
+                              album: song.album || song.title,
+                              cover: song.cover,
+                              preview: song.preview,
+                            });
+                          }}
+                          className="w-6 h-6 rounded-full bg-[#B80C09] text-white flex items-center justify-center shrink-0 shadow-2xs hover:scale-110 transition-transform cursor-pointer ml-1"
+                          title="Reproducir muestra (30s)"
+                        >
+                          <span className="material-symbols-outlined text-[14px]">
+                            {isItemPlaying ? 'pause' : 'play_arrow'}
+                          </span>
+                        </button>
+                      </div>
+                    );
+                  })}
+
+                  {/* Botón inferior: Ver todas las canciones */}
                   <button
                     type="button"
                     onClick={handleNavSearchSubmit}
-                    className="text-[9px] font-bold text-[#B80C09] hover:underline cursor-pointer flex items-center gap-0.5"
-                    title="Ver todas las canciones"
+                    className="w-full mt-1 p-2 rounded-xl bg-gray-100 dark:bg-white/10 hover:bg-[#B80C09] hover:text-white dark:hover:bg-[#B80C09] dark:hover:text-white text-xs font-bold text-center transition-all cursor-pointer flex items-center justify-center gap-1.5 text-gray-800 dark:text-gray-200 shadow-xs"
                   >
-                    <span>ENTER PARA VER MÁS</span>
-                    <span className="material-symbols-outlined text-[11px]">arrow_forward</span>
+                    <span className="material-symbols-outlined text-[15px]">search</span>
+                    <span>Ver todas las canciones para &ldquo;{navSearch}&rdquo;</span>
+                    <span className="material-symbols-outlined text-[13px]">arrow_forward</span>
                   </button>
-                </div>
-
-                {navResults.map((song) => {
-                  const isItemPlaying = (currentTrack?.id === song.id || currentTrack?.title === song.title) && isPlaying;
-                  return (
-                    <div
-                      key={song.id}
-                      className="group flex items-center justify-between p-1.5 rounded-xl hover:bg-[#fff0f4] dark:hover:bg-white/10 transition-colors"
-                    >
-                      <div
-                        onClick={() => handleSelectNavAlbum(song)}
-                        className="flex items-center gap-2 min-w-0 flex-1 cursor-pointer"
-                      >
-                        <img
-                          src={song.cover}
-                          alt={song.title}
-                          className="w-8 h-8 rounded-lg object-cover shadow-2xs shrink-0"
-                        />
-                        <div className="flex flex-col min-w-0">
-                          <span className="text-xs font-bold text-[#231123] dark:text-white truncate group-hover:text-[#B80C09] transition-colors">
-                            {song.title}
-                          </span>
-                          <span className="text-[10px] text-[#5c435a] dark:text-[#B89CB0] truncate">
-                            {song.artist} {song.album && song.album !== song.title ? `· ${song.album}` : ''}
-                          </span>
-                        </div>
-                      </div>
-
-                      {/* Mini Botón Play Directo en Navbar */}
-                      <button
-                        type="button"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          toggleTrack({
-                            id: song.id,
-                            trackId: song.id,
-                            deezerId: song.id,
-                            title: song.title,
-                            artist: song.artist,
-                            album: song.album || song.title,
-                            cover: song.cover,
-                            preview: song.preview,
-                          });
-                        }}
-                        className="w-6 h-6 rounded-full bg-[#B80C09] text-white flex items-center justify-center shrink-0 shadow-2xs hover:scale-110 transition-transform cursor-pointer ml-1"
-                        title="Reproducir muestra (30s)"
-                      >
-                        <span className="material-symbols-outlined text-[14px]">
-                          {isItemPlaying ? 'pause' : 'play_arrow'}
-                        </span>
-                      </button>
-                    </div>
-                  );
-                })}
-
-                {/* Botón inferior: Ver todas las canciones */}
-                <button
-                  type="button"
-                  onClick={handleNavSearchSubmit}
-                  className="w-full mt-1 p-2 rounded-xl bg-gray-100 dark:bg-white/10 hover:bg-[#B80C09] hover:text-white dark:hover:bg-[#B80C09] dark:hover:text-white text-xs font-bold text-center transition-all cursor-pointer flex items-center justify-center gap-1.5 text-gray-800 dark:text-gray-200 shadow-xs"
-                >
-                  <span className="material-symbols-outlined text-[15px]">search</span>
-                  <span>Ver todas las canciones para &ldquo;{navSearch}&rdquo;</span>
-                  <span className="material-symbols-outlined text-[13px]">arrow_forward</span>
-                </button>
-              </motion.div>
-            )}
-          </AnimatePresence>
-        </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
+        )}
 
         {/* Derecha: Enlaces, Botón de Tema & Avatar / Auth */}
         <div className="flex items-center gap-3 sm:gap-4">
@@ -289,10 +292,10 @@ export const Navbar = ({
                   onClick={() => handleNavClick(link)}
                   whileHover={{ y: -1 }}
                   whileTap={{ scale: 0.95 }}
-                  className={`relative px-3 sm:px-4 py-2 text-xs sm:text-sm font-semibold rounded-xl cursor-pointer transition-colors duration-200 ${
+                  className={`relative px-3 sm:px-4 py-2 text-xs sm:text-sm font-bold rounded-xl cursor-pointer transition-colors duration-200 ${
                     isActive
                       ? 'text-[#231123] dark:text-white'
-                      : 'text-[#5c435a] hover:text-[#231123] dark:text-gray-300 dark:hover:text-white dark:bg-transparent'
+                      : 'text-[#482d46] hover:text-[#B80C09] dark:text-[#d8c5d3] dark:hover:text-white'
                   }`}
                 >
                   {link.label}
@@ -376,13 +379,13 @@ export const Navbar = ({
             <div className="flex items-center gap-2">
               <a
                 href="#login"
-                className="px-3.5 py-1.5 rounded-xl text-xs sm:text-sm font-bold text-[#231123] dark:text-white hover:text-[#B80C09] transition-colors"
+                className="px-3.5 py-1.5 rounded-xl text-xs sm:text-sm font-bold text-[#231123] dark:text-white hover:text-[#B80C09] dark:hover:text-[#ff6b68] bg-[#f0e2ee] dark:bg-white/10 border border-[#ddcadb] dark:border-white/10 transition-all shadow-2xs cursor-pointer"
               >
                 Ingresar
               </a>
               <a
                 href="#register"
-                className="px-3.5 py-1.5 rounded-xl bg-[#B80C09] hover:bg-[#9c0a07] text-white text-xs sm:text-sm font-bold shadow-xs transition-colors"
+                className="px-3.5 py-1.5 rounded-xl bg-[#B80C09] hover:bg-[#9c0a07] text-white text-xs sm:text-sm font-bold shadow-xs transition-colors cursor-pointer"
               >
                 Registrarse
               </a>

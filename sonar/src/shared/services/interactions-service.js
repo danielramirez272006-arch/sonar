@@ -453,14 +453,17 @@ export const interactionsService = {
     return newRev;
   },
 
-  // COLECCIONES PERSONALES
+  // COLECCIONES PERSONALES & GUARDADOS (ÁLBUMES Y CANCIONES)
   getUserSavedAlbums(userId) {
-    if (!userId || userId === 'guest' || userId === 'default') return [];
+    const effectiveUserId = String(userId || 'guest_user').trim() || 'guest_user';
     const collections = getStorage(STORAGE_KEYS.USER_COLLECTIONS, {});
-    if (collections[userId]?.savedAlbums) {
-      return collections[userId].savedAlbums;
+    
+    if (collections[effectiveUserId]?.savedAlbums) {
+      return collections[effectiveUserId].savedAlbums;
     }
-    if (userId === '1') {
+
+    // Colección de bienvenida por defecto si es usuario 1 o nuevo
+    if (effectiveUserId === '1' || effectiveUserId === 'user-1') {
       return [
         {
           id: '1',
@@ -471,6 +474,7 @@ export const interactionsService = {
           cover: 'https://cdn-images.dzcdn.net/images/cover/a175af9b7d329bc678cb4d26fc13d6de/500x500-000000-80-0-0.jpg',
           rating: 5,
           collectionTag: 'Favoritos',
+          type: 'album',
           addedAt: '2026-02-15',
         },
         {
@@ -482,6 +486,7 @@ export const interactionsService = {
           cover: 'https://cdn-images.dzcdn.net/images/cover/5718f7c81c27e0b2417e2a4c45224f8a/500x500-000000-80-0-0.jpg',
           rating: 4.8,
           collectionTag: 'Colección Vinilo',
+          type: 'album',
           addedAt: '2026-02-20',
         },
         {
@@ -493,6 +498,7 @@ export const interactionsService = {
           cover: 'https://cdn-images.dzcdn.net/images/cover/4bd6b0232c2092faf145101453cb1051/500x500-000000-80-0-0.jpg',
           rating: 5,
           collectionTag: 'Por Escuchar',
+          type: 'album',
           addedAt: '2026-03-01',
         },
         {
@@ -504,6 +510,7 @@ export const interactionsService = {
           cover: 'https://cdn-images.dzcdn.net/images/cover/de5b9b704cd4ec36f8bf49beb3e17ba2/500x500-000000-80-0-0.jpg',
           rating: 4.7,
           collectionTag: 'Favoritos',
+          type: 'album',
           addedAt: '2026-03-10',
         },
       ];
@@ -512,17 +519,33 @@ export const interactionsService = {
   },
 
   toggleSaveAlbum(userId, album, collectionTag = 'Favoritos') {
-    if (!userId || userId === 'guest' || userId === 'default') {
-      return { isSaved: false, savedAlbums: [] };
-    }
-    const collections = getStorage(STORAGE_KEYS.USER_COLLECTIONS, {});
-    const currentSaved = this.getUserSavedAlbums(userId);
-    const itemIdStr = String(album.id || album.trackId || album.title);
-    const existingIndex = currentSaved.findIndex(
-      (a) => String(a.id || a.trackId || a.title) === itemIdStr || a.title === album.title
-    );
+    if (!album) return { isSaved: false, savedAlbums: [] };
 
-    const isTrack = album.type === 'track' || Boolean(album.trackId) || Boolean(album.album && album.album !== album.title);
+    const effectiveUserId = String(userId || 'guest_user').trim() || 'guest_user';
+    const collections = getStorage(STORAGE_KEYS.USER_COLLECTIONS, {});
+    const currentSaved = this.getUserSavedAlbums(effectiveUserId);
+
+    const targetTitle = String(album.title || album.album || '').trim().toLowerCase();
+    const targetArtist = String(album.artist || '').trim().toLowerCase();
+    const targetId = String(album.id || album.trackId || album.deezerId || '').trim();
+
+    const existingIndex = currentSaved.findIndex((a) => {
+      const aId = String(a.id || a.trackId || a.deezerId || '').trim();
+      const aTitle = String(a.title || a.album || '').trim().toLowerCase();
+      const aArtist = String(a.artist || '').trim().toLowerCase();
+
+      if (targetId && aId && targetId === aId) return true;
+      if (targetTitle && aTitle && targetTitle === aTitle) {
+        if (!targetArtist || !aArtist || targetArtist === aArtist) return true;
+      }
+      return false;
+    });
+
+    const isTrack =
+      album.type === 'track' ||
+      Boolean(album.trackId) ||
+      Boolean(album.preview || album.previewUrl) ||
+      Boolean(album.album && album.album !== album.title);
 
     let updated;
     let isSaved;
@@ -531,29 +554,29 @@ export const interactionsService = {
       isSaved = false;
     } else {
       const newItem = {
-        id: album.id || `item-${Date.now()}`,
+        id: album.id || `item-${Date.now()}-${Math.random().toString(36).substr(2, 5)}`,
         trackId: album.trackId || (isTrack ? album.id : null),
         deezerId: album.deezerId || album.id,
         title: album.title || album.album || 'Canción',
         album: album.album || album.albumTitle || album.title || 'Álbum',
         artist: album.artist || 'Artista',
-        year: album.year || '2024',
+        year: album.year || new Date().getFullYear().toString(),
         genre: album.genre || 'Música',
-        cover: album.cover || album.cover_medium || 'https://cdn-images.dzcdn.net/images/cover/a175af9b7d329bc678cb4d26fc13d6de/500x500-000000-80-0-0.jpg',
+        cover: album.cover || album.cover_medium || album.albumCover || 'https://cdn-images.dzcdn.net/images/cover/a175af9b7d329bc678cb4d26fc13d6de/500x500-000000-80-0-0.jpg',
         rating: album.rating || 5,
         duration: album.duration || 180,
         preview: album.preview || album.previewUrl,
         previewUrl: album.previewUrl || album.preview,
         type: isTrack ? 'track' : (album.type || 'album'),
-        collectionTag,
+        collectionTag: collectionTag || 'Favoritos',
         addedAt: new Date().toISOString().split('T')[0],
       };
       updated = [newItem, ...currentSaved];
       isSaved = true;
     }
 
-    collections[userId] = {
-      ...(collections[userId] || {}),
+    collections[effectiveUserId] = {
+      ...(collections[effectiveUserId] || {}),
       savedAlbums: updated,
     };
     setStorage(STORAGE_KEYS.USER_COLLECTIONS, collections);
@@ -561,7 +584,7 @@ export const interactionsService = {
     if (typeof window !== 'undefined') {
       window.dispatchEvent(
         new CustomEvent('sonar:collection-changed', {
-          detail: { userId, item: album, isSaved, collection: updated },
+          detail: { userId: effectiveUserId, item: album, isSaved, collection: updated },
         })
       );
     }
@@ -570,13 +593,39 @@ export const interactionsService = {
   },
 
   isAlbumSaved(userId, albumIdentifier) {
-    if (!userId || userId === 'guest' || userId === 'default' || !albumIdentifier) return false;
-    const saved = this.getUserSavedAlbums(userId);
-    const query = String(albumIdentifier).toLowerCase();
-    return saved.some(
-      (a) => String(a.id).toLowerCase() === query || String(a.trackId || '').toLowerCase() === query || (a.title && a.title.toLowerCase() === query)
-    );
+    if (!albumIdentifier) return false;
+    const effectiveUserId = String(userId || 'guest_user').trim() || 'guest_user';
+    const saved = this.getUserSavedAlbums(effectiveUserId);
+
+    let queryId = '';
+    let queryTitle = '';
+    let queryArtist = '';
+
+    if (typeof albumIdentifier === 'object') {
+      queryId = String(albumIdentifier.id || albumIdentifier.trackId || albumIdentifier.deezerId || '').trim().toLowerCase();
+      queryTitle = String(albumIdentifier.title || albumIdentifier.album || '').trim().toLowerCase();
+      queryArtist = String(albumIdentifier.artist || '').trim().toLowerCase();
+    } else {
+      const q = String(albumIdentifier).trim().toLowerCase();
+      queryId = q;
+      queryTitle = q;
+    }
+
+    return saved.some((a) => {
+      const aId = String(a.id || '').trim().toLowerCase();
+      const aTrackId = String(a.trackId || '').trim().toLowerCase();
+      const aDeezerId = String(a.deezerId || '').trim().toLowerCase();
+      const aTitle = String(a.title || a.album || '').trim().toLowerCase();
+      const aArtist = String(a.artist || '').trim().toLowerCase();
+
+      if (queryId && (aId === queryId || aTrackId === queryId || aDeezerId === queryId)) return true;
+      if (queryTitle && aTitle === queryTitle) {
+        if (!queryArtist || !aArtist || queryArtist === aArtist) return true;
+      }
+      return false;
+    });
   },
 };
 
 export default interactionsService;
+
