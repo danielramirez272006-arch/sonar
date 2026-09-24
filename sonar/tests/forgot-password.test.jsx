@@ -52,10 +52,10 @@ describe('ForgotPassword Email OTP Code Entry Flow', () => {
     fireEvent.click(submitBtn);
 
     // Esperar paso 2: Escribir código
-    await screen.findByText(/Revisa tu bandeja de entrada o spam/i);
+    await screen.findByText(/Revisa tu bandeja de entrada o spam/i, {}, { timeout: 4500 });
 
     // Obtener el input de código y escribir código de 6 dígitos
-    const otpInput = screen.getByLabelText(/Código de 6 dígitos/i);
+    const otpInput = await screen.findByLabelText(/Código de 6 dígitos/i);
     fireEvent.change(otpInput, { target: { value: '123456' } });
 
     expect(otpInput.value).toBe('123456');

@@ -4690,6 +4690,43 @@
         "Audiófilo Inicial"
       ],
       "createdAt": "2026-09-24T21:21:24.999Z"
+    },
+    {
+      "id": "user-1790285082484",
+      "username": "google_listener_805",
+      "email": "google_user_805@sonar.local",
+      "password": "sha256$c81d3ac60ba8285dd47a56b0a82f62ea$eaf42a42baef9a1fa6d6d7dd13e6d2815bf6169bdcdfa498f25ce9b4531b8870",
+      "role": "user",
+      "accountType": "junior",
+      "parentalControl": {
+        "enabled": true,
+        "blockExplicit": true,
+        "pin": "1234"
+      },
+      "avatarUrl": "",
+      "avatarBg": "#B80C09",
+      "bio": "Melómano Junior explorando música segura y educativa en Sonar.",
+      "stats": {
+        "savedAlbums": 0,
+        "reviewsCount": 0,
+        "followers": 0,
+        "following": 0
+      },
+      "preferences": [
+        "Art Rock",
+        "Electrónica",
+        "Psicodelia"
+      ],
+      "gear": {
+        "headphones": "Auriculares de referencia",
+        "turntable": "Tocadiscos Direct Drive",
+        "favoriteFormat": "Vinilo 33⅓ RPM"
+      },
+      "badges": [
+        "Melómano Junior",
+        "Audio Seguro"
+      ],
+      "createdAt": "2026-09-24T21:24:42.484Z"
     }
   ],
   "reviews": [

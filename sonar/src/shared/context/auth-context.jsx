@@ -2,6 +2,7 @@ import { userStatus } from '../services/admin-data.js'
 import { createContext, useContext, useEffect, useMemo, useState } from 'react'
 import { getUserByEmail, createUser, updateUser as updateUserApi, deleteUser as deleteUserApi } from '../services/api-client.js'
 import { hashPassword, verifyPassword } from '../services/crypto-service.js'
+import { notifyLoginAlertWebhook } from '../services/n8n-webhooks.js'
 
 // El contexto y el hook se exportan juntos como API de este módulo.
 // eslint-disable-next-line react-refresh/only-export-components
@@ -92,6 +93,16 @@ export function AuthProvider({ children }) {
         } catch {
           // La sesión continúa aunque el almacenamiento local no esté disponible.
         }
+
+        // Disparo de notificación por correo mediante webhook de n8n
+        try {
+          notifyLoginAlertWebhook({
+            email: foundUser.email,
+            username: foundUser.username,
+            device: typeof navigator !== 'undefined' ? navigator.userAgent : 'Navegador Web',
+          }).catch(() => {})
+        } catch {}
+
         return foundUser
       } catch (cause) {
         const loginError = cause instanceof Error
@@ -104,7 +115,7 @@ export function AuthProvider({ children }) {
       }
     }
 
-    async function register({ username, email, password, preferences, avatarBg, bio, gear }) {
+    async function register({ username, email, password, preferences, avatarBg, bio, gear, accountType = 'standard', parentalControl = null, isJunior = false }) {
       setIsLoading(true)
       setError(null)
       try {
@@ -139,15 +150,26 @@ export function AuthProvider({ children }) {
         // Hasheo seguro SHA-256 con salt criptográfico
         const encryptedPassword = await hashPassword(password);
 
+        const resolvedAccountType = accountType || (isJunior ? 'junior' : 'standard');
+        const resolvedParentalControl = parentalControl || {
+          enabled: resolvedAccountType === 'junior' || isJunior === true,
+          blockExplicit: resolvedAccountType === 'junior' || isJunior === true,
+          pin: '1234',
+        };
+
         const newUser = {
           id: `user-${Date.now()}`,
           username: username.trim(),
           email: email.trim().toLowerCase(),
           password: encryptedPassword,
           role: 'user',
+          accountType: resolvedAccountType,
+          parentalControl: resolvedParentalControl,
           avatarUrl: '',
           avatarBg: selectedAvatarBg,
-          bio: bio || 'Nuevo melómano explorando vinilos y texturas acústicas en Sonar.',
+          bio: bio || (resolvedAccountType === 'junior' 
+            ? 'Melómano Junior explorando música segura y educativa en Sonar.' 
+            : 'Nuevo melómano explorando vinilos y texturas acústicas en Sonar.'),
           stats: {
             savedAlbums: 0,
             reviewsCount: 0,
@@ -160,7 +182,9 @@ export function AuthProvider({ children }) {
             turntable: 'Tocadiscos Direct Drive',
             favoriteFormat: 'Vinilo 33⅓ RPM',
           },
-          badges: ['Melómano Verificado', 'Audiófilo Inicial'],
+          badges: resolvedAccountType === 'junior'
+            ? ['Melómano Junior', 'Audio Seguro']
+            : ['Melómano Verificado', 'Audiófilo Inicial'],
           createdAt: new Date().toISOString(),
         }
 
@@ -246,9 +270,39 @@ export function AuthProvider({ children }) {
       })
     }
 
-    function hasRole(role) {
-      return user !== null && user.role === role
+    function updateParentalControl({ enabled, blockExplicit, pin }) {
+      if (!user) throw new Error('Debes iniciar sesión para configurar el control parental.');
+      const currentPC = user.parentalControl || { enabled: false, blockExplicit: false, pin: '1234' };
+      const nextPC = {
+        ...currentPC,
+        ...(enabled !== undefined ? { enabled: Boolean(enabled) } : {}),
+        ...(blockExplicit !== undefined ? { blockExplicit: Boolean(blockExplicit) } : {}),
+        ...(pin !== undefined && pin ? { pin: String(pin).trim() } : {}),
+      };
+      
+      const nextAccountType = nextPC.enabled ? (user.accountType === 'junior' ? 'junior' : user.accountType) : user.accountType;
+      
+      updateUser({
+        parentalControl: nextPC,
+        accountType: nextAccountType,
+      });
+      return nextPC;
     }
+
+    function verifyParentalPin(pinInput) {
+      if (!user) return false;
+      const expectedPin = user.parentalControl?.pin || '1234';
+      return String(pinInput).trim() === String(expectedPin).trim();
+    }
+
+    function hasRole(role) {
+      return user !== null && user.role === role;
+    }
+
+    const isParentalControlActive = Boolean(
+      user?.accountType === 'junior' ||
+      (user?.parentalControl?.enabled && user?.parentalControl?.blockExplicit)
+    );
 
     return {
       user,
@@ -261,6 +315,10 @@ export function AuthProvider({ children }) {
       logout,
       deleteAccount,
       updateUser,
+      updateParentalControl,
+      verifyParentalPin,
+      isParentalControlActive,
+      isJunior: user?.accountType === 'junior',
       hasRole,
       isAdmin: hasRole('admin'),
       isUser: hasRole('user'),

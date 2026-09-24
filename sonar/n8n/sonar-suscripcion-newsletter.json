@@ -1,5 +1,5 @@
 {
-  "name": "SONAR - Suscripción a Newsletter Musical Audiófilo",
+  "name": "SONAR - Suscripción a Newsletter Audiófilo",
   "nodes": [
     {
       "parameters": {
@@ -8,7 +8,7 @@
         "responseMode": "responseNode",
         "options": {}
       },
-      "id": "e4a2d810-72bb-49e0-8182-3d5f471e98a1",
+      "id": "e2c34a12-8819-4a4f-a4fb-13c49a62dbf2",
       "name": "Webhook Newsletter",
       "type": "n8n-nodes-base.webhook",
       "typeVersion": 2,
@@ -29,7 +29,7 @@
           },
           "conditions": [
             {
-              "id": "c71a396e-5f60-449e-baef-ef110825c931",
+              "id": "97e68e4f-2234-4061-9c60-84c173ae841b",
               "leftValue": "={{ $json.body?.email }}",
               "rightValue": "",
               "operator": {
@@ -43,7 +43,7 @@
         },
         "options": {}
       },
-      "id": "b182d3e4-8521-4f90-89bc-9923a45c6123",
+      "id": "b18361e2-b131-4a37-b248-18e476307ec3",
       "name": "Validar Email",
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
@@ -55,26 +55,26 @@
     {
       "parameters": {
         "respondWith": "json",
-        "responseBody": "{\n  \"success\": false,\n  \"message\": \"Debes proporcionar una dirección de correo válida para suscribirte al boletín de Sonar.\"\n}",
+        "responseBody": "{\n  \"success\": false,\n  \"message\": \"Debes proporcionar un correo válido para suscribirte al boletín.\"\n}",
         "options": {
           "responseCode": 400
         }
       },
-      "id": "fd903821-4190-482a-bc91-231a4789d311",
-      "name": "Respuesta Error",
+      "id": "b968fa3d-82d2-43bb-a570-520ab480da67",
+      "name": "Respond Error",
       "type": "n8n-nodes-base.respondToWebhook",
       "typeVersion": 1.1,
       "position": [
         680,
-        440
+        460
       ]
     },
     {
       "parameters": {
-        "jsCode": "const email = $input.item.json.body.email;\nconst name = $input.item.json.body.name || 'Melómano de Sonar';\nconst topics = $input.item.json.body.topics || ['Lanzamientos', 'Hi-Fi', 'Festivales'];\nconst timestamp = new Date().toISOString();\n\nconst emailHtml = `\n<div style=\"font-family: 'Helvetica Neue', Arial, sans-serif; max-width: 600px; margin: 0 auto; background: #231123; color: #FAF5F8; border-radius: 20px; overflow: hidden; border: 1px solid #4B2840;\">\n  <div style=\"background: linear-gradient(135deg, #5c1d5e 0%, #B80C09 100%); padding: 32px 24px; text-align: center;\">\n    <h1 style=\"margin: 0; font-size: 26px; font-weight: 900; letter-spacing: 0.1em; color: #FFFFFF;\">SONAR · NOTICIAS & RADAR AUDIÓFILO</h1>\n    <p style=\"margin: 8px 0 0; font-size: 13px; color: #FDDDE6;\">Buen criterio. Mejor música.</p>\n  </div>\n  <div style=\"padding: 32px 24px;\">\n    <h2 style=\"font-size: 20px; font-weight: 800; color: #FFFFFF;\">¡Bienvenido al boletín, ${name}!</h2>\n    <p style=\"font-size: 14px; line-height: 1.6; color: #DCDCDD;\">Te has suscrito con éxito al radar semanal de Sonar. Cada semana recibirás análisis de nuevos lanzamientos, guías de hardware analógico, crónicas de festivales y reediciones audiófilas exclusivas.</p>\n    <div style=\"background: #4B2840; border-radius: 12px; padding: 16px; margin: 20px 0;\">\n      <h3 style=\"margin: 0 0 8px; font-size: 12px; text-transform: uppercase; color: #ff8c8a; font-weight: 800;\">Tus temas seleccionados:</h3>\n      <ul style=\"margin: 0; padding-left: 20px; font-size: 13px; color: #FAF5F8;\">\n        ${topics.map(t => `<li>${t}</li>`).join('')}\n      </ul>\n    </div>\n    <p style=\"font-size: 12px; color: #A08C9D;\">Si deseas personalizar tus temas o pausar el boletín, visita tu perfil en <a href=\"http://localhost:5173/#usuario\" style=\"color: #B80C09; text-decoration: none; font-weight: bold;\">Sonar</a>.</p>\n  </div>\n</div>\n`;\n\nreturn {\n  json: {\n    email,\n    name,\n    topics,\n    timestamp,\n    subject: '¡Bienvenido al Radar Semanal de Sonar!',\n    emailHtml\n  }\n};"
+        "jsCode": "const body = $input.first().json.body || {};\nconst email = (body.email || '').trim().toLowerCase();\nconst rawName = (body.name || 'Amante del Sonido').trim();\nconst name = rawName.includes('@') ? rawName.split('@')[0] : rawName;\nconst topics = Array.isArray(body.topics) && body.topics.length > 0 ? body.topics.join(', ') : 'Lanzamientos en Vinilo, Noticias Audiófilas y Reseñas Hi-Fi';\n\nreturn [\n  {\n    json: {\n      email,\n      name,\n      topics,\n      subscribedAt: new Date().toISOString()\n    }\n  }\n];"
       },
-      "id": "a9018423-1492-49aa-9912-7819ab32c091",
-      "name": "Preparar Plantilla de Email",
+      "id": "93eb53a1-125c-43f6-95b7-789a7413cfbf",
+      "name": "Procesar Suscripción",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
@@ -84,22 +84,38 @@
     },
     {
       "parameters": {
-        "respondWith": "json",
-        "responseBody": "={\n  \"success\": true,\n  \"message\": \"¡Suscripción confirmada! Te hemos enviado un correo de bienvenida a \" + $json.email + \".\",\n  \"subscriber\": {\n    \"email\": $json.email,\n    \"name\": $json.name,\n    \"topics\": $json.topics,\n    \"subscribedAt\": $json.timestamp\n  }\n}",
-        "options": {
-          "responseCode": 200
-        }
+        "sendTo": "={{ $json.email }}",
+        "subject": "¡Bienvenido a SONAR Weekly! Tu dosis de alta fidelidad",
+        "message": "=<!DOCTYPE html>\n<html lang=\"es\">\n<head>\n  <meta charset=\"UTF-8\">\n  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n  <title>SONAR Weekly - Boletín Audiófilo</title>\n</head>\n<body style=\"margin: 0; padding: 0; background-color: #231123; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; color: #DCDCDD;\">\n  <table align=\"center\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\" style=\"background-color: #231123; padding: 36px 14px;\">\n    <tr>\n      <td align=\"center\">\n        <table align=\"center\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\" style=\"max-width: 540px; background-color: #4B2840; border: 1px solid rgba(220,220,221,0.18); border-radius: 20px; overflow: hidden; box-shadow: 0 15px 40px rgba(0,0,0,0.6);\">\n          <!-- Cabecera con Isotipo Oficial SONAR -->\n          <tr>\n            <td align=\"center\" style=\"padding: 38px 24px 22px; background: linear-gradient(180deg, rgba(0,56,68,0.35) 0%, rgba(75,40,64,0) 100%);\">\n              <table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" style=\"margin: 0 auto; text-align: center;\">\n                <tr>\n                  <td align=\"center\" style=\"padding-bottom: 12px;\">\n                    <svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 120 120\" width=\"78\" height=\"78\" fill=\"none\" style=\"display: block; margin: 0 auto;\">\n                      <defs>\n                        <radialGradient id=\"topPetalNews\" cx=\"50%\" cy=\"35%\" r=\"65%\">\n                          <stop offset=\"0%\" stop-color=\"#9E1B29\" stop-opacity=\"0.9\" />\n                          <stop offset=\"100%\" stop-color=\"#4A0E18\" stop-opacity=\"0.8\" />\n                        </radialGradient>\n                        <radialGradient id=\"leftPetalNews\" cx=\"35%\" cy=\"50%\" r=\"65%\">\n                          <stop offset=\"0%\" stop-color=\"#C51613\" stop-opacity=\"0.9\" />\n                          <stop offset=\"100%\" stop-color=\"#6B0907\" stop-opacity=\"0.8\" />\n                        </radialGradient>\n                        <radialGradient id=\"bottomPetalNews\" cx=\"50%\" cy=\"65%\" r=\"65%\">\n                          <stop offset=\"0%\" stop-color=\"#1B324B\" stop-opacity=\"0.9\" />\n                          <stop offset=\"100%\" stop-color=\"#0E1A29\" stop-opacity=\"0.85\" />\n                        </radialGradient>\n                        <radialGradient id=\"rightPetalNews\" cx=\"65%\" cy=\"50%\" r=\"65%\">\n                          <stop offset=\"0%\" stop-color=\"#4B2A5E\" stop-opacity=\"0.9\" />\n                          <stop offset=\"100%\" stop-color=\"#231130\" stop-opacity=\"0.85\" />\n                        </radialGradient>\n                      </defs>\n                      <g>\n                        <circle cx=\"60\" cy=\"38\" r=\"27\" fill=\"url(#topPetalNews)\" />\n                        <circle cx=\"38\" cy=\"60\" r=\"27\" fill=\"url(#leftPetalNews)\" />\n                        <circle cx=\"60\" cy=\"82\" r=\"27\" fill=\"url(#bottomPetalNews)\" />\n                        <circle cx=\"82\" cy=\"60\" r=\"27\" fill=\"url(#rightPetalNews)\" />\n                      </g>\n                      <circle cx=\"60\" cy=\"60\" r=\"37\" stroke=\"rgba(255, 255, 255, 0.45)\" stroke-width=\"1.2\" stroke-dasharray=\"3.5 3.5\" fill=\"none\" />\n                      <circle cx=\"60\" cy=\"60\" r=\"21\" stroke=\"rgba(255, 255, 255, 0.55)\" stroke-width=\"1\" fill=\"none\" />\n                      <circle cx=\"60\" cy=\"60\" r=\"11\" fill=\"#1C0D1C\" stroke=\"rgba(255, 255, 255, 0.25)\" stroke-width=\"1\" />\n                      <circle cx=\"60\" cy=\"60\" r=\"7.5\" fill=\"#B80C09\" />\n                      <circle cx=\"60\" cy=\"60\" r=\"2.8\" fill=\"#ffffff\" />\n                    </svg>\n                  </td>\n                </tr>\n                <tr>\n                  <td align=\"center\">\n                    <div style=\"display: inline-block; background: #231123; border: 1.5px solid #003844; border-radius: 50px; padding: 6px 20px; text-align: center;\">\n                      <span style=\"font-size: 19px; font-weight: 900; letter-spacing: 5px; color: #ffffff; text-transform: uppercase; vertical-align: middle;\">SONAR</span>\n                      <span style=\"font-size: 9px; font-weight: 700; color: #DCDCDD; letter-spacing: 2.5px; text-transform: uppercase; margin-left: 8px; padding-left: 8px; border-left: 1px solid rgba(220,220,221,0.3); vertical-align: middle;\">WEEKLY</span>\n                    </div>\n                  </td>\n                </tr>\n              </table>\n              <h1 style=\"color: #ffffff; font-size: 24px; font-weight: 800; margin: 24px 0 6px;\">¡Estás dentro de la comunidad!</h1>\n              <p style=\"color: #DCDCDD; font-size: 14px; margin: 0; opacity: 0.9;\">Hola <strong style=\"color: #ffffff;\">{{ $json.name }}</strong>, gracias por unirte a SONAR Weekly.</p>\n            </td>\n          </tr>\n\n          <!-- Contenido Principal -->\n          <tr>\n            <td style=\"padding: 10px 32px 30px;\">\n              <p style=\"font-size: 14px; line-height: 1.6; color: #DCDCDD; margin: 0 0 16px;\">\n                Cada semana recibirás reseñas de ediciones limitadas en vinilo, noticias de la industria y comparativas de audio analógico vs digital.\n              </p>\n\n              <div style=\"background: #231123; border-left: 3px solid #003844; border-radius: 8px; padding: 14px 16px; margin: 16px 0;\">\n                <div style=\"font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 1.5px; color: #DCDCDD; opacity: 0.8; margin-bottom: 4px;\">Tus preferencias:</div>\n                <div style=\"font-size: 13px; color: #ffffff;\">{{ $json.topics }}</div>\n              </div>\n            </td>\n          </tr>\n\n          <!-- Pie de página -->\n          <tr>\n            <td style=\"background-color: #231123; border-top: 1px solid rgba(220,220,221,0.15); padding: 22px 28px; text-align: center;\">\n              <p style=\"font-size: 11px; color: #DCDCDD; opacity: 0.5; margin: 0;\">\n                © 2026 SONAR High-Fidelity Audio • Boletín Semanal\n              </p>\n            </td>\n          </tr>\n        </table>\n      </td>\n    </tr>\n  </table>\n</body>\n</html>"
       },
-      "id": "e9314810-5829-4bc0-9812-38192a4bc819",
-      "name": "Respuesta Exitosa",
-      "type": "n8n-nodes-base.respondToWebhook",
-      "typeVersion": 1.1,
+      "id": "e81881b2-13d8-4b71-9cb6-c3cbbf7c5dae",
+      "name": "Enviar Newsletter con Gmail",
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
       "position": [
         920,
         220
       ]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "{\n  \"success\": true,\n  \"message\": \"¡Te has suscrito exitosamente al boletín audiófilo de SONAR!\",\n  \"email\": \"={{ $json.email }}\"\n}",
+        "options": {
+          "responseCode": 200
+        }
+      },
+      "id": "18f5cf6d-a19e-4e42-b9e7-4978f8cb206b",
+      "name": "Respond Success",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [
+        1140,
+        220
+      ]
     }
   ],
+  "pinData": {},
   "connections": {
     "Webhook Newsletter": {
       "main": [
@@ -116,25 +132,36 @@
       "main": [
         [
           {
-            "node": "Preparar Plantilla de Email",
+            "node": "Procesar Suscripción",
             "type": "main",
             "index": 0
           }
         ],
         [
           {
-            "node": "Respuesta Error",
+            "node": "Respond Error",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "Preparar Plantilla de Email": {
+    "Procesar Suscripción": {
       "main": [
         [
           {
-            "node": "Respuesta Exitosa",
+            "node": "Enviar Newsletter con Gmail",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Enviar Newsletter con Gmail": {
+      "main": [
+        [
+          {
+            "node": "Respond Success",
             "type": "main",
             "index": 0
           }
@@ -142,8 +169,14 @@
       ]
     }
   },
-  "active": true,
+  "active": false,
   "settings": {
     "executionOrder": "v1"
-  }
+  },
+  "versionId": "sonar-newsletter-v4-official-logo",
+  "meta": {
+    "instanceId": "sonar-n8n-newsletter-instance"
+  },
+  "id": "sonar-newsletter-subscription-flow",
+  "tags": []
 }
