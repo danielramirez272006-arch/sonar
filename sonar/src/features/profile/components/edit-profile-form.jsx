@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   Sparkles,
@@ -11,6 +11,8 @@ import {
   Mic,
   Flame,
   Image as ImageIcon,
+  UploadCloud,
+  Trash2,
   Type,
   Check,
   Pipette,
@@ -139,6 +141,57 @@ export const EditProfileForm = ({ initialData = {}, onSave = () => {} }) => {
   const [customColor, setCustomColor] = useState(
     formData.avatarBg?.startsWith('#') ? formData.avatarBg : '#B80C09'
   );
+
+  // Estados y handlers para subida de imagen de avatar
+  const fileInputRef = useRef(null);
+  const [isDragging, setIsDragging] = useState(false);
+  const [uploadError, setUploadError] = useState(null);
+
+  const processImageFile = (file) => {
+    if (!file) return;
+    setUploadError(null);
+
+    if (!file.type.startsWith('image/')) {
+      setUploadError('Por favor selecciona un archivo de imagen válido (PNG, JPG, JPEG, WEBP o GIF).');
+      return;
+    }
+
+    const maxSizeBytes = 8 * 1024 * 1024; // 8MB
+    if (file.size > maxSizeBytes) {
+      setUploadError('La imagen supera el tamaño máximo permitido de 8MB.');
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const dataUrl = e.target.result;
+      setFormData((prev) => ({
+        ...prev,
+        avatarUrl: dataUrl,
+        avatarStyle: 'image',
+      }));
+    };
+    reader.onerror = () => {
+      setUploadError('Ocurrió un error al leer la imagen. Inténtalo de nuevo.');
+    };
+    reader.readAsDataURL(file);
+  };
+
+  const handleFileChange = (e) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      processImageFile(file);
+    }
+  };
+
+  const handleDrop = (e) => {
+    e.preventDefault();
+    setIsDragging(false);
+    const file = e.dataTransfer.files?.[0];
+    if (file) {
+      processImageFile(file);
+    }
+  };
 
   // Estados de cambio de contraseña
   const [oldPassword, setOldPassword] = useState('');
@@ -327,7 +380,7 @@ export const EditProfileForm = ({ initialData = {}, onSave = () => {} }) => {
                 { id: 'blobatar', label: 'Caras Blobatar', icon: Sparkles },
                 { id: 'initials', label: 'Inicial Tipográfica', icon: Type },
                 { id: 'icon', label: 'Ícono de Género', icon: Disc },
-                { id: 'image', label: 'URL de Imagen', icon: ImageIcon },
+                { id: 'image', label: 'Subir Imagen', icon: UploadCloud },
               ].map((style) => (
                 <button
                   key={style.id}
@@ -345,14 +398,93 @@ export const EditProfileForm = ({ initialData = {}, onSave = () => {} }) => {
               ))}
             </div>
 
-            {/* Contenido condicional por estilo de avatar */}
+            {/* Contenido condicional: Subir Imagen desde el dispositivo */}
             {formData.avatarStyle === 'image' && (
-              <Input
-                label="URL de la imagen (HTTPS)"
-                value={formData.avatarUrl}
-                onChange={(e) => setFormData({ ...formData, avatarUrl: e.target.value })}
-                placeholder="https://ejemplo.com/tu-foto.jpg"
-              />
+              <div className="flex flex-col gap-3">
+                <input
+                  type="file"
+                  ref={fileInputRef}
+                  onChange={handleFileChange}
+                  accept="image/png, image/jpeg, image/jpg, image/webp, image/gif"
+                  className="hidden"
+                  id="avatar-file-input"
+                />
+
+                {formData.avatarUrl ? (
+                  <div className="flex flex-col sm:flex-row items-center justify-between p-4 rounded-2xl bg-white dark:bg-[#4B2840] border border-[#e6d5e2] dark:border-white/10 gap-4 shadow-xs">
+                    <div className="flex items-center gap-3.5">
+                      <div className="w-16 h-16 rounded-2xl overflow-hidden border-2 border-[#B80C09] shrink-0 bg-gray-100 dark:bg-black/40 shadow-xs">
+                        <img
+                          src={formData.avatarUrl}
+                          alt="Vista previa del avatar subido"
+                          className="w-full h-full object-cover"
+                        />
+                      </div>
+                      <div className="flex flex-col">
+                        <span className="text-sm font-bold text-[#231123] dark:text-white flex items-center gap-1.5">
+                          <Check className="w-4 h-4 text-emerald-500" /> Imagen cargada con éxito
+                        </span>
+                        <span className="text-xs text-[#5c435a] dark:text-[#B89CB0]">
+                          Tu foto será visible en todas tus reseñas y perfil
+                        </span>
+                      </div>
+                    </div>
+
+                    <div className="flex items-center gap-2 w-full sm:w-auto justify-end">
+                      <button
+                        type="button"
+                        onClick={() => fileInputRef.current?.click()}
+                        className="px-3.5 py-2 rounded-xl text-xs font-bold bg-gray-100 dark:bg-white/10 hover:bg-[#B80C09] hover:text-white transition-colors cursor-pointer flex items-center gap-1.5"
+                      >
+                        <UploadCloud className="w-4 h-4" />
+                        <span>Cambiar Foto</span>
+                      </button>
+
+                      <button
+                        type="button"
+                        onClick={() => setFormData((prev) => ({ ...prev, avatarUrl: '', avatarStyle: 'blobatar' }))}
+                        className="p-2 rounded-xl text-xs font-bold text-red-500 hover:bg-red-50 dark:hover:bg-red-950/40 transition-colors cursor-pointer"
+                        title="Eliminar foto"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </button>
+                    </div>
+                  </div>
+                ) : (
+                  <div
+                    onDragOver={(e) => {
+                      e.preventDefault();
+                      setIsDragging(true);
+                    }}
+                    onDragLeave={() => setIsDragging(false)}
+                    onDrop={handleDrop}
+                    onClick={() => fileInputRef.current?.click()}
+                    className={`p-6 sm:p-8 rounded-2xl border-2 border-dashed transition-all flex flex-col items-center justify-center gap-2 text-center cursor-pointer ${
+                      isDragging
+                        ? 'border-[#B80C09] bg-[#B80C09]/10 scale-[1.01]'
+                        : 'border-[#e6d5e2] dark:border-white/15 bg-white dark:bg-[#4B2840] hover:border-[#B80C09]/60 hover:bg-rose-50/30 dark:hover:bg-white/5'
+                    }`}
+                  >
+                    <div className="w-12 h-12 rounded-full bg-rose-50 dark:bg-[#B80C09]/20 text-[#B80C09] dark:text-rose-300 flex items-center justify-center shadow-xs">
+                      <UploadCloud className="w-6 h-6" />
+                    </div>
+                    <div>
+                      <span className="text-sm font-bold text-[#231123] dark:text-white block">
+                        Haz clic para seleccionar o arrastra tu foto aquí
+                      </span>
+                      <p className="text-xs text-[#5c435a] dark:text-[#B89CB0] mt-0.5">
+                        Archivos PNG, JPG, JPEG, WEBP o GIF (hasta 8MB)
+                      </p>
+                    </div>
+                  </div>
+                )}
+
+                {uploadError && (
+                  <span className="text-xs font-bold text-red-500 flex items-center gap-1">
+                    {uploadError}
+                  </span>
+                )}
+              </div>
             )}
 
             {formData.avatarStyle === 'icon' && (
