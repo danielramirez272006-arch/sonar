@@ -75,7 +75,7 @@ export const LoginForm = () => {
           <form onSubmit={handleSubmit} className="auth-form">
             <label htmlFor="email">Correo electrónico</label>
             <input id="email" type="email" autoComplete="email" required placeholder="tu@ejemplo.com" value={formData.email} onChange={(event) => setFormData({ ...formData, email: event.target.value })} />
-            <label htmlFor="password">Contraseña</label>
+            <div className="auth-label-row"><label htmlFor="password">Contraseña</label><a href="#forgot-password">¿Olvidaste tu contraseña?</a></div>
             <div className="auth-password"><input id="password" type={showPassword ? 'text' : 'password'} autoComplete="current-password" required placeholder="Mínimo 8 caracteres" value={formData.password} onChange={(event) => setFormData({ ...formData, password: event.target.value })} /><button type="button" onClick={() => setShowPassword(!showPassword)} aria-label={showPassword ? 'Ocultar contraseña' : 'Mostrar contraseña'}>{showPassword ? <EyeOff size={17} /> : <Eye size={17} />}</button></div>
             {message && <p className="auth-error" role="alert">{message}</p>}
             <button className="auth-submit" type="submit" disabled={isLoading}>{isLoading ? 'Ingresando…' : <>Entrar a Sonar <ArrowRight size={18} /></>}</button>

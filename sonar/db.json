@@ -1853,6 +1853,75 @@
         "Audiófilo Inicial"
       ],
       "createdAt": "2026-09-24T15:19:10.776Z"
+    },
+    {
+      "id": "user-1790263389609",
+      "username": "Daniel Ramirez",
+      "email": "daniel_1790263389486@sonar.local",
+      "password": "sha256$baa36f78164d1ac0da6f5bd8c6e141b2$5744c1690d3090332c62da0698998cb81a2f3b133d29f7fda2cea15e545abda0",
+      "role": "user",
+      "avatarUrl": "",
+      "avatarBg": "#5c1d5e",
+      "bio": "Nuevo melómano explorando vinilos y texturas acústicas en Sonar.",
+      "stats": {
+        "savedAlbums": 0,
+        "reviewsCount": 0,
+        "followers": 0,
+        "following": 0
+      },
+      "preferences": [
+        "Hip-Hop Experimental",
+        "Neo-Soul"
+      ],
+      "gear": {
+        "headphones": "Auriculares de referencia",
+        "turntable": "Tocadiscos Direct Drive",
+        "favoriteFormat": "Vinilo 33⅓ RPM"
+      },
+      "badges": [
+        "Melómano Verificado",
+        "Audiófilo Inicial"
+      ],
+      "createdAt": "2026-09-24T15:23:09.609Z"
+    },
+    {
+      "id": "user-1790263389699",
+      "username": "Elena Jazz",
+      "email": "audiophile_1790263389663@sonar.local",
+      "password": "sha256$7fae5886013063e60b5603d518a0a15b$021c09f3ae0f100bc913677c6a4dce32becbcff23f5a245fd7567df9c20b20d3",
+      "role": "user",
+      "avatarUrl": "",
+      "avatarBg": "#059669",
+      "bio": "Exploradora de sintetizadores analógicos.",
+      "stats": {
+        "savedAlbums": 0,
+        "reviewsCount": 0,
+        "followers": 0,
+        "following": 0
+      },
+      "preferences": [
+        "Synthwave",
+        "Ambient & Drone",
+        "IDM / Techno"
+      ],
+      "gear": {
+        "headphones": "Auriculares de referencia",
+        "turntable": "Tocadiscos Direct Drive",
+        "favoriteFormat": "Vinilo 33⅓ RPM"
+      },
+      "badges": [
+        "Melómano Verificado",
+        "Audiófilo Inicial"
+      ],
+      "createdAt": "2026-09-24T15:23:09.699Z"
+    },
+    {
+      "id": "test-user-recov-clean",
+      "username": "usuario_seguro",
+      "email": "seguridad_recov@sonar.local",
+      "password": "sha256$29d21494ce52be5b937376f6378e0a8c$543f950aff6be18c33f882273765f4bfaa4ae08f447f58ecc1c799dc53e0fd46",
+      "role": "user",
+      "createdAt": "2026-09-24T15:23:10.466Z"
     }
   ],
   "reviews": [
