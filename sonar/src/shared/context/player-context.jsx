@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, useRef, useEffect, useCallback } from 'react';
-import { resolvePlayablePreview } from '../services/deezer-service';
+import { resolvePlayablePreview, isExplicitTrack } from '../services/deezer-service';
 import { interactionsService } from '../services/interactions-service';
 import { resolveAccurateCoverForTrack } from '../services/recommendations-service';
 
@@ -12,6 +12,8 @@ export const PlayerProvider = ({ children }) => {
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(30);
   const [reviewModalAlbum, setReviewModalAlbum] = useState(null);
+  const [explicitLockModal, setExplicitLockModal] = useState({ isOpen: false, track: null, reason: '' });
+  const [unlockedExplicitSession, setUnlockedExplicitSession] = useState(false);
 
   const audioRef = useRef(null);
 
@@ -76,10 +78,73 @@ export const PlayerProvider = ({ children }) => {
     };
   }, []);
 
-  const playTrack = useCallback(async (track) => {
+  const closeExplicitLockModal = useCallback(() => {
+    setExplicitLockModal({ isOpen: false, track: null, reason: '' });
+  }, []);
+
+  const unlockExplicitWithPin = useCallback((enteredPin) => {
+    try {
+      let parentPin = '1234';
+      const stored = typeof window !== 'undefined' ? window.localStorage?.getItem('sonar_auth_user') : null;
+      if (stored) {
+        const parsedUser = JSON.parse(stored);
+        if (parsedUser.parentalControl?.pin) {
+          parentPin = parsedUser.parentalControl.pin;
+        }
+      }
+      if (String(enteredPin).trim() === String(parentPin).trim()) {
+        setUnlockedExplicitSession(true);
+        const pending = explicitLockModal.track;
+        setExplicitLockModal({ isOpen: false, track: null, reason: '' });
+        if (pending) {
+          playTrack(pending, { bypassParentalLock: true });
+        }
+        return { success: true };
+      }
+      return { success: false, error: 'PIN de control parental incorrecto.' };
+    } catch {
+      return { success: false, error: 'Error al verificar el PIN.' };
+    }
+  }, [explicitLockModal.track]);
+
+  const playTrack = useCallback(async (track, options = {}) => {
     if (!track) return;
     const audio = audioRef.current;
     if (!audio) return;
+
+    // Verificar filtro de Control Parental para pistas explícitas
+    const isExplicit = isExplicitTrack(track);
+    let isParentalFilterActive = false;
+    try {
+      const stored = typeof window !== 'undefined' ? window.localStorage?.getItem('sonar_auth_user') : null;
+      if (stored) {
+        const parsedUser = JSON.parse(stored);
+        if (
+          parsedUser.accountType === 'junior' ||
+          (parsedUser.parentalControl?.enabled && parsedUser.parentalControl?.blockExplicit)
+        ) {
+          isParentalFilterActive = true;
+        }
+      }
+    } catch {}
+
+    if (isExplicit && isParentalFilterActive && !unlockedExplicitSession && !options.bypassParentalLock) {
+      const blockedTrackObj = {
+        id: track.id || track.deezerId || Date.now(),
+        title: track.title || track.albumTitle || 'Pista Explícita',
+        artist: track.artist || 'Artista',
+        album: track.album || track.albumTitle || track.title || '',
+        cover: resolveAccurateCoverForTrack(track),
+        explicit: true,
+        explicit_lyrics: true,
+      };
+      setExplicitLockModal({
+        isOpen: true,
+        track: blockedTrackObj,
+        reason: 'Esta pista contiene contenido explícito no apto para cuentas Junior o con filtro parental activo.',
+      });
+      return { blocked: true, reason: 'explicit_blocked' };
+    }
 
     // Abrir inmediatamente la barra del reproductor con los metadatos disponibles
     const trackPayload = {
@@ -94,6 +159,8 @@ export const PlayerProvider = ({ children }) => {
       audioUrl: track.audioUrl || track.preview,
       description: track.description,
       hosts: track.hosts,
+      explicit: isExplicit,
+      explicit_lyrics: isExplicit,
     };
 
     // Si ya es la pista activa y tiene audio cargado
@@ -151,7 +218,7 @@ export const PlayerProvider = ({ children }) => {
       setIsLoading(false);
       setIsPlaying(false);
     }
-  }, [currentTrack]);
+  }, [currentTrack, unlockedExplicitSession]);
 
   const pauseTrack = useCallback(() => {
     if (audioRef.current) {
@@ -249,6 +316,10 @@ export const PlayerProvider = ({ children }) => {
         reviewModalAlbum,
         openReviewModal,
         closeReviewModal,
+        explicitLockModal,
+        closeExplicitLockModal,
+        unlockExplicitWithPin,
+        unlockedExplicitSession,
       }}
     >
       {children}
