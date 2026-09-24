@@ -79,14 +79,21 @@ const FeaturedReviewCard = ({ review }) => {
   const [isSavedInCollection, setIsSavedInCollection] = useState(false);
 
   useEffect(() => {
-    const likedIds = interactionsService.getLikedReviewIds(userId);
+    const effectiveId = userId || 'guest_user';
+    const likedIds = interactionsService.getLikedReviewIds(effectiveId);
     setIsLiked(likedIds.includes(review.id));
-    setIsSavedInCollection(interactionsService.isAlbumSaved(userId, review.album.title));
+    setIsSavedInCollection(interactionsService.isAlbumSaved(effectiveId, review.album));
     const comments = interactionsService.getCommentsForReview(review.id);
     if (comments.length > 0) {
       setCommentsCount(comments.length);
     }
-  }, [review.id, review.album.title, userId]);
+
+    const handleCollectionChange = () => {
+      setIsSavedInCollection(interactionsService.isAlbumSaved(effectiveId, review.album));
+    };
+    window.addEventListener('sonar:collection-changed', handleCollectionChange);
+    return () => window.removeEventListener('sonar:collection-changed', handleCollectionChange);
+  }, [review.id, review.album, userId]);
 
   const handleLike = () => {
     if (!user) {
@@ -99,15 +106,13 @@ const FeaturedReviewCard = ({ review }) => {
   };
 
   const handleToggleSave = () => {
-    if (!user) {
-      window.location.hash = '#login';
-      return;
-    }
-    const res = interactionsService.toggleSaveAlbum(userId, {
+    const effectiveId = userId || 'guest_user';
+    const res = interactionsService.toggleSaveAlbum(effectiveId, {
       title: review.album.title,
       artist: review.album.artist,
       cover: review.album.cover,
       rating: review.rating,
+      type: 'album',
     });
     setIsSavedInCollection(res.isSaved);
   };

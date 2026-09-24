@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { DEFAULT_DEEZER_ALBUMS } from '../../../shared/services/deezer-service';
 import { CATALOG_RECOMMENDATIONS } from '../../../shared/services/recommendations-service';
@@ -13,12 +13,21 @@ export const TrendingGrid = () => {
   const [viewMode, setViewMode] = useState('grid'); // 'grid' | 'list'
   const [sortBy, setSortBy] = useState('rating'); // 'rating' | 'trending' | 'year'
   const [toastMessage, setToastMessage] = useState(null);
+  const [collectionVersion, setCollectionVersion] = useState(0);
 
   const { playTrack, currentTrack, isPlaying, toggleTrack, openReviewModal } = usePlayer();
 
   const userPreferences = useMemo(() => {
     return user?.preferences || ['Art Rock', 'Electrónica'];
   }, [user]);
+
+  useEffect(() => {
+    const handleCollectionChange = () => {
+      setCollectionVersion((v) => v + 1);
+    };
+    window.addEventListener('sonar:collection-changed', handleCollectionChange);
+    return () => window.removeEventListener('sonar:collection-changed', handleCollectionChange);
+  }, []);
 
   const tabs = useMemo(() => {
     const list = [
@@ -70,11 +79,8 @@ export const TrendingGrid = () => {
 
   const handleToggleBookmark = (album, e) => {
     e.stopPropagation();
-    if (!user) {
-      window.location.hash = '#login';
-      return;
-    }
-    const res = interactionsService.toggleSaveAlbum(user.id, {
+    const effectiveUserId = user?.id || 'guest_user';
+    const res = interactionsService.toggleSaveAlbum(effectiveUserId, {
       id: album.id,
       deezerId: album.deezerId || album.id,
       title: album.title,
@@ -83,7 +89,9 @@ export const TrendingGrid = () => {
       genre: album.genre,
       year: album.year,
       rating: album.rating,
+      type: 'album',
     });
+    setCollectionVersion((v) => v + 1);
     setToastMessage(res.isSaved ? `"${album.title}" guardado en tu colección` : `"${album.title}" eliminado de tu colección`);
   };
 
@@ -261,7 +269,7 @@ export const TrendingGrid = () => {
         {viewMode === 'grid' ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {processedAlbums.map((album) => {
-              const isSaved = interactionsService.isAlbumSaved(user?.id, album.title);
+              const isSaved = interactionsService.isAlbumSaved(user?.id, album);
               const isItemPlaying = (currentTrack?.id === album.id || currentTrack?.album === album.title) && isPlaying;
               return (
                 <motion.div
@@ -359,7 +367,7 @@ export const TrendingGrid = () => {
           /* Modo Lista Detallada */
           <div className="flex flex-col gap-3">
             {processedAlbums.map((album, idx) => {
-              const isSaved = interactionsService.isAlbumSaved(user?.id, album.title);
+              const isSaved = interactionsService.isAlbumSaved(user?.id, album);
               const isItemPlaying = (currentTrack?.id === album.id || currentTrack?.album === album.title) && isPlaying;
               return (
                 <motion.div

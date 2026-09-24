@@ -81,9 +81,15 @@ export const ReviewFeedCard = ({
       }
     };
 
+    const handleCollectionChange = () => {
+      setIsSavedInCollection(interactionsService.isAlbumSaved(currentUserId, review.albumTitle));
+    };
+
+    window.addEventListener('sonar:collection-changed', handleCollectionChange);
     window.addEventListener('sonar:follow-user-changed', handleUserFollowChange);
     window.addEventListener('sonar:follow-artist-changed', handleArtistFollowChange);
     return () => {
+      window.removeEventListener('sonar:collection-changed', handleCollectionChange);
       window.removeEventListener('sonar:follow-user-changed', handleUserFollowChange);
       window.removeEventListener('sonar:follow-artist-changed', handleArtistFollowChange);
     };
@@ -119,15 +125,13 @@ export const ReviewFeedCard = ({
   };
 
   const handleToggleSave = () => {
-    if (!user) {
-      window.location.hash = '#login';
-      return;
-    }
-    const res = interactionsService.toggleSaveAlbum(currentUserId, {
+    const effectiveId = currentUserId || 'guest_user';
+    const res = interactionsService.toggleSaveAlbum(effectiveId, {
       title: review.albumTitle,
       artist: review.artist,
       cover: review.cover,
       rating: review.rating,
+      type: review.type || 'album',
     });
     setIsSavedInCollection(res.isSaved);
   };
