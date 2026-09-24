@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { usePlayer } from '../../context/player-context';
 import { useAuth } from '../../context/auth-context';
 import { useAccessibility } from '../../context/accessibility-context';
-import { getTracksForAlbum } from '../../services/deezer-service';
+import { getTracksForAlbum, isExplicitTrack } from '../../services/deezer-service';
 import { interactionsService } from '../../services/interactions-service';
 import { getLyricsForTrack } from '../../services/lyrics-service';
 
@@ -22,6 +22,9 @@ export const GlobalAudioPlayer = () => {
     seek,
     closePlayer,
     openReviewModal,
+    explicitLockModal,
+    closeExplicitLockModal,
+    unlockExplicitWithPin,
   } = usePlayer();
 
   const { announce, playAudioCue, speak, isSpeaking, stopSpeaking } = useAccessibility();
@@ -38,6 +41,8 @@ export const GlobalAudioPlayer = () => {
   const [isLoadingLyrics, setIsLoadingLyrics] = useState(false);
   const [savedMap, setSavedMap] = useState({});
   const [copiedTranscript, setCopiedTranscript] = useState(false);
+  const [parentPinInput, setParentPinInput] = useState('');
+  const [pinError, setPinError] = useState('');
 
   const isPodcast = Boolean(
     currentTrack?.isPodcast ||
@@ -148,16 +153,19 @@ export const GlobalAudioPlayer = () => {
   }, [currentTrack?.title, currentTrack?.artist, announce]);
 
   const isVinylPage = currentHash === '#album' || currentHash === '#vinilo' || currentHash === '#vinyl-mode';
-  if (!currentTrack || isVinylPage) return null;
+  if (!currentTrack && !explicitLockModal?.isOpen) return null;
 
   const isCurrentTrackSaved = Boolean(
-    savedMap[String(currentTrack.id)] ||
-    savedMap[String(currentTrack.trackId || '')] ||
-    savedMap[currentTrack.title?.toLowerCase()]
+    currentTrack && (
+      savedMap[String(currentTrack.id)] ||
+      savedMap[String(currentTrack.trackId || '')] ||
+      savedMap[currentTrack.title?.toLowerCase()]
+    )
   );
 
   const handleToggleSaveCurrent = (e) => {
     e?.stopPropagation();
+    if (!currentTrack) return;
     const effectiveId = userId || 'guest_user';
     interactionsService.toggleSaveAlbum(effectiveId, currentTrack, 'Favoritos');
     refreshSavedMap();
@@ -168,9 +176,9 @@ export const GlobalAudioPlayer = () => {
     const effectiveId = userId || 'guest_user';
     interactionsService.toggleSaveAlbum(effectiveId, {
       ...item,
-      album: currentTrack.album || currentTrack.title,
-      artist: item.artist || currentTrack.artist,
-      cover: item.cover || currentTrack.cover,
+      album: currentTrack?.album || currentTrack?.title,
+      artist: item.artist || currentTrack?.artist,
+      cover: item.cover || currentTrack?.cover,
       type: 'track',
     }, 'Favoritos');
     refreshSavedMap();
@@ -187,17 +195,19 @@ export const GlobalAudioPlayer = () => {
   const defaultFallbackCover = 'https://cdn-images.dzcdn.net/images/cover/a175af9b7d329bc678cb4d26fc13d6de/500x500-000000-80-0-0.jpg';
 
   return (
-    <AnimatePresence>
-      <motion.div
-        initial={{ y: 60, opacity: 0, scale: 0.95 }}
-        animate={{ y: 0, opacity: 1, scale: 1 }}
-        exit={{ y: 60, opacity: 0, scale: 0.95 }}
-        transition={{ type: 'spring', stiffness: 380, damping: 30 }}
-        className="fixed bottom-5 left-3 sm:left-6 z-50 w-[calc(100%-1.5rem)] sm:w-[580px] md:w-[640px] max-w-[680px] flex flex-col gap-2.5 p-2.5 sm:p-3 select-none backdrop-blur-2xl"
-        style={{
-          backgroundColor: '#160817f2',
-          color: '#DCDCDD',
-          borderRadius: '24px',
+    <>
+      <AnimatePresence>
+        {currentTrack && !isVinylPage && (
+          <motion.div
+            initial={{ y: 60, opacity: 0, scale: 0.95 }}
+            animate={{ y: 0, opacity: 1, scale: 1 }}
+            exit={{ y: 60, opacity: 0, scale: 0.95 }}
+            transition={{ type: 'spring', stiffness: 380, damping: 30 }}
+            className="fixed bottom-5 left-3 sm:left-6 z-50 w-[calc(100%-1.5rem)] sm:w-[580px] md:w-[640px] max-w-[680px] flex flex-col gap-2.5 p-2.5 sm:p-3 select-none backdrop-blur-2xl"
+            style={{
+              backgroundColor: '#160817f2',
+              color: '#DCDCDD',
+              borderRadius: '24px',
           border: '1px solid rgba(255, 255, 255, 0.16)',
           boxShadow: '0 20px 50px -10px rgba(0, 0, 0, 0.85), 0 0 25px rgba(184, 12, 9, 0.25)',
         }}
@@ -264,6 +274,15 @@ export const GlobalAudioPlayer = () => {
                 <span className="text-xs sm:text-sm font-bold truncate text-white group-hover/meta:text-rose-300 transition-colors">
                   {currentTrack.title}
                 </span>
+                {isExplicitTrack(currentTrack) && (
+                  <span
+                    className="px-1 py-0.2 rounded text-[8px] font-black uppercase tracking-wider bg-gray-700/80 text-gray-200 border border-gray-500/50 shrink-0"
+                    title="Contenido Explícito (Explicit Lyrics)"
+                    aria-label="Contenido Explícito"
+                  >
+                    E
+                  </span>
+                )}
                 {isPodcast ? (
                   <span className="px-1.5 py-0.5 rounded-md text-[9px] font-black uppercase tracking-wider bg-rose-600 text-white shadow-xs shrink-0 flex items-center gap-1">
                     <span className="w-1.5 h-1.5 rounded-full bg-white animate-pulse" />
@@ -748,9 +767,19 @@ export const GlobalAudioPlayer = () => {
                           </span>
 
                           <div className="flex flex-col min-w-0">
-                            <span className={`text-xs font-bold truncate ${isCurrentSelected ? 'text-rose-300' : 'text-white'}`}>
-                              {track.title}
-                            </span>
+                            <div className="flex items-center gap-1.5 overflow-hidden">
+                              <span className={`text-xs font-bold truncate ${isCurrentSelected ? 'text-rose-300' : 'text-white'}`}>
+                                {track.title}
+                              </span>
+                              {isExplicitTrack(track) && (
+                                <span
+                                  className="px-1 py-0.1 rounded text-[7px] font-black uppercase bg-gray-700/90 text-gray-300 border border-gray-500/40 shrink-0"
+                                  title="Contenido Explícito"
+                                >
+                                  E
+                                </span>
+                              )}
+                            </div>
                             <span className="text-[10px] text-gray-400 truncate">
                               {track.artist || currentTrack.artist}
                             </span>
@@ -837,7 +866,117 @@ export const GlobalAudioPlayer = () => {
           )}
         </AnimatePresence>
       </motion.div>
+    )}
     </AnimatePresence>
+
+    {/* MODAL DE DESBLOQUEO DE CONTROL PARENTAL */}
+    <AnimatePresence>
+      {explicitLockModal?.isOpen && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="parental-lock-title"
+        >
+          <motion.div
+            initial={{ opacity: 0, scale: 0.92, y: 15 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.92, y: 15 }}
+            className="w-full max-w-md bg-[#2e192c] border border-rose-500/30 rounded-3xl p-6 shadow-2xl text-white flex flex-col gap-4 text-center"
+          >
+            <div className="w-14 h-14 mx-auto rounded-full bg-rose-500/20 text-rose-400 border border-rose-500/30 flex items-center justify-center">
+              <span className="material-symbols-outlined text-[30px]">lock</span>
+            </div>
+
+            <div>
+              <h3 id="parental-lock-title" className="text-lg font-black text-white flex items-center justify-center gap-2">
+                <span>Contenido Explícito Bloqueado</span>
+                <span className="px-1.5 py-0.5 rounded text-[9px] font-black uppercase bg-gray-700 text-gray-200 border border-gray-500/40">
+                  E
+                </span>
+              </h3>
+              <p className="text-xs text-rose-200/80 mt-1">
+                {explicitLockModal.reason || 'Esta canción está clasificada con lenguaje explícito no apto para menores.'}
+              </p>
+            </div>
+
+            {explicitLockModal.track && (
+              <div className="p-3 rounded-2xl bg-black/30 border border-white/10 flex items-center gap-3 text-left">
+                <img
+                  src={explicitLockModal.track.cover || defaultFallbackCover}
+                  alt={explicitLockModal.track.title}
+                  className="w-12 h-12 rounded-xl object-cover"
+                />
+                <div className="min-w-0 flex-1">
+                  <h4 className="text-xs font-bold text-white truncate">{explicitLockModal.track.title}</h4>
+                  <p className="text-[11px] text-gray-300 truncate">{explicitLockModal.track.artist}</p>
+                  <span className="inline-block mt-0.5 px-1.5 py-0.5 rounded text-[8px] font-bold bg-rose-900/60 text-rose-300 border border-rose-700/50">
+                    Filtro Parental Sonar
+                  </span>
+                </div>
+              </div>
+            )}
+
+            <form
+              onSubmit={(e) => {
+                e.preventDefault();
+                setPinError('');
+                const res = unlockExplicitWithPin(parentPinInput);
+                if (!res.success) {
+                  setPinError(res.error || 'PIN incorrecto');
+                } else {
+                  setParentPinInput('');
+                }
+              }}
+              className="flex flex-col gap-3"
+            >
+              <label htmlFor="parental-pin-input" className="text-xs text-gray-300 font-medium">
+                Ingresa el PIN de 4 dígitos para autorizar la reproducción:
+              </label>
+              <input
+                id="parental-pin-input"
+                type="password"
+                maxLength={8}
+                autoFocus
+                placeholder="••••"
+                value={parentPinInput}
+                onChange={(e) => {
+                  setParentPinInput(e.target.value);
+                  if (pinError) setPinError('');
+                }}
+                className="w-full text-center tracking-[0.4em] font-mono text-xl py-2 px-4 rounded-xl bg-black/40 border border-white/20 text-white focus:outline-hidden focus:border-rose-400"
+              />
+              {pinError && (
+                <span className="text-xs text-rose-400 font-bold" role="alert">
+                  {pinError}
+                </span>
+              )}
+
+              <div className="flex items-center gap-2 mt-2">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setParentPinInput('');
+                    setPinError('');
+                    closeExplicitLockModal();
+                  }}
+                  className="flex-1 py-2.5 rounded-xl bg-white/10 hover:bg-white/20 text-xs font-bold text-gray-300 transition-colors cursor-pointer"
+                >
+                  Cancelar
+                </button>
+                <button
+                  type="submit"
+                  className="flex-1 py-2.5 rounded-xl bg-gradient-to-r from-[#B80C09] to-[#d62828] hover:brightness-110 text-xs font-black text-white shadow-md cursor-pointer transition-all"
+                >
+                  Desbloquear
+                </button>
+              </div>
+            </form>
+          </motion.div>
+        </div>
+      )}
+    </AnimatePresence>
+    </>
   );
 };
 

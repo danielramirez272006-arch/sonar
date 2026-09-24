@@ -46,6 +46,8 @@ export const DEFAULT_DEEZER_ALBUMS = [
     cover_xl: 'https://cdn-images.dzcdn.net/images/cover/00dd0da365a94b1829302d6b7fec70e6/1000x1000-000000-80-0-0.jpg',
     cover_medium: 'https://cdn-images.dzcdn.net/images/cover/00dd0da365a94b1829302d6b7fec70e6/250x250-000000-80-0-0.jpg',
     link: 'https://www.deezer.com/album/9896728',
+    explicit_lyrics: true,
+    explicit: true,
   },
   {
     id: 537883642,
@@ -82,6 +84,8 @@ export const DEFAULT_DEEZER_ALBUMS = [
     cover_xl: 'https://cdn-images.dzcdn.net/images/cover/aa7e6de00b0810f5051aa60b489f58d8/1000x1000-000000-80-0-0.jpg',
     cover_medium: 'https://cdn-images.dzcdn.net/images/cover/aa7e6de00b0810f5051aa60b489f58d8/250x250-000000-80-0-0.jpg',
     link: 'https://www.deezer.com/album/344137457',
+    explicit_lyrics: true,
+    explicit: true,
   },
   {
     id: 302127,
@@ -130,6 +134,8 @@ export const DEFAULT_DEEZER_ALBUMS = [
     cover_xl: 'https://cdn-images.dzcdn.net/images/cover/66ae12120936d9660d3e30a7db7627b8/1000x1000-000000-80-0-0.jpg',
     cover_medium: 'https://cdn-images.dzcdn.net/images/cover/66ae12120936d9660d3e30a7db7627b8/250x250-000000-80-0-0.jpg',
     link: 'https://www.deezer.com/album/302867697',
+    explicit_lyrics: true,
+    explicit: true,
   },
   {
     id: 12114240,
@@ -146,10 +152,30 @@ export const DEFAULT_DEEZER_ALBUMS = [
 ];
 
 /**
+ * Determina si una pista o álbum contiene contenido explícito (lenguaje adulto / letras explícitas)
+ */
+export const isExplicitTrack = (track) => {
+  if (!track) return false;
+  if (track.explicit === true || track.explicit_lyrics === true || track.explicit_content_lyrics === 1) return true;
+  const title = String(track.title || '').toLowerCase();
+  const album = String(track.album || track.albumTitle || '').toLowerCase();
+  if (
+    title.includes('[explicit]') ||
+    title.includes('(explicit)') ||
+    album.includes('[explicit]') ||
+    album.includes('(explicit)')
+  ) {
+    return true;
+  }
+  return false;
+};
+
+/**
  * Normaliza un álbum de Deezer API al formato estándar de Sonar
  */
 export const formatDeezerAlbum = (album) => {
   if (!album) return null;
+  const isExplicit = Boolean(album.explicit_lyrics || album.explicit_content_lyrics === 1);
   return {
     id: album.id,
     title: album.title,
@@ -162,6 +188,8 @@ export const formatDeezerAlbum = (album) => {
     rating: (4.4 + ((album.id % 6) * 0.1)).toFixed(1),
     link: album.link,
     nb_tracks: album.nb_tracks,
+    explicit_lyrics: isExplicit,
+    explicit: isExplicit,
   };
 };
 
@@ -182,6 +210,7 @@ export const searchAlbums = async (query) => {
       const data = await response.json();
       if (data.data && Array.isArray(data.data) && data.data.length > 0) {
         return data.data.map((item) => {
+          const isExplicit = Boolean(item.explicit_lyrics || item.explicit_content_lyrics === 1);
           const rawObj = {
             id: item.id,
             title: item.title,
@@ -198,6 +227,8 @@ export const searchAlbums = async (query) => {
             preview: item.preview,
             link: item.link,
             type: 'track',
+            explicit_lyrics: isExplicit,
+            explicit: isExplicit,
           };
           const accurateCover = resolveAccurateCoverForTrack(rawObj);
           return {
@@ -227,6 +258,7 @@ export const searchAlbums = async (query) => {
         const data = await response.json();
         if (data.data && Array.isArray(data.data) && data.data.length > 0) {
           return data.data.map((item) => {
+            const isExplicit = Boolean(item.explicit_lyrics || item.explicit_content_lyrics === 1);
             const rawObj = {
               id: item.id,
               title: item.title,
@@ -243,6 +275,8 @@ export const searchAlbums = async (query) => {
               preview: item.preview,
               link: item.link,
               type: 'track',
+              explicit_lyrics: isExplicit,
+              explicit: isExplicit,
             };
             const accurateCover = resolveAccurateCoverForTrack(rawObj);
             return {
@@ -288,15 +322,20 @@ export const getAlbumTracks = async (albumId) => {
     const response = await fetch(`${BASE_URL}/album/${albumId}/tracks`);
     if (!response.ok) throw new Error(`HTTP ${response.status}`);
     const data = await response.json();
-    return (data.data || []).map((track) => ({
-      id: track.id,
-      title: track.title,
-      duration: track.duration,
-      preview: track.preview,
-      rank: track.rank,
-      artist: track.artist?.name || 'Artista',
-      link: track.link,
-    }));
+    return (data.data || []).map((track) => {
+      const isExplicit = Boolean(track.explicit_lyrics || track.explicit_content_lyrics === 1);
+      return {
+        id: track.id,
+        title: track.title,
+        duration: track.duration,
+        preview: track.preview,
+        rank: track.rank,
+        artist: track.artist?.name || 'Artista',
+        link: track.link,
+        explicit_lyrics: isExplicit,
+        explicit: isExplicit,
+      };
+    });
   } catch (error) {
     console.error("Error al obtener canciones del álbum de Deezer:", error);
     return [];
@@ -312,6 +351,7 @@ export const getTrackById = async (trackId) => {
     const response = await fetch(`${BASE_URL}/track/${trackId}`);
     if (!response.ok) throw new Error(`HTTP ${response.status}`);
     const track = await response.json();
+    const isExplicit = Boolean(track.explicit_lyrics || track.explicit_content_lyrics === 1);
     const rawObj = {
       id: track.id,
       title: track.title,
@@ -322,6 +362,8 @@ export const getTrackById = async (trackId) => {
       preview: track.preview,
       duration: track.duration,
       link: track.link,
+      explicit_lyrics: isExplicit,
+      explicit: isExplicit,
     };
     const accurateCover = resolveAccurateCoverForTrack(rawObj);
     return {
@@ -345,6 +387,7 @@ export const searchTracks = async (query) => {
     if (!response.ok) throw new Error(`HTTP ${response.status}`);
     const data = await response.json();
     return (data.data || []).map((track) => {
+      const isExplicit = Boolean(track.explicit_lyrics || track.explicit_content_lyrics === 1);
       const rawObj = {
         id: track.id,
         title: track.title,
@@ -355,6 +398,8 @@ export const searchTracks = async (query) => {
         preview: track.preview,
         duration: track.duration,
         link: track.link,
+        explicit_lyrics: isExplicit,
+        explicit: isExplicit,
       };
       const accurateCover = resolveAccurateCoverForTrack(rawObj);
       return {

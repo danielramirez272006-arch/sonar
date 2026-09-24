@@ -66,6 +66,8 @@ export const RegisterForm = () => {
     confirmPassword: '',
     preferences: ['Art Rock', 'Electrónica', 'Psicodelia'],
     avatarBg: '#B80C09',
+    accountType: 'standard',
+    parentalPin: '1234',
   });
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
@@ -139,6 +141,13 @@ export const RegisterForm = () => {
         password: formData.password,
         preferences: formData.preferences,
         avatarBg: formData.avatarBg,
+        accountType: formData.accountType,
+        isJunior: formData.accountType === 'junior',
+        parentalControl: {
+          enabled: formData.accountType === 'junior',
+          blockExplicit: formData.accountType === 'junior',
+          pin: formData.parentalPin || '1234',
+        },
       });
       window.location.hash = '#usuario';
     } catch (err) {
@@ -155,6 +164,13 @@ export const RegisterForm = () => {
       password: 'social_mock_login_123',
       avatarBg: formData.avatarBg,
       preferences: formData.preferences,
+      accountType: formData.accountType,
+      isJunior: formData.accountType === 'junior',
+      parentalControl: {
+        enabled: formData.accountType === 'junior',
+        blockExplicit: formData.accountType === 'junior',
+        pin: formData.parentalPin || '1234',
+      },
     };
 
     try {
@@ -262,6 +278,83 @@ export const RegisterForm = () => {
                   ))}
                 </div>
               </div>
+            </div>
+
+            {/* Selector de Tipo de Cuenta & Control Parental */}
+            <div style={{ marginBottom: '0.6rem' }}>
+              <label style={{ fontSize: '0.72rem', fontWeight: '800', textTransform: 'uppercase', letterSpacing: '0.05em', color: '#5c435a', display: 'flex', alignItems: 'center', gap: '4px', marginBottom: '0.35rem' }}>
+                <ShieldCheck size={14} color="#B80C09" />
+                Modalidad de Cuenta & Control Parental
+              </label>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.45rem' }}>
+                <button
+                  type="button"
+                  onClick={() => setFormData({ ...formData, accountType: 'standard' })}
+                  style={{
+                    padding: '0.55rem 0.5rem',
+                    borderRadius: '0.6rem',
+                    textAlign: 'left',
+                    border: formData.accountType === 'standard' ? '2px solid #B80C09' : '1px solid #ebd9ea',
+                    backgroundColor: formData.accountType === 'standard' ? '#fff0f2' : '#faf5f9',
+                    cursor: 'pointer',
+                    transition: 'all 0.15s ease',
+                  }}
+                >
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
+                    <Headphones size={13} color={formData.accountType === 'standard' ? '#B80C09' : '#5c435a'} />
+                    <span style={{ fontSize: '0.74rem', fontWeight: '800', color: formData.accountType === 'standard' ? '#B80C09' : '#231123' }}>
+                      Estándar
+                    </span>
+                  </div>
+                  <p style={{ fontSize: '0.6rem', color: '#665163', margin: '2px 0 0 0', lineHeight: 1.2 }}>
+                    Catálogo libre completo
+                  </p>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => setFormData({ ...formData, accountType: 'junior' })}
+                  style={{
+                    padding: '0.55rem 0.5rem',
+                    borderRadius: '0.6rem',
+                    textAlign: 'left',
+                    border: formData.accountType === 'junior' ? '2px solid #B80C09' : '1px solid #ebd9ea',
+                    backgroundColor: formData.accountType === 'junior' ? '#fff0f2' : '#faf5f9',
+                    cursor: 'pointer',
+                    transition: 'all 0.15s ease',
+                  }}
+                >
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
+                    <ShieldCheck size={13} color={formData.accountType === 'junior' ? '#B80C09' : '#5c435a'} />
+                    <span style={{ fontSize: '0.74rem', fontWeight: '800', color: formData.accountType === 'junior' ? '#B80C09' : '#231123' }}>
+                      Junior (Segura)
+                    </span>
+                  </div>
+                  <p style={{ fontSize: '0.6rem', color: '#665163', margin: '2px 0 0 0', lineHeight: 1.2 }}>
+                    Filtro explícito [E] y PIN
+                  </p>
+                </button>
+              </div>
+
+              {formData.accountType === 'junior' && (
+                <div style={{ marginTop: '0.4rem', padding: '0.45rem 0.65rem', borderRadius: '0.5rem', backgroundColor: '#fff', border: '1px solid #fecdd3', fontSize: '0.65rem', color: '#881337', display: 'flex', flexDirection: 'column', gap: '0.3rem' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                    <span>🔒 PIN Parental (4 dígitos):</span>
+                    <input
+                      type="text"
+                      maxLength={4}
+                      pattern="[0-9]*"
+                      value={formData.parentalPin}
+                      onChange={(e) => setFormData({ ...formData, parentalPin: e.target.value.replace(/\D/g, '').slice(0, 4) })}
+                      placeholder="1234"
+                      style={{ width: '60px', padding: '2px 6px', fontSize: '0.75rem', fontFamily: 'monospace', textAlign: 'center', border: '1px solid #e11d48', borderRadius: '4px' }}
+                    />
+                  </div>
+                  <span style={{ opacity: 0.85, fontSize: '0.59rem' }}>
+                    Las pistas con contenido explícito requerirán este PIN para desbloquear su reproducción.
+                  </span>
+                </div>
+              )}
             </div>
 
             <label htmlFor="username">Nombre de usuario</label>

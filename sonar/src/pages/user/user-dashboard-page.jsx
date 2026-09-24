@@ -19,7 +19,7 @@ import {
 import ReviewFeedCard from '../../features/reviews/components/review-feed-card';
 
 export const UserDashboardPage = () => {
-  const { user, updateUser } = useAuth();
+  const { user, updateUser, updateParentalControl, isParentalControlActive } = useAuth();
   const { playTrack, openReviewModal } = usePlayer();
   const userId = user?.id || null;
 
@@ -32,6 +32,8 @@ export const UserDashboardPage = () => {
   const [followedArtists, setFollowedArtists] = useState([]);
   const [followedUsers, setFollowedUsers] = useState([]);
   const [recentlyPlayed, setRecentlyPlayed] = useState([]);
+  const [parentPinInput, setParentPinInput] = useState(() => user?.parentalControl?.pin || '1234');
+  const [parentalNotice, setParentalNotice] = useState('');
 
   const handlePlayAlbum = (album) => {
     if (!album) return;
@@ -258,6 +260,26 @@ export const UserDashboardPage = () => {
               <span className="material-symbols-outlined text-[18px]">group</span>
               <span>Siguiendo ({followedUsers.length})</span>
               {activeTab === 'following_users' && (
+                <motion.div
+                  layoutId="dashboard-tab-indicator"
+                  className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#B80C09]"
+                  transition={{ type: 'spring', stiffness: 400, damping: 30 }}
+                />
+              )}
+            </button>
+
+            <button
+              type="button"
+              onClick={() => setActiveTab('parental_control')}
+              className={`pb-3 text-sm sm:text-base font-bold transition-all cursor-pointer relative whitespace-nowrap flex items-center gap-2 ${
+                activeTab === 'parental_control'
+                  ? 'text-[#B80C09]'
+                  : 'text-[#5c435a] dark:text-[#B89CB0] hover:text-[#231123] dark:hover:text-white'
+              }`}
+            >
+              <span className="material-symbols-outlined text-[18px]">verified_user</span>
+              <span>Control Parental {user?.accountType === 'junior' ? '(Junior)' : ''}</span>
+              {activeTab === 'parental_control' && (
                 <motion.div
                   layoutId="dashboard-tab-indicator"
                   className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#B80C09]"
@@ -761,6 +783,145 @@ export const UserDashboardPage = () => {
                   ))}
                 </div>
               )}
+            </section>
+          )}
+
+          {/* TAB 6: CONTROL PARENTAL Y FILTRO DE CONTENIDO */}
+          {activeTab === 'parental_control' && (
+            <section className="flex flex-col gap-6">
+              <div className="p-6 rounded-3xl bg-white dark:bg-[#4B2840] border border-[#e6d5e2] dark:border-white/10 shadow-xs flex flex-col gap-6">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-5 border-b border-gray-100 dark:border-white/10">
+                  <div className="flex items-center gap-3.5">
+                    <div className="w-12 h-12 rounded-2xl bg-rose-500/15 dark:bg-rose-500/20 text-[#B80C09] flex items-center justify-center shrink-0">
+                      <span className="material-symbols-outlined text-[26px]">lock</span>
+                    </div>
+                    <div>
+                      <h3 className="text-base sm:text-lg font-black text-[#231123] dark:text-white flex items-center gap-2">
+                        <span>Filtro de Contenido & Control Parental</span>
+                        <span className="px-2 py-0.5 rounded-full text-[10px] font-black uppercase bg-[#B80C09]/10 text-[#B80C09] dark:bg-rose-900/40 dark:text-rose-300">
+                          {user?.accountType === 'junior' ? 'Cuenta Junior Activa' : 'Filtro Configurable'}
+                        </span>
+                      </h3>
+                      <p className="text-xs text-[#5c435a] dark:text-[#B89CB0] mt-0.5">
+                        Protege la experiencia auditiva bloqueando canciones y pistas con lenguaje explícito o temas no aptos para menores.
+                      </p>
+                    </div>
+                  </div>
+
+                  {parentalNotice && (
+                    <span className="text-xs font-bold text-emerald-600 bg-emerald-50 dark:bg-emerald-950/40 dark:text-emerald-300 px-3 py-1.5 rounded-xl border border-emerald-200 dark:border-emerald-800 self-start sm:self-auto animate-fade-in">
+                      {parentalNotice}
+                    </span>
+                  )}
+                </div>
+
+                {/* Switch de activación del filtro explícito */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="p-4 rounded-2xl bg-gray-50 dark:bg-black/20 border border-gray-200/70 dark:border-white/10 flex items-center justify-between gap-4">
+                    <div className="flex flex-col min-w-0">
+                      <span className="text-sm font-bold text-[#231123] dark:text-white flex items-center gap-1.5">
+                        <span>Bloquear canciones explícitas [E]</span>
+                        <span className="px-1.5 py-0.2 rounded text-[8px] font-black bg-gray-700 text-white">E</span>
+                      </span>
+                      <span className="text-xs text-[#5c435a] dark:text-[#B89CB0] mt-0.5">
+                        Las pistas marcadas con lenguaje adulto requerirán el PIN para reproducirse.
+                      </span>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        const currentBlocked = Boolean(user?.parentalControl?.blockExplicit);
+                        updateParentalControl({
+                          enabled: !currentBlocked,
+                          blockExplicit: !currentBlocked,
+                        });
+                        setParentalNotice(!currentBlocked ? 'Filtro explícito activado' : 'Filtro explícito desactivado');
+                        setTimeout(() => setParentalNotice(''), 3000);
+                      }}
+                      className={`w-14 h-8 rounded-full transition-colors relative cursor-pointer shrink-0 ${
+                        user?.parentalControl?.blockExplicit ? 'bg-[#B80C09]' : 'bg-gray-300 dark:bg-gray-700'
+                      }`}
+                      aria-label="Alternar bloqueo de contenido explícito"
+                    >
+                      <motion.div
+                        className="w-6 h-6 rounded-full bg-white shadow-md absolute top-1"
+                        animate={{ left: user?.parentalControl?.blockExplicit ? '1.75rem' : '0.25rem' }}
+                        transition={{ type: 'spring', stiffness: 500, damping: 30 }}
+                      />
+                    </button>
+                  </div>
+
+                  {/* Modalidad de Cuenta (Estándar vs Junior) */}
+                  <div className="p-4 rounded-2xl bg-gray-50 dark:bg-black/20 border border-gray-200/70 dark:border-white/10 flex items-center justify-between gap-4">
+                    <div className="flex flex-col min-w-0">
+                      <span className="text-sm font-bold text-[#231123] dark:text-white">
+                        Tipo de Cuenta Sonar
+                      </span>
+                      <span className="text-xs text-[#5c435a] dark:text-[#B89CB0] mt-0.5">
+                        {user?.accountType === 'junior'
+                          ? 'Modo Junior Seguro: Restricción estricta por defecto.'
+                          : 'Modo Estándar: Acceso libre con filtro opcional.'}
+                      </span>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        const nextType = user?.accountType === 'junior' ? 'standard' : 'junior';
+                        updateUser({ accountType: nextType });
+                        if (nextType === 'junior') {
+                          updateParentalControl({ enabled: true, blockExplicit: true });
+                        }
+                        setParentalNotice(`Cuenta cambiada a modo ${nextType === 'junior' ? 'Junior Seguro' : 'Estándar'}`);
+                        setTimeout(() => setParentalNotice(''), 3000);
+                      }}
+                      className="px-3.5 py-1.5 rounded-xl border border-gray-300 dark:border-white/20 hover:border-[#B80C09] text-xs font-bold text-[#231123] dark:text-white transition-colors cursor-pointer shrink-0"
+                    >
+                      {user?.accountType === 'junior' ? 'Cambiar a Estándar' : 'Cambiar a Junior'}
+                    </button>
+                  </div>
+                </div>
+
+                {/* Formulario de Configuración de PIN Parental */}
+                <div className="p-5 rounded-2xl bg-gray-50 dark:bg-black/20 border border-gray-200/70 dark:border-white/10 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                  <div className="flex flex-col">
+                    <h4 className="text-sm font-bold text-[#231123] dark:text-white flex items-center gap-2">
+                      <span className="material-symbols-outlined text-[18px] text-[#B80C09]">pin</span>
+                      <span>PIN de Seguridad Parental (4 dígitos)</span>
+                    </h4>
+                    <p className="text-xs text-[#5c435a] dark:text-[#B89CB0] mt-0.5">
+                      Este PIN de 4 dígitos es solicitado en el reproductor para desbloquear pistas protegidas.
+                    </p>
+                  </div>
+
+                  <form
+                    onSubmit={(e) => {
+                      e.preventDefault();
+                      if (parentPinInput.trim().length >= 4) {
+                        updateParentalControl({ pin: parentPinInput.trim() });
+                        setParentalNotice('PIN de Control Parental guardado con éxito');
+                        setTimeout(() => setParentalNotice(''), 3000);
+                      }
+                    }}
+                    className="flex items-center gap-2"
+                  >
+                    <input
+                      type="password"
+                      maxLength={8}
+                      value={parentPinInput}
+                      onChange={(e) => setParentPinInput(e.target.value.replace(/\D/g, '').slice(0, 4))}
+                      placeholder="1234"
+                      className="w-24 text-center tracking-[0.3em] font-mono text-sm py-2 px-3 rounded-xl bg-white dark:bg-[#341b31] border border-gray-300 dark:border-white/20 text-[#231123] dark:text-white focus:outline-hidden focus:border-[#B80C09]"
+                    />
+                    <button
+                      type="submit"
+                      disabled={parentPinInput.trim().length < 4}
+                      className="px-4 py-2 rounded-xl bg-[#B80C09] hover:bg-[#960a07] text-white text-xs font-bold transition-all disabled:opacity-50 cursor-pointer shadow-xs"
+                    >
+                      Guardar PIN
+                    </button>
+                  </form>
+                </div>
+              </div>
             </section>
           )}
         </div>
