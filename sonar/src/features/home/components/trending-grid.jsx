@@ -13,7 +13,18 @@ export const TrendingGrid = () => {
   const [viewMode, setViewMode] = useState('grid'); // 'grid' | 'list'
   const [sortBy, setSortBy] = useState('rating'); // 'rating' | 'trending' | 'year'
   const [toastMessage, setToastMessage] = useState(null);
-  const [collectionVersion, setCollectionVersion] = useState(0);
+
+  const [savedMap, setSavedMap] = useState(() => {
+    const effectiveUserId = user?.id || 'guest_user';
+    const list = interactionsService.getUserSavedAlbums(effectiveUserId);
+    const map = {};
+    list.forEach((item) => {
+      if (item.id) map[String(item.id)] = true;
+      if (item.deezerId) map[String(item.deezerId)] = true;
+      if (item.title) map[item.title.toLowerCase()] = true;
+    });
+    return map;
+  });
 
   const { playTrack, currentTrack, isPlaying, toggleTrack, openReviewModal } = usePlayer();
 
@@ -21,13 +32,31 @@ export const TrendingGrid = () => {
     return user?.preferences || ['Art Rock', 'Electrónica'];
   }, [user]);
 
+  const updateSavedMap = () => {
+    const effectiveUserId = user?.id || 'guest_user';
+    const list = interactionsService.getUserSavedAlbums(effectiveUserId);
+    const map = {};
+    list.forEach((item) => {
+      if (item.id) map[String(item.id)] = true;
+      if (item.deezerId) map[String(item.deezerId)] = true;
+      if (item.title) map[item.title.toLowerCase()] = true;
+    });
+    setSavedMap(map);
+  };
+
   useEffect(() => {
-    const handleCollectionChange = () => {
-      setCollectionVersion((v) => v + 1);
-    };
-    window.addEventListener('sonar:collection-changed', handleCollectionChange);
-    return () => window.removeEventListener('sonar:collection-changed', handleCollectionChange);
-  }, []);
+    updateSavedMap();
+    window.addEventListener('sonar:collection-changed', updateSavedMap);
+    return () => window.removeEventListener('sonar:collection-changed', updateSavedMap);
+  }, [user?.id]);
+
+  const checkIsSaved = (album) => {
+    if (!album) return false;
+    const albumTitle = String(album.title || '').trim().toLowerCase();
+    const albumId = String(album.id || album.deezerId || '').trim();
+    if (savedMap[albumId] || savedMap[albumTitle]) return true;
+    return interactionsService.isAlbumSaved(user?.id, album);
+  };
 
   const tabs = useMemo(() => {
     const list = [
@@ -78,20 +107,37 @@ export const TrendingGrid = () => {
   };
 
   const handleToggleBookmark = (album, e) => {
-    e.stopPropagation();
+    if (e) {
+      e.stopPropagation();
+      e.preventDefault();
+    }
     const effectiveUserId = user?.id || 'guest_user';
     const res = interactionsService.toggleSaveAlbum(effectiveUserId, {
       id: album.id,
       deezerId: album.deezerId || album.id,
       title: album.title,
       artist: album.artist,
-      cover: album.cover,
+      cover: album.cover || album.cover_medium,
       genre: album.genre,
       year: album.year,
       rating: album.rating,
       type: 'album',
     });
-    setCollectionVersion((v) => v + 1);
+
+    const albumTitle = String(album.title || '').trim().toLowerCase();
+    const albumId = String(album.id || album.deezerId || '').trim();
+    setSavedMap((prev) => {
+      const next = { ...prev };
+      if (res.isSaved) {
+        if (albumId) next[albumId] = true;
+        if (albumTitle) next[albumTitle] = true;
+      } else {
+        if (albumId) delete next[albumId];
+        if (albumTitle) delete next[albumTitle];
+      }
+      return next;
+    });
+
     setToastMessage(res.isSaved ? `"${album.title}" guardado en tu colección` : `"${album.title}" eliminado de tu colección`);
   };
 
@@ -269,14 +315,14 @@ export const TrendingGrid = () => {
         {viewMode === 'grid' ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {processedAlbums.map((album) => {
-              const isSaved = interactionsService.isAlbumSaved(user?.id, album);
+              const isSaved = checkIsSaved(album);
               const isItemPlaying = (currentTrack?.id === album.id || currentTrack?.album === album.title) && isPlaying;
               return (
                 <motion.div
                   key={album.id || album.title}
                   whileHover={{ y: -4 }}
                   transition={{ duration: 0.25 }}
-                  className="group flex flex-col p-4 rounded-2xl bg-white dark:bg-[#4B2840] border border-[#e6d5e2] dark:border-white/10 shadow-[0_4px_20px_-2px_rgba(75,40,64,0.06)] dark:shadow-[0_4px_20px_-4px_rgba(0,0,0,0.4)] hover:shadow-md dark:hover:shadow-[0_12px_32px_-6px_rgba(0,0,0,0.6)] hover:border-[#B80C09]/40 transition-all duration-300"
+                  className="group flex flex-col p-4 rounded-2xl bg-white dark:bg-[#4B2840] border border-[#e6d5e2] dark:border-white/10 shadow-[0_4px_20px_-2px_rgba(75,40,64,0.06)] dark:shadow-[0_4px_20px_-4px_rgba(0,0,0,0.4)] hover:shadow-md dark:hover:shadow-[0_12px_32px_-6px_rgba(0,0,0,0.6)] hover:border-[#B80C09]/40 transition-all duration-300 relative"
                 >
                   {/* Album Image & Actions */}
                   <div className="relative w-full aspect-square rounded-xl overflow-hidden bg-[#f8e9f6] dark:bg-[#231123] mb-3 shadow-xs">
@@ -289,15 +335,15 @@ export const TrendingGrid = () => {
                       }}
                     />
 
-                    {/* Botón Guardar en esquina superior */}
+                    {/* Botón Guardar en esquina superior con prioridad de click z-30 */}
                     <button
                       type="button"
                       onClick={(e) => handleToggleBookmark(album, e)}
                       aria-label="Guardar álbum"
-                      className={`absolute top-2 right-2 w-8 h-8 rounded-full flex items-center justify-center transition-all cursor-pointer shadow-md ${
+                      className={`absolute top-2.5 right-2.5 z-30 pointer-events-auto w-8 h-8 rounded-full flex items-center justify-center transition-all cursor-pointer shadow-md ${
                         isSaved
-                          ? 'bg-[#B80C09] text-white'
-                          : 'bg-black/60 text-white hover:bg-[#B80C09]'
+                          ? 'bg-[#B80C09] text-white shadow-[#B80C09]/50'
+                          : 'bg-black/60 text-white hover:bg-[#B80C09] hover:scale-110'
                       }`}
                       title={isSaved ? 'Quitar de tu colección' : 'Guardar en tu colección'}
                     >
@@ -309,10 +355,11 @@ export const TrendingGrid = () => {
                       </span>
                     </button>
 
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end justify-between p-3">
+                    {/* Overlay de hover con pointer-events-none para no bloquear el botón superior */}
+                    <div className="absolute inset-0 z-10 pointer-events-none bg-gradient-to-t from-black/85 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end justify-between p-3">
                       <button
                         onClick={() => openReviewModal(album)}
-                        className="px-3 py-1.5 rounded-lg bg-white/20 hover:bg-[#B80C09] text-white text-xs uppercase font-bold flex items-center gap-1 shadow-md backdrop-blur-md transition-colors cursor-pointer"
+                        className="pointer-events-auto px-3 py-1.5 rounded-lg bg-white/20 hover:bg-[#B80C09] text-white text-xs uppercase font-bold flex items-center gap-1 shadow-md backdrop-blur-md transition-colors cursor-pointer"
                         type="button"
                         title="Escribir crítica"
                       >
@@ -323,7 +370,7 @@ export const TrendingGrid = () => {
                         onClick={() => handlePlayAlbum(album)}
                         aria-label={`Reproducir muestra de ${album.title}`}
                         title={isItemPlaying ? 'Pausar' : 'Escuchar muestra de 30s'}
-                        className={`w-9 h-9 rounded-full ${
+                        className={`pointer-events-auto w-9 h-9 rounded-full ${
                           isItemPlaying ? 'bg-[#B80C09] text-white' : 'bg-white text-[#231123]'
                         } flex items-center justify-center hover:scale-110 transition-transform shadow-md cursor-pointer`}
                         type="button"
@@ -367,7 +414,7 @@ export const TrendingGrid = () => {
           /* Modo Lista Detallada */
           <div className="flex flex-col gap-3">
             {processedAlbums.map((album, idx) => {
-              const isSaved = interactionsService.isAlbumSaved(user?.id, album);
+              const isSaved = checkIsSaved(album);
               const isItemPlaying = (currentTrack?.id === album.id || currentTrack?.album === album.title) && isPlaying;
               return (
                 <motion.div
