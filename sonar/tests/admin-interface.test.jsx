@@ -4,6 +4,8 @@ import { act, cleanup, fireEvent, render, screen, waitFor } from '@testing-libra
 import App from '../src/App.jsx'
 import { getReviews, getUsers, getPendingReviews, updateReview } from '../src/shared/services/api-client.js'
 
+vi.mock('../src/shared/components/ui/blobatar-avatar.jsx', () => ({ BlobatarAvatar: () => <span /> }))
+vi.mock('../src/shared/services/deezer-service.js', () => ({ getAlbumById: async () => null, DEFAULT_DEEZER_ALBUMS: [], searchAlbums: async () => [] }))
 vi.mock('../src/shared/services/api-client.js', () => ({
   getReviews: vi.fn(), getUsers: vi.fn(), getPendingReviews: vi.fn(), updateReview: vi.fn(),
 }))
@@ -27,7 +29,7 @@ afterEach(cleanup)
 it('saltar al contenido conserva la pantalla de moderación', async () => {
   window.history.replaceState(null, '', '/#moderacion')
   render(<App />)
-  await screen.findByText('Mateo')
+  await screen.findAllByText('Mateo')
   await act(async () => {
     window.history.replaceState(null, '', '/#contenido')
     window.dispatchEvent(new Event('hashchange'))
@@ -37,13 +39,13 @@ it('saltar al contenido conserva la pantalla de moderación', async () => {
 
 it('limpia la búsqueda y devuelve el foco al campo', async () => {
   render(<App />)
-  await screen.findByText('Mateo')
-  const search = screen.getByRole('textbox', { name: /Buscar reseñas/ })
+  await screen.findAllByText('Mateo')
+  const search = screen.getByRole('combobox', { name: /Buscar reseñas/ })
   fireEvent.change(search, { target: { value: 'sin coincidencias' } })
   fireEvent.click(screen.getByRole('button', { name: 'Limpiar búsqueda' }))
   expect(search.value).toBe('')
   expect(document.activeElement).toBe(search)
-  expect(screen.getByText('Mateo')).toBeTruthy()
+  expect(screen.getAllByText('Mateo')[0]).toBeTruthy()
 })
 
 it('conserva la confirmación si el rechazo falla y permite reintentarlo', async () => {
@@ -75,12 +77,12 @@ it('analiza una reseña normal sin aprobarla ni rechazarla', async () => {
 
 it('muestra los datos y permite filtrar las reseñas con la búsqueda', async () => {
   render(<App />)
-  expect(await screen.findByText('Mateo')).toBeTruthy()
-  const search = screen.getByRole('textbox', { name: /Buscar reseñas/ })
+  expect(await screen.findAllByText('Mateo')).toBeTruthy()
+  const search = screen.getByRole('combobox', { name: /Buscar reseñas/ })
   fireEvent.change(search, { target: { value: 'sin coincidencias' } })
   expect(screen.getByText('No hay coincidencias')).toBeTruthy()
   fireEvent.change(search, { target: { value: 'Mateo' } })
-  expect(screen.getByText('Mateo')).toBeTruthy()
+  expect(screen.getAllByText('Mateo')[0]).toBeTruthy()
 })
 
 it('aprueba una reseña desde la cola y refleja su desaparición', async () => {
@@ -114,5 +116,5 @@ it('muestra el error y permite reintentar la carga', async () => {
   await waitFor(() => expect(retry.disabled).toBe(false))
   fireEvent.click(retry)
   await waitFor(() => expect(screen.queryByRole('alert')).toBeNull())
-  expect(await screen.findByText('Mateo')).toBeTruthy()
+  expect(await screen.findAllByText('Mateo')).toBeTruthy()
 })

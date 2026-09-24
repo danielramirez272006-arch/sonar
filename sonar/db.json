@@ -18,7 +18,7 @@
         "Electrónica"
       ],
       "mutedUntil": null,
-      "status": null,
+      "status": "active",
       "conductReports": [
         {
           "id": "181803c2-b9a9-4024-b1b4-05f94b22d93f",
@@ -36,15 +36,54 @@
           "id": "b74950d6-c368-4f23-b6d2-c0f50b38bc23",
           "reason": "sisi",
           "createdAt": "2026-09-23T14:33:32.632Z",
-          "status": "pending"
+          "status": "reviewed",
+          "updatedAt": "2026-09-24T14:08:42.127Z"
         },
         {
           "id": "ac8cd3e8-a43d-4e6a-bb6b-117fac4e3c65",
           "reason": "hola",
           "createdAt": "2026-09-23T14:33:37.458Z",
           "status": "pending"
+        },
+        {
+          "id": "4f760362-fac5-4671-953f-93e18e52eefa",
+          "reason": "nigga",
+          "createdAt": "2026-09-23T14:42:10.484Z",
+          "status": "pending"
+        },
+        {
+          "id": "5304d2eb-f3f7-4397-af34-52a603c992ae",
+          "reason": "si",
+          "createdAt": "2026-09-23T14:42:13.346Z",
+          "status": "pending"
+        },
+        {
+          "id": "29ab4598-8f23-404e-a6cc-35964d4414d1",
+          "reason": "no",
+          "createdAt": "2026-09-23T14:42:16.240Z",
+          "status": "pending"
+        },
+        {
+          "id": "8978f615-9337-4a7b-8f29-c2378cfc538d",
+          "reason": "no",
+          "createdAt": "2026-09-23T14:42:20.541Z",
+          "status": "pending"
+        },
+        {
+          "id": "7a64ba31-30d3-40cb-968b-476ce1ba0d4f",
+          "reason": "a",
+          "createdAt": "2026-09-23T14:42:22.116Z",
+          "status": "pending"
+        },
+        {
+          "id": "64760819-1133-4f73-b113-106ebd6f366d",
+          "reason": "a",
+          "createdAt": "2026-09-23T14:42:24.538Z",
+          "status": "pending"
         }
-      ]
+      ],
+      "suspendedUntil": null,
+      "sanctions": []
     },
     {
       "id": "admin-1",
@@ -60,6 +99,90 @@
         "followers": 0
       },
       "preferences": []
+    },
+    {
+      "id": "user-1790175697367",
+      "username": "Daniel Ramirez",
+      "email": "daniel_1790175697277@sonar.local",
+      "password": "password123",
+      "role": "user",
+      "avatarUrl": "",
+      "avatarBg": "#059669",
+      "bio": "Nuevo melómano explorando vinilos y texturas acústicas en Sonar.",
+      "stats": {
+        "savedAlbums": 0,
+        "reviewsCount": 0,
+        "followers": 0,
+        "following": 0
+      },
+      "preferences": [
+        "Hip-Hop Experimental",
+        "Neo-Soul"
+      ],
+      "createdAt": "2026-09-23T15:01:37.367Z"
+    },
+    {
+      "id": "user-1790175697482",
+      "username": "Elena Jazz",
+      "email": "audiophile_1790175697427@sonar.local",
+      "password": "password123",
+      "role": "user",
+      "avatarUrl": "",
+      "avatarBg": "#5c1d5e",
+      "bio": "Amante del vinilo y el jazz modal.",
+      "stats": {
+        "savedAlbums": 0,
+        "reviewsCount": 0,
+        "followers": 0,
+        "following": 0
+      },
+      "preferences": [
+        "Jazz & Fusion",
+        "Post-Punk"
+      ],
+      "createdAt": "2026-09-23T15:01:37.482Z"
+    },
+    {
+      "id": "user-1790175932236",
+      "username": "Daniel Ramirez",
+      "email": "daniel_1790175932120@sonar.local",
+      "password": "password123",
+      "role": "user",
+      "avatarUrl": "",
+      "avatarBg": "#B80C09",
+      "bio": "Nuevo melómano explorando vinilos y texturas acústicas en Sonar.",
+      "stats": {
+        "savedAlbums": 0,
+        "reviewsCount": 0,
+        "followers": 0,
+        "following": 0
+      },
+      "preferences": [
+        "Electrónica",
+        "Post-Punk"
+      ],
+      "createdAt": "2026-09-23T15:05:32.236Z"
+    },
+    {
+      "id": "user-1790175932320",
+      "username": "Elena Jazz",
+      "email": "audiophile_1790175932293@sonar.local",
+      "password": "password123",
+      "role": "user",
+      "avatarUrl": "",
+      "avatarBg": "#7c3aed",
+      "bio": "Amante del vinilo y el jazz modal.",
+      "stats": {
+        "savedAlbums": 0,
+        "reviewsCount": 0,
+        "followers": 0,
+        "following": 0
+      },
+      "preferences": [
+        "Jazz & Fusion",
+        "Post-Punk"
+      ],
+      "createdAt": "2026-09-23T15:05:32.320Z"
     }
   ],
   "reviews": [

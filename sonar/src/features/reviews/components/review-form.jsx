@@ -1,23 +1,30 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { motion } from 'framer-motion';
 import StarRating from '../../../shared/components/ui/star-rating';
 
 export const ReviewForm = ({
   albumTitle = 'In Rainbows',
   artistName = 'Radiohead',
-  onSubmit = (e) => e.preventDefault(),
+  onSubmit = () => {},
 }) => {
   const [rating, setRating] = useState(0);
   const [reviewText, setReviewText] = useState('');
   const [hasSpoilers, setHasSpoilers] = useState(false);
 
-  const handleSubmit = (e) => {
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState('');
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    onSubmit({
+    if (busy) return;
+    if (!rating || !reviewText.trim()) { setError('Añade una calificación y el texto de tu reseña.'); return; }
+    setBusy(true); setError('');
+    try { await onSubmit({
       rating,
       reviewText,
       hasSpoilers,
-    });
+    }); setReviewText(''); }
+    catch (cause) { setError(cause.message || 'No se pudo guardar la reseña.'); }
+    finally { setBusy(false); }
   };
 
   return (
@@ -35,7 +42,7 @@ export const ReviewForm = ({
         </p>
       </div>
 
-      <form onSubmit={handleSubmit} className="flex flex-col gap-6 pt-6">
+      <form aria-busy={busy} onSubmit={handleSubmit} className="flex flex-col gap-6 pt-6">
         {/* Selector de Calificación con Estrellas */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-4 rounded-2xl bg-gray-50 dark:bg-[#231123]/70 border border-[#e6d5e2] dark:border-white/10">
           <div className="flex flex-col">
@@ -103,14 +110,14 @@ export const ReviewForm = ({
 
         {/* Botón de Publicación */}
         <motion.button
-          type="submit"
+          type="submit" disabled={busy}
           whileHover={{ scale: 1.02 }}
           whileTap={{ scale: 0.98 }}
           className="w-full py-4 px-6 rounded-xl bg-[#B80C09] text-white text-sm font-bold uppercase tracking-wider shadow-[0_8px_20px_-4px_rgba(184,12,9,0.35)] hover:bg-[#9c0a07] transition-all cursor-pointer flex items-center justify-center gap-2"
         >
           <span>Publicar Reseña</span>
         </motion.button>
-      </form>
+      {error && <p role="alert">{error}</p>}</form>
     </div>
   );
 };

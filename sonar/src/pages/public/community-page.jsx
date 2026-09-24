@@ -1,4 +1,5 @@
-import React from 'react';
+import { useReviews } from '../../features/reviews/use-reviews.js';
+
 import { motion } from 'framer-motion';
 import Navbar from '../../shared/components/layout/navbar';
 import ReviewFeedCard from '../../features/reviews/components/review-feed-card';
@@ -116,6 +117,7 @@ const containerVariants = {
 };
 
 export const CommunityPage = () => {
+  const { reviews, isLoading, error, fetchReviews } = useReviews();
   return (
     <div className="min-h-screen flex flex-col bg-gray-50 dark:bg-[#231123] text-[#231123] dark:text-[#FAF5F8] transition-colors duration-300">
       {/* Navbar Superior */}
@@ -147,7 +149,7 @@ export const CommunityPage = () => {
               animate="visible"
               className="flex flex-col gap-5"
             >
-              {mockFeedReviews.map((review) => (
+              {isLoading && <p role="status">Cargando reseñas…</p>}{error && <p role="alert">{error} <button onClick={fetchReviews}>Reintentar</button></p>}{reviews.filter(review => review.status === 'approved').map(review => <ReviewFeedCard key={`api-${review.id}`} review={{ ...review, userName: review.userName || `Usuario ${review.userId}`, albumTitle: review.albumTitle || `Álbum ${review.albumId}`, date: review.createdAt ? new Date(review.createdAt).toLocaleDateString('es') : 'Archivo' }} />)}{mockFeedReviews.map((review) => (
                 <ReviewFeedCard key={review.id} review={review} />
               ))}
             </motion.div>

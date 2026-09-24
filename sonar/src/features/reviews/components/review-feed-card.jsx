@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from 'react';
+import { ReportReview } from './report-review.jsx';
+import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '../../../shared/context/auth-context';
 import { interactionsService } from '../../../shared/services/interactions-service';
@@ -204,7 +205,7 @@ export const ReviewFeedCard = ({
           />
         )}
       </AnimatePresence>
-    </motion.article>
+    <ReportReview review={review} /></motion.article>
   );
 };
 

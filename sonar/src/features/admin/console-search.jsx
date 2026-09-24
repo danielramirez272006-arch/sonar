@@ -4,6 +4,7 @@ import { DEFAULT_DEEZER_ALBUMS, searchAlbums } from '../../shared/services/deeze
 
 const normalize = value => String(value ?? '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase()
 const shortcuts = [
+  ['Reportes de la comunidad', 'reportes denuncias pendientes resueltos revisados', '#admin-reports'],
   ['Usuarios y perfiles', 'usuarios miembros cuentas', '#usuarios'],
   ['Todas las reseñas', 'resenas comentarios comunidad filtros', '#admin-reviews'],
   ['Reseñas pendientes', 'filtros pendientes revisar', '#admin-reviews?filter=pending_moderation'],

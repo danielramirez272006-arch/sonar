@@ -1,3 +1,4 @@
+import { userStatus } from '../services/admin-data.js'
 import { createContext, useContext, useMemo, useState } from 'react'
 import { getUserByEmail, createUser } from '../services/api-client.js'
 
@@ -29,7 +30,7 @@ export function AuthProvider({ children }) {
           throw new Error('No existe un usuario con ese correo electrónico.')
         }
 
-        if (foundUser.status === 'banned') {
+        if (['banned', 'suspended'].includes(userStatus(foundUser))) {
           throw new Error('Esta cuenta está baneada y no puede iniciar sesión.')
         }
 
@@ -119,7 +120,7 @@ export function AuthProvider({ children }) {
           if (typeof window !== 'undefined') {
             window.localStorage?.setItem('sonar_auth_user', JSON.stringify(newUser))
           }
-        } catch {}
+        } catch { /* El almacenamiento local puede no estar disponible. */ }
 
         return newUser
       } catch (cause) {
@@ -153,7 +154,7 @@ export function AuthProvider({ children }) {
             window.localStorage?.setItem('sonar_auth_user', JSON.stringify(updated))
           }
           createUser(updated).catch(() => {})
-        } catch {}
+        } catch { /* El almacenamiento local puede no estar disponible. */ }
         return updated
       })
     }

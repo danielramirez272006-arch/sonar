@@ -1,69 +1,33 @@
-import { ConductIndicator } from '../../features/admin/conduct-indicator.jsx';
-import { Ban, CalendarDays, Check, Search, Shield, UserRound, VolumeX, X } from 'lucide-react';
-import { useState } from 'react';
+import { Modal } from '../../shared/components/ui/modal.jsx'
+import { useState } from 'react'
+import { BlobatarAvatar } from '../../shared/components/ui/blobatar-avatar.jsx'
+import { ConductIndicator } from '../../features/admin/conduct-indicator.jsx'
+import { SanctionPanel } from '../../features/admin/sanction-panel.jsx'
+import { RecentActivityFeed } from '../../features/admin/dashboard/components/recent-activity-feed.jsx'
+import { adminEvents, behaviorInput, sameId, statusLabels, userStatus } from '../../shared/services/admin-data.js'
 
-const muteOptions = [
-  { label: '1 día', days: 1 },
-  { label: '1 semana', days: 7 },
-  { label: '1 mes', days: 30 },
-];
-
-function getUserStatus(user) {
-  if (user.status === 'banned') return { label: 'Baneado', tone: 'banned' };
-  if (user.mutedUntil && new Date(user.mutedUntil) > new Date()) return { label: 'Silenciado', tone: 'muted' };
-  return { label: 'Activo', tone: 'active' };
+export const UsersPage = ({ users = [], reviews = [], onUserUpdate, compact = false, initialUserId = null }) => {
+  const [query, setQuery] = useState('')
+  const [status, setStatus] = useState('all')
+  const [role, setRole] = useState('all')
+  const [selectedUserId, setSelectedUserId] = useState(initialUserId)
+  const selected = users.find(user => sameId(user.id, selectedUserId))
+  const visible = users.filter(user => `${user.username} ${user.email}`.toLocaleLowerCase().includes(query.toLocaleLowerCase()) && (status === 'all' || userStatus(user) === status) && (role === 'all' || user.role === role))
+  const ownReviews = user => reviews.filter(review => sameId(review.userId, user.id))
+  const countReports = user => (user.conductReports || []).filter(report => report.status !== 'dismissed').length
+  const signals = selected ? behaviorInput(selected, reviews) : null
+  return <div className={`user-page ${compact ? 'user-page--compact' : ''}`}>
+    <header><div><span className="eyebrow">COMUNIDAD SONAR</span><h1>Gestión de usuarios</h1><p>Perfiles, reportes y decisiones de moderación.</p></div>{!compact && <a href="#dashboard">Volver al dashboard</a>}</header>
+    <div className="admin-filters"><label>Buscar usuarios<input aria-label="Buscar usuarios" value={query} onChange={e => setQuery(e.target.value)} placeholder="Nombre o correo" /></label><label>Estado<select value={status} onChange={e => setStatus(e.target.value)}><option value="all">Todos</option>{Object.entries(statusLabels).map(([key, label]) => <option key={key} value={key}>{label}</option>)}</select></label><label>Rol<select value={role} onChange={e => setRole(e.target.value)}><option value="all">Todos</option><option value="user">Miembro</option><option value="admin">Administrador</option></select></label></div>
+    <div className="admin-users-table"><table><thead><tr>{['Usuario', 'Rol', 'Estado', 'Reseñas', 'Reportes', 'Acciones'].map(label => <th key={label}>{label}</th>)}</tr></thead><tbody>{visible.map(user => <tr key={user.id}><td><div className="admin-user-identity"><BlobatarAvatar name={user.username} size={34} /><span><strong>{user.username}</strong><small>{user.email}</small></span></div></td><td>{user.role === 'admin' ? 'Administrador' : 'Miembro'}</td><td>{statusLabels[userStatus(user)]}</td><td>{ownReviews(user).length}</td><td>{countReports(user)}</td><td><button onClick={() => setSelectedUserId(user.id)}>Perfil</button></td></tr>)}</tbody></table>{!visible.length && <p>No se encontraron usuarios con estos filtros.</p>}</div>
+    {selected && <Modal isOpen onClose={() => setSelectedUserId(null)} title={`Perfil de ${selected.username}`} className="admin-profile-modal" hideHeader><aside className="user-profile-drawer" aria-label={`Perfil de ${selected.username}`}><header><div className="admin-user-identity"><BlobatarAvatar name={selected.username} size={56} /><div><span className="eyebrow">PERFIL ADMINISTRATIVO</span><h2>{selected.username}</h2><p>{selected.email}</p></div></div><button onClick={() => setSelectedUserId(null)} aria-label="Cerrar perfil">×</button></header>
+      <div className="admin-profile-facts"><span>Rol: {selected.role === 'admin' ? 'Administrador' : 'Miembro'}</span><span>Estado: {statusLabels[userStatus(selected)]}</span><span>Registro: {selected.createdAt ? new Date(selected.createdAt).toLocaleDateString('es') : 'Sin fecha registrada'}</span><span>{ownReviews(selected).length} reseñas</span><span>{countReports(selected)} reportes</span><span>{selected.sanctions?.length || 0} sanciones</span><span>{selected.stats?.savedAlbums || 0} álbumes guardados</span><span>{selected.stats?.followers || 0} seguidores</span></div>
+      <p className="user-profile-drawer__bio">{selected.bio || 'Sin biografía registrada.'}</p><div className="preference-list">{(selected.preferences || []).map(value => <span key={value}>{value}</span>)}</div>
+      <ConductIndicator key={`conduct-${selected.id}`} user={selected} reviews={ownReviews(selected)} onUserUpdate={onUserUpdate} />
+      <SanctionPanel key={`sanctions-${selected.id}`} user={selected} onUserUpdate={onUserUpdate} />
+      <RecentActivityFeed activities={adminEvents([selected], ownReviews(selected))} />
+      <section className="admin-panel"><h3>SONAR Intelligence</h3><p>Análisis de comportamiento · Preparado para integración</p><div className="admin-profile-facts"><span>{signals.reportCount} reportes</span><span>{signals.previousSanctions.length} sanciones anteriores</span><span>{signals.publicationsLast7Days} publicaciones / 7 días</span><span>{signals.flaggedContent} contenidos marcados</span><span>{signals.rejectedReviews} reseñas rechazadas</span></div><dl><dt>Nivel de riesgo</dt><dd>No evaluado</dd><dt>Señales detectadas</dt><dd>Análisis pendiente</dd><dt>Explicación</dt><dd>No hay un modelo conectado.</dd><dt>Recomendación</dt><dd>Sin recomendación automática. La decisión final corresponde al administrador.</dd></dl></section>
+    </aside></Modal>}
+  </div>
 }
-
-function formatDate(value) {
-  return value ? new Intl.DateTimeFormat('es', { dateStyle: 'medium' }).format(new Date(value)) : '';
-}
-
-export const UsersPage = ({ users = [], onUserUpdate, compact = false, initialUserId = null }) => {
-  const [query, setQuery] = useState('');
-  const [selectedUserId, setSelectedUserId] = useState(initialUserId);
-  const [pendingId, setPendingId] = useState(null);
-  const [message, setMessage] = useState('');
-  const visibleUsers = users.filter(user => `${user.username} ${user.email}`.toLowerCase().includes(query.toLowerCase()));
-  const selectedUser = users.find(user => user.id === selectedUserId) || null;
-
-  async function applyUserUpdate(userId, changes, successMessage) {
-    setPendingId(userId);
-    setMessage('');
-    try {
-      await onUserUpdate(userId, changes);
-      setMessage(successMessage);
-    } catch (error) {
-      setMessage(error.message || 'No se pudo actualizar el usuario.');
-    } finally {
-      setPendingId(null);
-    }
-  }
-
-  function banUser(user) {
-    if (user.role === 'admin') return setMessage('La cuenta administradora no puede ser baneada.');
-    const isBanned = user.status === 'banned';
-    return applyUserUpdate(user.id, { status: isBanned ? 'active' : 'banned', mutedUntil: null }, isBanned ? 'Usuario desbaneado.' : 'Usuario baneado.');
-  }
-
-  function muteUser(user, days) {
-    if (user.role === 'admin') return setMessage('La cuenta administradora no puede ser silenciada.');
-    const mutedUntil = new Date(Date.now() + days * 86400000).toISOString();
-    return applyUserUpdate(user.id, { status: 'active', mutedUntil }, `Usuario silenciado hasta ${formatDate(mutedUntil)}.`);
-  }
-
-  function unmuteUser(user) {
-    return applyUserUpdate(user.id, { mutedUntil: null }, 'Silenciamiento retirado.');
-  }
-
-  return (
-    <div className={`user-page ${compact ? 'user-page--compact' : ''}`}>
-      <header><div><span className="eyebrow">COMUNIDAD SONAR</span><h1>Gestión de usuarios</h1><p>Revisa perfiles y modera la participación de la comunidad.</p></div>{!compact && <a href="#dashboard">Volver al dashboard</a>}</header>
-      <label className="user-management__search"><Search size={16} /><input value={query} onChange={event => setQuery(event.target.value)} placeholder="Buscar por nombre o correo" aria-label="Buscar usuarios" /></label>
-      {message && <p className="user-page__notice" role="status">{message}</p>}
-      <div className="user-page__table"><div className="user-page__head"><span>Usuario</span><span>Rol</span><span>Estado</span><span>Acciones</span></div>{visibleUsers.map(user => { const status = getUserStatus(user); return <article key={user.id} className={selectedUserId === user.id ? 'is-selected' : ''}><button className="user-page__identity" type="button" onClick={() => setSelectedUserId(user.id)}><span className="user-management__avatar">{user.username?.slice(0, 1).toUpperCase() || '?'}</span><span><strong>{user.username}</strong><small>{user.email}</small></span></button><span className={`user-role user-role--${user.role}`}>{user.role === 'admin' ? <><Shield size={14} /> Administrador</> : <><UserRound size={14} /> Miembro</>}</span><span className={`user-status user-status--${status.tone}`}>{status.label}{status.tone === 'muted' && <small>hasta {formatDate(user.mutedUntil)}</small>}</span><div className="user-page__actions"><button type="button" className="user-action user-action--profile" onClick={() => setSelectedUserId(user.id)}><UserRound size={14} /> Perfil</button><button type="button" className="user-action user-action--ban" onClick={() => banUser(user)} disabled={pendingId === user.id || user.role === 'admin'}>{user.status === 'banned' ? <><Check size={14} /> Desbanear</> : <><Ban size={14} /> Banear</>}</button>{status.tone === 'muted' ? <button type="button" className="user-action user-action--mute" onClick={() => unmuteUser(user)} disabled={pendingId === user.id}><VolumeX size={14} /> Quitar silencio</button> : <select className="user-mute-select" defaultValue="" onChange={event => { if (event.target.value) muteUser(user, Number(event.target.value)); event.target.value = ''; }} disabled={pendingId === user.id || user.role === 'admin'} aria-label={`Silenciar a ${user.username}`}><option value="">Silenciar...</option>{muteOptions.map(option => <option key={option.days} value={option.days}>{option.label}</option>)}</select>}</div></article> })}{!visibleUsers.length && <p className="user-page__empty">No se encontraron usuarios.</p>}</div>
-      {selectedUser && <aside className="user-profile-drawer" aria-label={`Perfil de ${selectedUser.username}`}><header><div><span className="eyebrow">PERFIL DEL MIEMBRO</span><h2>{selectedUser.username}</h2></div><button type="button" onClick={() => setSelectedUserId(null)} aria-label="Cerrar perfil"><X size={17} /></button></header><div className="user-profile-drawer__status"><span className={`user-status user-status--${getUserStatus(selectedUser).tone}`}>{getUserStatus(selectedUser).label}</span><span>{selectedUser.email}</span></div><ConductIndicator key={selectedUser.id} user={selectedUser} onUserUpdate={onUserUpdate} /><p className="user-profile-drawer__bio">{selectedUser.bio || 'Este usuario todavía no ha añadido una descripción.'}</p><div className="user-profile-drawer__stats"><span><b>{selectedUser.stats?.reviewsCount ?? 0}</b> reseñas</span><span><b>{selectedUser.stats?.savedAlbums ?? 0}</b> álbumes guardados</span><span><b>{selectedUser.stats?.followers ?? 0}</b> seguidores</span></div><div className="user-profile-drawer__section"><h3>Gustos y preferencias</h3>{selectedUser.preferences?.length ? <div className="preference-list">{selectedUser.preferences.map(preference => <span key={preference}>{preference}</span>)}</div> : <p>No hay preferencias registradas.</p>}</div><div className="user-profile-drawer__section"><h3><CalendarDays size={15} /> Moderación</h3><p>{selectedUser.status === 'banned' ? 'La cuenta no puede participar en la plataforma.' : getUserStatus(selectedUser).tone === 'muted' ? `No puede comentar hasta el ${formatDate(selectedUser.mutedUntil)}.` : 'La cuenta puede participar normalmente.'}</p></div></aside>}
-    </div>
-  );
-};
-
-export default UsersPage;
+export default UsersPage

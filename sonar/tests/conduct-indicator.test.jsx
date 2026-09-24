@@ -2,6 +2,7 @@
 import { afterEach, expect, it, vi } from 'vitest'
 import { cleanup, fireEvent, render, screen, waitFor } from '@testing-library/react'
 import { ConductIndicator } from '../src/features/admin/conduct-indicator.jsx'
+vi.mock('../src/shared/context/auth-context.jsx', () => ({ useAuth: () => ({ user: { id: 'admin-1', username: 'Admin' } }) }))
 afterEach(cleanup)
 const reports = count => Array.from({ length: count }, (_, id) => ({ id: String(id), reason: 'Insultos', status: 'pending' }))
 it.each([[0, 'Cara feliz'], [1, 'Cara preocupada'], [3, 'Cara preocupada'], [4, 'Cara seria'], [6, 'Cara seria'], [7, 'Cara molesta'], [9, 'Cara molesta'], [10, 'Cara enojada'], [15, 'Cara enojada']])('shows the correct face with %i reports', (count, name) => {

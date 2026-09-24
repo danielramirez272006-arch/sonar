@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from 'react';
+import { createReview } from '../../shared/services/api-client.js';
+import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import Navbar from '../../shared/components/layout/navbar';
 import Footer from '../../shared/components/layout/footer';
@@ -27,7 +28,7 @@ const mockAlbum = {
 
 export const AlbumDetailPage = () => {
   const { user } = useAuth();
-  const { playTrack, isPlaying, currentTrack } = usePlayer();
+  const { playTrack } = usePlayer();
   const userId = user?.id || null;
 
   const [isSaved, setIsSaved] = useState(false);
@@ -77,13 +78,17 @@ export const AlbumDetailPage = () => {
     );
   };
 
-  const handleReviewSubmit = (reviewData) => {
+  const handleReviewSubmit = async (reviewData) => {
     if (!user) {
       window.location.hash = '#login';
       return;
     }
     const newReview = {
-      id: Date.now(),
+      id: crypto.randomUUID(),
+      userId: user.id,
+      albumId: '14880659',
+      status: 'pending_moderation',
+      createdAt: new Date().toISOString(),
       userName: user?.username || 'Usuario Sonar',
       userHandle: user?.username ? `@${user.username.toLowerCase().replace(/\s+/g, '_')}` : '@usuario',
       avatarLetter: (user?.username || 'U').charAt(0).toUpperCase(),
@@ -98,8 +103,9 @@ export const AlbumDetailPage = () => {
       commentsCount: 0,
     };
 
-    setAlbumReviews((prev) => [newReview, ...prev]);
-    setToastMessage(`¡Tu reseña de ${mockAlbum.title} fue publicada con éxito!`);
+    const saved = await createReview(newReview);
+    setAlbumReviews((prev) => [saved, ...prev]);
+    setToastMessage(`Tu reseña de ${mockAlbum.title} fue enviada a moderación.`);
   };
 
   return (

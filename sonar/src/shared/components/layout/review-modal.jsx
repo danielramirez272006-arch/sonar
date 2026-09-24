@@ -1,10 +1,13 @@
-import React, { useState } from 'react';
+import { createReview } from '../../services/api-client.js';
+import { useAuth } from '../../context/auth-context.jsx';
+import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { usePlayer } from '../../context/player-context';
 import ReviewForm from '../../../features/reviews/components/review-form';
 import Toast from '../ui/toast';
 
 export const ReviewModal = () => {
+  const { user } = useAuth();
   const { reviewModalAlbum, closeReviewModal } = usePlayer();
   const [toastMessage, setToastMessage] = useState(null);
 
@@ -13,9 +16,11 @@ export const ReviewModal = () => {
   const albumTitle = reviewModalAlbum.album || reviewModalAlbum.title || 'Álbum';
   const artistName = reviewModalAlbum.artist || 'Artista';
 
-  const handleReviewSubmit = (reviewData) => {
+  const handleReviewSubmit = async (reviewData) => {
+    if (!user) throw new Error('Inicia sesión para publicar una reseña.');
+    await createReview({ userId: user.id, albumId: reviewModalAlbum.id, albumTitle, artist: artistName, content: reviewData.reviewText, rating: reviewData.rating, status: 'pending_moderation', aiFlagged: false });
     // Éxito al publicar crítica
-    setToastMessage(`¡Crítica publicada para ${albumTitle}! Calificación: ${reviewData.rating} estrellas.`);
+    setToastMessage(`Crítica enviada a moderación para ${albumTitle}. Calificación: ${reviewData.rating} estrellas.`);
     setTimeout(() => {
       closeReviewModal();
     }, 1200);

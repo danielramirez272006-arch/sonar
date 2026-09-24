@@ -1,3 +1,4 @@
+import { userStatus } from './admin-data.js'
 const API_BASE_URL = 'http://localhost:3001'
 
 export async function apiRequest(endpoint, options = {}) {
@@ -49,7 +50,7 @@ function saveLocalRegisteredUser(user) {
       current.push(user)
     }
     window.localStorage?.setItem(LOCAL_USERS_KEY, JSON.stringify(current))
-  } catch {}
+  } catch { /* El almacenamiento local puede no estar disponible. */ }
 }
 
 export async function getUsers() {
@@ -100,6 +101,7 @@ export async function getUserByEmail(email) {
 }
 
 export async function createUser(user) {
+  user = { ...user, createdAt: user.createdAt || new Date().toISOString() }
   saveLocalRegisteredUser(user)
   try {
     return await apiRequest('/users', {
@@ -123,14 +125,22 @@ export function getPendingReviews() {
   return apiRequest('/reviews?status=pending_moderation')
 }
 
-export function createReview(review) {
+export async function createReview(review) {
+  const author = await apiRequest(`/users/${encodeURIComponent(review.userId)}`)
+  if (userStatus(author) !== 'active') throw new Error('Tu cuenta tiene una sanción activa y no puede publicar reseñas.')
   return apiRequest('/reviews', {
     method: 'POST',
-    body: JSON.stringify(review),
+    body: JSON.stringify({ ...review, userName: author.username, status: 'pending_moderation', createdAt: review.createdAt || new Date().toISOString() }),
   })
 }
 
-export function updateReview(reviewId, changes) {
+export async function updateReview(reviewId, changes) {
+  if (changes.status || changes.aiFlagged !== undefined) {
+    const current = await apiRequest(`/reviews/${encodeURIComponent(reviewId)}`)
+    let admin = null
+    try { admin = JSON.parse(window.localStorage.getItem('sonar_auth_user')) } catch { /* No session */ }
+    changes = { ...changes, moderationHistory: [...(current.moderationHistory || []), { id: crypto.randomUUID(), createdAt: new Date().toISOString(), adminId: admin?.id, ...changes }] }
+  }
   return apiRequest(`/reviews/${encodeURIComponent(reviewId)}`, {
     method: 'PATCH',
     body: JSON.stringify(changes),
