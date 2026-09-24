@@ -193,16 +193,16 @@ export const GlobalAudioPlayer = () => {
         animate={{ y: 0, opacity: 1, scale: 1 }}
         exit={{ y: 60, opacity: 0, scale: 0.95 }}
         transition={{ type: 'spring', stiffness: 380, damping: 30 }}
-        className="fixed bottom-5 left-4 sm:left-6 z-50 w-[calc(100%-2rem)] sm:w-[500px] md:w-[560px] lg:w-[600px] flex flex-col gap-2.5 p-3 select-none backdrop-blur-2xl"
+        className="fixed bottom-5 left-3 sm:left-6 z-50 w-[calc(100%-1.5rem)] sm:w-[580px] md:w-[640px] max-w-[680px] flex flex-col gap-2.5 p-2.5 sm:p-3 select-none backdrop-blur-2xl"
         style={{
-          backgroundColor: '#1c0d1cf2',
+          backgroundColor: '#160817f2',
           color: '#DCDCDD',
           borderRadius: '24px',
           border: '1px solid rgba(255, 255, 255, 0.16)',
-          boxShadow: '0 20px 45px -10px rgba(0, 0, 0, 0.8), 0 0 25px rgba(184, 12, 9, 0.2)',
+          boxShadow: '0 20px 50px -10px rgba(0, 0, 0, 0.85), 0 0 25px rgba(184, 12, 9, 0.25)',
         }}
       >
-        {/* Barra de progreso de audio interactiva superior */}
+        {/* Barra de progreso de audio interactiva superior con scrubber glow */}
         <div
           onClick={(e) => {
             const rect = e.currentTarget.getBoundingClientRect();
@@ -210,24 +210,23 @@ export const GlobalAudioPlayer = () => {
             const newPercent = clickX / rect.width;
             seek(newPercent * duration);
           }}
-          className="relative w-full h-1.5 rounded-full cursor-pointer overflow-hidden group"
-          style={{ backgroundColor: 'rgba(255, 255, 255, 0.12)' }}
+          className="relative w-full h-1.5 rounded-full cursor-pointer overflow-hidden bg-white/10 hover:h-2 transition-all duration-200 group"
           title="Saltar en la pista de audio"
         >
           <div
-            className="h-full rounded-full transition-all duration-100"
+            className="h-full rounded-full transition-all duration-100 relative"
             style={{
               width: `${progressPercent}%`,
-              background: 'linear-gradient(90deg, #5c1d5e 0%, #B80C09 100%)',
+              background: 'linear-gradient(90deg, #801040 0%, #B80C09 70%, #ff4d6d 100%)',
             }}
           />
         </div>
 
         {/* Fila Principal de Controles y Metadatos */}
-        <div className="flex items-center justify-between gap-3 px-1">
+        <div className="flex items-center justify-between gap-2 sm:gap-3 px-0.5">
           {/* Portada + Título + Artista */}
           <div
-            className="flex items-center gap-2.5 min-w-[130px] sm:min-w-[170px] flex-1 cursor-pointer group/meta overflow-hidden"
+            className="flex items-center gap-2 sm:gap-2.5 min-w-0 flex-1 cursor-pointer group/meta overflow-hidden pr-1"
             onClick={() => {
               if (isPodcast) {
                 setShowPodcastNotes((prev) => !prev);
@@ -239,8 +238,7 @@ export const GlobalAudioPlayer = () => {
           >
             {/* Vinilo / Portada del Álbum */}
             <div
-              className="relative w-10 h-10 sm:w-11 sm:h-11 shrink-0 overflow-hidden shadow-lg flex items-center justify-center rounded-xl bg-[#2e192c]"
-              style={{ border: '1px solid rgba(255, 255, 255, 0.18)' }}
+              className="relative w-10 h-10 sm:w-11 sm:h-11 shrink-0 overflow-hidden shadow-md flex items-center justify-center rounded-xl bg-[#2e192c] border border-white/20"
             >
               <img
                 src={currentTrack.cover || defaultFallbackCover}
@@ -262,7 +260,7 @@ export const GlobalAudioPlayer = () => {
 
             {/* Metadatos: Título, Artista y Badge */}
             <div className="flex flex-col min-w-0 flex-1">
-              <div className="flex items-center gap-1.5">
+              <div className="flex items-center gap-1.5 overflow-hidden">
                 <span className="text-xs sm:text-sm font-bold truncate text-white group-hover/meta:text-rose-300 transition-colors">
                   {currentTrack.title}
                 </span>
@@ -272,34 +270,34 @@ export const GlobalAudioPlayer = () => {
                     <span>Podcast</span>
                   </span>
                 ) : (
-                  <span className="px-1.5 py-0.5 rounded-md text-[8px] font-extrabold uppercase tracking-wider bg-[#B80C09]/25 text-rose-300 border border-[#B80C09]/35 shrink-0">
+                  <span className="px-1.5 py-0.2 rounded-md text-[8px] font-extrabold uppercase tracking-wider bg-[#B80C09]/30 text-rose-300 border border-[#B80C09]/40 shrink-0">
                     {isLoading ? '...' : '30s'}
                   </span>
                 )}
               </div>
-              <span className="text-[10px] sm:text-[11px] truncate opacity-75 text-gray-300">
+              <span className="text-[10px] sm:text-[11px] truncate opacity-70 text-gray-300 font-medium">
                 {currentTrack.artist} {currentTrack.album && currentTrack.album !== currentTrack.title ? `· ${currentTrack.album}` : ''}
               </span>
             </div>
           </div>
 
           {/* CONTROLES: ADAPTADOS PARA PODCAST VS MÚSICA */}
-          <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
+          <div className="flex items-center gap-1 sm:gap-1.5 shrink-0">
             {isPodcast ? (
               <>
                 {/* Rebobinar 15 segundos */}
                 <motion.button
-                  whileHover={{ scale: 1.1 }}
-                  whileTap={{ scale: 0.9 }}
+                  whileHover={{ scale: 1.08 }}
+                  whileTap={{ scale: 0.92 }}
                   type="button"
                   onClick={() => skipSeconds?.(-15)}
-                  className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center cursor-pointer transition-colors"
+                  className="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center cursor-pointer transition-colors"
                   title="Retroceder 15 segundos"
                 >
-                  <span className="material-symbols-outlined text-[16px]">replay_10</span>
+                  <span className="material-symbols-outlined text-[17px]">replay_10</span>
                 </motion.button>
 
-                {/* Play / Pause */}
+                {/* Play / Pause Principal */}
                 <motion.button
                   whileHover={{ scale: 1.08 }}
                   whileTap={{ scale: 0.92 }}
@@ -307,12 +305,12 @@ export const GlobalAudioPlayer = () => {
                   onClick={() => toggleTrack(currentTrack)}
                   disabled={isLoading}
                   aria-label={isPlaying ? 'Pausar Podcast' : 'Reproducir Podcast'}
-                  className="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-[#B80C09] hover:bg-[#9c0a07] text-white flex items-center justify-center shadow-md cursor-pointer transition-colors disabled:opacity-60"
+                  className="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-gradient-to-tr from-[#B80C09] to-[#d62828] hover:brightness-110 text-white flex items-center justify-center shadow-[0_0_15px_rgba(184,12,9,0.4)] cursor-pointer transition-all disabled:opacity-60"
                 >
                   {isLoading ? (
                     <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
                   ) : (
-                    <span className="material-symbols-outlined text-[19px]">
+                    <span className="material-symbols-outlined text-[20px]">
                       {isPlaying ? 'pause' : 'play_arrow'}
                     </span>
                   )}
@@ -320,14 +318,14 @@ export const GlobalAudioPlayer = () => {
 
                 {/* Adelantar 15 segundos */}
                 <motion.button
-                  whileHover={{ scale: 1.1 }}
-                  whileTap={{ scale: 0.9 }}
+                  whileHover={{ scale: 1.08 }}
+                  whileTap={{ scale: 0.92 }}
                   type="button"
                   onClick={() => skipSeconds?.(15)}
-                  className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center cursor-pointer transition-colors"
+                  className="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center cursor-pointer transition-colors"
                   title="Adelantar 15 segundos"
                 >
-                  <span className="material-symbols-outlined text-[16px]">forward_10</span>
+                  <span className="material-symbols-outlined text-[17px]">forward_10</span>
                 </motion.button>
 
                 {/* Selector de Velocidad */}
@@ -340,7 +338,7 @@ export const GlobalAudioPlayer = () => {
                     const next = speeds[(speeds.indexOf(playbackSpeed) + 1) % speeds.length];
                     setPlaybackSpeed?.(next);
                   }}
-                  className="px-2 py-1 rounded-xl bg-white/10 hover:bg-white/20 text-white font-mono text-[10px] sm:text-xs font-black cursor-pointer border border-white/10 transition-colors"
+                  className="h-8 px-2 rounded-xl bg-white/10 hover:bg-white/20 text-white font-mono text-[10px] sm:text-xs font-black cursor-pointer border border-white/10 transition-colors flex items-center justify-center"
                   title="Cambiar velocidad de reproducción"
                 >
                   {playbackSpeed}x
@@ -355,14 +353,14 @@ export const GlobalAudioPlayer = () => {
                     playAudioCue('click');
                     setShowPodcastNotes((prev) => !prev);
                   }}
-                  className={`px-2 sm:px-2.5 py-1.5 rounded-xl border text-[11px] font-bold flex items-center gap-1 cursor-pointer transition-all ${
+                  className={`h-8 px-2.5 rounded-xl border text-[11px] font-bold flex items-center gap-1 cursor-pointer transition-all ${
                     showPodcastNotes
-                      ? 'bg-[#B80C09] text-white border-[#B80C09]'
+                      ? 'bg-[#B80C09] text-white border-[#B80C09] shadow-xs'
                       : 'bg-white/10 hover:bg-white/20 border-white/10 text-white'
                   }`}
                   title="Notas del episodio"
                 >
-                  <span className="material-symbols-outlined text-[14px]">description</span>
+                  <span className="material-symbols-outlined text-[15px]">description</span>
                   <span className="hidden md:inline">Notas</span>
                 </motion.button>
 
@@ -375,20 +373,20 @@ export const GlobalAudioPlayer = () => {
                     playAudioCue('toggle');
                     setShowTranscript((prev) => !prev);
                   }}
-                  className={`px-2 sm:px-2.5 py-1.5 rounded-xl border text-[11px] font-extrabold flex items-center gap-1 cursor-pointer transition-all ${
+                  className={`h-8 px-2.5 rounded-xl border text-[11px] font-extrabold flex items-center gap-1 cursor-pointer transition-all ${
                     showTranscript
                       ? 'bg-amber-500 text-black border-amber-400 shadow-xs'
                       : 'bg-white/10 hover:bg-white/20 border-white/10 text-amber-300'
                   }`}
                   title="Ver Transcripción y Subtítulos Accesibles (CC)"
                 >
-                  <span className="material-symbols-outlined text-[15px]">closed_caption</span>
-                  <span className="hidden md:inline">CC</span>
+                  <span className="material-symbols-outlined text-[16px]">closed_caption</span>
+                  <span className="hidden sm:inline">CC</span>
                 </motion.button>
               </>
             ) : (
               <>
-                {/* Botón Favorito */}
+                {/* Botón Favorito / Guardar */}
                 <motion.button
                   whileHover={{ scale: 1.1 }}
                   whileTap={{ scale: 0.9 }}
@@ -396,15 +394,15 @@ export const GlobalAudioPlayer = () => {
                     playAudioCue('like');
                     handleToggleSaveCurrent(e);
                   }}
-                  className={`p-1.5 rounded-xl transition-colors cursor-pointer flex items-center justify-center ${
+                  className={`w-8 h-8 rounded-xl transition-colors cursor-pointer flex items-center justify-center border ${
                     isCurrentTrackSaved
-                      ? 'text-[#B80C09] bg-[#B80C09]/15'
-                      : 'text-gray-400 hover:text-white hover:bg-white/10'
+                      ? 'text-rose-400 bg-[#B80C09]/20 border-rose-500/40'
+                      : 'text-gray-300 hover:text-white bg-white/10 hover:bg-white/20 border-white/10'
                   }`}
                   title={isCurrentTrackSaved ? 'En tus favoritos' : 'Guardar en favoritos'}
                 >
                   <span
-                    className="material-symbols-outlined text-[18px]"
+                    className="material-symbols-outlined text-[17px]"
                     style={{ fontVariationSettings: isCurrentTrackSaved ? "'FILL' 1" : "'FILL' 0" }}
                   >
                     bookmark
@@ -419,18 +417,18 @@ export const GlobalAudioPlayer = () => {
                     playAudioCue('click');
                     setShowTracklist((prev) => !prev);
                   }}
-                  className={`px-2 sm:px-2.5 py-1.5 rounded-xl border text-[11px] font-bold flex items-center gap-1 cursor-pointer transition-all ${
+                  className={`h-8 px-2 sm:px-2.5 rounded-xl border text-[11px] font-bold flex items-center gap-1 cursor-pointer transition-all ${
                     showTracklist
                       ? 'bg-[#B80C09] text-white border-[#B80C09] shadow-xs'
                       : 'bg-white/10 hover:bg-white/20 border-white/10 text-white'
                   }`}
                   title={showTracklist ? 'Ocultar canciones del álbum' : 'Ver canciones de este álbum'}
                 >
-                  <span className="material-symbols-outlined text-[15px]">
+                  <span className="material-symbols-outlined text-[16px]">
                     {showTracklist ? 'expand_more' : 'queue_music'}
                   </span>
-                  <span className="hidden sm:inline">
-                    Canciones {albumTracks.length > 0 ? `(${albumTracks.length})` : ''}
+                  <span className="hidden sm:inline font-semibold">
+                    {albumTracks.length > 0 ? `(${albumTracks.length})` : 'Pistas'}
                   </span>
                 </motion.button>
 
@@ -443,18 +441,18 @@ export const GlobalAudioPlayer = () => {
                     playAudioCue('toggle');
                     setShowTranscript((prev) => !prev);
                   }}
-                  className={`px-2 sm:px-2.5 py-1.5 rounded-xl border text-[11px] font-extrabold flex items-center gap-1 cursor-pointer transition-all ${
+                  className={`h-8 px-2 sm:px-2.5 rounded-xl border text-[11px] font-extrabold flex items-center gap-1 cursor-pointer transition-all ${
                     showTranscript
-                      ? 'bg-amber-500 text-black border-amber-400 shadow-xs'
+                      ? 'bg-amber-400 text-black border-amber-300 shadow-[0_0_10px_rgba(251,191,36,0.4)]'
                       : 'bg-white/10 hover:bg-white/20 border-white/10 text-amber-300'
                   }`}
                   title="Ver Letras de la Canción y Transcripción (CC)"
                 >
-                  <span className="material-symbols-outlined text-[15px]">closed_caption</span>
-                  <span className="hidden sm:inline">CC</span>
+                  <span className="material-symbols-outlined text-[16px]">closed_caption</span>
+                  <span className="hidden sm:inline font-bold">CC</span>
                 </motion.button>
 
-                {/* Play / Pause */}
+                {/* Play / Pause Principal */}
                 <motion.button
                   whileHover={{ scale: 1.08 }}
                   whileTap={{ scale: 0.92 }}
@@ -464,12 +462,12 @@ export const GlobalAudioPlayer = () => {
                   }}
                   disabled={isLoading}
                   aria-label={isPlaying ? 'Pausar' : 'Reproducir'}
-                  className="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-[#B80C09] hover:bg-[#9c0a07] text-white flex items-center justify-center shadow-md cursor-pointer transition-colors disabled:opacity-60"
+                  className="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-gradient-to-tr from-[#B80C09] to-[#d62828] hover:brightness-110 text-white flex items-center justify-center shadow-[0_0_16px_rgba(184,12,9,0.45)] cursor-pointer transition-all disabled:opacity-60"
                 >
                   {isLoading ? (
                     <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
                   ) : (
-                    <span className="material-symbols-outlined text-[19px]">
+                    <span className="material-symbols-outlined text-[20px]">
                       {isPlaying ? 'pause' : 'play_arrow'}
                     </span>
                   )}
@@ -480,24 +478,27 @@ export const GlobalAudioPlayer = () => {
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
                   onClick={() => openReviewModal(currentTrack)}
-                  className="px-2.5 py-1.5 rounded-xl bg-white/10 hover:bg-white/20 border border-white/10 text-white text-[11px] font-bold flex items-center gap-1 cursor-pointer transition-colors"
+                  className="h-8 px-2 sm:px-2.5 rounded-xl bg-white/10 hover:bg-white/20 border border-white/10 text-white text-[11px] font-bold flex items-center gap-1 cursor-pointer hover:text-rose-300 transition-colors"
                   title="Escribir una crítica"
                 >
-                  <span className="material-symbols-outlined text-[13px] text-rose-400">rate_review</span>
+                  <span className="material-symbols-outlined text-[14px] text-rose-400">rate_review</span>
                   <span className="hidden md:inline">Criticar</span>
                 </motion.button>
               </>
             )}
+
+            {/* Separador vertical sutil */}
+            <div className="w-px h-4 bg-white/15 mx-0.5 shrink-0" />
 
             {/* Cerrar Reproductor */}
             <motion.button
               whileHover={{ scale: 1.15 }}
               whileTap={{ scale: 0.85 }}
               onClick={() => closePlayer()}
-              className="w-7 h-7 rounded-full text-gray-400 hover:text-white hover:bg-white/10 flex items-center justify-center cursor-pointer transition-colors"
+              className="w-7 h-7 sm:w-8 sm:h-8 rounded-full text-gray-400 hover:text-white hover:bg-white/15 flex items-center justify-center cursor-pointer transition-colors shrink-0"
               title="Cerrar reproductor"
             >
-              <span className="material-symbols-outlined text-[16px]">close</span>
+              <span className="material-symbols-outlined text-[17px]">close</span>
             </motion.button>
           </div>
         </div>
