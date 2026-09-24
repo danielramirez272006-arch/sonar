@@ -3,7 +3,9 @@ import { motion, AnimatePresence } from 'framer-motion';
 import Navbar from '../../shared/components/layout/navbar';
 import Footer from '../../shared/components/layout/footer';
 import { usePlayer } from '../../shared/context/player-context';
+import { useAuth } from '../../shared/context/auth-context';
 import { searchAlbums, DEFAULT_DEEZER_ALBUMS, getTracksForAlbum } from '../../shared/services/deezer-service';
+import { interactionsService } from '../../shared/services/interactions-service';
 
 // Colores de edición de vinilo
 const VINYL_EDITIONS = [
@@ -78,6 +80,69 @@ export const VinylModePage = () => {
     artist: 'Radiohead',
     album: 'In Rainbows',
     cover: 'https://cdn-images.dzcdn.net/images/cover/a175af9b7d329bc678cb4d26fc13d6de/1000x1000-000000-80-0-0.jpg',
+  };
+
+  const { user } = useAuth();
+  const userId = user?.id || null;
+  const [toastMessage, setToastMessage] = useState('');
+  const [savedMap, setSavedMap] = useState({});
+
+  const refreshSavedMap = () => {
+    const saved = interactionsService.getUserSavedAlbums(userId);
+    const map = {};
+    saved.forEach((item) => {
+      const idKey = String(item.id);
+      const trackIdKey = String(item.trackId || '');
+      const titleKey = String(item.title || '').toLowerCase();
+      map[idKey] = true;
+      if (trackIdKey) map[trackIdKey] = true;
+      map[titleKey] = true;
+    });
+    setSavedMap(map);
+  };
+
+  useEffect(() => {
+    refreshSavedMap();
+    const handleCollectionChange = () => refreshSavedMap();
+    window.addEventListener('sonar:collection-changed', handleCollectionChange);
+    return () => window.removeEventListener('sonar:collection-changed', handleCollectionChange);
+  }, [userId]);
+
+  const isCurrentAlbumSaved = Boolean(
+    savedMap[String(albumData.id)] ||
+    savedMap[String(albumData.deezerId || '')] ||
+    savedMap[albumData.title?.toLowerCase()]
+  );
+
+  const handleToggleSaveCurrentAlbum = (e) => {
+    e?.stopPropagation();
+    const res = interactionsService.toggleSaveAlbum(userId, {
+      id: albumData.id,
+      deezerId: albumData.deezerId || albumData.id,
+      title: albumData.title,
+      artist: albumData.artist,
+      cover: albumData.cover,
+      genre: albumData.genre || 'Música',
+      year: albumData.year || '2024',
+      type: 'album',
+    }, 'Favoritos');
+    refreshSavedMap();
+    setToastMessage(res.isSaved ? `"${albumData.title}" guardado en tu colección` : `"${albumData.title}" eliminado de tu colección`);
+    setTimeout(() => setToastMessage(''), 3000);
+  };
+
+  const handleToggleSaveTrack = (tr, e) => {
+    e?.stopPropagation();
+    const res = interactionsService.toggleSaveAlbum(userId, {
+      ...tr,
+      album: albumData.title,
+      artist: tr.artist || albumData.artist,
+      cover: tr.cover || albumData.cover,
+      type: 'track',
+    }, 'Favoritos');
+    refreshSavedMap();
+    setToastMessage(res.isSaved ? `"${tr.title}" guardada en tu colección` : `"${tr.title}" eliminada de tu colección`);
+    setTimeout(() => setToastMessage(''), 3000);
   };
 
   const isCurrentPlaying = isPlaying;
@@ -507,6 +572,26 @@ export const VinylModePage = () => {
               </div>
 
               <div className="flex items-center gap-1.5 shrink-0">
+                {/* Botón Guardar / Favorito de Vinilo */}
+                <button
+                  type="button"
+                  onClick={handleToggleSaveCurrentAlbum}
+                  className={`px-2.5 sm:px-3 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 border shadow-sm ${
+                    isCurrentAlbumSaved
+                      ? 'bg-[#B80C09]/30 text-rose-300 border-[#B80C09]/60 shadow-[0_0_12px_rgba(184,12,9,0.3)]'
+                      : 'bg-white/10 hover:bg-white/15 text-white border-white/10'
+                  }`}
+                  title={isCurrentAlbumSaved ? 'Quitar de tu colección' : 'Guardar álbum en tu colección'}
+                >
+                  <span
+                    className="material-symbols-outlined text-[16px]"
+                    style={{ fontVariationSettings: isCurrentAlbumSaved ? "'FILL' 1" : "'FILL' 0" }}
+                  >
+                    {isCurrentAlbumSaved ? 'bookmark_added' : 'bookmark_add'}
+                  </span>
+                  <span className="hidden xs:inline">{isCurrentAlbumSaved ? 'En Colección' : 'Guardar'}</span>
+                </button>
+
                 {/* Botón Pistas del Álbum */}
                 <button
                   type="button"
@@ -756,39 +841,80 @@ export const VinylModePage = () => {
                   </button>
                 </div>
 
-                <div className="flex-1 overflow-y-auto flex flex-col gap-2 pr-1 max-h-[50vh]">
-                  {isLoadingTracks ? (
-                    <div className="p-8 text-center text-gray-400 text-xs animate-pulse">Cargando pistas del disco…</div>
-                  ) : albumTracks.length > 0 ? (
-                    albumTracks.map((tr, idx) => (
-                      <div
-                        key={tr.id || idx}
-                        onClick={() => handleSelectTrack(tr)}
-                        className={`flex items-center justify-between p-2.5 rounded-xl border transition-all cursor-pointer ${
-                          currentTrack?.title === tr.title
-                            ? 'bg-[#B80C09]/20 border-[#B80C09]/50 text-white'
-                            : 'bg-white/5 hover:bg-white/10 border-white/5 text-gray-300 hover:text-white'
-                        }`}
-                      >
-                        <div className="flex items-center gap-3 min-w-0">
-                          <span className="w-5 text-center font-mono text-xs text-gray-400">{idx + 1}</span>
-                          <span className="text-xs font-bold truncate">{tr.title}</span>
-                        </div>
-                        <span className="text-[11px] font-mono text-gray-400">
-                          {tr.duration ? `${Math.floor(tr.duration / 60)}:${String(tr.duration % 60).padStart(2, '0')}` : '30s'}
-                        </span>
+                  <div className="flex-1 overflow-y-auto flex flex-col gap-2 pr-1 max-h-[50vh]">
+                    {isLoadingTracks ? (
+                      <div className="p-8 text-center text-gray-400 text-xs animate-pulse">Cargando pistas del disco…</div>
+                    ) : albumTracks.length > 0 ? (
+                      albumTracks.map((tr, idx) => {
+                        const isTrSaved = Boolean(
+                          savedMap[String(tr.id)] ||
+                          savedMap[String(tr.trackId || '')] ||
+                          savedMap[tr.title?.toLowerCase()]
+                        );
+                        return (
+                          <div
+                            key={tr.id || idx}
+                            onClick={() => handleSelectTrack(tr)}
+                            className={`flex items-center justify-between p-2.5 rounded-xl border transition-all cursor-pointer group ${
+                              currentTrack?.title === tr.title
+                                ? 'bg-[#B80C09]/20 border-[#B80C09]/50 text-white'
+                                : 'bg-white/5 hover:bg-white/10 border-white/5 text-gray-300 hover:text-white'
+                            }`}
+                          >
+                            <div className="flex items-center gap-3 min-w-0">
+                              <span className="w-5 text-center font-mono text-xs text-gray-400">{idx + 1}</span>
+                              <span className="text-xs font-bold truncate">{tr.title}</span>
+                            </div>
+                            <div className="flex items-center gap-2 shrink-0">
+                              <button
+                                type="button"
+                                onClick={(e) => handleToggleSaveTrack(tr, e)}
+                                className={`p-1 rounded-lg transition-colors cursor-pointer ${
+                                  isTrSaved
+                                    ? 'text-[#B80C09] hover:text-rose-400'
+                                    : 'text-gray-500 hover:text-white'
+                                }`}
+                                title={isTrSaved ? 'Quitar de canciones guardadas' : 'Guardar canción'}
+                              >
+                                <span
+                                  className="material-symbols-outlined text-[16px]"
+                                  style={{ fontVariationSettings: isTrSaved ? "'FILL' 1" : "'FILL' 0" }}
+                                >
+                                  {isTrSaved ? 'bookmark_added' : 'bookmark_add'}
+                                </span>
+                              </button>
+                              <span className="text-[11px] font-mono text-gray-400">
+                                {tr.duration ? `${Math.floor(tr.duration / 60)}:${String(tr.duration % 60).padStart(2, '0')}` : '30s'}
+                              </span>
+                            </div>
+                          </div>
+                        );
+                      })
+                    ) : (
+                      <div className="p-8 text-center text-gray-400 text-xs">
+                        Pista principal activa: {albumData.title}
                       </div>
-                    ))
-                  ) : (
-                    <div className="p-8 text-center text-gray-400 text-xs">
-                      Pista principal activa: {albumData.title}
-                    </div>
-                  )}
-                </div>
+                    )}
+                  </div>
+                </motion.div>
               </motion.div>
-            </motion.div>
-          )}
-        </AnimatePresence>
+            )}
+          </AnimatePresence>
+
+          {/* Toast Notificación Flotante */}
+          <AnimatePresence>
+            {toastMessage && (
+              <motion.div
+                initial={{ opacity: 0, y: 20, scale: 0.95 }}
+                animate={{ opacity: 1, y: 0, scale: 1 }}
+                exit={{ opacity: 0, y: 20, scale: 0.95 }}
+                className="fixed bottom-6 right-6 z-50 px-4 py-3 bg-[#2a132c] border border-[#B80C09]/50 text-white rounded-2xl shadow-2xl flex items-center gap-2.5 text-xs font-bold"
+              >
+                <span className="material-symbols-outlined text-[#B80C09] text-[20px]">bookmark_added</span>
+                <span>{toastMessage}</span>
+              </motion.div>
+            )}
+          </AnimatePresence>
 
         {/* MODAL / CAJA DE VINILOS (CRATE DIGGER) INTEGRADO */}
         <AnimatePresence>
