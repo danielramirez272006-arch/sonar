@@ -39,6 +39,7 @@ export const RegisterForm = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
   const [newsletter, setNewsletter] = useState(true);
+  const [acceptedTerms, setAcceptedTerms] = useState(false);
 
   const setValue = (field) => (event) => {
     setFormData({ ...formData, [field]: event.target.value });
@@ -81,6 +82,10 @@ export const RegisterForm = () => {
       setErrorMessage('La contraseña debe tener al menos 6 caracteres.');
       return;
     }
+    if (!acceptedTerms) {
+      setErrorMessage('Debes aceptar los Términos y Condiciones para crear tu cuenta.');
+      return;
+    }
 
     try {
       await register({
@@ -90,7 +95,6 @@ export const RegisterForm = () => {
         preferences: formData.preferences,
         avatarBg: formData.avatarBg,
       });
-      // Redirigir al dashboard personal de usuario
       window.location.hash = '#usuario';
     } catch (err) {
       setErrorMessage(err.message || 'No se pudo completar el registro. Inténtalo de nuevo.');
@@ -252,13 +256,52 @@ export const RegisterForm = () => {
               </div>
             </div>
 
-            <label className="auth-check">
+            <label className="auth-check" style={{ cursor: 'pointer' }}>
               <input
                 type="checkbox"
                 checked={newsletter}
                 onChange={(e) => setNewsletter(e.target.checked)}
               />
               <span>Deseo recibir la selección curatorial semanal y análisis de letras vía IA.</span>
+            </label>
+
+            <label className="auth-check" style={{ marginTop: '0.35rem', cursor: 'pointer' }}>
+              <input
+                id="accept-terms-checkbox"
+                type="checkbox"
+                required
+                checked={acceptedTerms}
+                onChange={(e) => {
+                  setAcceptedTerms(e.target.checked);
+                  if (errorMessage) setErrorMessage('');
+                }}
+              />
+              <span style={{ fontSize: '0.74rem', lineHeight: '1.4' }}>
+                He leído y acepto los{' '}
+                <a
+                  href="#terms"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                  }}
+                  style={{
+                    color: '#B80C09',
+                    fontWeight: '700',
+                    textDecoration: 'underline',
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: '2px',
+                  }}
+                  title="Abrir y leer Términos y Condiciones en nueva pestaña"
+                >
+                  Términos y Condiciones
+                  <span className="material-symbols-outlined" style={{ fontSize: '13px', verticalAlign: 'middle' }}>
+                    open_in_new
+                  </span>
+                </a>{' '}
+                de Sonar.
+              </span>
             </label>
 
             <button className="auth-submit" type="submit" disabled={isLoading}>

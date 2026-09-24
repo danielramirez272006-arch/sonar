@@ -1,27 +1,58 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
+import { Blobatar } from '@blobatar/react';
+import { Disc, Headphones, Radio, Volume2, Mic, Flame } from 'lucide-react';
 
 const sizeMap = {
-  xs: { size: '28px', font: '12px' },
-  sm: { size: '36px', font: '14px' },
-  md: { size: '44px', font: '16px' },
-  lg: { size: '56px', font: '20px' },
-  xl: { size: '72px', font: '26px' },
-  '2xl': { size: '96px', font: '34px' },
+  xs: { size: '28px', font: '12px', num: 28, iconSize: 14 },
+  sm: { size: '36px', font: '14px', num: 36, iconSize: 18 },
+  md: { size: '44px', font: '16px', num: 44, iconSize: 22 },
+  lg: { size: '56px', font: '20px', num: 56, iconSize: 28 },
+  xl: { size: '72px', font: '26px', num: 72, iconSize: 36 },
+  '2xl': { size: '96px', font: '34px', num: 96, iconSize: 48 },
+};
+
+const ICON_MAP = {
+  headphones: Headphones,
+  vinyl: Disc,
+  radio: Radio,
+  volume: Volume2,
+  mic: Mic,
+  flame: Flame,
 };
 
 export const Avatar = ({
   src,
-  name = 'Usuario',
+  name,
+  username,
+  avatarBg,
+  backgroundColor,
+  bg,
+  avatarSeed,
+  avatarHue,
+  avatarTone,
+  avatarStyle = 'blobatar',
+  avatarIcon,
   size = 'md',
   className = '',
   onClick,
 }) => {
   const [imageError, setImageError] = useState(false);
   const currentSize = sizeMap[size] || sizeMap.md;
-  const initial = name ? name.trim().charAt(0).toUpperCase() : 'U';
+  const rawName = name || username || 'Usuario';
+  const effectiveSeed = avatarSeed || rawName.trim() || 'usuario-sonar';
+  const bgColor = avatarBg || backgroundColor || bg || '#4B2840';
 
-  const shouldShowImage = src && !imageError;
+  // Usamos imagen real si existe y no es un path mock local inexistente
+  const shouldShowImage = Boolean(
+    (src || avatarStyle === 'image') &&
+    src &&
+    !imageError &&
+    src.trim() !== '' &&
+    !src.startsWith('/avatars/')
+  );
+
+  const IconComponent = avatarIcon ? ICON_MAP[avatarIcon] : null;
 
   return (
     <motion.div
@@ -33,7 +64,7 @@ export const Avatar = ({
         width: currentSize.size,
         height: currentSize.size,
         borderRadius: '50%',
-        backgroundColor: '#4B2840',
+        background: bgColor,
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
@@ -41,13 +72,13 @@ export const Avatar = ({
         userSelect: 'none',
         flexShrink: 0,
         cursor: onClick ? 'pointer' : 'default',
-        boxShadow: '0 2px 8px rgba(0, 0, 0, 0.3)',
+        boxShadow: '0 2px 10px rgba(0, 0, 0, 0.25)',
       }}
     >
       {shouldShowImage ? (
         <img
           src={src}
-          alt={name}
+          alt={rawName}
           onError={() => setImageError(true)}
           style={{
             width: '100%',
@@ -56,18 +87,20 @@ export const Avatar = ({
             display: 'block',
           }}
         />
-      ) : (
+      ) : avatarStyle === 'initials' ? (
         <span
-          style={{
-            color: '#FFFFFF',
-            fontSize: currentSize.font,
-            fontWeight: 700,
-            lineHeight: 1,
-            textTransform: 'uppercase',
-          }}
+          className="font-black text-white tracking-wider uppercase select-none drop-shadow-xs"
+          style={{ fontSize: currentSize.font }}
         >
-          {initial}
+          {rawName.charAt(0)}
         </span>
+      ) : avatarStyle === 'icon' && IconComponent ? (
+        <IconComponent
+          size={currentSize.iconSize}
+          className="text-white drop-shadow-md"
+        />
+      ) : (
+        <Blobatar hue={avatarHue} tone={avatarTone} name={effectiveSeed} size={currentSize.num} animate="hover" />
       )}
     </motion.div>
   );

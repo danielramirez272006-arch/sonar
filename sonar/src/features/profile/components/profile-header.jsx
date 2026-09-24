@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import { BlobatarAvatar } from '../../../shared/components/ui/blobatar-avatar';
+import { Avatar } from '../../../shared/components/ui/avatar';
 import { useRouter } from '../../../shared/routing/app-router';
 import { socialService } from '../../../shared/services/social-service';
 
@@ -47,7 +47,18 @@ export const ProfileHeader = ({
         <div className="flex flex-col sm:flex-row items-center sm:items-start gap-5 sm:gap-6 text-center sm:text-left flex-1">
           {/* Avatar Grande (w-24 h-24) */}
           <div className="shrink-0 ring-4 ring-[#e6d5e2]/60 dark:ring-white/10 rounded-full shadow-md">
-            <BlobatarAvatar name={currentUser.username || displayName} size={96} active hue={currentUser.avatarHue} tone={currentUser.avatarTone} />
+            <Avatar
+              src={currentUser.avatarUrl}
+              name={displayName}
+              avatarBg={currentUser.avatarBg || currentUser.avatarColor}
+              avatarHue={currentUser.avatarHue}
+              avatarTone={currentUser.avatarTone}
+              avatarSeed={currentUser.avatarSeed}
+              avatarStyle={currentUser.avatarStyle}
+              avatarIcon={currentUser.avatarIcon}
+              size="2xl"
+              className="w-24 h-24"
+            />
           </div>
 
           {/* Información y Biografía */}

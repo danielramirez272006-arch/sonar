@@ -1,6 +1,6 @@
 import { userStatus } from '../services/admin-data.js'
 import { createContext, useContext, useMemo, useState } from 'react'
-import { getUserByEmail, createUser } from '../services/api-client.js'
+import { getUserByEmail, createUser, updateUser as updateUserApi } from '../services/api-client.js'
 
 // El contexto y el hook se exportan juntos como API de este módulo.
 // eslint-disable-next-line react-refresh/only-export-components
@@ -153,7 +153,9 @@ export function AuthProvider({ children }) {
           if (typeof window !== 'undefined') {
             window.localStorage?.setItem('sonar_auth_user', JSON.stringify(updated))
           }
-          createUser(updated).catch(() => {})
+          if (updated.id) {
+            updateUserApi(updated.id, changes).catch(() => {})
+          }
         } catch { /* El almacenamiento local puede no estar disponible. */ }
         return updated
       })

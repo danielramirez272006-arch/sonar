@@ -4,9 +4,9 @@
 body { margin: 0; }
 button, input { font: inherit; }
 button, a, input, summary { -webkit-tap-highlight-color: transparent; }
-button, .primary-button { min-height: 42px; border: 1px solid var(--line); border-radius: 7px; padding: 11px 17px; background: white; color: var(--ink); font-size: 12px; font-weight: 650; cursor: pointer; text-decoration: none; display: inline-flex; align-items: center; justify-content: center; gap: 12px; transition: background .18s, border-color .18s, transform .18s; }
-button:hover:not(:disabled) { background: #f7edf5; border-color: #cfa8c9; }
-button:disabled { opacity: .55; cursor: wait; }
+.admin-workspace button, .user-page button, .console-header button, .console-main button, .admin-moderation button, .moderation-intro button, .workspace-grid button, .primary-button { min-height: 42px; border: 1px solid var(--line); border-radius: 7px; padding: 11px 17px; background: white; color: var(--ink); font-size: 12px; font-weight: 650; cursor: pointer; text-decoration: none; display: inline-flex; align-items: center; justify-content: center; gap: 12px; transition: background .18s, border-color .18s, transform .18s; }
+.admin-workspace button:hover:not(:disabled), .user-page button:hover:not(:disabled), .console-header button:hover:not(:disabled), .primary-button:hover:not(:disabled) { background: #f7edf5; border-color: #cfa8c9; }
+.admin-workspace button:disabled, .user-page button:disabled, .console-header button:disabled, .primary-button:disabled { opacity: .55; cursor: wait; }
 a { color: inherit; }
 :focus-visible { outline: 3px solid #b80c09; outline-offset: 4px; }
 .primary-button { background: var(--red); color: white; border-color: var(--red); }
@@ -148,8 +148,8 @@ html.dark .avatar.small { background: #231123; color: #DCDCDD; border-color: rgb
 html.dark .badge { background: #231123; color: #DCDCDD; border-color: rgba(220,220,221,0.2); }
 html.dark .badge-alert { background: rgba(184, 12, 9, 0.2); color: #ff4d4a; border-color: rgba(184, 12, 9, 0.4); }
 html.dark .badge-success { background: rgba(40, 100, 86, 0.25); color: #81c7b5; border-color: rgba(40, 100, 86, 0.4); }
-html.dark button:not(.primary-button):not(.danger-button) { background: #231123; color: #DCDCDD; border-color: rgba(220,220,221,0.2); }
-html.dark button:not(.primary-button):not(.danger-button):hover:not(:disabled) { background: #33182b; border-color: rgba(220,220,221,0.35); color: #ffffff; }
+html.dark .admin-workspace button:not(.primary-button):not(.danger-button), html.dark .user-page button:not(.primary-button):not(.danger-button), html.dark .console-header button:not(.primary-button):not(.danger-button), html.dark .console-main button:not(.primary-button):not(.danger-button) { background: #231123; color: #DCDCDD; border-color: rgba(220,220,221,0.2); }
+html.dark .admin-workspace button:not(.primary-button):not(.danger-button):hover:not(:disabled), html.dark .user-page button:not(.primary-button):not(.danger-button):hover:not(:disabled), html.dark .console-header button:not(.primary-button):not(.danger-button):hover:not(:disabled) { background: #33182b; border-color: rgba(220,220,221,0.35); color: #ffffff; }
 html.dark .text-button { background: transparent !important; border-color: transparent !important; }
 
 /* Superficies oscuras con más contraste y menos dominante púrpura. */

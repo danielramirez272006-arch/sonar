@@ -6,6 +6,8 @@ import ProfileHeader from '../../features/profile/components/profile-header';
 import { useAuth } from '../../shared/context/auth-context';
 import { usePlayer } from '../../shared/context/player-context';
 import { interactionsService } from '../../shared/services/interactions-service';
+import { socialService } from '../../shared/services/social-service';
+import { getAlbumTracks, searchTracks } from '../../shared/services/deezer-service';
 import {
   getRecommendationsForUser,
   GENRE_OPTIONS,
@@ -25,6 +27,21 @@ export const UserDashboardPage = () => {
   const [savedAlbums, setSavedAlbums] = useState([]);
   const [recommendations, setRecommendations] = useState([]);
   const [userReviews, setUserReviews] = useState([]);
+  const [followedArtists, setFollowedArtists] = useState([]);
+  const [followedUsers, setFollowedUsers] = useState([]);
+
+  const handlePlayAlbum = (album) => {
+    if (!album) return;
+    playTrack({
+      id: album.id,
+      deezerId: album.deezerId || album.id,
+      title: album.title,
+      artist: album.artist,
+      album: album.title,
+      cover: album.cover || DEFAULT_FALLBACK_COVER,
+      preview: album.previewUrl || album.preview,
+    });
+  };
 
   useEffect(() => {
     // 1. Cargar colecciones guardadas del usuario
@@ -38,7 +55,48 @@ export const UserDashboardPage = () => {
     // 3. Reseñas del usuario (dinámicas según ID de usuario)
     const reviews = interactionsService.getUserReviews(userId);
     setUserReviews(reviews);
+
+    // 4. Artistas y Usuarios que sigue
+    const currentId = user?.id || 'guest';
+    setFollowedArtists(socialService.getFollowedArtists(currentId));
+    setFollowedUsers(socialService.getFollowedUsers(currentId));
+
+    const handleArtistChange = () => {
+      setFollowedArtists(socialService.getFollowedArtists(currentId));
+    };
+    const handleUserChange = () => {
+      setFollowedUsers(socialService.getFollowedUsers(currentId));
+    };
+    const handleReviewCreated = () => {
+      setUserReviews(interactionsService.getUserReviews(userId));
+    };
+
+    window.addEventListener('sonar:follow-artist-changed', handleArtistChange);
+    window.addEventListener('sonar:follow-user-changed', handleUserChange);
+    window.addEventListener('sonar:review-created', handleReviewCreated);
+    const handleCollectionChange = () => {
+      setSavedAlbums(interactionsService.getUserSavedAlbums(userId));
+    };
+    window.addEventListener('sonar:collection-changed', handleCollectionChange);
+    return () => {
+      window.removeEventListener('sonar:follow-artist-changed', handleArtistChange);
+      window.removeEventListener('sonar:follow-user-changed', handleUserChange);
+      window.removeEventListener('sonar:review-created', handleReviewCreated);
+      window.removeEventListener('sonar:collection-changed', handleCollectionChange);
+    };
   }, [user, userId, genreFilter]);
+
+  const handleToggleUnfollowArtist = (artistName) => {
+    const currentId = user?.id || 'guest';
+    socialService.toggleFollowArtist(currentId, artistName);
+    setFollowedArtists(socialService.getFollowedArtists(currentId));
+  };
+
+  const handleToggleUnfollowUser = (targetUserId) => {
+    const currentId = user?.id || 'guest';
+    socialService.toggleFollowUser(currentId, targetUserId);
+    setFollowedUsers(socialService.getFollowedUsers(currentId));
+  };
 
   const handleToggleGenrePreference = (genre) => {
     const current = user?.preferences || ['Art Rock', 'Electrónica'];
@@ -57,12 +115,14 @@ export const UserDashboardPage = () => {
     setSavedAlbums(res.savedAlbums);
   };
 
+  const collectionTags = ['Todos', '🎵 Canciones', '💿 Álbumes', 'Favoritos', 'Colección Vinilo', 'Por Escuchar'];
+
   const filteredSavedAlbums = savedAlbums.filter((album) => {
     if (collectionFilter === 'Todos') return true;
+    if (collectionFilter === '🎵 Canciones') return album.type === 'track' || album.trackId;
+    if (collectionFilter === '💿 Álbumes') return album.type !== 'track' && !album.trackId;
     return album.collectionTag === collectionFilter;
   });
-
-  const collectionTags = ['Todos', 'Favoritos', 'Colección Vinilo', 'Por Escuchar'];
 
   return (
     <div className="min-h-screen flex flex-col bg-gray-50 dark:bg-[#231123] text-[#231123] dark:text-[#FAF5F8] transition-colors duration-300">
@@ -129,6 +189,46 @@ export const UserDashboardPage = () => {
               <span className="material-symbols-outlined text-[18px]">rate_review</span>
               <span>Mis Reseñas ({userReviews.length})</span>
               {activeTab === 'reviews' && (
+                <motion.div
+                  layoutId="dashboard-tab-indicator"
+                  className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#B80C09]"
+                  transition={{ type: 'spring', stiffness: 400, damping: 30 }}
+                />
+              )}
+            </button>
+
+            <button
+              type="button"
+              onClick={() => setActiveTab('following_artists')}
+              className={`pb-3 text-sm sm:text-base font-bold transition-all cursor-pointer relative whitespace-nowrap flex items-center gap-2 ${
+                activeTab === 'following_artists'
+                  ? 'text-[#B80C09]'
+                  : 'text-[#5c435a] dark:text-[#B89CB0] hover:text-[#231123] dark:hover:text-white'
+              }`}
+            >
+              <span className="material-symbols-outlined text-[18px]">favorite</span>
+              <span>Artistas ({followedArtists.length})</span>
+              {activeTab === 'following_artists' && (
+                <motion.div
+                  layoutId="dashboard-tab-indicator"
+                  className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#B80C09]"
+                  transition={{ type: 'spring', stiffness: 400, damping: 30 }}
+                />
+              )}
+            </button>
+
+            <button
+              type="button"
+              onClick={() => setActiveTab('following_users')}
+              className={`pb-3 text-sm sm:text-base font-bold transition-all cursor-pointer relative whitespace-nowrap flex items-center gap-2 ${
+                activeTab === 'following_users'
+                  ? 'text-[#B80C09]'
+                  : 'text-[#5c435a] dark:text-[#B89CB0] hover:text-[#231123] dark:hover:text-white'
+              }`}
+            >
+              <span className="material-symbols-outlined text-[18px]">group</span>
+              <span>Siguiendo ({followedUsers.length})</span>
+              {activeTab === 'following_users' && (
                 <motion.div
                   layoutId="dashboard-tab-indicator"
                   className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#B80C09]"
@@ -212,16 +312,7 @@ export const UserDashboardPage = () => {
                           />
                           <button
                             type="button"
-                            onClick={() =>
-                              playTrack({
-                                id: album.id,
-                                title: album.title,
-                                artist: album.artist,
-                                album: album.title,
-                                cover: album.cover || DEFAULT_FALLBACK_COVER,
-                                preview: album.previewUrl || album.preview || DEFAULT_FALLBACK_PREVIEW,
-                              })
-                            }
+                            onClick={() => handlePlayAlbum(album)}
                             className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 flex items-center justify-center text-white transition-opacity cursor-pointer"
                             title="Reproducir muestra"
                           >
@@ -349,17 +440,41 @@ export const UserDashboardPage = () => {
                             e.currentTarget.src = DEFAULT_FALLBACK_COVER;
                           }}
                         />
-                        {/* Tag de Colección */}
-                        <div className="absolute top-2 left-2 px-2 py-0.5 rounded-md bg-black/80 backdrop-blur-xs text-white text-[10px] font-extrabold shadow-xs">
-                          {album.collectionTag || 'Colección'}
+                        {/* Badges de Tipo y Colección */}
+                        <div className="absolute top-2 left-2 flex flex-wrap items-center gap-1 z-10">
+                          <span className={`px-2 py-0.5 rounded-md text-[10px] font-black uppercase shadow-xs ${
+                            album.type === 'track' || album.trackId
+                              ? 'bg-[#B80C09] text-white'
+                              : 'bg-purple-900/90 text-purple-200 border border-purple-400/30'
+                          }`}>
+                            {album.type === 'track' || album.trackId ? '🎵 Canción' : '💿 Álbum'}
+                          </span>
+                          {album.collectionTag && album.collectionTag !== 'Favoritos' && (
+                            <span className="px-1.5 py-0.5 rounded-md bg-black/80 text-white text-[9px] font-bold shadow-xs">
+                              {album.collectionTag}
+                            </span>
+                          )}
                         </div>
+
+                        {/* Botón Reproducir */}
+                        <button
+                          type="button"
+                          onClick={() => handlePlayAlbum(album)}
+                          className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 flex items-center justify-center text-white transition-opacity cursor-pointer"
+                          title="Reproducir muestra"
+                        >
+                          <span className="material-symbols-outlined text-[32px]">play_circle</span>
+                        </button>
 
                         {/* Botón Quitar de Colección */}
                         <button
                           type="button"
-                          onClick={() => handleToggleSaveAlbum(album)}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleToggleSaveAlbum(album);
+                          }}
                           title="Quitar de mi colección"
-                          className="absolute top-2 right-2 w-7 h-7 rounded-full bg-black/70 hover:bg-[#B80C09] text-white flex items-center justify-center transition-colors cursor-pointer"
+                          className="absolute top-2 right-2 z-10 w-7 h-7 rounded-full bg-black/70 hover:bg-[#B80C09] text-white flex items-center justify-center transition-colors cursor-pointer"
                         >
                           <span className="material-symbols-outlined text-[16px]">delete</span>
                         </button>
@@ -367,12 +482,24 @@ export const UserDashboardPage = () => {
 
                       {/* Título y Artista */}
                       <div className="flex flex-col gap-0.5 min-w-0">
-                        <h3 className="text-sm sm:text-base font-bold text-[#231123] dark:text-white truncate">
+                        <h3 className="text-sm sm:text-base font-bold text-[#231123] dark:text-white truncate" title={album.title}>
                           {album.title}
                         </h3>
                         <p className="text-xs text-[#5c435a] dark:text-[#B89CB0] truncate font-medium">
-                          {album.artist} · {album.year}
+                          {album.artist} {album.album && album.album !== album.title ? `· ${album.album}` : (album.year ? `· ${album.year}` : '')}
                         </p>
+                      </div>
+
+                      {/* Botón de acción rápida: Escribir reseña */}
+                      <div className="flex items-center justify-between gap-2 pt-2 mt-2 border-t border-[#e6d5e2]/60 dark:border-white/10">
+                        <button
+                          type="button"
+                          onClick={() => openReviewModal(album)}
+                          className="w-full py-1 px-2 rounded-lg text-xs font-bold bg-gray-100 dark:bg-[#231123] text-[#231123] dark:text-gray-200 hover:bg-[#B80C09] hover:text-white dark:hover:bg-[#B80C09] dark:hover:text-white transition-colors flex items-center justify-center gap-1 cursor-pointer"
+                        >
+                          <span className="material-symbols-outlined text-[14px]">rate_review</span>
+                          <span>Criticar</span>
+                        </button>
                       </div>
                     </motion.article>
                   ))}
@@ -407,6 +534,119 @@ export const UserDashboardPage = () => {
                 userReviews.map((review) => (
                   <ReviewFeedCard key={review.id} review={review} />
                 ))
+              )}
+            </section>
+          )}
+
+          {/* TAB 4: ARTISTAS QUE SIGUES */}
+          {activeTab === 'following_artists' && (
+            <section className="flex flex-col gap-6">
+              {followedArtists.length === 0 ? (
+                <div className="flex flex-col items-center justify-center py-16 px-4 text-center rounded-2xl bg-white dark:bg-[#4B2840] border border-[#e6d5e2] dark:border-white/10 shadow-xs">
+                  <span className="material-symbols-outlined text-5xl text-[#5c435a]/50 dark:text-[#B89CB0]/50 mb-3">
+                    person_play
+                  </span>
+                  <h3 className="text-lg font-bold text-[#231123] dark:text-white">
+                    Aún no sigues a ningún artista
+                  </h3>
+                  <p className="text-xs sm:text-sm text-[#5c435a] dark:text-[#B89CB0] max-w-md mt-1 mb-5">
+                    Explora la comunidad o las reseñas para seguir a tus creadores y productores favoritos.
+                  </p>
+                  <a
+                    href="#community"
+                    className="px-5 py-2.5 rounded-full bg-[#B80C09] hover:bg-[#960a07] text-white text-xs sm:text-sm font-bold transition-all shadow-sm"
+                  >
+                    Descubrir Artistas en la Comunidad
+                  </a>
+                </div>
+              ) : (
+                <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
+                  {followedArtists.map((art, idx) => {
+                    const name = typeof art === 'string' ? art : art.name;
+                    const img = typeof art === 'string' ? 'https://cdn-images.dzcdn.net/images/cover/a175af9b7d329bc678cb4d26fc13d6de/250x250-000000-80-0-0.jpg' : art.image;
+                    const genre = typeof art === 'string' ? 'Artista' : art.genre || 'Música';
+                    return (
+                      <motion.div
+                        key={idx}
+                        whileHover={{ y: -3 }}
+                        className="p-4 rounded-2xl bg-white dark:bg-[#4B2840] border border-[#e6d5e2] dark:border-white/10 shadow-xs flex flex-col items-center text-center gap-3"
+                      >
+                        <img
+                          src={img}
+                          alt={name}
+                          className="w-20 h-20 rounded-full object-cover shadow-md ring-2 ring-[#B80C09]/20"
+                        />
+                        <div className="flex flex-col min-w-0 w-full">
+                          <h4 className="text-sm font-bold text-[#231123] dark:text-white truncate">{name}</h4>
+                          <span className="text-xs text-[#5c435a] dark:text-[#B89CB0] truncate">{genre}</span>
+                        </div>
+                        <button
+                          type="button"
+                          onClick={() => handleToggleUnfollowArtist(name)}
+                          className="w-full py-1.5 rounded-xl border border-gray-300 dark:border-white/15 hover:border-rose-600 text-xs font-bold text-gray-700 dark:text-gray-300 hover:text-rose-600 transition-colors cursor-pointer"
+                        >
+                          Dejar de seguir
+                        </button>
+                      </motion.div>
+                    );
+                  })}
+                </div>
+              )}
+            </section>
+          )}
+
+          {/* TAB 5: USUARIOS QUE SIGUES */}
+          {activeTab === 'following_users' && (
+            <section className="flex flex-col gap-6">
+              {followedUsers.length === 0 ? (
+                <div className="flex flex-col items-center justify-center py-16 px-4 text-center rounded-2xl bg-white dark:bg-[#4B2840] border border-[#e6d5e2] dark:border-white/10 shadow-xs">
+                  <span className="material-symbols-outlined text-5xl text-[#5c435a]/50 dark:text-[#B89CB0]/50 mb-3">
+                    group
+                  </span>
+                  <h3 className="text-lg font-bold text-[#231123] dark:text-white">
+                    Aún no sigues a ningún melómano
+                  </h3>
+                  <p className="text-xs sm:text-sm text-[#5c435a] dark:text-[#B89CB0] max-w-md mt-1 mb-5">
+                    Conecta con críticos y audiófilos destacados en la sección de Comunidad.
+                  </p>
+                  <a
+                    href="#community"
+                    className="px-5 py-2.5 rounded-full bg-[#B80C09] hover:bg-[#960a07] text-white text-xs sm:text-sm font-bold transition-all shadow-sm"
+                  >
+                    Ver Melómanos Destacados
+                  </a>
+                </div>
+              ) : (
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                  {followedUsers.map((uid, idx) => (
+                    <motion.div
+                      key={idx}
+                      whileHover={{ y: -2 }}
+                      className="p-4 rounded-2xl bg-white dark:bg-[#4B2840] border border-[#e6d5e2] dark:border-white/10 shadow-xs flex items-center justify-between gap-3"
+                    >
+                      <div className="flex items-center gap-3 min-w-0">
+                        <div className="w-10 h-10 rounded-full bg-gradient-to-tr from-[#5c1d5e] to-[#B80C09] text-white flex items-center justify-center font-bold text-sm shadow-xs shrink-0">
+                          {String(uid).charAt(0).toUpperCase()}
+                        </div>
+                        <div className="flex flex-col min-w-0">
+                          <span className="text-sm font-bold text-[#231123] dark:text-white truncate">
+                            {uid === '1' ? 'Sofía Sound' : uid === '2' ? 'Marcos Vinyl' : `Audiófilo #${uid}`}
+                          </span>
+                          <span className="text-xs text-[#5c435a] dark:text-[#B89CB0] truncate">
+                            @{String(uid).toLowerCase()}
+                          </span>
+                        </div>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => handleToggleUnfollowUser(uid)}
+                        className="px-3 py-1 rounded-xl border border-gray-300 dark:border-white/15 hover:border-rose-600 text-xs font-bold text-gray-700 dark:text-gray-300 hover:text-rose-600 transition-colors cursor-pointer shrink-0"
+                      >
+                        Siguiendo ✓
+                      </button>
+                    </motion.div>
+                  ))}
+                </div>
               )}
             </section>
           )}

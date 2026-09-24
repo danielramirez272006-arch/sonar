@@ -3,8 +3,11 @@
 const STORAGE_KEYS = {
   LIKED_REVIEWS: 'sonar_liked_reviews',
   LIKED_COMMENTS: 'sonar_liked_comments',
+  DISLIKED_COMMENTS: 'sonar_disliked_comments',
   COMMENTS_STORE: 'sonar_review_comments',
   USER_COLLECTIONS: 'sonar_user_collections',
+  REPORTED_COMMENTS: 'sonar_reported_comments',
+  REPORTED_REVIEWS: 'sonar_reported_reviews',
 };
 
 // Comentarios iniciales enriquecidos para las reseñas
@@ -20,6 +23,19 @@ const INITIAL_MOCK_COMMENTS = {
       content: 'Totalmente de acuerdo con "Reckoner". El paneo de la batería de Phil Selway en audífonos de estudio es una locura.',
       timestamp: 'Hace 45 min',
       likes: 12,
+      replies: [
+        {
+          id: 'r-1-1-1',
+          commentId: 'c-1-1',
+          userName: 'Elena Analog',
+          userHandle: '@elena_analog',
+          avatarLetter: 'E',
+          avatarBg: '#75527b',
+          content: '¡Exacto! Y la reverb en la voz de Thom Yorke le da esa atmósfera única.',
+          timestamp: 'Hace 30 min',
+          likes: 4,
+        },
+      ],
     },
     {
       id: 'c-1-2',
@@ -31,6 +47,7 @@ const INITIAL_MOCK_COMMENTS = {
       content: 'La calidez de las cuerdas en "Faust Arp" complementa perfecto la mezcla. Mi disco favorito de la década.',
       timestamp: 'Hace 1 hora',
       likes: 8,
+      replies: [],
     },
   ],
   2: [
@@ -44,6 +61,7 @@ const INITIAL_MOCK_COMMENTS = {
       content: 'El solo de sintetizador modular de "Digital Love" sigue siendo inigualable.',
       timestamp: 'Hace 30 min',
       likes: 15,
+      replies: [],
     },
   ],
   3: [
@@ -57,6 +75,7 @@ const INITIAL_MOCK_COMMENTS = {
       content: 'Vespertine es una lección de producción con micro-sonidos orgánicos.',
       timestamp: 'Hace 2 horas',
       likes: 6,
+      replies: [],
     },
   ],
   4: [
@@ -70,6 +89,7 @@ const INITIAL_MOCK_COMMENTS = {
       content: 'El bajo con compresión agresiva en Let It Happen es legendario.',
       timestamp: 'Hace 3 horas',
       likes: 9,
+      replies: [],
     },
   ],
 };
@@ -124,20 +144,70 @@ export const interactionsService = {
     return all[userId] || [];
   },
 
+  getDislikedCommentIds(userId) {
+    if (!userId || userId === 'guest' || userId === 'default') return [];
+    const all = getStorage(STORAGE_KEYS.DISLIKED_COMMENTS, {});
+    return all[userId] || [];
+  },
+
   toggleCommentLike(commentId, userId) {
-    if (!userId || userId === 'guest' || userId === 'default') return false;
-    const all = getStorage(STORAGE_KEYS.LIKED_COMMENTS, {});
-    const userLikes = all[userId] || [];
-    const isLiked = userLikes.includes(commentId);
-    let updated;
-    if (isLiked) {
-      updated = userLikes.filter((id) => id !== commentId);
-    } else {
-      updated = [...userLikes, commentId];
+    if (!userId || userId === 'guest' || userId === 'default') {
+      return { isLiked: false, isDisliked: false };
     }
-    all[userId] = updated;
-    setStorage(STORAGE_KEYS.LIKED_COMMENTS, all);
-    return !isLiked;
+    const likesStore = getStorage(STORAGE_KEYS.LIKED_COMMENTS, {});
+    const dislikesStore = getStorage(STORAGE_KEYS.DISLIKED_COMMENTS, {});
+
+    const userLikes = likesStore[userId] || [];
+    const userDislikes = dislikesStore[userId] || [];
+
+    const isLiked = userLikes.includes(commentId);
+    let nextLikes;
+    let nextDislikes = userDislikes;
+
+    if (isLiked) {
+      nextLikes = userLikes.filter((id) => id !== commentId);
+    } else {
+      nextLikes = [...userLikes, commentId];
+      // Quitar de dislikes si estaba con corazón roto
+      nextDislikes = userDislikes.filter((id) => id !== commentId);
+    }
+
+    likesStore[userId] = nextLikes;
+    dislikesStore[userId] = nextDislikes;
+    setStorage(STORAGE_KEYS.LIKED_COMMENTS, likesStore);
+    setStorage(STORAGE_KEYS.DISLIKED_COMMENTS, dislikesStore);
+
+    return { isLiked: !isLiked, isDisliked: false };
+  },
+
+  toggleCommentDislike(commentId, userId) {
+    if (!userId || userId === 'guest' || userId === 'default') {
+      return { isLiked: false, isDisliked: false };
+    }
+    const likesStore = getStorage(STORAGE_KEYS.LIKED_COMMENTS, {});
+    const dislikesStore = getStorage(STORAGE_KEYS.DISLIKED_COMMENTS, {});
+
+    const userLikes = likesStore[userId] || [];
+    const userDislikes = dislikesStore[userId] || [];
+
+    const isDisliked = userDislikes.includes(commentId);
+    let nextDislikes;
+    let nextLikes = userLikes;
+
+    if (isDisliked) {
+      nextDislikes = userDislikes.filter((id) => id !== commentId);
+    } else {
+      nextDislikes = [...userDislikes, commentId];
+      // Quitar de likes si tenía corazón
+      nextLikes = userLikes.filter((id) => id !== commentId);
+    }
+
+    likesStore[userId] = nextLikes;
+    dislikesStore[userId] = nextDislikes;
+    setStorage(STORAGE_KEYS.LIKED_COMMENTS, likesStore);
+    setStorage(STORAGE_KEYS.DISLIKED_COMMENTS, dislikesStore);
+
+    return { isLiked: false, isDisliked: !isDisliked };
   },
 
   // COMENTARIOS
@@ -159,6 +229,8 @@ export const interactionsService = {
       content: commentData.content,
       timestamp: 'Ahora mismo',
       likes: 0,
+      dislikes: 0,
+      replies: [],
       createdAt: new Date().toISOString(),
     };
     store[reviewId] = [newComment, ...current];
@@ -166,15 +238,145 @@ export const interactionsService = {
     return newComment;
   },
 
+  addReplyToComment(reviewId, commentId, replyData) {
+    const store = getStorage(STORAGE_KEYS.COMMENTS_STORE, INITIAL_MOCK_COMMENTS);
+    const current = store[reviewId] || [];
+    const newReply = {
+      id: `r-${commentId}-${Date.now()}`,
+      commentId,
+      userName: replyData.userName || 'Usuario Sonar',
+      userHandle: replyData.userHandle || '@usuario',
+      avatarLetter: replyData.avatarLetter || replyData.userName?.charAt(0) || 'U',
+      avatarBg: replyData.avatarBg || '#5c1d5e',
+      content: replyData.content,
+      timestamp: 'Ahora mismo',
+      likes: 0,
+      dislikes: 0,
+      createdAt: new Date().toISOString(),
+    };
+
+    const updated = current.map((c) => {
+      if (c.id === commentId) {
+        return {
+          ...c,
+          replies: [...(c.replies || []), newReply],
+        };
+      }
+      return c;
+    });
+
+    store[reviewId] = updated;
+    setStorage(STORAGE_KEYS.COMMENTS_STORE, store);
+    return { newReply, comments: updated };
+  },
+
+  // REPORTES DE COMENTARIOS Y RESEÑAS
+  getReportedCommentIds(userId) {
+    if (!userId || userId === 'guest' || userId === 'default') return [];
+    const all = getStorage(STORAGE_KEYS.REPORTED_COMMENTS, {});
+    return all[userId] || [];
+  },
+
+  getReportedReviewIds(userId) {
+    if (!userId || userId === 'guest' || userId === 'default') return [];
+    const all = getStorage(STORAGE_KEYS.REPORTED_REVIEWS, {});
+    return all[userId] || [];
+  },
+
+  reportComment(userId, reportPayload) {
+    if (!userId || userId === 'guest' || userId === 'default') return false;
+    const all = getStorage(STORAGE_KEYS.REPORTED_COMMENTS, {});
+    const userReports = all[userId] || [];
+    const commentId = reportPayload.commentId || reportPayload.targetId;
+
+    if (commentId && !userReports.includes(commentId)) {
+      all[userId] = [...userReports, commentId];
+      setStorage(STORAGE_KEYS.REPORTED_COMMENTS, all);
+    }
+
+    // Guardar en bitácora de reportes para administración/auditoría
+    const reportsLog = getStorage('sonar_reports_log', []);
+    const newReportEntry = {
+      id: `rep-c-${Date.now()}`,
+      reportedBy: userId,
+      type: 'comment',
+      commentId: commentId,
+      commentText: reportPayload.commentText || reportPayload.targetContent || '',
+      commentUser: reportPayload.commentUser || reportPayload.targetUser || '',
+      reason: reportPayload.reason || reportPayload.reasonTitle || 'Lenguaje inapropiado o subido de tono',
+      reasonId: reportPayload.reasonId || 'hate_speech',
+      tags: reportPayload.tags || [],
+      details: reportPayload.details || '',
+      timestamp: reportPayload.timestamp || new Date().toISOString(),
+      status: 'pending_review',
+    };
+    setStorage('sonar_reports_log', [newReportEntry, ...reportsLog]);
+
+    if (typeof window !== 'undefined') {
+      window.dispatchEvent(
+        new CustomEvent('sonar:comment-reported', {
+          detail: newReportEntry,
+        })
+      );
+    }
+
+    return true;
+  },
+
+  reportReview(userId, reportPayload) {
+    if (!userId || userId === 'guest' || userId === 'default') return false;
+    const all = getStorage(STORAGE_KEYS.REPORTED_REVIEWS, {});
+    const userReports = all[userId] || [];
+    const reviewId = reportPayload.reviewId || reportPayload.targetId;
+
+    if (reviewId && !userReports.includes(reviewId)) {
+      all[userId] = [...userReports, reviewId];
+      setStorage(STORAGE_KEYS.REPORTED_REVIEWS, all);
+    }
+
+    const reportsLog = getStorage('sonar_reports_log', []);
+    const newReportEntry = {
+      id: `rep-r-${Date.now()}`,
+      reportedBy: userId,
+      type: 'review',
+      reviewId: reviewId,
+      reviewTitle: reportPayload.reviewTitle || reportPayload.targetTitle || '',
+      reviewText: reportPayload.reviewText || reportPayload.targetContent || '',
+      reviewUser: reportPayload.reviewUser || reportPayload.targetUser || '',
+      reason: reportPayload.reason || reportPayload.reasonTitle || 'Contenido inadecuado en reseña',
+      reasonId: reportPayload.reasonId || 'other',
+      tags: reportPayload.tags || [],
+      details: reportPayload.details || '',
+      timestamp: reportPayload.timestamp || new Date().toISOString(),
+      status: 'pending_review',
+    };
+    setStorage('sonar_reports_log', [newReportEntry, ...reportsLog]);
+
+    if (typeof window !== 'undefined') {
+      window.dispatchEvent(
+        new CustomEvent('sonar:review-reported', {
+          detail: newReportEntry,
+        })
+      );
+    }
+
+    return true;
+  },
+
+  getReportsLog() {
+    return getStorage('sonar_reports_log', []);
+  },
+
   // RESEÑAS PROPIAS DEL USUARIO
   getUserReviews(userId) {
-    if (!userId || userId === 'guest' || userId === 'default') return [];
+    if (!userId) return [];
+    const uidStr = String(userId);
     const reviewsStore = getStorage('sonar_user_reviews', {});
-    if (reviewsStore[userId]) {
-      return reviewsStore[userId];
+    if (reviewsStore[uidStr] && Array.isArray(reviewsStore[uidStr])) {
+      return reviewsStore[uidStr];
     }
-    // Solo el usuario demo 1 (Mateo) tiene reseñas históricas precargadas
-    if (userId === '1') {
+    // Solo el usuario demo 1 (Mateo) tiene reseñas históricas precargadas si no hay nada guardado
+    if (uidStr === '1' || uidStr === 'mateo') {
       return [
         {
           id: 101,
@@ -214,28 +416,40 @@ export const interactionsService = {
   },
 
   addUserReview(userId, reviewData) {
-    if (!userId || userId === 'guest') return null;
+    if (!userId) return null;
+    const uidStr = String(userId);
     const reviewsStore = getStorage('sonar_user_reviews', {});
-    const current = this.getUserReviews(userId);
+    const current = this.getUserReviews(uidStr);
     const newRev = {
       id: Date.now(),
-      userId,
+      userId: uidStr,
       userName: reviewData.userName || 'Usuario Sonar',
       userHandle: reviewData.userHandle || '@usuario',
-      avatarLetter: reviewData.avatarLetter || 'U',
+      avatarLetter: reviewData.avatarLetter || reviewData.userName?.charAt(0).toUpperCase() || 'U',
       avatarBg: reviewData.avatarBg || '#B80C09',
       date: 'Ahora mismo',
-      rating: reviewData.rating || 5,
+      rating: Number(reviewData.rating) || 5,
       albumTitle: reviewData.albumTitle || 'Álbum',
       artist: reviewData.artist || 'Artista',
       cover: reviewData.cover || 'https://cdn-images.dzcdn.net/images/cover/a175af9b7d329bc678cb4d26fc13d6de/500x500-000000-80-0-0.jpg',
       content: reviewData.content || reviewData.reviewText || '',
       likesCount: 0,
       commentsCount: 0,
+      hasSpoilers: !!reviewData.hasSpoilers,
+      createdAt: new Date().toISOString(),
     };
     const updated = [newRev, ...current];
-    reviewsStore[userId] = updated;
+    reviewsStore[uidStr] = updated;
     setStorage('sonar_user_reviews', reviewsStore);
+
+    if (typeof window !== 'undefined') {
+      window.dispatchEvent(
+        new CustomEvent('sonar:review-created', {
+          detail: newRev,
+        })
+      );
+    }
+
     return newRev;
   },
 
@@ -303,10 +517,12 @@ export const interactionsService = {
     }
     const collections = getStorage(STORAGE_KEYS.USER_COLLECTIONS, {});
     const currentSaved = this.getUserSavedAlbums(userId);
-    const albumIdStr = String(album.id || album.title);
+    const itemIdStr = String(album.id || album.trackId || album.title);
     const existingIndex = currentSaved.findIndex(
-      (a) => String(a.id || a.title) === albumIdStr || a.title === album.title
+      (a) => String(a.id || a.trackId || a.title) === itemIdStr || a.title === album.title
     );
+
+    const isTrack = album.type === 'track' || Boolean(album.trackId) || Boolean(album.album && album.album !== album.title);
 
     let updated;
     let isSaved;
@@ -314,18 +530,25 @@ export const interactionsService = {
       updated = currentSaved.filter((_, idx) => idx !== existingIndex);
       isSaved = false;
     } else {
-      const newAlbum = {
-        id: album.id || `album-${Date.now()}`,
-        title: album.title || album.album || 'Álbum',
+      const newItem = {
+        id: album.id || `item-${Date.now()}`,
+        trackId: album.trackId || (isTrack ? album.id : null),
+        deezerId: album.deezerId || album.id,
+        title: album.title || album.album || 'Canción',
+        album: album.album || album.albumTitle || album.title || 'Álbum',
         artist: album.artist || 'Artista',
         year: album.year || '2024',
         genre: album.genre || 'Música',
-        cover: album.cover || 'https://cdn-images.dzcdn.net/images/cover/a175af9b7d329bc678cb4d26fc13d6de/500x500-000000-80-0-0.jpg',
+        cover: album.cover || album.cover_medium || 'https://cdn-images.dzcdn.net/images/cover/a175af9b7d329bc678cb4d26fc13d6de/500x500-000000-80-0-0.jpg',
         rating: album.rating || 5,
+        duration: album.duration || 180,
+        preview: album.preview || album.previewUrl,
+        previewUrl: album.previewUrl || album.preview,
+        type: isTrack ? 'track' : (album.type || 'album'),
         collectionTag,
         addedAt: new Date().toISOString().split('T')[0],
       };
-      updated = [newAlbum, ...currentSaved];
+      updated = [newItem, ...currentSaved];
       isSaved = true;
     }
 
@@ -334,15 +557,24 @@ export const interactionsService = {
       savedAlbums: updated,
     };
     setStorage(STORAGE_KEYS.USER_COLLECTIONS, collections);
+
+    if (typeof window !== 'undefined') {
+      window.dispatchEvent(
+        new CustomEvent('sonar:collection-changed', {
+          detail: { userId, item: album, isSaved, collection: updated },
+        })
+      );
+    }
+
     return { isSaved, savedAlbums: updated };
   },
 
   isAlbumSaved(userId, albumIdentifier) {
-    if (!userId || userId === 'guest' || userId === 'default') return false;
+    if (!userId || userId === 'guest' || userId === 'default' || !albumIdentifier) return false;
     const saved = this.getUserSavedAlbums(userId);
     const query = String(albumIdentifier).toLowerCase();
     return saved.some(
-      (a) => String(a.id).toLowerCase() === query || a.title.toLowerCase() === query
+      (a) => String(a.id).toLowerCase() === query || String(a.trackId || '').toLowerCase() === query || (a.title && a.title.toLowerCase() === query)
     );
   },
 };
