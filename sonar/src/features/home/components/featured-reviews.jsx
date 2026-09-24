@@ -4,6 +4,7 @@ import { useAuth } from '../../../shared/context/auth-context';
 import { interactionsService } from '../../../shared/services/interactions-service';
 import CommentSection from '../../reviews/components/comment-section';
 import LikeButton from '../../../shared/components/ui/like-button';
+import { TTSButton } from '../../../shared/components/a11y/tts-button';
 
 const initialReviewsData = [
   {
@@ -216,8 +217,8 @@ const FeaturedReviewCard = ({ review }) => {
       </div>
 
       {/* Card Footer Metadata */}
-      <div className="flex items-center justify-between pt-4 mt-4 border-t border-[#e6d5e2]/70 dark:border-white/10">
-        <div className="flex items-center gap-4 text-[#5c435a] dark:text-[#B89CB0] text-xs font-medium">
+      <div className="flex items-center justify-between pt-4 mt-4 border-t border-[#e6d5e2]/70 dark:border-white/10 flex-wrap gap-2">
+        <div className="flex items-center gap-3 text-[#5c435a] dark:text-[#B89CB0] text-xs font-medium flex-wrap">
           <LikeButton
             isLiked={isLiked}
             likesCount={likes}
@@ -233,8 +234,15 @@ const FeaturedReviewCard = ({ review }) => {
             onClick={() => setShowComments(!showComments)}
           >
             <span className="material-symbols-outlined text-[16px]">chat_bubble</span>
-            <span>{commentsCount} comentarios</span>
+            <span>{commentsCount}</span>
           </button>
+
+          <TTSButton
+            text={review.text}
+            title={`Crítica de ${review.userName} sobre ${review.album.title}`}
+            size="sm"
+            label="Escuchar"
+          />
         </div>
         <span className="text-xs text-[#81737e] dark:text-[#B89CB0]/70">
           {review.timeAgo}

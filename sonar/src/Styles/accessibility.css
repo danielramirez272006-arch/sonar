@@ -1,0 +1,137 @@
+/* =========================================================
+   SONAR ACCESSIBILITY SYSTEM (WCAG 2.1 AA/AAA)
+   ========================================================= */
+
+/* --- Salto al Contenido Principal (Skip Link) --- */
+.sonar-skip-link {
+  position: fixed;
+  top: -100px;
+  left: 16px;
+  background-color: #B80C09;
+  color: #ffffff !important;
+  padding: 12px 20px;
+  font-size: 14px;
+  font-weight: 800;
+  border-radius: 0 0 12px 12px;
+  z-index: 999999;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+  text-decoration: none;
+  transition: top 0.2s ease-in-out;
+  outline: 3px solid #ffffff;
+  outline-offset: 2px;
+}
+
+.sonar-skip-link:focus {
+  top: 0;
+}
+
+/* --- Modificadores de Tamaño de Fuente --- */
+html.a11y-font-large {
+  font-size: 115% !important;
+}
+
+html.a11y-font-xlarge {
+  font-size: 130% !important;
+}
+
+/* --- Tipografía para Dislexia y Mayor Legibilidad --- */
+html.a11y-dyslexic-font body,
+html.a11y-dyslexic-font * {
+  font-family: 'Comic Sans MS', 'Trebuchet MS', 'Verdana', sans-serif !important;
+  letter-spacing: 0.05em !important;
+  word-spacing: 0.12em !important;
+  line-height: 1.75 !important;
+}
+
+/* --- Modo Alto Contraste (WCAG AAA) --- */
+html.a11y-high-contrast {
+  filter: contrast(135%);
+}
+
+html.a11y-high-contrast body {
+  background-color: #000000 !important;
+  color: #ffffff !important;
+}
+
+html.a11y-high-contrast button,
+html.a11y-high-contrast a {
+  outline: 2px solid #ffff00 !important;
+}
+
+html.a11y-high-contrast article,
+html.a11y-high-contrast section,
+html.a11y-high-contrast header,
+html.a11y-high-contrast nav,
+html.a11y-high-contrast footer,
+html.a11y-high-contrast div[class*="rounded"] {
+  border-color: #ffffff !important;
+}
+
+/* --- Resaltado de Enlaces y Elementos Interactivos --- */
+html.a11y-highlight-links a,
+html.a11y-highlight-links button,
+html.a11y-highlight-links [role="button"],
+html.a11y-highlight-links input,
+html.a11y-highlight-links select,
+html.a11y-highlight-links textarea {
+  outline: 2.5px dashed #B80C09 !important;
+  outline-offset: 2px !important;
+  text-decoration: underline !important;
+}
+
+/* --- Cursor Grande y de Alta Visibilidad --- */
+html.a11y-big-cursor,
+html.a11y-big-cursor * {
+  cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 24 24" fill="%23B80C09" stroke="%23ffffff" stroke-width="2"><path d="M4.5 3l14 11-6.5.5 3.5 7-3 1.5-3.5-7-4.5 5.5z"/></svg>'), auto !important;
+}
+
+/* --- Reducción de Movimiento --- */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+html.a11y-reduced-motion *,
+html.a11y-reduced-motion *::before,
+html.a11y-reduced-motion *::after {
+  animation-duration: 0.001ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 0.001ms !important;
+  scroll-behavior: auto !important;
+}
+
+/* --- Filtros de Daltonismo (Color Blindness Simulation / Correction) --- */
+html.a11y-cb-protanopia {
+  filter: url('#sonar-filter-protanopia') !important;
+}
+
+html.a11y-cb-deuteranopia {
+  filter: url('#sonar-filter-deuteranopia') !important;
+}
+
+html.a11y-cb-tritanopia {
+  filter: url('#sonar-filter-tritanopia') !important;
+}
+
+html.a11y-cb-achromatopsia {
+  filter: grayscale(100%) contrast(110%) !important;
+}
+
+/* --- Anunciador ARIA Live (Oculto a la vista, leído por lectores de pantalla) --- */
+.sonar-sr-only {
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  padding: 0 !important;
+  margin: -1px !important;
+  overflow: hidden !important;
+  clip: rect(0, 0, 0, 0) !important;
+  white-space: nowrap !important;
+  border: 0 !important;
+}

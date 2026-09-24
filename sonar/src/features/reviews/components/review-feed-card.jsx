@@ -9,6 +9,7 @@ import { Avatar } from '../../../shared/components/ui/avatar';
 import CommentSection from './comment-section';
 import LikeButton from '../../../shared/components/ui/like-button';
 import { ReportModal } from '../../../shared/components/ui/report-modal';
+import { TTSButton } from '../../../shared/components/a11y/tts-button';
 
 const cardVariants = {
   hidden: { opacity: 0, y: 20 },
@@ -324,9 +325,9 @@ export const ReviewFeedCard = ({
         </div>
       </div>
 
-      {/* Pie: Acciones Me gusta, Comentar y Reportar Reseña */}
+      {/* Pie: Acciones Me gusta, Comentar, Escuchar TTS y Reportar Reseña */}
       <div className="flex items-center justify-between pt-2 border-t border-[#e6d5e2]/60 dark:border-white/10 text-xs font-semibold text-[#5c435a] dark:text-[#B89CB0]">
-        <div className="flex items-center gap-6">
+        <div className="flex items-center gap-4 sm:gap-6 flex-wrap">
           <LikeButton
             isLiked={isLiked}
             likesCount={likes}
@@ -355,6 +356,13 @@ export const ReviewFeedCard = ({
             </svg>
             <span>{commentsCount} comentarios</span>
           </button>
+
+          <TTSButton
+            text={review.content}
+            title={`Crítica de ${review.userName} sobre ${review.albumTitle}`}
+            size="sm"
+            label="Escuchar"
+          />
         </div>
 
         {/* Botón Reportar Reseña */}

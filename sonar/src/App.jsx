@@ -17,10 +17,17 @@ import { PlayerProvider } from './shared/context/player-context.jsx'
 import { GlobalAudioPlayer } from './shared/components/layout/global-audio-player.jsx'
 import { ReviewModal } from './shared/components/layout/review-modal.jsx'
 import AppRouter from './shared/routing/app-router.jsx'
+import { AccessibilityProvider } from './shared/context/accessibility-context.jsx'
+import { SkipToContent } from './shared/components/a11y/skip-to-content.jsx'
+import { ColorBlindnessFilters } from './shared/components/a11y/color-blindness-filters.jsx'
+import { AriaLiveAnnouncer } from './shared/components/a11y/aria-live-announcer.jsx'
+import { AccessibilityWidget } from './shared/components/a11y/accessibility-widget.jsx'
+import { KeyboardShortcutsModal } from './shared/components/a11y/keyboard-shortcuts-modal.jsx'
 import "./Styles/App.css";
 import './Styles/admin.css'
 import './Styles/admin-dashboard.css'
 import './Styles/admin-moderation.css'
+import './Styles/accessibility.css'
 
 export function AdminConsole() {
   const { isDark, toggleTheme } = useTheme()
@@ -218,15 +225,22 @@ export function AdminConsole() {
 export default function App() {
   return (
     <BrowserRouter>
-      <AuthProvider>
-        <ThemeProvider>
-          <PlayerProvider>
-            <AppRouter />
-            <GlobalAudioPlayer />
-            <ReviewModal />
-          </PlayerProvider>
-        </ThemeProvider>
-      </AuthProvider>
+      <AccessibilityProvider>
+        <AuthProvider>
+          <ThemeProvider>
+            <PlayerProvider>
+              <SkipToContent />
+              <ColorBlindnessFilters />
+              <AriaLiveAnnouncer />
+              <AppRouter />
+              <GlobalAudioPlayer />
+              <ReviewModal />
+              <AccessibilityWidget />
+              <KeyboardShortcutsModal />
+            </PlayerProvider>
+          </ThemeProvider>
+        </AuthProvider>
+      </AccessibilityProvider>
     </BrowserRouter>
   )
 }
