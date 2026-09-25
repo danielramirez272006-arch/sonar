@@ -23,8 +23,8 @@ export function useAdminDashboard() {
 
     try {
       const [usersResult, reviewsResult] = await Promise.all([getUsers(), getReviews()])
-      const users = Array.isArray(usersResult) ? usersResult : []
-      const reviews = Array.isArray(reviewsResult) ? reviewsResult : []
+      const users = Array.isArray(usersResult) ? usersResult.filter(user => user && typeof user === 'object' && !Array.isArray(user)) : []
+      const reviews = Array.isArray(reviewsResult) ? reviewsResult.filter(review => review && typeof review === 'object' && !Array.isArray(review)) : []
       const updatedMetrics = {
         totalUsers: users.length,
         totalReviews: reviews.length,

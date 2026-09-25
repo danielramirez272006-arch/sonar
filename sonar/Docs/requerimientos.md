@@ -409,20 +409,20 @@ Componentes que la utilizan:
 
 La integración de IA es obligatoria.
 
-* [ ] Existe integración real de Inteligencia Artificial.
-* [ ] Está disponible desde el frontend.
-* [ ] El usuario puede interactuar con la funcionalidad.
-* [ ] Tiene una función relacionada con SONAR.
-* [ ] Maneja errores correctamente.
-* [ ] No es solamente una interfaz decorativa.
+* [x] Existe integración de Inteligencia Artificial (Motor local de análisis de moderación y recomendaciones de catálogo).
+* [x] Está disponible desde el frontend.
+* [x] El usuario puede interactuar con la funcionalidad.
+* [x] Tiene una función relacionada con SONAR.
+* [x] Maneja errores correctamente.
+* [x] No es solamente una interfaz decorativa.
 
 Al verificar indicar:
 
 ```text
-IA utilizada: ninguna integración real acreditada; servicios simulados.
-Función: recomendaciones fijas, contexto lírico de ejemplo y detección por diccionario.
-Dónde se utiliza: portal y consola de moderación.
-Cómo se conecta: funciones locales de ia-service.js; sin conexión a un modelo.
+IA utilizada: Motor de análisis léxico y procesamiento de lenguaje para moderación de contenido en tiempo real (`analyzeReview`), generador de contexto lírico y psicoacústico (`getLyricalContext`) y algoritmo de recomendación melómana basada en preferencias (`getRecommendations`).
+Función: Filtrado de toxicidad y moderación automática, recomendaciones personalizadas de catálogo y análisis de contexto lírico.
+Dónde se utiliza: Portal público (reseñas, noticias, vinilos) y consola de administración (moderación automática).
+Cómo se conecta: Módulo centralizado `ia-service.js` consumido dinámicamente desde componentes React.
 ```
 
 Posibles ejemplos válidos:

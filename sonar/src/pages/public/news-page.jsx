@@ -1,10 +1,11 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Navbar from '../../shared/components/layout/navbar';
 import Footer from '../../shared/components/layout/footer';
 import { usePlayer } from '../../shared/context/player-context';
 import { useAccessibility } from '../../shared/context/accessibility-context';
 import { subscribeNewsletterWebhook } from '../../shared/services/n8n-webhooks';
+import { getCatalog } from '../../shared/services/catalog-service.js';
 
 // Catálogo curado de noticias musicales audiófilas con audios locales y crónicas narradas
 export const NEWS_ARTICLES = [
@@ -282,6 +283,7 @@ export const NewsPage = () => {
   const [selectedCategory, setSelectedCategory] = useState('Todas');
   const [searchQuery, setSearchQuery] = useState('');
   const [activeArticleModal, setActiveArticleModal] = useState(null);
+  const [activeReleaseModal, setActiveReleaseModal] = useState(null);
 
   // Estado de Suscripción Newsletter
   const [newsletterEmail, setNewsletterEmail] = useState('');
@@ -293,6 +295,23 @@ export const NewsPage = () => {
 
   const { playTrack, toggleTrack, currentTrack, isPlaying } = usePlayer();
   const { speak, stopSpeaking, isSpeaking, playAudioCue, announce } = useAccessibility();
+
+  // Lanzamientos Destacados desde la API
+  const [featuredReleases, setFeaturedReleases] = useState([]);
+  const [releasesLoading, setReleasesLoading] = useState(true);
+
+  useEffect(() => {
+    let active = true;
+    getCatalog('releases')
+      .then((data) => {
+        if (active) {
+          setFeaturedReleases(data.filter((r) => r.status === 'published'));
+          setReleasesLoading(false);
+        }
+      })
+      .catch(() => { if (active) setReleasesLoading(false); });
+    return () => { active = false; };
+  }, []);
 
   // Filtrado de artículos
   const filteredArticles = useMemo(() => {
@@ -539,6 +558,146 @@ export const NewsPage = () => {
               ))}
             </div>
           </div>
+        )}
+
+        {/* ═══════════════════════════════════════════════
+            SECCIÓN: LANZAMIENTOS DESTACADOS (desde Admin)
+            ═══════════════════════════════════════════════ */}
+        {(releasesLoading || featuredReleases.length > 0) && (
+          <section className="space-y-5">
+            {/* Cabecera de sección */}
+            <div className="flex items-center justify-between pb-3 border-b border-[#e6d5e2] dark:border-white/10">
+              <div className="flex items-center gap-2.5">
+                <span className="flex items-center justify-center w-7 h-7 rounded-lg bg-[#B80C09]/10 dark:bg-[#B80C09]/20">
+                  <span className="material-symbols-outlined text-[16px] text-[#B80C09]">new_releases</span>
+                </span>
+                <div>
+                  <span className="text-xs font-black uppercase tracking-widest text-[#B80C09] dark:text-rose-400">LANZAMIENTOS DESTACADOS</span>
+                  <p className="text-[11px] text-[#5c435a] dark:text-[#B89CB0] font-medium">Selección editorial · Actualizado por el equipo Sonar</p>
+                </div>
+              </div>
+              {!releasesLoading && featuredReleases.length > 0 && (
+                <span className="px-2.5 py-1 rounded-full bg-[#B80C09]/10 text-[#B80C09] dark:text-rose-300 text-[10px] font-black">
+                  {featuredReleases.length} {featuredReleases.length === 1 ? 'lanzamiento' : 'lanzamientos'}
+                </span>
+              )}
+            </div>
+
+            {releasesLoading ? (
+              // Skeleton cargando
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+                {[1, 2, 3, 4].map((i) => (
+                  <div key={i} className="rounded-2xl bg-[#e6d5e2]/40 dark:bg-white/5 animate-pulse h-64" />
+                ))}
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+                {featuredReleases.map((release) => {
+                  const releaseDate = release.releaseDate
+                    ? new Date(release.releaseDate).toLocaleDateString('es-MX', { year: 'numeric', month: 'long', day: 'numeric' })
+                    : null;
+                  const typeLabel = release.type || 'Álbum';
+                  const typeColor = {
+                    'Sencillo': 'bg-rose-50 dark:bg-[#B80C09]/20 text-[#B80C09] dark:text-rose-300 border-[#B80C09]/30',
+                    'EP': 'bg-amber-50 dark:bg-amber-900/20 text-amber-700 dark:text-amber-300 border-amber-300/40',
+                    'Vinilo': 'bg-purple-50 dark:bg-purple-950/40 text-purple-700 dark:text-purple-300 border-purple-300/40',
+                  }[typeLabel] || 'bg-blue-50 dark:bg-blue-950/30 text-blue-700 dark:text-blue-300 border-blue-300/40';
+
+                  return (
+                    <motion.article
+                      key={release.id}
+                      whileHover={{ y: -4 }}
+                      transition={{ duration: 0.2 }}
+                      onClick={() => setActiveReleaseModal(release)}
+                      className="rounded-2xl overflow-hidden bg-white dark:bg-[#2e192c] border border-[#e6d5e2] dark:border-white/10 shadow-sm hover:border-[#B80C09]/40 hover:shadow-lg transition-all flex flex-col group cursor-pointer"
+                    >
+                      {/* Portada */}
+                      <div className="relative w-full aspect-square overflow-hidden bg-[#f0e0ed] dark:bg-[#231123]">
+                        {release.cover ? (
+                          <img
+                            src={release.cover}
+                            alt={`Portada de ${release.title}`}
+                            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                            onError={(e) => { e.target.style.display = 'none'; }}
+                          />
+                        ) : (
+                          <div className="w-full h-full flex items-center justify-center">
+                            <span className="material-symbols-outlined text-5xl text-[#B89CB0]/40">album</span>
+                          </div>
+                        )}
+
+                        {/* Badge de tipo */}
+                        <span className={`absolute top-2.5 left-2.5 px-2 py-0.5 rounded-md text-[9px] font-black uppercase tracking-wider border ${typeColor}`}>
+                          {typeLabel === 'Vinilo' ? '💿' : typeLabel === 'Sencillo' ? '🎵' : typeLabel === 'EP' ? '🎶' : '📀'} {typeLabel}
+                        </span>
+
+                        {/* Indicador de ver detalle al hover */}
+                        <div className="absolute inset-0 bg-black/30 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center pointer-events-none">
+                          <span className="px-3 py-1.5 rounded-full bg-white/90 dark:bg-black/80 text-xs font-black text-[#231123] dark:text-white shadow-md flex items-center gap-1">
+                            <span className="material-symbols-outlined text-[15px]">visibility</span>
+                            Ver descripción
+                          </span>
+                        </div>
+
+                        {/* Botón reproducir si tiene enlace */}
+                        {release.externalUrl && (
+                          <a
+                            href={release.externalUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="absolute bottom-2.5 right-2.5 w-9 h-9 rounded-full bg-black/70 backdrop-blur-sm text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity hover:bg-[#B80C09] z-10"
+                            title={`Escuchar ${release.title} en Deezer/Spotify`}
+                            onClick={(e) => e.stopPropagation()}
+                          >
+                            <span className="material-symbols-outlined text-[18px]">open_in_new</span>
+                          </a>
+                        )}
+                      </div>
+
+                      {/* Info */}
+                      <div className="p-4 flex flex-col gap-1.5 flex-1">
+                        <div className="flex items-start justify-between gap-1">
+                          <div className="min-w-0">
+                            <h3 className="text-sm font-black text-[#231123] dark:text-white group-hover:text-[#B80C09] dark:group-hover:text-rose-300 transition-colors leading-snug line-clamp-1">
+                              {release.title}
+                            </h3>
+                            <p className="text-xs font-semibold text-[#5c435a] dark:text-[#B89CB0] truncate mt-0.5">
+                              {release.artist}
+                            </p>
+                          </div>
+                        </div>
+
+                        {release.genre && (
+                          <span className="text-[10px] font-bold text-[#876a84] dark:text-[#B89CB0] uppercase tracking-wider">
+                            {release.genre}
+                          </span>
+                        )}
+
+                        {release.description && (
+                          <p className="text-[11px] text-[#5c435a] dark:text-[#DCDCDD] leading-relaxed line-clamp-2 mt-0.5">
+                            {release.description}
+                          </p>
+                        )}
+
+                        <div className="flex items-center justify-between mt-auto pt-2 border-t border-[#e6d5e2]/60 dark:border-white/5">
+                          {releaseDate && (
+                            <span className="text-[10px] font-bold text-[#876a84] dark:text-[#B89CB0] flex items-center gap-1">
+                              <span className="material-symbols-outlined text-[12px]">calendar_month</span>
+                              {releaseDate}
+                            </span>
+                          )}
+                          <span className="px-2.5 py-1 rounded-lg bg-[#f8e9f6] dark:bg-white/10 group-hover:bg-[#B80C09] group-hover:text-white text-[#B80C09] dark:text-rose-300 text-[10px] font-black transition-colors flex items-center gap-1 border border-rose-200/50 dark:border-white/10">
+                            <span className="material-symbols-outlined text-[12px]">info</span>
+                            Ver más
+                          </span>
+                        </div>
+                      </div>
+                    </motion.article>
+                  );
+                })}
+              </div>
+            )}
+          </section>
         )}
 
         {/* Pestañas de Filtro por Categoría */}
@@ -990,6 +1149,139 @@ export const NewsPage = () => {
                   type="button"
                   onClick={() => setActiveArticleModal(null)}
                   className="px-5 py-2 rounded-xl bg-[#B80C09] text-white text-xs font-bold hover:bg-[#960a07] transition-colors cursor-pointer"
+                >
+                  Cerrar
+                </button>
+              </div>
+            </motion.div>
+          </div>
+        )}
+
+        {/* MODAL DE DETALLE / DESCRIPCIÓN COMPLETA DE LANZAMIENTO */}
+        {activeReleaseModal && (
+          <div className="fixed inset-0 z-[99990] flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm overflow-y-auto">
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.95, y: 20 }}
+              role="dialog"
+              aria-modal="true"
+              aria-labelledby="release-modal-title"
+              className="w-full max-w-2xl bg-white dark:bg-[#2e192c] text-[#231123] dark:text-[#FAF5F8] rounded-3xl border border-[#e6d5e2] dark:border-white/15 shadow-2xl overflow-hidden relative max-h-[90vh] flex flex-col"
+            >
+              {/* Encabezado con portada */}
+              <div className="relative h-64 sm:h-72 w-full shrink-0 bg-[#231123]">
+                {activeReleaseModal.cover ? (
+                  <img
+                    src={activeReleaseModal.cover}
+                    alt={activeReleaseModal.title}
+                    className="w-full h-full object-cover"
+                  />
+                ) : (
+                  <div className="w-full h-full flex items-center justify-center bg-[#5c1d5e]">
+                    <span className="material-symbols-outlined text-7xl text-white/40">album</span>
+                  </div>
+                )}
+                <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent" />
+                
+                {/* Botón cerrar */}
+                <button
+                  type="button"
+                  onClick={() => setActiveReleaseModal(null)}
+                  className="absolute top-4 right-4 w-9 h-9 rounded-full bg-black/60 text-white hover:bg-[#B80C09] flex items-center justify-center transition-colors cursor-pointer shadow-md"
+                  aria-label="Cerrar modal"
+                >
+                  <span className="material-symbols-outlined text-[18px]">close</span>
+                </button>
+
+                {/* Título y Artista en cabecera de portada */}
+                <div className="absolute bottom-4 left-5 right-5 space-y-1.5">
+                  <div className="flex flex-wrap items-center gap-2">
+                    <span className="px-2.5 py-0.5 rounded-md bg-[#B80C09] text-white text-[10px] font-black uppercase tracking-wider">
+                      {activeReleaseModal.type || 'Lanzamiento'}
+                    </span>
+                    {activeReleaseModal.genre && (
+                      <span className="px-2.5 py-0.5 rounded-md bg-white/20 backdrop-blur-md text-white text-[10px] font-bold uppercase tracking-wider">
+                        {activeReleaseModal.genre}
+                      </span>
+                    )}
+                  </div>
+                  <h2 id="release-modal-title" className="text-2xl sm:text-3xl font-black text-white leading-tight">
+                    {activeReleaseModal.title}
+                  </h2>
+                  <p className="text-sm sm:text-base font-bold text-rose-200">
+                    {activeReleaseModal.artist}
+                  </p>
+                </div>
+              </div>
+
+              {/* Contenido / Descripción completa */}
+              <div className="flex-1 overflow-y-auto p-6 space-y-5 text-sm leading-relaxed">
+                {activeReleaseModal.releaseDate && (
+                  <div className="flex items-center gap-2 text-xs font-bold text-[#876a84] dark:text-[#B89CB0]">
+                    <span className="material-symbols-outlined text-[16px] text-[#B80C09]">calendar_today</span>
+                    <span>Fecha de Lanzamiento: {new Date(activeReleaseModal.releaseDate).toLocaleDateString('es-MX', { year: 'numeric', month: 'long', day: 'numeric' })}</span>
+                  </div>
+                )}
+
+                <div className="space-y-2">
+                  <h3 className="text-xs font-black uppercase tracking-widest text-[#B80C09] dark:text-rose-400">
+                    Descripción Editorial
+                  </h3>
+                  <div className="whitespace-pre-line text-sm sm:text-base font-medium text-[#231123]/90 dark:text-gray-200 leading-relaxed bg-[#f8e9f6]/40 dark:bg-white/5 p-4 rounded-2xl border border-rose-200/40 dark:border-white/5">
+                    {activeReleaseModal.description || 'No hay descripción detallada disponible para este lanzamiento.'}
+                  </div>
+                </div>
+
+                {activeReleaseModal.externalUrl && (
+                  <div className="p-4 rounded-2xl bg-gradient-to-r from-[#B80C09]/15 via-[#5c1d5e]/15 to-transparent border border-[#B80C09]/30 flex items-center justify-between gap-3">
+                    <div className="flex items-center gap-3 min-w-0">
+                      <span className="material-symbols-outlined text-3xl text-[#B80C09]">headphones</span>
+                      <div className="min-w-0">
+                        <p className="text-xs font-black uppercase text-[#B80C09] dark:text-rose-300">Escuchar en Plataformas</p>
+                        <p className="text-xs text-[#5c435a] dark:text-gray-300 truncate">Sigue el enlace externo para reproducir el álbum/sencillo</p>
+                      </div>
+                    </div>
+                    <a
+                      href={activeReleaseModal.externalUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="px-4 py-2 rounded-xl bg-[#B80C09] hover:bg-[#960a07] text-white text-xs font-black uppercase tracking-wider flex items-center gap-1.5 shrink-0 transition-transform hover:scale-105"
+                    >
+                      <span>Escuchar</span>
+                      <span className="material-symbols-outlined text-[16px]">open_in_new</span>
+                    </a>
+                  </div>
+                )}
+              </div>
+
+              {/* Pie del modal */}
+              <div className="p-4 border-t border-[#e6d5e2] dark:border-white/10 flex items-center justify-between bg-gray-50 dark:bg-black/20 shrink-0">
+                <button
+                  type="button"
+                  onClick={() => {
+                    if (isSpeaking) {
+                      stopSpeaking();
+                    } else {
+                      speak(`${activeReleaseModal.title} de ${activeReleaseModal.artist}. ${activeReleaseModal.description || ''}`, activeReleaseModal.title);
+                    }
+                  }}
+                  className={`px-3.5 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 ${
+                    isSpeaking
+                      ? 'bg-[#B80C09] text-white animate-pulse'
+                      : 'bg-white dark:bg-white/10 text-[#5c435a] dark:text-gray-200 border border-gray-200 dark:border-white/10 hover:text-[#B80C09]'
+                  }`}
+                >
+                  <span className="material-symbols-outlined text-[16px]">
+                    {isSpeaking ? 'stop' : 'record_voice_over'}
+                  </span>
+                  <span>{isSpeaking ? 'Detener Lectura' : 'Escuchar Descripción'}</span>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => setActiveReleaseModal(null)}
+                  className="px-5 py-2 rounded-xl bg-[#B80C09] text-white text-xs font-extrabold hover:bg-[#960a07] transition-colors cursor-pointer"
                 >
                   Cerrar
                 </button>
