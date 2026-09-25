@@ -89,7 +89,7 @@ export const Footer = () => {
 
           {/* Links Col 3: Selector de Idioma Footer */}
           <div className="flex flex-col justify-end gap-3 text-left">
-            <LanguageSelector variant="footer" />
+            <LanguageSelector variant="navbar" />
           </div>
         </div>
 
