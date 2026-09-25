@@ -4,6 +4,16 @@ import { getUserByEmail, createUser, updateUser as updateUserApi, deleteUser as 
 import { hashPassword, verifyPassword } from '../services/crypto-service.js'
 import { notifyLoginAlertWebhook } from '../services/n8n-webhooks.js'
 
+/** Decodifica la parte payload de un JWT de Google sin necesitar librerías externas */
+function decodeGoogleJwt(token) {
+  try {
+    const base64 = token.split('.')[1].replace(/-/g, '+').replace(/_/g, '/');
+    return JSON.parse(atob(base64));
+  } catch {
+    return null;
+  }
+}
+
 // El contexto y el hook se exportan juntos como API de este módulo.
 // eslint-disable-next-line react-refresh/only-export-components
 export const AuthContext = createContext(undefined)
@@ -110,6 +120,79 @@ export function AuthProvider({ children }) {
           : new Error('No se pudo iniciar sesión. Inténtalo de nuevo.')
         setError(loginError.message)
         throw loginError
+      } finally {
+        setIsLoading(false)
+      }
+    }
+
+    /**
+     * Inicia sesión con el token de credencial que entrega Google después del
+     * consentimiento OAuth. Busca al usuario por email; si no existe, lo crea
+     * automáticamente con los datos de perfil de Google.
+     */
+    async function loginWithGoogle(credential) {
+      setIsLoading(true)
+      setError(null)
+      try {
+        const payload = decodeGoogleJwt(credential)
+        if (!payload?.email) throw new Error('No se pudo obtener el correo de Google.')
+
+        const email = payload.email.trim().toLowerCase()
+        let foundUser = null
+        try { foundUser = await getUserByEmail(email) } catch { /* fallback */ }
+
+        if (foundUser) {
+          // Usuario ya registrado — verificar que no esté baneado
+          if (['banned', 'suspended'].includes(userStatus(foundUser))) {
+            throw new Error('Esta cuenta está baneada y no puede iniciar sesión.')
+          }
+        } else {
+          // Primera vez con Google — crear cuenta automáticamente
+          const avatarColors = ['#B80C09', '#5c1d5e', '#4B2840', '#0284c7', '#059669', '#d97706', '#7c3aed']
+          const hash = email.split('').reduce((acc, c) => (acc * 31 + c.charCodeAt(0)) % avatarColors.length, 0)
+          foundUser = {
+            id: `user-google-${Date.now()}`,
+            username: (payload.given_name || payload.name || 'usuario').toLowerCase().replace(/\s+/g, '_') + '_' + Math.floor(Math.random() * 999),
+            email,
+            password: await hashPassword(`google_oauth_${Date.now()}`),
+            role: 'user',
+            accountType: 'standard',
+            provider: 'google',
+            googleId: payload.sub,
+            avatarUrl: payload.picture || '',
+            avatarBg: avatarColors[hash],
+            bio: 'Melómano que accedió con Google. ¡Bienvenido a SONAR!',
+            stats: { savedAlbums: 0, reviewsCount: 0, followers: 0, following: 0 },
+            preferences: [],
+            badges: ['Melómano Verificado', 'Acceso Google'],
+            parentalControl: { enabled: false, blockExplicit: false, pin: '1234' },
+            gear: { headphones: 'Auriculares de referencia', turntable: 'Tocadiscos Direct Drive', favoriteFormat: 'Vinilo 33⅓ RPM' },
+            createdAt: new Date().toISOString(),
+          }
+          try { await createUser(foundUser) } catch { /* json-server fallback */ }
+        }
+
+        setUser(foundUser)
+        try {
+          if (typeof window !== 'undefined') {
+            window.localStorage?.setItem('sonar_auth_user', JSON.stringify(foundUser))
+          }
+        } catch { /* localStorage no disponible */ }
+
+        // Disparo de notificación
+        try {
+          notifyLoginAlertWebhook({
+            email: foundUser.email,
+            username: foundUser.username,
+            device: typeof navigator !== 'undefined' ? navigator.userAgent : 'Navegador Web',
+          }).catch(() => {})
+        } catch {}
+
+        return foundUser
+      } catch (cause) {
+        const err = cause instanceof Error ? cause : new Error('No se pudo iniciar sesión con Google.')
+        setError(err.message)
+        throw err
       } finally {
         setIsLoading(false)
       }
@@ -319,6 +402,7 @@ export function AuthProvider({ children }) {
       isLoading,
       error,
       login,
+      loginWithGoogle,
       register,
       changePassword,
       logout,
