@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { motion } from 'framer-motion';
 import Navbar from '../../shared/components/layout/navbar';
 import Footer from '../../shared/components/layout/footer';
@@ -51,6 +51,39 @@ export const UserDashboardPage = () => {
   const [followedUsers, setFollowedUsers] = useState([]);
   const [recentlyPlayed, setRecentlyPlayed] = useState([]);
   const [backupNotice, setBackupNotice] = useState(null);
+  const [reviewSearch, setReviewSearch] = useState('');
+  const [reviewRatingFilter, setReviewRatingFilter] = useState('all');
+  const [reviewTypeFilter, setReviewTypeFilter] = useState('all');
+  const [reviewSort, setReviewSort] = useState('newest');
+
+  const filteredUserReviews = useMemo(() => {
+    return userReviews
+      .filter((r) => {
+        if (reviewSearch.trim()) {
+          const q = reviewSearch.toLowerCase();
+          const title = String(r.albumTitle || r.trackTitle || r.title || '').toLowerCase();
+          const artist = String(r.artist || '').toLowerCase();
+          const content = String(r.content || '').toLowerCase();
+          if (!title.includes(q) && !artist.includes(q) && !content.includes(q)) return false;
+        }
+        if (reviewRatingFilter !== 'all') {
+          if (Math.floor(Number(r.rating) || 0) !== Number(reviewRatingFilter)) return false;
+        }
+        if (reviewTypeFilter !== 'all') {
+          const isTrack = r.type === 'track' || Boolean(r.trackTitle);
+          if (reviewTypeFilter === 'track' && !isTrack) return false;
+          if (reviewTypeFilter === 'album' && isTrack) return false;
+        }
+        return true;
+      })
+      .sort((a, b) => {
+        if (reviewSort === 'highest') return (Number(b.rating) || 0) - (Number(a.rating) || 0);
+        if (reviewSort === 'lowest') return (Number(a.rating) || 0) - (Number(b.rating) || 0);
+        if (reviewSort === 'oldest') return new Date(a.createdAt || 0) - new Date(b.createdAt || 0);
+        return new Date(b.createdAt || 0) - new Date(a.createdAt || 0);
+      });
+  }, [userReviews, reviewSearch, reviewRatingFilter, reviewTypeFilter, reviewSort]);
+
   const [gearSetup, setGearSetup] = useState(() => ({
     turntable: user?.audiophileSetup?.turntable || user?.gear?.turntable || 'Technics SL-1200MK7',
     headphones: user?.audiophileSetup?.headphones || user?.gear?.headphones || 'Sennheiser HD 660S',
@@ -883,7 +916,126 @@ export const UserDashboardPage = () => {
 
           {/* TAB 3: MIS RESEÑAS */}
           {activeTab === 'reviews' && (
-            <section className="flex flex-col gap-5">
+            <section className="flex flex-col gap-6">
+              {/* Barra de Filtros, Búsqueda y Ordenamiento */}
+              <div className="p-5 rounded-2xl bg-white dark:bg-[#4B2840] border border-[#e6d5e2] dark:border-white/10 shadow-xs flex flex-col gap-4">
+                <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                  {/* Buscador en Vivo */}
+                  <div className="relative flex-1">
+                    <span className="material-symbols-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400 text-[18px]">
+                      search
+                    </span>
+                    <input
+                      type="text"
+                      value={reviewSearch}
+                      onChange={(e) => setReviewSearch(e.target.value)}
+                      placeholder="Buscar por álbum, artista o texto de tu crítica..."
+                      className="w-full pl-10 pr-4 py-2 rounded-xl bg-gray-50 dark:bg-black/30 border border-[#e6d5e2] dark:border-white/10 text-xs text-[#231123] dark:text-[#DCDCDD] focus:outline-hidden focus:border-[#B80C09] transition-all"
+                    />
+                    {reviewSearch && (
+                      <button
+                        type="button"
+                        onClick={() => setReviewSearch('')}
+                        className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-white"
+                      >
+                        <span className="material-symbols-outlined text-[16px]">close</span>
+                      </button>
+                    )}
+                  </div>
+
+                  {/* Selector de Orden */}
+                  <div className="flex items-center gap-2">
+                    <span className="text-[11px] font-bold text-[#5c435a] dark:text-[#B89CB0] whitespace-nowrap">
+                      Ordenar:
+                    </span>
+                    <select
+                      value={reviewSort}
+                      onChange={(e) => setReviewSort(e.target.value)}
+                      className="px-3 py-2 rounded-xl bg-gray-50 dark:bg-black/30 border border-[#e6d5e2] dark:border-white/10 text-xs font-semibold text-[#231123] dark:text-[#DCDCDD] focus:outline-hidden focus:border-[#B80C09] cursor-pointer"
+                    >
+                      <option value="newest">Más recientes</option>
+                      <option value="oldest">Más antiguas</option>
+                      <option value="highest">Mayor puntuación ⭐</option>
+                      <option value="lowest">Menor puntuación</option>
+                    </select>
+                  </div>
+                </div>
+
+                {/* Filtro por Calificación (Estrellas) y Tipo */}
+                <div className="flex flex-wrap items-center justify-between gap-3 pt-3 border-t border-gray-100 dark:border-white/10">
+                  <div className="flex items-center gap-1.5 flex-wrap">
+                    <span className="text-[11px] font-bold text-[#5c435a] dark:text-[#B89CB0] mr-1">
+                      Calificación:
+                    </span>
+                    {[
+                      { val: 'all', label: 'Todas' },
+                      { val: '5', label: '⭐⭐⭐⭐⭐ 5' },
+                      { val: '4', label: '⭐⭐⭐⭐ 4' },
+                      { val: '3', label: '⭐⭐⭐ 3' },
+                      { val: '2', label: '⭐⭐ 2' },
+                      { val: '1', label: '⭐ 1' },
+                    ].map((opt) => (
+                      <button
+                        key={opt.val}
+                        type="button"
+                        onClick={() => setReviewRatingFilter(opt.val)}
+                        className={`px-2.5 py-1 rounded-lg text-xs font-bold transition-all cursor-pointer ${
+                          reviewRatingFilter === opt.val
+                            ? 'bg-[#B80C09] text-white shadow-xs'
+                            : 'bg-gray-100 dark:bg-black/20 text-[#5c435a] dark:text-[#B89CB0] hover:bg-gray-200 dark:hover:bg-white/10'
+                        }`}
+                      >
+                        {opt.label}
+                      </button>
+                    ))}
+                  </div>
+
+                  <div className="flex items-center gap-1.5">
+                    <span className="text-[11px] font-bold text-[#5c435a] dark:text-[#B89CB0]">Tipo:</span>
+                    {[
+                      { val: 'all', label: 'Todos' },
+                      { val: 'album', label: '💿 Álbumes' },
+                      { val: 'track', label: '🎵 Canciones' },
+                    ].map((t) => (
+                      <button
+                        key={t.val}
+                        type="button"
+                        onClick={() => setReviewTypeFilter(t.val)}
+                        className={`px-2.5 py-1 rounded-lg text-xs font-bold transition-all cursor-pointer ${
+                          reviewTypeFilter === t.val
+                            ? 'bg-[#003844] text-white shadow-xs'
+                            : 'bg-gray-100 dark:bg-black/20 text-[#5c435a] dark:text-[#B89CB0] hover:bg-gray-200 dark:hover:bg-white/10'
+                        }`}
+                      >
+                        {t.label}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Resumen de resultados */}
+                <div className="flex items-center justify-between text-[11px] text-[#5c435a] dark:text-[#B89CB0]">
+                  <span>
+                    Mostrando <strong>{filteredUserReviews.length}</strong> de {userReviews.length} reseñas
+                  </span>
+                  {(reviewSearch || reviewRatingFilter !== 'all' || reviewTypeFilter !== 'all') && (
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setReviewSearch('');
+                        setReviewRatingFilter('all');
+                        setReviewTypeFilter('all');
+                      }}
+                      className="text-[#B80C09] hover:underline font-bold cursor-pointer flex items-center gap-1"
+                    >
+                      <span className="material-symbols-outlined text-[13px]">restart_alt</span>
+                      <span>Limpiar filtros</span>
+                    </button>
+                  )}
+                </div>
+              </div>
+
+              {/* Lista de Reseñas Filtradas */}
               {userReviews.length === 0 ? (
                 <div className="flex flex-col items-center justify-center py-16 px-4 text-center rounded-2xl bg-white dark:bg-[#4B2840] border border-[#e6d5e2] dark:border-white/10 shadow-xs">
                   <span className="material-symbols-outlined text-5xl text-[#5c435a]/50 dark:text-[#B89CB0]/50 mb-3">
@@ -903,10 +1055,22 @@ export const UserDashboardPage = () => {
                     Explorar álbumes recomendados
                   </button>
                 </div>
+              ) : filteredUserReviews.length === 0 ? (
+                <div className="flex flex-col items-center justify-center py-12 px-4 text-center rounded-2xl bg-white dark:bg-[#4B2840] border border-[#e6d5e2] dark:border-white/10 shadow-xs">
+                  <span className="material-symbols-outlined text-4xl text-gray-400 mb-2">search_off</span>
+                  <h4 className="text-base font-bold text-[#231123] dark:text-white">
+                    No se encontraron reseñas con los filtros seleccionados
+                  </h4>
+                  <p className="text-xs text-[#5c435a] dark:text-[#B89CB0] mt-1">
+                    Prueba cambiando el término de búsqueda o seleccionando otra calificación.
+                  </p>
+                </div>
               ) : (
-                userReviews.map((review) => (
-                  <ReviewFeedCard key={review.id} review={review} />
-                ))
+                <div className="flex flex-col gap-4">
+                  {filteredUserReviews.map((review) => (
+                    <ReviewFeedCard key={review.id} review={review} />
+                  ))}
+                </div>
               )}
             </section>
           )}
