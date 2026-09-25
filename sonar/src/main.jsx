@@ -3,6 +3,7 @@ import { createRoot } from 'react-dom/client';
 import "./Styles/index.css";
 import 'blobatar/motion.css';
 import 'blobatar/gaze.css';
+import './shared/config/i18n';
 import { ErrorBoundary } from './shared/components/ui/error-boundary.jsx';
 import App from './App.jsx';
 
