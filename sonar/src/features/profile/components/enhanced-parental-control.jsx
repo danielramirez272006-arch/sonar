@@ -3,14 +3,14 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '../../../shared/context/auth-context';
 import { usePlayer } from '../../../shared/context/player-context';
 
-const JUNIOR_CHANNELS = [
+const KIDS_CHANNELS = [
   {
     id: 'classical-early',
     title: 'Mozart & Clásicos para Niños',
     description: 'Composiciones sinfónicas relajantes y enriquecedoras.',
     icon: 'music_note',
-    color: 'from-amber-600 to-amber-700',
-    sampleTrack: { id: 90111, title: 'Eine kleine Nachtmusik', artist: 'W.A. Mozart', album: 'Clásicos Universales' },
+    color: 'from-amber-500 to-amber-700',
+    sampleTrack: { id: 90111, title: 'Eine kleine Nachtmusik', artist: 'W.A. Mozart', album: 'Clásicos Kids' },
   },
   {
     id: 'animation-soundtracks',
@@ -26,7 +26,7 @@ const JUNIOR_CHANNELS = [
     description: 'Beats instrumentales suaves sin letras distractoras.',
     icon: 'school',
     color: 'from-teal-600 to-teal-800',
-    sampleTrack: { id: 90113, title: 'Quiet Study Beats', artist: 'Sonar Lo-Fi', album: 'Study Session Vol. 1' },
+    sampleTrack: { id: 90113, title: 'Quiet Study Beats', artist: 'Sonar Kids Lo-Fi', album: 'Study Session' },
   },
   {
     id: 'bedtime-lullaby',
@@ -35,6 +35,34 @@ const JUNIOR_CHANNELS = [
     icon: 'bedtime',
     color: 'from-indigo-600 to-indigo-900',
     sampleTrack: { id: 90114, title: 'Nocturne Lullaby', artist: 'Acoustic Dreams', album: 'Peaceful Nights' },
+  },
+];
+
+const AMBIENT_SOUNDS = [
+  { id: 'rain', name: '🌧️ Lluvia Suave en la Ventana', desc: 'Gotas de agua relajantes para leer' },
+  { id: 'forest', name: '🌲 Bosque & Pájaros Cantores', desc: 'Naturaleza para despejar la mente' },
+  { id: 'waves', name: '🌊 Olas de Mar Tranquilas', desc: 'Ritmo oceánico suave para dormir' },
+  { id: 'white-noise', name: '📻 Sonido Blanco Acústico', desc: 'Frecuencia suave para concentración' },
+];
+
+const KIDS_QUIZZES = [
+  {
+    question: '¿Qué instrumento de la orquesta tiene cuerdas y se toca con un arco?',
+    options: ['El Violín 🎻', 'La Trompeta 🎺', 'La Batería 🥁'],
+    correct: 0,
+    fact: '¡Correcto! El violín es el instrumento de cuerda frotada más ágil de la orquesta.',
+  },
+  {
+    question: '¿Quién compuso la famosa melodía "Para Elisa"?',
+    options: ['Ludwig van Beethoven 🎹', 'Miles Davis 🎺', 'Freddie Mercury 🎤'],
+    correct: 0,
+    fact: '¡Excelente! Beethoven escribió "Para Elisa" en 1810 para piano solo.',
+  },
+  {
+    question: '¿Cuántas cuerdas suele tener una guitarra clásica o acústica estándar?',
+    options: ['4 cuerdas', '6 cuerdas 🎸', '12 cuerdas'],
+    correct: 1,
+    fact: '¡Genial! La guitarra estándar tiene 6 cuerdas afinadas en Mi, La, Re, Sol, Si, Mi.',
   },
 ];
 
@@ -73,15 +101,41 @@ export const EnhancedParentalControl = () => {
   const [pinInput, setPinInput] = useState(() => user?.parentalControl?.pin || '1234');
   const [newKeyword, setNewKeyword] = useState('');
   const [toastNotice, setToastNotice] = useState('');
+  
+  // Estado de Trivia Kids
+  const [currentQuizIdx, setCurrentQuizIdx] = useState(0);
+  const [quizSelected, setQuizSelected] = useState(null);
+  const [quizScore, setQuizScore] = useState(0);
+
+  // Estado de Temporizador de Estudio Pomodoro
+  const [pomodoroSeconds, setPomodoroSeconds] = useState(25 * 60);
+  const [isPomodoroRunning, setIsPomodoroRunning] = useState(false);
+
+  // Estado de Sonidos Ambientales Kids
+  const [activeAmbient, setActiveAmbient] = useState(null);
+
+  useEffect(() => {
+    let interval = null;
+    if (isPomodoroRunning && pomodoroSeconds > 0) {
+      interval = setInterval(() => {
+        setPomodoroSeconds((prev) => prev - 1);
+      }, 1000);
+    } else if (pomodoroSeconds === 0 && isPomodoroRunning) {
+      setIsPomodoroRunning(false);
+      setToastNotice('⏰ ¡Tiempo de estudio completado! Hora de un descanso de 5 minutos.');
+    }
+    return () => clearInterval(interval);
+  }, [isPomodoroRunning, pomodoroSeconds]);
+
   const [activityLogs, setActivityLogs] = useState(() => {
     try {
       const logs = localStorage.getItem('sonar_parental_audit_logs');
       return logs
         ? JSON.parse(logs)
         : [
-            { id: 1, action: 'Escucha segura', track: 'Eine kleine Nachtmusik - W.A. Mozart', time: 'Hoy, 15:42', safe: true },
+            { id: 1, action: 'Escucha segura Kids', track: 'Eine kleine Nachtmusik - W.A. Mozart', time: 'Hoy, 15:42', safe: true },
             { id: 2, action: 'Bloqueo por PIN', track: 'Pista Explícita bloqueada automáticamente', time: 'Hoy, 14:20', safe: false },
-            { id: 3, action: 'Escucha segura', track: 'Quiet Study Beats - Lo-Fi Session', time: 'Ayer, 18:10', safe: true },
+            { id: 3, action: 'Escucha segura Kids', track: 'Quiet Study Beats - Lo-Fi Session', time: 'Ayer, 18:10', safe: true },
           ];
     } catch {
       return [];
@@ -94,7 +148,7 @@ export const EnhancedParentalControl = () => {
     try {
       localStorage.setItem('sonar_parental_extra_settings', JSON.stringify(updated));
     } catch {}
-    setToastNotice('✓ Configuración de Control Parental guardada con éxito');
+    setToastNotice('✓ Configuración de Modo Kids guardada con éxito');
     setTimeout(() => setToastNotice(''), 3000);
   };
 
@@ -125,10 +179,30 @@ export const EnhancedParentalControl = () => {
     }
   };
 
+  const formatTime = (secs) => {
+    const m = Math.floor(secs / 60);
+    const s = secs % 60;
+    return `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+  };
+
   const usagePercent = Math.min(
     100,
     Math.round((parentalSettings.listenedTodayMinutes / parentalSettings.dailyLimitMinutes) * 100)
   );
+
+  const currentQuiz = KIDS_QUIZZES[currentQuizIdx];
+
+  const handleAnswerQuiz = (optIndex) => {
+    setQuizSelected(optIndex);
+    if (optIndex === currentQuiz.correct) {
+      setQuizScore((prev) => prev + 1);
+    }
+  };
+
+  const handleNextQuiz = () => {
+    setQuizSelected(null);
+    setCurrentQuizIdx((prev) => (prev + 1) % KIDS_QUIZZES.length);
+  };
 
   return (
     <div className="flex flex-col gap-6">
@@ -136,24 +210,24 @@ export const EnhancedParentalControl = () => {
       <div className="p-6 sm:p-8 rounded-3xl bg-white dark:bg-[#4B2840] border border-[#e6d5e2] dark:border-white/10 shadow-xs flex flex-col gap-6">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-5 border-b border-gray-100 dark:border-white/10">
           <div className="flex items-center gap-3.5">
-            <div className="w-14 h-14 rounded-2xl bg-emerald-500/15 dark:bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 flex items-center justify-center shrink-0">
-              <span className="material-symbols-outlined text-[32px]">shield_person</span>
+            <div className="w-14 h-14 rounded-2xl bg-amber-500/15 dark:bg-amber-500/20 text-amber-600 dark:text-amber-400 flex items-center justify-center shrink-0">
+              <span className="material-symbols-outlined text-[32px]">toys</span>
             </div>
             <div>
               <h3 className="text-xl sm:text-2xl font-black text-[#231123] dark:text-white flex items-center gap-2">
-                <span>Ecosistema de Control Parental & Modo Junior</span>
-                <span className="px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase bg-emerald-500/15 text-emerald-700 dark:bg-emerald-950/60 dark:text-emerald-300 border border-emerald-500/30">
-                  {user?.accountType === 'junior' || isParentalControlActive ? '🛡️ Protección Activa' : '🔓 Modo Libre'}
+                <span>Modo Kids & Control Parental</span>
+                <span className="px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase bg-amber-500/15 text-amber-700 dark:bg-amber-950/60 dark:text-amber-300 border border-amber-500/30">
+                  {user?.accountType === 'junior' || isParentalControlActive ? '🛡️ Modo Kids Activo' : '🔓 Modo Libre'}
                 </span>
               </h3>
               <p className="text-xs sm:text-sm text-[#5c435a] dark:text-[#B89CB0] mt-0.5">
-                Protege a los más jóvenes con límites de tiempo diario, tope de volumen auditivo y bloqueo estricto de contenido adulto.
+                Experiencia musical 100% segura, educativa y adaptada para niños con temporizador de tareas y cuidado auditivo.
               </p>
             </div>
           </div>
 
           {toastNotice && (
-            <span className="text-xs font-bold text-emerald-600 bg-emerald-50 dark:bg-emerald-950/50 dark:text-emerald-300 px-3.5 py-2 rounded-xl border border-emerald-200 dark:border-emerald-800 self-start sm:self-auto animate-fade-in shadow-xs">
+            <span className="text-xs font-bold text-amber-700 dark:text-amber-300 bg-amber-50 dark:bg-amber-950/60 px-3.5 py-2 rounded-xl border border-amber-200 dark:border-amber-800 self-start sm:self-auto animate-fade-in shadow-xs">
               {toastNotice}
             </span>
           )}
@@ -161,30 +235,30 @@ export const EnhancedParentalControl = () => {
 
         {/* Selector de Nivel de Protección */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          {/* Junior Estricto */}
+          {/* Kids Estricto */}
           <div
             onClick={() => {
               updateUser({ accountType: 'junior' });
               updateParentalControl({ enabled: true, blockExplicit: true });
-              setToastNotice('🛡️ Modo Junior Seguro activado: Música 100% segura para menores');
+              setToastNotice('🛡️ Modo Kids Seguro activado: Música 100% familiar y protegida');
               setTimeout(() => setToastNotice(''), 3000);
             }}
             className={`p-5 rounded-2xl border-2 transition-all cursor-pointer flex flex-col justify-between gap-3 ${
               user?.accountType === 'junior' && user?.parentalControl?.blockExplicit
-                ? 'border-emerald-500 bg-emerald-50/50 dark:bg-emerald-950/20 shadow-md ring-2 ring-emerald-500/30'
-                : 'border-gray-200 dark:border-white/10 bg-gray-50/70 dark:bg-black/20 hover:border-emerald-400'
+                ? 'border-amber-500 bg-amber-50/50 dark:bg-amber-950/20 shadow-md ring-2 ring-amber-500/30'
+                : 'border-gray-200 dark:border-white/10 bg-gray-50/70 dark:bg-black/20 hover:border-amber-400'
             }`}
           >
             <div className="flex items-center justify-between">
-              <span className="material-symbols-outlined text-emerald-600 dark:text-emerald-400 text-[26px]">child_care</span>
+              <span className="material-symbols-outlined text-amber-600 dark:text-amber-400 text-[26px]">child_care</span>
               {user?.accountType === 'junior' && user?.parentalControl?.blockExplicit && (
-                <span className="text-[10px] font-black uppercase text-emerald-700 dark:text-emerald-300 bg-emerald-100 dark:bg-emerald-900/60 px-2 py-0.5 rounded-full">
+                <span className="text-[10px] font-black uppercase text-amber-700 dark:text-amber-300 bg-amber-100 dark:bg-amber-900/60 px-2 py-0.5 rounded-full">
                   Activo
                 </span>
               )}
             </div>
             <div>
-              <h4 className="text-sm font-bold text-[#231123] dark:text-white">Junior Estricto (Recomendado)</h4>
+              <h4 className="text-sm font-bold text-[#231123] dark:text-white">Modo Kids (Recomendado)</h4>
               <p className="text-xs text-[#5c435a] dark:text-[#B89CB0] mt-1">
                 Bloquea todo contenido explícito, limita búsquedas a contenido familiar y activa el protector auditivo.
               </p>
@@ -253,139 +327,180 @@ export const EnhancedParentalControl = () => {
         </div>
       </div>
 
-      {/* 2. LÍMITE DE TIEMPO DIARIO & CUIDADO AUDITIVO */}
+      {/* 2. TEMPORIZADOR DE ESTUDIO POMODORO & AMBIENTES PARA NIÑOS */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {/* Límite de Tiempo de Escucha Diario */}
-        <div className="p-6 rounded-3xl bg-white dark:bg-[#4B2840] border border-[#e6d5e2] dark:border-white/10 shadow-xs flex flex-col justify-between gap-5">
+        {/* Temporizador de Tareas & Pomodoro Kids */}
+        <div className="p-6 rounded-3xl bg-gradient-to-br from-[#231123] to-[#3a1b33] text-white border border-white/15 shadow-md flex flex-col justify-between gap-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2.5">
-              <span className="material-symbols-outlined text-[24px] text-amber-500">hourglass_top</span>
+              <span className="material-symbols-outlined text-[24px] text-amber-400">timer</span>
               <div>
-                <h4 className="text-base font-bold text-[#231123] dark:text-white">
-                  Límite de Tiempo Diario
-                </h4>
-                <p className="text-xs text-[#5c435a] dark:text-[#B89CB0]">
-                  Evita la fatiga auditiva limitando las horas de reproducción al día.
-                </p>
+                <h4 className="text-base font-bold text-white">Temporizador de Estudio Kids (Pomodoro)</h4>
+                <p className="text-xs text-pink-200/70">Sesión enfocada de 25 min para hacer tareas sin pantallas.</p>
               </div>
             </div>
           </div>
 
-          {/* Medidor Circular / Barra de Uso Hoy */}
-          <div className="p-4 rounded-2xl bg-gray-50 dark:bg-black/30 border border-[#e6d5e2] dark:border-white/10 flex flex-col gap-2">
-            <div className="flex justify-between items-baseline text-xs font-bold">
-              <span className="text-[#5c435a] dark:text-pink-200">
-                Uso hoy: {parentalSettings.listenedTodayMinutes} min
-              </span>
-              <span className="text-[#B80C09] dark:text-pink-300 font-mono">
-                Límite: {parentalSettings.dailyLimitMinutes} min ({usagePercent}%)
-              </span>
-            </div>
-
-            <div className="w-full h-3 bg-gray-200 dark:bg-white/10 rounded-full overflow-hidden p-0.5">
-              <motion.div
-                initial={{ width: 0 }}
-                animate={{ width: `${usagePercent}%` }}
-                className={`h-full rounded-full ${
-                  usagePercent > 85
-                    ? 'bg-[#B80C09]'
-                    : usagePercent > 50
-                    ? 'bg-amber-500'
-                    : 'bg-emerald-500'
-                }`}
-              />
-            </div>
+          <div className="flex flex-col items-center justify-center p-5 rounded-2xl bg-black/40 border border-white/10">
+            <span className="text-4xl sm:text-5xl font-mono font-black text-amber-300 tracking-wider">
+              {formatTime(pomodoroSeconds)}
+            </span>
+            <span className="text-xs text-white/70 mt-1">
+              {isPomodoroRunning ? '🎧 Sesión en curso con música suave' : 'Listo para iniciar'}
+            </span>
           </div>
 
-          {/* Opciones Rápidas de Límite */}
-          <div className="flex flex-wrap items-center gap-2">
-            <span className="text-xs font-bold text-gray-500">Ajustar a:</span>
-            {[30, 45, 60, 90, 120].map((mins) => (
-              <button
-                key={mins}
-                type="button"
-                onClick={() => handleSaveSettings({ dailyLimitMinutes: mins })}
-                className={`px-3 py-1 rounded-xl text-xs font-bold transition-all cursor-pointer ${
-                  parentalSettings.dailyLimitMinutes === mins
-                    ? 'bg-[#B80C09] text-white shadow-xs'
-                    : 'bg-gray-100 dark:bg-white/10 text-gray-700 dark:text-gray-200 hover:bg-gray-200'
-                }`}
-              >
-                {mins} min
-              </button>
-            ))}
+          <div className="flex items-center gap-2">
+            <button
+              type="button"
+              onClick={() => setIsPomodoroRunning(!isPomodoroRunning)}
+              className={`flex-1 py-2.5 rounded-xl font-bold text-xs uppercase tracking-wider transition-all flex items-center justify-center gap-1.5 cursor-pointer shadow-md ${
+                isPomodoroRunning ? 'bg-amber-500 hover:bg-amber-600 text-white' : 'bg-emerald-600 hover:bg-emerald-500 text-white'
+              }`}
+            >
+              <span className="material-symbols-outlined text-[18px]">
+                {isPomodoroRunning ? 'pause' : 'play_arrow'}
+              </span>
+              <span>{isPomodoroRunning ? 'Pausar Estudio' : 'Iniciar Tiempo de Tareas (25 min)'}</span>
+            </button>
+            <button
+              type="button"
+              onClick={() => {
+                setIsPomodoroRunning(false);
+                setPomodoroSeconds(25 * 60);
+              }}
+              className="px-3.5 py-2.5 rounded-xl bg-white/10 hover:bg-white/20 text-white font-bold text-xs cursor-pointer"
+              title="Reiniciar a 25 min"
+            >
+              <span className="material-symbols-outlined text-[16px]">restart_alt</span>
+            </button>
           </div>
         </div>
 
-        {/* Protección Auditiva & Limitador de Decibeles */}
-        <div className="p-6 rounded-3xl bg-white dark:bg-[#4B2840] border border-[#e6d5e2] dark:border-white/10 shadow-xs flex flex-col justify-between gap-5">
+        {/* Sonidos Calmantes & Ruido Blanco para Dormir */}
+        <div className="p-6 rounded-3xl bg-white dark:bg-[#4B2840] border border-[#e6d5e2] dark:border-white/10 shadow-xs flex flex-col justify-between gap-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2.5">
-              <span className="material-symbols-outlined text-[24px] text-teal-500">hearing</span>
+              <span className="material-symbols-outlined text-[24px] text-teal-500">spa</span>
               <div>
-                <h4 className="text-base font-bold text-[#231123] dark:text-white">
-                  Protección de Oído & Volumen Seguro
-                </h4>
-                <p className="text-xs text-[#5c435a] dark:text-[#B89CB0]">
-                  Cumple con el estándar de seguridad auditiva de la OMS para menores.
-                </p>
+                <h4 className="text-base font-bold text-[#231123] dark:text-white">Sonidos Calmantes & Naturaleza</h4>
+                <p className="text-xs text-[#5c435a] dark:text-[#B89CB0]">Ambientes sonoros para relajar y dormir.</p>
               </div>
             </div>
           </div>
 
-          <div className="p-4 rounded-2xl bg-gray-50 dark:bg-black/30 border border-[#e6d5e2] dark:border-white/10 flex flex-col gap-3">
-            <div className="flex items-center justify-between">
-              <div>
-                <span className="text-xs font-bold text-[#231123] dark:text-white block">
-                  Tope Máximo de Volumen ({parentalSettings.maxDecibels} dB)
-                </span>
-                <span className="text-[11px] text-gray-500 dark:text-gray-400">
-                  Previene aumentos repentinos o picos de volumen peligrosos.
-                </span>
-              </div>
-              <button
-                type="button"
-                onClick={() => handleSaveSettings({ volumeCapEnabled: !parentalSettings.volumeCapEnabled })}
-                className={`w-12 h-6 rounded-full transition-colors relative cursor-pointer ${
-                  parentalSettings.volumeCapEnabled ? 'bg-emerald-500' : 'bg-gray-300 dark:bg-gray-600'
-                }`}
-              >
-                <div
-                  className={`w-5 h-5 rounded-full bg-white shadow-md absolute top-0.5 transition-transform ${
-                    parentalSettings.volumeCapEnabled ? 'translate-x-6' : 'translate-x-1'
-                  }`}
-                />
-              </button>
-            </div>
-
-            {/* Selector de decibeles */}
-            <div className="flex items-center gap-2 pt-2 border-t border-gray-200 dark:border-white/10">
-              <span className="text-xs font-bold text-gray-500">Nivel Máximo:</span>
-              {[70, 75, 80, 85].map((db) => (
+          <div className="grid grid-cols-2 gap-2">
+            {AMBIENT_SOUNDS.map((sound) => {
+              const isActive = activeAmbient === sound.id;
+              return (
                 <button
-                  key={db}
+                  key={sound.id}
                   type="button"
-                  onClick={() => handleSaveSettings({ maxDecibels: db })}
-                  className={`px-3 py-1 rounded-xl text-xs font-mono font-bold transition-all cursor-pointer ${
-                    parentalSettings.maxDecibels === db
-                      ? 'bg-teal-600 text-white shadow-xs'
-                      : 'bg-gray-100 dark:bg-white/10 text-gray-700 dark:text-gray-200'
+                  onClick={() => {
+                    setActiveAmbient(isActive ? null : sound.id);
+                    setToastNotice(isActive ? 'Sonido ambiental detenido' : `Reproduciendo: ${sound.name}`);
+                  }}
+                  className={`p-3 rounded-xl border text-left transition-all cursor-pointer flex flex-col justify-between gap-1 ${
+                    isActive
+                      ? 'bg-teal-600 text-white border-teal-600 shadow-md ring-2 ring-teal-400/40'
+                      : 'bg-gray-50 dark:bg-black/20 border-gray-200 dark:border-white/10 hover:border-teal-500'
                   }`}
                 >
-                  {db} dB
+                  <span className="text-xs font-bold truncate">{sound.name}</span>
+                  <span className={`text-[10px] ${isActive ? 'text-teal-100' : 'text-gray-400'}`}>
+                    {sound.desc}
+                  </span>
                 </button>
-              ))}
-            </div>
+              );
+            })}
           </div>
 
-          <div className="flex items-center gap-2 text-xs text-emerald-600 dark:text-emerald-400 font-semibold">
-            <span className="material-symbols-outlined text-[16px]">verified</span>
-            <span>Estándar de audición segura activo en todos los reproductores</span>
+          <div className="flex items-center justify-between text-xs text-teal-600 dark:text-teal-400 font-semibold pt-1">
+            <span>{activeAmbient ? '🔊 Reproducción ambiental activa' : 'Toca para activar ambiente'}</span>
+            {activeAmbient && (
+              <button
+                type="button"
+                onClick={() => setActiveAmbient(null)}
+                className="text-[11px] underline text-gray-500 hover:text-red-500 cursor-pointer"
+              >
+                Detener todo
+              </button>
+            )}
           </div>
         </div>
       </div>
 
-      {/* 3. CANALES DE DESCUBRIMIENTO EXCLUSIVOS "SONAR JUNIOR" */}
+      {/* 3. TRIVIA MUSICAL EDUCATIVA PARA NIÑOS */}
+      <div className="p-6 sm:p-8 rounded-3xl bg-gradient-to-r from-amber-500/15 via-[#4B2840]/30 to-purple-900/20 border border-amber-300/40 dark:border-white/10 shadow-xs flex flex-col gap-4">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2.5">
+            <span className="material-symbols-outlined text-[24px] text-amber-500">quiz</span>
+            <div>
+              <h4 className="text-base font-bold text-[#231123] dark:text-white">
+                Trivia Musical Kids & Juegos de Oído
+              </h4>
+              <p className="text-xs text-[#5c435a] dark:text-[#B89CB0]">
+                Aprende sobre instrumentos e historia musical mientras escuchas.
+              </p>
+            </div>
+          </div>
+          <span className="text-xs font-bold text-amber-600 dark:text-amber-400 bg-amber-100 dark:bg-amber-950/60 px-3 py-1 rounded-full border border-amber-300/30">
+            Puntos: {quizScore}
+          </span>
+        </div>
+
+        <div className="p-5 rounded-2xl bg-white dark:bg-black/40 border border-[#e6d5e2] dark:border-white/10 flex flex-col gap-3">
+          <p className="text-sm font-bold text-[#231123] dark:text-white">
+            {currentQuiz.question}
+          </p>
+
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
+            {currentQuiz.options.map((opt, idx) => {
+              const isSelected = quizSelected === idx;
+              const isCorrect = idx === currentQuiz.correct;
+
+              return (
+                <button
+                  key={opt}
+                  type="button"
+                  onClick={() => handleAnswerQuiz(idx)}
+                  disabled={quizSelected !== null}
+                  className={`p-3 rounded-xl border text-xs font-bold transition-all cursor-pointer ${
+                    quizSelected === null
+                      ? 'bg-gray-50 dark:bg-white/5 border-gray-200 dark:border-white/10 hover:border-amber-500 hover:bg-amber-50 dark:hover:bg-white/10'
+                      : isSelected && isCorrect
+                      ? 'bg-emerald-600 text-white border-emerald-600 shadow-md'
+                      : isSelected && !isCorrect
+                      ? 'bg-red-600 text-white border-red-600'
+                      : isCorrect
+                      ? 'bg-emerald-100 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-300 border-emerald-500'
+                      : 'opacity-50'
+                  }`}
+                >
+                  {opt}
+                </button>
+              );
+            })}
+          </div>
+
+          {quizSelected !== null && (
+            <div className="pt-2 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
+              <span className="text-emerald-600 dark:text-emerald-400 font-semibold">
+                {currentQuiz.fact}
+              </span>
+              <button
+                type="button"
+                onClick={handleNextQuiz}
+                className="px-4 py-1.5 rounded-xl bg-amber-500 hover:bg-amber-600 text-white font-bold text-xs self-start sm:self-auto cursor-pointer"
+              >
+                Siguiente Pregunta ➔
+              </button>
+            </div>
+          )}
+        </div>
+      </div>
+
+      {/* 4. CANALES DE DESCUBRIMIENTO EXCLUSIVOS "SONAR KIDS" */}
       <div className="p-6 sm:p-8 rounded-3xl bg-gradient-to-br from-[#231123] via-[#3d1a35] to-[#003844] text-white border border-white/15 shadow-xl flex flex-col gap-5">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <div className="flex items-center gap-3">
@@ -394,7 +509,7 @@ export const EnhancedParentalControl = () => {
             </div>
             <div>
               <h3 className="text-lg font-black tracking-tight">
-                Canales de Música Segura & Educativa "Sonar Junior"
+                Canales de Música Segura & Educativa "Sonar Kids"
               </h3>
               <p className="text-xs text-pink-200/80">
                 Selecciones curadas para fomentar la creatividad, el estudio y el descanso.
@@ -407,7 +522,7 @@ export const EnhancedParentalControl = () => {
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          {JUNIOR_CHANNELS.map((ch) => (
+          {KIDS_CHANNELS.map((ch) => (
             <motion.div
               key={ch.id}
               whileHover={{ y: -3 }}
@@ -441,7 +556,136 @@ export const EnhancedParentalControl = () => {
         </div>
       </div>
 
-      {/* 4. PIN DE AUTORIZACIÓN & FILTRO DE PALABRAS CLAVE */}
+      {/* 5. LÍMITE DE TIEMPO DIARIO & CUIDADO AUDITIVO */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        {/* Límite de Tiempo de Escucha Diario */}
+        <div className="p-6 rounded-3xl bg-white dark:bg-[#4B2840] border border-[#e6d5e2] dark:border-white/10 shadow-xs flex flex-col justify-between gap-5">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2.5">
+              <span className="material-symbols-outlined text-[24px] text-amber-500">hourglass_top</span>
+              <div>
+                <h4 className="text-base font-bold text-[#231123] dark:text-white">
+                  Límite de Tiempo Diario
+                </h4>
+                <p className="text-xs text-[#5c435a] dark:text-[#B89CB0]">
+                  Evita la fatiga auditiva limitando las horas de reproducción al día.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <div className="p-4 rounded-2xl bg-gray-50 dark:bg-black/30 border border-[#e6d5e2] dark:border-white/10 flex flex-col gap-2">
+            <div className="flex justify-between items-baseline text-xs font-bold">
+              <span className="text-[#5c435a] dark:text-pink-200">
+                Uso hoy: {parentalSettings.listenedTodayMinutes} min
+              </span>
+              <span className="text-[#B80C09] dark:text-pink-300 font-mono">
+                Límite: {parentalSettings.dailyLimitMinutes} min ({usagePercent}%)
+              </span>
+            </div>
+
+            <div className="w-full h-3 bg-gray-200 dark:bg-white/10 rounded-full overflow-hidden p-0.5">
+              <motion.div
+                initial={{ width: 0 }}
+                animate={{ width: `${usagePercent}%` }}
+                className={`h-full rounded-full ${
+                  usagePercent > 85
+                    ? 'bg-[#B80C09]'
+                    : usagePercent > 50
+                    ? 'bg-amber-500'
+                    : 'bg-emerald-500'
+                }`}
+              />
+            </div>
+          </div>
+
+          <div className="flex flex-wrap items-center gap-2">
+            <span className="text-xs font-bold text-gray-500">Ajustar a:</span>
+            {[30, 45, 60, 90, 120].map((mins) => (
+              <button
+                key={mins}
+                type="button"
+                onClick={() => handleSaveSettings({ dailyLimitMinutes: mins })}
+                className={`px-3 py-1 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+                  parentalSettings.dailyLimitMinutes === mins
+                    ? 'bg-[#B80C09] text-white shadow-xs'
+                    : 'bg-gray-100 dark:bg-white/10 text-gray-700 dark:text-gray-200 hover:bg-gray-200'
+                }`}
+              >
+                {mins} min
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* Protección Auditiva & Limitador de Decibeles */}
+        <div className="p-6 rounded-3xl bg-white dark:bg-[#4B2840] border border-[#e6d5e2] dark:border-white/10 shadow-xs flex flex-col justify-between gap-5">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2.5">
+              <span className="material-symbols-outlined text-[24px] text-teal-500">hearing</span>
+              <div>
+                <h4 className="text-base font-bold text-[#231123] dark:text-white">
+                  Protección de Oído & Volumen Seguro
+                </h4>
+                <p className="text-xs text-[#5c435a] dark:text-[#B89CB0]">
+                  Cumple con el estándar de seguridad auditiva de la OMS para niños.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <div className="p-4 rounded-2xl bg-gray-50 dark:bg-black/30 border border-[#e6d5e2] dark:border-white/10 flex flex-col gap-3">
+            <div className="flex items-center justify-between">
+              <div>
+                <span className="text-xs font-bold text-[#231123] dark:text-white block">
+                  Tope Máximo de Volumen ({parentalSettings.maxDecibels} dB)
+                </span>
+                <span className="text-[11px] text-gray-500 dark:text-gray-400">
+                  Previene aumentos repentinos o picos de volumen peligrosos.
+                </span>
+              </div>
+              <button
+                type="button"
+                onClick={() => handleSaveSettings({ volumeCapEnabled: !parentalSettings.volumeCapEnabled })}
+                className={`w-12 h-6 rounded-full transition-colors relative cursor-pointer ${
+                  parentalSettings.volumeCapEnabled ? 'bg-emerald-500' : 'bg-gray-300 dark:bg-gray-600'
+                }`}
+              >
+                <div
+                  className={`w-5 h-5 rounded-full bg-white shadow-md absolute top-0.5 transition-transform ${
+                    parentalSettings.volumeCapEnabled ? 'translate-x-6' : 'translate-x-1'
+                  }`}
+                />
+              </button>
+            </div>
+
+            <div className="flex items-center gap-2 pt-2 border-t border-gray-200 dark:border-white/10">
+              <span className="text-xs font-bold text-gray-500">Nivel Máximo:</span>
+              {[70, 75, 80, 85].map((db) => (
+                <button
+                  key={db}
+                  type="button"
+                  onClick={() => handleSaveSettings({ maxDecibels: db })}
+                  className={`px-3 py-1 rounded-xl text-xs font-mono font-bold transition-all cursor-pointer ${
+                    parentalSettings.maxDecibels === db
+                      ? 'bg-teal-600 text-white shadow-xs'
+                      : 'bg-gray-100 dark:bg-white/10 text-gray-700 dark:text-gray-200'
+                  }`}
+                >
+                  {db} dB
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <div className="flex items-center gap-2 text-xs text-emerald-600 dark:text-emerald-400 font-semibold">
+            <span className="material-symbols-outlined text-[16px]">verified</span>
+            <span>Estándar de audición segura activo en todos los reproductores</span>
+          </div>
+        </div>
+      </div>
+
+      {/* 6. PIN DE AUTORIZACIÓN & FILTRO DE PALABRAS CLAVE */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {/* PIN de Autorización */}
         <div className="p-6 rounded-3xl bg-white dark:bg-[#4B2840] border border-[#e6d5e2] dark:border-white/10 shadow-xs flex flex-col justify-between gap-4">
@@ -473,7 +717,6 @@ export const EnhancedParentalControl = () => {
             </button>
           </form>
 
-          {/* Botón de Prueba en Vivo */}
           <div className="pt-3 border-t border-gray-100 dark:border-white/10 flex items-center justify-between">
             <span className="text-xs text-[#5c435a] dark:text-[#B89CB0]">Simulación de Bloqueo:</span>
             <button
@@ -504,7 +747,7 @@ export const EnhancedParentalControl = () => {
               <span>Palabras & Artistas Restringidos</span>
             </h4>
             <p className="text-xs text-[#5c435a] dark:text-[#B89CB0] mt-1">
-              Agrega términos que se filtrarán automáticamente del buscador y recomendaciones del menor.
+              Agrega términos que se filtrarán automáticamente del buscador y recomendaciones para niños.
             </p>
           </div>
 
@@ -545,7 +788,7 @@ export const EnhancedParentalControl = () => {
         </div>
       </div>
 
-      {/* 5. REGISTRO DE ACTIVIDAD Y AUDITORÍA PARENTAL */}
+      {/* 7. REGISTRO DE ACTIVIDAD Y AUDITORÍA PARENTAL */}
       <div className="p-6 sm:p-8 rounded-3xl bg-white dark:bg-[#4B2840] border border-[#e6d5e2] dark:border-white/10 shadow-xs flex flex-col gap-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2.5">
@@ -553,7 +796,7 @@ export const EnhancedParentalControl = () => {
               history_toggle_off
             </span>
             <h4 className="text-base font-bold text-[#231123] dark:text-white">
-              Historial de Actividad & Auditoría de Seguridad
+              Historial de Actividad & Auditoría de Seguridad Kids
             </h4>
           </div>
           <span className="text-xs text-gray-500 font-mono">Últimas 24 horas</span>

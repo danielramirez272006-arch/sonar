@@ -1,18 +1,17 @@
-import React, { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import React, { useState, useEffect, useRef } from 'react';
+import { motion } from 'framer-motion';
 import Navbar from '../../shared/components/layout/navbar';
 import Footer from '../../shared/components/layout/footer';
 import ProfileHeader from '../../features/profile/components/profile-header';
+import { Avatar } from '../../shared/components/ui/avatar';
 import { useAuth } from '../../shared/context/auth-context';
 import { usePlayer } from '../../shared/context/player-context';
 import { interactionsService } from '../../shared/services/interactions-service';
 import { socialService } from '../../shared/services/social-service';
-import { getAlbumTracks, searchTracks } from '../../shared/services/deezer-service';
 import {
   getRecommendationsForUser,
   GENRE_OPTIONS,
   DEFAULT_FALLBACK_COVER,
-  DEFAULT_FALLBACK_PREVIEW,
   handleImageFallbackError,
   getFallbackCoverForAlbum,
 } from '../../shared/services/recommendations-service';
@@ -28,6 +27,7 @@ export const UserDashboardPage = () => {
   const { user, updateUser } = useAuth();
   const { playTrack, openReviewModal } = usePlayer();
   const userId = user?.id || null;
+  const backupFileInputRef = useRef(null);
 
   const [activeTab, setActiveTab] = useState(() => {
     try {
@@ -49,6 +49,7 @@ export const UserDashboardPage = () => {
   const [followedArtists, setFollowedArtists] = useState([]);
   const [followedUsers, setFollowedUsers] = useState([]);
   const [recentlyPlayed, setRecentlyPlayed] = useState([]);
+  const [backupNotice, setBackupNotice] = useState(null);
   const [gearSetup, setGearSetup] = useState(() => ({
     turntable: user?.audiophileSetup?.turntable || user?.gear?.turntable || 'Technics SL-1200MK7',
     headphones: user?.audiophileSetup?.headphones || user?.gear?.headphones || 'Sennheiser HD 660S',
@@ -57,6 +58,19 @@ export const UserDashboardPage = () => {
     stylus: user?.audiophileSetup?.stylus || 'Ortofon 2M Blue',
   }));
   const [gearSavedNotice, setGearSavedNotice] = useState(false);
+
+  // Sincronizar equipamiento cuando el usuario cambie o se actualice en perfil
+  useEffect(() => {
+    if (user?.audiophileSetup || user?.gear) {
+      setGearSetup({
+        turntable: user?.audiophileSetup?.turntable || user?.gear?.turntable || 'Technics SL-1200MK7',
+        headphones: user?.audiophileSetup?.headphones || user?.gear?.headphones || 'Sennheiser HD 660S',
+        dac: user?.audiophileSetup?.dac || 'Cambridge Audio DacMagic 200M',
+        favoriteFormat: user?.audiophileSetup?.favoriteFormat || 'Vinilo 180g Prensado Japonés',
+        stylus: user?.audiophileSetup?.stylus || 'Ortofon 2M Blue',
+      });
+    }
+  }, [user]);
 
   const handleSaveGear = (e) => {
     e?.preventDefault();
@@ -74,7 +88,7 @@ export const UserDashboardPage = () => {
   const handleExportBackup = () => {
     const backupData = {
       app: 'SONAR Hi-Fi Music Ecosystem',
-      version: '2.4.0',
+      version: '2.5.0',
       exportDate: new Date().toISOString(),
       user: {
         id: user?.id,
@@ -95,10 +109,60 @@ export const UserDashboardPage = () => {
     const dataStr = 'data:text/json;charset=utf-8,' + encodeURIComponent(JSON.stringify(backupData, null, 2));
     const downloadAnchor = document.createElement('a');
     downloadAnchor.setAttribute('href', dataStr);
-    downloadAnchor.setAttribute('download', `sonar-backup-${(user?.name || 'usuario').toLowerCase().replace(/\s+/g, '-')}.json`);
+    downloadAnchor.setAttribute('download', `sonar-backup-${(user?.name || user?.username || 'usuario').toLowerCase().replace(/\s+/g, '-')}.json`);
     document.body.appendChild(downloadAnchor);
     downloadAnchor.click();
     downloadAnchor.remove();
+    setBackupNotice('¡Respaldo descargado exitosamente en formato JSON!');
+    setTimeout(() => setBackupNotice(null), 4000);
+  };
+
+  const handleImportBackup = (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      try {
+        const json = JSON.parse(event.target.result);
+        if (!json || typeof json !== 'object') {
+          throw new Error('Formato de archivo inválido.');
+        }
+
+        const effectiveId = userId || 'guest_user';
+
+        if (Array.isArray(json.savedAlbums)) {
+          const currentStorage = JSON.parse(localStorage.getItem('sonar_user_saved_albums') || '{}');
+          currentStorage[effectiveId] = json.savedAlbums;
+          localStorage.setItem('sonar_user_saved_albums', JSON.stringify(currentStorage));
+          setSavedAlbums(json.savedAlbums);
+        }
+
+        if (Array.isArray(json.recentlyPlayed)) {
+          const currentRecent = JSON.parse(localStorage.getItem('sonar_user_recently_played') || '{}');
+          currentRecent[effectiveId] = json.recentlyPlayed;
+          localStorage.setItem('sonar_user_recently_played', JSON.stringify(currentRecent));
+          setRecentlyPlayed(json.recentlyPlayed);
+        }
+
+        if (json.user?.preferences && updateUser) {
+          updateUser({
+            preferences: json.user.preferences,
+            audiophileSetup: json.user.audiophileSetup || gearSetup,
+          });
+        }
+
+        window.dispatchEvent(new CustomEvent('sonar:collection-changed'));
+        setBackupNotice('¡Respaldo restaurado con éxito! Tus colecciones y preferencias se han sincronizado.');
+        setTimeout(() => setBackupNotice(null), 5000);
+      } catch (err) {
+        setBackupNotice(`Error al importar: ${err.message || 'Archivo no válido'}`);
+        setTimeout(() => setBackupNotice(null), 5000);
+      } finally {
+        if (backupFileInputRef.current) backupFileInputRef.current.value = '';
+      }
+    };
+    reader.readAsText(file);
   };
 
   const handlePlayAlbum = (album) => {
@@ -389,8 +453,8 @@ export const UserDashboardPage = () => {
                   : 'text-[#5c435a] dark:text-[#B89CB0] hover:text-[#231123] dark:hover:text-white'
               }`}
             >
-              <span className="material-symbols-outlined text-[18px]">verified_user</span>
-              <span>Control Parental {user?.accountType === 'junior' ? '(Junior)' : ''}</span>
+              <span className="material-symbols-outlined text-[18px]">toys</span>
+              <span>Modo Kids & Control {user?.accountType === 'junior' ? '(Kids Activo)' : ''}</span>
               {activeTab === 'parental_control' && (
                 <motion.div
                   layoutId="dashboard-tab-indicator"
@@ -401,6 +465,24 @@ export const UserDashboardPage = () => {
             </button>
 
             <div className="ml-auto flex items-center gap-2 pb-2">
+              <input
+                ref={backupFileInputRef}
+                type="file"
+                accept=".json,application/json"
+                onChange={handleImportBackup}
+                className="hidden"
+                id="sonar-backup-file-input"
+              />
+              <button
+                type="button"
+                onClick={() => backupFileInputRef.current?.click()}
+                className="px-3 py-1.5 rounded-xl bg-gray-100 hover:bg-gray-200 dark:bg-white/10 dark:hover:bg-white/20 text-[#231123] dark:text-white text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer shadow-xs"
+                title="Restaurar tus colecciones, reseñas y preferencias desde un archivo JSON"
+              >
+                <span className="material-symbols-outlined text-[15px] text-amber-600 dark:text-amber-400">upload</span>
+                <span className="hidden sm:inline">Importar</span>
+              </button>
+
               <button
                 type="button"
                 onClick={handleExportBackup}
@@ -408,11 +490,31 @@ export const UserDashboardPage = () => {
                 title="Descargar respaldo JSON de tus álbumes, reseñas y configuración"
               >
                 <span className="material-symbols-outlined text-[15px] text-[#B80C09]">download</span>
-                <span className="hidden sm:inline">Exportar Backup</span>
+                <span className="hidden sm:inline">Exportar</span>
                 <span className="sm:hidden">Backup</span>
               </button>
             </div>
           </div>
+
+          {backupNotice && (
+            <motion.div
+              initial={{ opacity: 0, y: -10 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="p-3.5 rounded-2xl bg-gradient-to-r from-emerald-50 to-teal-50 dark:from-emerald-950/40 dark:to-teal-950/40 border border-emerald-200 dark:border-emerald-800 text-emerald-900 dark:text-emerald-200 text-xs sm:text-sm font-semibold flex items-center justify-between shadow-xs"
+            >
+              <div className="flex items-center gap-2">
+                <span className="material-symbols-outlined text-[18px] text-emerald-600">check_circle</span>
+                <span>{backupNotice}</span>
+              </div>
+              <button
+                type="button"
+                onClick={() => setBackupNotice(null)}
+                className="text-xs text-emerald-700 dark:text-emerald-400 hover:underline font-bold"
+              >
+                Cerrar
+              </button>
+            </motion.div>
+          )}
 
           {/* TAB 0: PASAPORTE Y ESTADÍSTICAS AUDIÓFILAS */}
           {activeTab === 'passport' && (
@@ -449,7 +551,7 @@ export const UserDashboardPage = () => {
                   className="text-xs font-bold text-[#B80C09] hover:underline self-start sm:self-auto flex items-center gap-1"
                 >
                   <span className="material-symbols-outlined text-[15px]">tune</span>
-                  <span>Modificar géneros</span>
+                  <span>Modificar géneros en perfil</span>
                 </a>
               </div>
 
@@ -459,21 +561,39 @@ export const UserDashboardPage = () => {
                   const isPref = user?.preferences?.some((p) => p.toLowerCase() === genre.toLowerCase());
                   const isCurrentFilter = genreFilter === genre;
                   return (
-                    <button
-                      key={genre}
-                      type="button"
-                      onClick={() => setGenreFilter(genre)}
-                      className={`px-3.5 py-1.5 rounded-full text-xs font-bold whitespace-nowrap transition-all cursor-pointer flex items-center gap-1.5 shadow-xs ${
-                        isCurrentFilter
-                          ? 'bg-[#B80C09] text-white'
-                          : isPref
-                          ? 'bg-[#f8e9f6] dark:bg-[#231123] text-[#5c1d5e] dark:text-pink-200 border border-[#B80C09]/40 hover:bg-[#B80C09]/10'
-                          : 'bg-white dark:bg-[#4B2840] text-[#5c435a] dark:text-gray-200 border border-[#e6d5e2] dark:border-white/10 hover:border-[#B80C09]/30'
-                      }`}
-                    >
-                      {isPref && <span className="w-1.5 h-1.5 rounded-full bg-[#B80C09]" />}
-                      <span>{genre}</span>
-                    </button>
+                    <div key={genre} className="flex items-center">
+                      <button
+                        type="button"
+                        onClick={() => setGenreFilter(genre)}
+                        className={`px-3.5 py-1.5 rounded-full text-xs font-bold whitespace-nowrap transition-all cursor-pointer flex items-center gap-1.5 shadow-xs ${
+                          isCurrentFilter
+                            ? 'bg-[#B80C09] text-white'
+                            : isPref
+                            ? 'bg-[#f8e9f6] dark:bg-[#231123] text-[#5c1d5e] dark:text-pink-200 border border-[#B80C09]/40 hover:bg-[#B80C09]/10'
+                            : 'bg-white dark:bg-[#4B2840] text-[#5c435a] dark:text-gray-200 border border-[#e6d5e2] dark:border-white/10 hover:border-[#B80C09]/30'
+                        }`}
+                      >
+                        {isPref && <span className="w-1.5 h-1.5 rounded-full bg-[#B80C09]" />}
+                        <span>{genre}</span>
+                      </button>
+                      {genre !== 'Todos' && (
+                        <button
+                          type="button"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleToggleGenrePreference(genre);
+                          }}
+                          className={`-ml-2 z-10 w-4 h-4 rounded-full flex items-center justify-center text-[10px] cursor-pointer transition-colors ${
+                            isPref
+                              ? 'bg-[#B80C09] text-white hover:bg-rose-700'
+                              : 'bg-gray-200 dark:bg-white/20 text-gray-600 dark:text-gray-300 hover:bg-[#B80C09] hover:text-white'
+                          }`}
+                          title={isPref ? `Quitar ${genre} de favoritos` : `Añadir ${genre} a favoritos`}
+                        >
+                          {isPref ? '★' : '+'}
+                        </button>
+                      )}
+                    </div>
                   );
                 })}
               </div>
@@ -883,7 +1003,7 @@ export const UserDashboardPage = () => {
                 <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
                   {followedArtists.map((art, idx) => {
                     const name = typeof art === 'string' ? art : art.name;
-                    const img = typeof art === 'string' ? 'https://cdn-images.dzcdn.net/images/cover/a175af9b7d329bc678cb4d26fc13d6de/250x250-000000-80-0-0.jpg' : art.image;
+                    const img = typeof art === 'string' ? '' : (art.image || art.cover);
                     const genre = typeof art === 'string' ? 'Artista' : art.genre || 'Música';
                     return (
                       <motion.div
@@ -892,8 +1012,9 @@ export const UserDashboardPage = () => {
                         className="p-4 rounded-2xl bg-white dark:bg-[#4B2840] border border-[#e6d5e2] dark:border-white/10 shadow-xs flex flex-col items-center text-center gap-3"
                       >
                         <img
-                          src={img}
+                          src={img || getFallbackCoverForAlbum({ title: name, artist: name })}
                           alt={name}
+                          onError={(e) => handleImageFallbackError(e, { title: name })}
                           className="w-20 h-20 rounded-full object-cover shadow-md ring-2 ring-[#B80C09]/20"
                         />
                         <div className="flex flex-col min-w-0 w-full">
@@ -938,34 +1059,58 @@ export const UserDashboardPage = () => {
                 </div>
               ) : (
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                  {followedUsers.map((uid, idx) => (
-                    <motion.div
-                      key={idx}
-                      whileHover={{ y: -2 }}
-                      className="p-4 rounded-2xl bg-white dark:bg-[#4B2840] border border-[#e6d5e2] dark:border-white/10 shadow-xs flex items-center justify-between gap-3"
-                    >
-                      <div className="flex items-center gap-3 min-w-0">
-                        <div className="w-10 h-10 rounded-full bg-gradient-to-tr from-[#5c1d5e] to-[#B80C09] text-white flex items-center justify-center font-bold text-sm shadow-xs shrink-0">
-                          {String(uid).charAt(0).toUpperCase()}
-                        </div>
-                        <div className="flex flex-col min-w-0">
-                          <span className="text-sm font-bold text-[#231123] dark:text-white truncate">
-                            {uid === '1' ? 'Sofía Sound' : uid === '2' ? 'Marcos Vinyl' : `Audiófilo #${uid}`}
-                          </span>
-                          <span className="text-xs text-[#5c435a] dark:text-[#B89CB0] truncate">
-                            @{String(uid).toLowerCase()}
-                          </span>
-                        </div>
-                      </div>
-                      <button
-                        type="button"
-                        onClick={() => handleToggleUnfollowUser(uid)}
-                        className="px-3 py-1 rounded-xl border border-gray-300 dark:border-white/15 hover:border-rose-600 text-xs font-bold text-gray-700 dark:text-gray-300 hover:text-rose-600 transition-colors cursor-pointer shrink-0"
+                  {followedUsers.map((uid, idx) => {
+                    const profile = socialService.getUserProfile(uid);
+                    const displayName = profile?.name || `Audiófilo #${uid}`;
+                    const handle = profile?.handle || `@${String(uid).toLowerCase()}`;
+                    const role = profile?.role || 'Melómano';
+                    const bio = profile?.bio || 'Crítico de vinilos y texturas acústicas.';
+
+                    return (
+                      <motion.div
+                        key={idx}
+                        whileHover={{ y: -2 }}
+                        className="p-4 rounded-2xl bg-white dark:bg-[#4B2840] border border-[#e6d5e2] dark:border-white/10 shadow-xs flex flex-col justify-between gap-3"
                       >
-                        Siguiendo ✓
-                      </button>
-                    </motion.div>
-                  ))}
+                        <div className="flex items-center gap-3 min-w-0">
+                          <Avatar
+                            src={profile?.avatarUrl}
+                            name={displayName}
+                            avatarBg={profile?.avatarBg || '#B80C09'}
+                            size="md"
+                            className="w-11 h-11 shrink-0 rounded-full shadow-xs"
+                          />
+                          <div className="flex flex-col min-w-0 flex-1">
+                            <div className="flex items-center gap-1.5 truncate">
+                              <span className="text-sm font-bold text-[#231123] dark:text-white truncate">
+                                {displayName}
+                              </span>
+                              <span className="text-[10px] px-1.5 py-0.5 rounded-md bg-[#f8e9f6] dark:bg-[#231123] text-[#5c1d5e] dark:text-pink-200 font-semibold shrink-0">
+                                {role}
+                              </span>
+                            </div>
+                            <span className="text-xs text-[#5c435a] dark:text-[#B89CB0] truncate">
+                              {handle}
+                            </span>
+                          </div>
+                        </div>
+
+                        <p className="text-xs text-gray-600 dark:text-gray-300 line-clamp-2 italic">
+                          "{bio}"
+                        </p>
+
+                        <div className="flex items-center justify-end pt-2 border-t border-[#e6d5e2]/60 dark:border-white/10">
+                          <button
+                            type="button"
+                            onClick={() => handleToggleUnfollowUser(uid)}
+                            className="px-3 py-1 rounded-xl border border-gray-300 dark:border-white/15 hover:border-rose-600 text-xs font-bold text-gray-700 dark:text-gray-300 hover:text-rose-600 transition-colors cursor-pointer"
+                          >
+                            Siguiendo ✓
+                          </button>
+                        </div>
+                      </motion.div>
+                    );
+                  })}
                 </div>
               )}
             </section>

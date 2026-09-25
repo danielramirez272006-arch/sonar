@@ -1,8 +1,36 @@
-// Servicio de Estadísticas Sociales, Seguir Usuarios y Seguir Artistas (100% Dinámico y Real)
-
-const STORAGE_KEY_SOCIAL = 'sonar_user_social_stats';
 const STORAGE_KEY_FOLLOWS = 'sonar_user_following';
 const STORAGE_KEY_ARTIST_FOLLOWS = 'sonar_user_following_artists';
+const STORAGE_KEY_USER_PROFILES = 'sonar_user_profiles_cache';
+
+const KNOWN_DEFAULT_PROFILES = {
+  '1': {
+    id: '1',
+    name: 'Sofía Sound',
+    username: 'sofiasound',
+    handle: '@sofiasound',
+    avatarBg: '#B80C09',
+    role: 'Crítica Destacada',
+    bio: 'Especialista en vinilos de art rock y producción analógica de los 70s y 80s.',
+  },
+  '2': {
+    id: '2',
+    name: 'Marcos Vinyl',
+    username: 'marcosvinyl',
+    handle: '@marcosvinyl',
+    avatarBg: '#5c1d5e',
+    role: 'Coleccionista Pro',
+    bio: 'Coleccionista empedernido de Jazz, Fusion y prensados japoneses de alta pureza.',
+  },
+  '3': {
+    id: '3',
+    name: 'Elena Acoustic',
+    username: 'elena_acoustic',
+    handle: '@elena_acoustic',
+    avatarBg: '#0284c7',
+    role: 'Audiófila',
+    bio: 'Explorando la microdinámica y la textura acústica en amplificación a válvulas.',
+  },
+};
 
 function getStorage(key, fallback) {
   try {
@@ -25,6 +53,45 @@ function setStorage(key, value) {
 }
 
 export const socialService = {
+  /**
+   * Guarda o actualiza los datos de perfil de un usuario en caché local.
+   */
+  saveUserProfile(user) {
+    if (!user || (!user.id && !user.username)) return;
+    const key = String(user.id || user.username);
+    const cache = getStorage(STORAGE_KEY_USER_PROFILES, KNOWN_DEFAULT_PROFILES);
+    cache[key] = {
+      ...(cache[key] || {}),
+      id: key,
+      name: user.name || user.username || 'Audiófilo Sonar',
+      username: user.username || user.name || key,
+      handle: user.handle || `@${String(user.username || key).replace(/^@/, '')}`,
+      avatarUrl: user.avatarUrl || '',
+      avatarBg: user.avatarBg || '#5c1d5e',
+      role: user.role || 'Audiófilo',
+      bio: user.bio || 'Melómano explorando nuevas texturas acústicas en Sonar.',
+    };
+    setStorage(STORAGE_KEY_USER_PROFILES, cache);
+  },
+
+  /**
+   * Obtiene el perfil de un usuario por su ID o username.
+   */
+  getUserProfile(userId) {
+    if (!userId) return null;
+    const key = String(userId);
+    const cache = getStorage(STORAGE_KEY_USER_PROFILES, KNOWN_DEFAULT_PROFILES);
+    return cache[key] || KNOWN_DEFAULT_PROFILES[key] || {
+      id: key,
+      name: `Audiófilo #${key}`,
+      username: key,
+      handle: `@${key.toLowerCase()}`,
+      avatarBg: '#B80C09',
+      role: 'Melómano',
+      bio: 'Miembro de la comunidad Sonar.',
+    };
+  },
+
   /**
    * Obtiene estadísticas 100% reales de seguidores, siguiendo y reseñas.
    */
@@ -55,7 +122,6 @@ export const socialService = {
           }
         }
       } catch {}
-      // Si aún es 0 pero es el usuario 1/mateo, fallback a las 2 iniciales
       if (reviewsCount === 0 && (userId === '1' || userId === 'mateo')) {
         reviewsCount = 2;
       }
@@ -100,6 +166,11 @@ export const socialService = {
     return allFollows[String(currentUserId)] || [];
   },
 
+  getFollowedUsersWithDetails(currentUserId = 'guest') {
+    const ids = this.getFollowedUsers(currentUserId);
+    return ids.map((id) => this.getUserProfile(id));
+  },
+
   getFollowersCount(targetUserId) {
     if (!targetUserId) return 0;
     const allFollows = getStorage(STORAGE_KEY_FOLLOWS, {});
@@ -121,6 +192,10 @@ export const socialService = {
 
   toggleFollowUser(currentUserId = 'guest', targetUserId, targetUserData = null) {
     if (!targetUserId) return false;
+
+    if (targetUserData) {
+      this.saveUserProfile({ ...targetUserData, id: targetUserId });
+    }
 
     const allFollows = getStorage(STORAGE_KEY_FOLLOWS, {});
     const key = String(currentUserId);
@@ -182,7 +257,7 @@ export const socialService = {
     } else {
       const newEntry = {
         name: clean,
-        image: artistData.cover || artistData.image || 'https://cdn-images.dzcdn.net/images/cover/a175af9b7d329bc678cb4d26fc13d6de/250x250-000000-80-0-0.jpg',
+        image: artistData.cover || artistData.image || '',
         genre: artistData.genre || 'Música',
         followedAt: new Date().toISOString(),
       };
