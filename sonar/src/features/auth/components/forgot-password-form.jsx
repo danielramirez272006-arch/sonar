@@ -168,6 +168,21 @@ export const ForgotPasswordForm = () => {
       <EditorialPanel />
       <section className="auth-form-area" aria-labelledby="forgot-title">
         <div className="auth-form-wrap">
+          <button
+            type="button"
+            onClick={() => {
+              if (step > 1 && step < 4) {
+                setStep((s) => s - 1);
+              } else {
+                window.location.hash = '#login';
+              }
+            }}
+            className="auth-back-btn"
+            aria-label="Regresar"
+          >
+            <ArrowLeft size={15} />
+            <span>{step > 1 && step < 4 ? 'Paso anterior' : 'Volver a iniciar sesión'}</span>
+          </button>
           <header className="auth-heading">
             <h2 id="forgot-title" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
               <KeyRound size={26} color="#B80C09" />

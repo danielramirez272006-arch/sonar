@@ -48,6 +48,28 @@ export const REWARD_ITEMS = [
     previewBorder: 'ring-4 ring-purple-400 shadow-[0_0_22px_rgba(168,85,247,0.7)]',
   },
   {
+    id: 'frame-prism-rainbow',
+    type: 'frame',
+    name: 'Marco Prisma Óptico Pink Floyd',
+    category: 'Marcos de Avatar',
+    cost: 400,
+    icon: 'flare',
+    color: 'from-rose-500 via-purple-500 to-sky-400',
+    description: 'Halo refractario de espectro visible con haz de luz continua.',
+    previewBorder: 'ring-4 ring-pink-500 shadow-[0_0_20px_rgba(236,72,153,0.8)]',
+  },
+  {
+    id: 'frame-analog-wood',
+    type: 'frame',
+    name: 'Marco Caoba Analógica Vintage',
+    category: 'Marcos de Avatar',
+    cost: 320,
+    icon: 'nature',
+    color: 'from-amber-700 to-yellow-900',
+    description: 'Acabado en madera noble lacada de gabinete acústico artesanal.',
+    previewBorder: 'ring-4 ring-amber-700 shadow-[0_0_16px_rgba(180,83,9,0.7)]',
+  },
+  {
     id: 'skin-cassette',
     type: 'skin',
     name: 'Skin Reproductor Cassette 1984',
@@ -70,6 +92,28 @@ export const REWARD_ITEMS = [
     badge: 'Hi-Fi Pro',
   },
   {
+    id: 'skin-vinyl-turntable',
+    type: 'skin',
+    name: 'Skin Tornamesa Direct Drive 33/45',
+    category: 'Skins de Audio',
+    cost: 700,
+    icon: 'album',
+    color: 'from-amber-500 to-zinc-900',
+    description: 'Plato giratorio estroboscópico de cuarzo con brazo fonocaptor dinámico.',
+    badge: 'Vinilo',
+  },
+  {
+    id: 'skin-tube-glow',
+    type: 'skin',
+    name: 'Skin Bulbos Valvulares Hi-End',
+    category: 'Skins de Audio',
+    cost: 680,
+    icon: 'local_fire_department',
+    color: 'from-amber-600 to-orange-950',
+    description: 'Preamplificador con filamentos incandescentes y saturación armónica par.',
+    badge: 'Calidez',
+  },
+  {
     id: 'title-absolute-pitch',
     type: 'title',
     name: 'Título: Oído Absoluto',
@@ -90,6 +134,26 @@ export const REWARD_ITEMS = [
     description: 'Reconocimiento de máxima autoridad acústica en la comunidad de Sonar.',
   },
   {
+    id: 'title-vinyl-archaeologist',
+    type: 'title',
+    name: 'Título: Arqueólogo del Vinilo',
+    category: 'Títulos de Prestigio',
+    cost: 280,
+    icon: 'history_edu',
+    color: 'from-amber-600 to-amber-900',
+    description: 'Distintivo de coleccionista experto en prensados originales y primeras ediciones.',
+  },
+  {
+    id: 'title-hi-res-purist',
+    type: 'title',
+    name: 'Título: Purista Hi-Res 192kHz',
+    category: 'Títulos de Prestigio',
+    cost: 350,
+    icon: 'graphic_eq',
+    color: 'from-teal-600 to-emerald-900',
+    description: 'Para quienes no aceptan nada por debajo de la fidelidad Bit-Perfect de estudio.',
+  },
+  {
     id: 'perk-vip-room',
     type: 'perk',
     name: 'Pase VIP Salón de Debate Acústico',
@@ -98,6 +162,26 @@ export const REWARD_ITEMS = [
     icon: 'meeting_room',
     color: 'from-amber-600 to-red-700',
     description: 'Acceso ilimitado a salas de escucha privadas con audiófilos y críticos certificados.',
+  },
+  {
+    id: 'perk-lossless-master',
+    type: 'perk',
+    name: 'Pase Bitrate Master Lossless',
+    category: 'Pases & Beneficios',
+    cost: 350,
+    icon: 'high_quality',
+    color: 'from-sky-600 to-blue-900',
+    description: 'Transmisión directa de audio sin compresión con rango dinámico expandido.',
+  },
+  {
+    id: 'perk-ai-critic',
+    type: 'perk',
+    name: 'Pase Asistente Crítico IA Ilimitado',
+    category: 'Pases & Beneficios',
+    cost: 300,
+    icon: 'smart_toy',
+    color: 'from-fuchsia-600 to-purple-900',
+    description: 'Análisis ilimitados de poética de letras y correlaciones musicales por IA.',
   },
 ];
 
@@ -169,7 +253,7 @@ export const RewardsStoreTab = () => {
   const [inventory, setInventory] = useState(() => {
     try {
       const saved = localStorage.getItem('sonar_user_inventory');
-      return saved ? JSON.parse(saved) : ['frame-gold-vinyl', 'title-absolute-pitch'];
+      return saved ? JSON.parse(saved) : ['frame-gold-vinyl', 'title-absolute-pitch', 'perk-vip-room'];
     } catch {
       return ['frame-gold-vinyl'];
     }
@@ -196,6 +280,15 @@ export const RewardsStoreTab = () => {
       return localStorage.getItem('sonar_equipped_skin') || user?.equippedSkin || 'skin-vu-meter';
     } catch {
       return 'skin-vu-meter';
+    }
+  });
+
+  const [activePerks, setActivePerks] = useState(() => {
+    try {
+      const saved = localStorage.getItem('sonar_active_perks');
+      return saved ? JSON.parse(saved) : (user?.activePerks || ['perk-vip-room']);
+    } catch {
+      return ['perk-vip-room'];
     }
   });
 
@@ -233,6 +326,9 @@ export const RewardsStoreTab = () => {
     try {
       localStorage.setItem('sonar_user_points', String(newPoints));
       updateUser?.({ sonarPoints: newPoints });
+      window.dispatchEvent(new CustomEvent('sonar:points-updated', { detail: { points: newPoints } }));
+      window.dispatchEvent(new CustomEvent('sonar:points-awarded', { detail: { points: newPoints } }));
+      window.dispatchEvent(new CustomEvent('sonar:profile-customization-changed', { detail: { sonarPoints: newPoints } }));
     } catch {}
   };
 
@@ -241,6 +337,7 @@ export const RewardsStoreTab = () => {
     try {
       localStorage.setItem('sonar_user_xp', String(newXp));
       updateUser?.({ audiophileXp: newXp });
+      window.dispatchEvent(new CustomEvent('sonar:profile-customization-changed', { detail: { audiophileXp: newXp } }));
     } catch {}
   };
 
@@ -304,7 +401,7 @@ export const RewardsStoreTab = () => {
 
     // Auto-equipar el artículo canjeado
     handleEquip(item);
-    showToast(`🎉 ¡Canjeaste con éxito: "${item.name}"! Ya está equipado en tu perfil.`);
+    showToast(`🎉 ¡Canjeaste con éxito: "${item.name}"! Ya está disponible en tu perfil.`);
   };
 
   // Equipar Artículo
@@ -319,7 +416,8 @@ export const RewardsStoreTab = () => {
       } catch {}
       showToast(next ? `✨ Marco "${item.name}" equipado` : 'Marco desequipado');
     } else if (item.type === 'title') {
-      const next = equippedTitle === item.name.replace('Título: ', '') ? '' : item.name.replace('Título: ', '');
+      const cleanTitle = item.name.replace('Título: ', '');
+      const next = equippedTitle === cleanTitle ? '' : cleanTitle;
       setEquippedTitle(next);
       try {
         localStorage.setItem('sonar_equipped_title', next);
@@ -336,6 +434,18 @@ export const RewardsStoreTab = () => {
         window.dispatchEvent(new CustomEvent('sonar:profile-customization-changed', { detail: { equippedSkin: next } }));
       } catch {}
       showToast(next ? `🎛️ Skin "${item.name}" activada en el reproductor` : 'Skin desequipada');
+    } else if (item.type === 'perk') {
+      const isAlreadyActive = activePerks.includes(item.id);
+      const nextPerks = isAlreadyActive
+        ? activePerks.filter((id) => id !== item.id)
+        : [...activePerks, item.id];
+      setActivePerks(nextPerks);
+      try {
+        localStorage.setItem('sonar_active_perks', JSON.stringify(nextPerks));
+        updateUser?.({ activePerks: nextPerks });
+        window.dispatchEvent(new CustomEvent('sonar:profile-customization-changed', { detail: { activePerks: nextPerks } }));
+      } catch {}
+      showToast(!isAlreadyActive ? `🎟️ Pase "${item.name}" activado en tu cuenta` : `Pase "${item.name}" desactivado`);
     }
   };
 
@@ -548,7 +658,8 @@ export const RewardsStoreTab = () => {
             const isEquipped =
               (item.type === 'frame' && equippedFrame === item.id) ||
               (item.type === 'title' && equippedTitle === item.name.replace('Título: ', '')) ||
-              (item.type === 'skin' && equippedSkin === item.id);
+              (item.type === 'skin' && equippedSkin === item.id) ||
+              (item.type === 'perk' && activePerks.includes(item.id));
 
             return (
               <motion.div
@@ -605,7 +716,7 @@ export const RewardsStoreTab = () => {
                 <div className="pt-3 border-t border-[#e6d5e2] dark:border-white/10 flex items-center justify-between gap-3">
                   <div className="flex items-center gap-1 font-mono font-extrabold text-sm text-[#231123] dark:text-[#DCDCDD]">
                     <span className="material-symbols-outlined text-[#003844] dark:text-[#52a2b0] text-[18px]">toll</span>
-                    <span>{isOwned ? 'Adquirido' : `${item.cost} Monedas`}</span>
+                    <span>{isOwned ? (item.type === 'perk' ? 'Pase Activo' : 'Adquirido') : `${item.cost} Monedas`}</span>
                   </div>
 
                   {isOwned ? (
@@ -619,9 +730,9 @@ export const RewardsStoreTab = () => {
                       }`}
                     >
                       <span className="material-symbols-outlined text-[15px]">
-                        {isEquipped ? 'check_circle' : 'tune'}
+                        {isEquipped ? 'check_circle' : item.type === 'perk' ? 'vpn_key' : 'tune'}
                       </span>
-                      <span>{isEquipped ? 'Equipado' : 'Equipar'}</span>
+                      <span>{isEquipped ? (item.type === 'perk' ? 'Activo' : 'Equipado') : (item.type === 'perk' ? 'Activar' : 'Equipar')}</span>
                     </button>
                   ) : (
                     <button

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useTheme } from '../../../shared/context/theme-context';
 import { searchAlbums, searchTracks, searchArtists, getAlbumTracks, isKidsSafeTrack } from '../../../shared/services/deezer-service';
@@ -110,6 +110,14 @@ export const HeroSearch = ({ onSearch = () => {}, onSubmit = () => {} }) => {
   const { isJunior, isParentalControlActive } = useAuth() || {};
   const { t } = useTranslation();
   const isKidsActive = Boolean(isJunior || isParentalControlActive);
+
+  const searchTabs = useMemo(() => [
+    { id: 'all', label: t('nav.all', 'Todo'), icon: 'manage_search' },
+    { id: 'artist', label: t('profile.artists', 'Artistas'), icon: 'person' },
+    { id: 'track', label: t('nav.tracks', 'Canciones'), icon: 'music_note' },
+    { id: 'album', label: t('nav.albums', 'Álbumes'), icon: 'album' },
+    { id: 'lyrics', label: t('hero.lyrics', 'Letras'), icon: 'lyrics' },
+  ], [t]);
 
   const currentSuggestionsPool = isKidsActive ? KIDS_TYPEWRITER_SUGGESTIONS : TYPEWRITER_SUGGESTIONS;
   const currentTrendingPool = isKidsActive ? KIDS_TRENDING_SEARCHES : TRENDING_SEARCHES;
@@ -411,7 +419,7 @@ export const HeroSearch = ({ onSearch = () => {}, onSubmit = () => {} }) => {
 
         {/* Pestañas de Búsqueda Minimalistas (Segmented Control) */}
         <div className="inline-flex items-center p-1 rounded-full bg-[#f0e2ee] dark:bg-[#1a0b1b] border border-[#e0cbdd] dark:border-white/10 mb-4 gap-1 shadow-inner max-w-full overflow-x-auto">
-          {SEARCH_TABS.map((tab) => {
+          {searchTabs.map((tab) => {
             const isActive = activeTab === tab.id;
             return (
               <button

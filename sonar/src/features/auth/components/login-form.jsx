@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { ArrowRight, Eye, EyeOff, Headphones, Music2 } from 'lucide-react';
+import { ArrowRight, ArrowLeft, Eye, EyeOff, Headphones, Music2 } from 'lucide-react';
 import { useAuth } from '../../../shared/context/auth-context';
 import { useTranslation } from 'react-i18next';
 import { useLanguage } from '../../../shared/context/language-context';
@@ -42,39 +42,44 @@ export const LoginForm = () => {
     }
   };
 
-  const handleGoogleLogin = useGoogleLogin({
-    onSuccess: async (tokenResponse) => {
-      setGoogleLoading(true);
-      setMessage('');
-      try {
-        const res = await fetch('https://www.googleapis.com/oauth2/v3/userinfo', {
-          headers: { Authorization: `Bearer ${tokenResponse.access_token}` },
-        });
-        if (!res.ok) throw new Error('No se pudo obtener el perfil de Google.');
-        const googleUser = await res.json();
+  let handleGoogleLogin = () => {};
+  try {
+    handleGoogleLogin = useGoogleLogin({
+      onSuccess: async (tokenResponse) => {
+        setGoogleLoading(true);
+        setMessage('');
+        try {
+          const res = await fetch('https://www.googleapis.com/oauth2/v3/userinfo', {
+            headers: { Authorization: `Bearer ${tokenResponse.access_token}` },
+          });
+          if (!res.ok) throw new Error('No se pudo obtener el perfil de Google.');
+          const googleUser = await res.json();
 
-        const fakeCredential = btoa(JSON.stringify({ alg: 'RS256' })) + '.' +
-          btoa(JSON.stringify({
-            sub: googleUser.sub,
-            email: googleUser.email,
-            given_name: googleUser.given_name,
-            name: googleUser.name,
-            picture: googleUser.picture,
-          })) + '.signature';
+          const fakeCredential = btoa(JSON.stringify({ alg: 'RS256' })) + '.' +
+            btoa(JSON.stringify({
+              sub: googleUser.sub,
+              email: googleUser.email,
+              given_name: googleUser.given_name,
+              name: googleUser.name,
+              picture: googleUser.picture,
+            })) + '.signature';
 
-        const account = await loginWithGoogle(fakeCredential);
-        redirectForRole(account);
-      } catch (err) {
-        setMessage(err.message || 'No se pudo iniciar sesión con Google.');
-      } finally {
-        setGoogleLoading(false);
-      }
-    },
-    onError: () => {
-      setMessage('No se pudo conectar con Google. Intenta de nuevo.');
-    },
-    flow: 'implicit',
-  });
+          const account = await loginWithGoogle(fakeCredential);
+          redirectForRole(account);
+        } catch (err) {
+          setMessage(err.message || 'No se pudo iniciar sesión con Google.');
+        } finally {
+          setGoogleLoading(false);
+        }
+      },
+      onError: () => {
+        setMessage('No se pudo conectar con Google. Intenta de nuevo.');
+      },
+      flow: 'implicit',
+    });
+  } catch {
+    handleGoogleLogin = () => {};
+  }
 
   const activeError = message || authError;
   const isAnyLoading = isLoading || googleLoading;
@@ -84,6 +89,17 @@ export const LoginForm = () => {
       <EditorialPanel />
       <section className="auth-form-area" aria-labelledby="login-title">
         <div className="auth-form-wrap">
+          <button
+            type="button"
+            onClick={() => {
+              window.location.hash = '#explore';
+            }}
+            className="auth-back-btn"
+            aria-label="Volver al catálogo"
+          >
+            <ArrowLeft size={15} />
+            <span>Volver al catálogo</span>
+          </button>
           <div className="auth-mobile-brand"><Headphones size={19} /> SONAR</div>
           <header className="auth-heading">
             <h2 id="login-title">{t('auth.welcome')}</h2>

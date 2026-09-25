@@ -92,18 +92,21 @@ export const Navbar = ({
   useEffect(() => {
     const handleCustomizationChange = (e) => {
       if (e.detail?.equippedFrame !== undefined) setEquippedFrame(e.detail.equippedFrame);
+      if (e.detail?.sonarPoints !== undefined) setUserPoints(Number(e.detail.sonarPoints));
     };
-    const handlePointsAwarded = () => {
+    const handlePointsAwarded = (e) => {
       try {
-        const p = Number(localStorage.getItem('sonar_user_points') || 1250);
+        const p = e.detail?.points !== undefined ? Number(e.detail.points) : Number(localStorage.getItem('sonar_user_points') || 1250);
         setUserPoints(p);
       } catch {}
     };
     window.addEventListener('sonar:profile-customization-changed', handleCustomizationChange);
     window.addEventListener('sonar:points-awarded', handlePointsAwarded);
+    window.addEventListener('sonar:points-updated', handlePointsAwarded);
     return () => {
       window.removeEventListener('sonar:profile-customization-changed', handleCustomizationChange);
       window.removeEventListener('sonar:points-awarded', handlePointsAwarded);
+      window.removeEventListener('sonar:points-updated', handlePointsAwarded);
     };
   }, []);
 
@@ -342,7 +345,7 @@ export const Navbar = ({
                 >
                   {/* Selector de alcance */}
                   <div className="flex items-center gap-1 p-2 border-b border-[var(--border-subtle)]">
-                    {SEARCH_SCOPES.map((scope) => {
+                    {searchScopes.map((scope) => {
                       const isActiveScope = navScope === scope.id;
                       const scopeCount =
                         scope.id === 'tracks'

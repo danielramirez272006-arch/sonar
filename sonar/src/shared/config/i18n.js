@@ -190,6 +190,7 @@ export const TRANSLATIONS = {
       'rewards.valve_tube': 'Marco Tubo Valvular Retro',
       'rewards.avatar_frames': 'Marcos de Avatar',
       'passport.ears_hifi': 'Oído de Alta Fidelidad',
+      'hero.lyrics': 'Letras',
     },
   },
   en: {
@@ -370,6 +371,7 @@ export const TRANSLATIONS = {
       'rewards.valve_tube': 'Retro Vacuum Tube Frame',
       'rewards.avatar_frames': 'Avatar Frames',
       'passport.ears_hifi': 'High Fidelity Ear',
+      'hero.lyrics': 'Lyrics',
     },
   },
   zh: {
@@ -550,6 +552,7 @@ export const TRANSLATIONS = {
       'rewards.valve_tube': '复古电子管头像框',
       'rewards.avatar_frames': '头像框',
       'passport.ears_hifi': '高保真金耳朵',
+      'hero.lyrics': '歌词',
     },
   },
   fr: {
@@ -730,6 +733,7 @@ export const TRANSLATIONS = {
       'rewards.valve_tube': 'Cadre tube sous vide rétro',
       'rewards.avatar_frames': 'Cadres d’avatar',
       'passport.ears_hifi': 'Oreille Haute Fidélité',
+      'hero.lyrics': 'Paroles',
     },
   },
   it: {
@@ -910,6 +914,7 @@ export const TRANSLATIONS = {
       'rewards.valve_tube': 'Cornice tubo termoionico retro',
       'rewards.avatar_frames': 'Cornici avatar',
       'passport.ears_hifi': 'Orecchio ad Alta Fedeltà',
+      'hero.lyrics': 'Testi',
     },
   },
   ja: {
@@ -1020,7 +1025,7 @@ export const TRANSLATIONS = {
       // Passport & Stats
       'passport.title': 'オーディオファイルパスポート',
       'passport.system_calibrated': 'システム校准済み',
-      'passport.melomane_sonar': 'Sonar 音楽ファン',
+      'passport.melomane_sonar': 'Sonar 音乐ファン',
       'passport.rank_novice': 'ビギナーオーディオファイル',
       'passport.rank_advanced': 'アドバンスHi-Fiキュレーター',
       'passport.rank_master': '周波数マスター',
@@ -1090,6 +1095,7 @@ export const TRANSLATIONS = {
       'rewards.valve_tube': 'レトロ真空管フレーム',
       'rewards.avatar_frames': 'アバターフレーム',
       'passport.ears_hifi': 'ハイファイ・イヤー',
+      'hero.lyrics': '歌詞',
     },
   },
 };
