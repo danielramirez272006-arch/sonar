@@ -142,6 +142,31 @@ const TRANSLATIONS = {
     'passport.badges_title': 'Insignias & Logros Acústicos',
     'passport.badges_subtitle': 'Desbloquea hitos escuchando, reseñando y configurando tu experiencia Hi-Fi.',
     'passport.badges_unlocked_count': 'Desbloqueados',
+
+    // Auth
+    'auth.welcome': '¡Hola de nuevo!',
+    'auth.login_subtitle': 'Ingresa a tu cuenta de SONAR para continuar explorando la mejor música audiófila.',
+    'auth.google_login': 'Continuar con Google',
+    'auth.or_email': 'o ingresa con tu correo',
+    'auth.email_label': 'Correo Electrónico',
+    'auth.password_label': 'Contraseña',
+    'auth.forgot_password': '¿Olvidaste tu contraseña?',
+    'auth.enter_btn': 'Entrar a SONAR',
+    'auth.no_account': '¿No tienes una cuenta?',
+    'auth.create_account': 'Crear una cuenta',
+    'auth.register_title': 'Únete a SONAR',
+    'auth.register_subtitle': 'Crea tu cuenta y vive la mejor experiencia de escucha.',
+
+    // Player & UI
+    'player.now_playing': 'Reproduciendo ahora',
+    'player.pause': 'Pausar',
+    'player.play': 'Reproducir',
+    'common.language': 'Idioma',
+    'common.select_language': 'Seleccionar idioma',
+    'common.loading': 'Cargando...',
+    'common.save': 'Guardar',
+    'common.cancel': 'Cancelar',
+    'common.close': 'Cerrar',
   },
   en: {
     // Nav
@@ -276,6 +301,31 @@ const TRANSLATIONS = {
     'passport.badges_title': 'Badges & Acoustic Achievements',
     'passport.badges_subtitle': 'Unlock milestones by listening, reviewing and setting up your Hi-Fi experience.',
     'passport.badges_unlocked_count': 'Unlocked',
+
+    // Auth
+    'auth.welcome': 'Welcome back!',
+    'auth.login_subtitle': 'Log in to your SONAR account to keep exploring audiophile quality music.',
+    'auth.google_login': 'Continue with Google',
+    'auth.or_email': 'or log in with your email',
+    'auth.email_label': 'Email Address',
+    'auth.password_label': 'Password',
+    'auth.forgot_password': 'Forgot your password?',
+    'auth.enter_btn': 'Enter SONAR',
+    'auth.no_account': "Don't have an account?",
+    'auth.create_account': 'Create an account',
+    'auth.register_title': 'Join SONAR',
+    'auth.register_subtitle': 'Create your account and experience premium listening.',
+
+    // Player & UI
+    'player.now_playing': 'Now Playing',
+    'player.pause': 'Pause',
+    'player.play': 'Play',
+    'common.language': 'Language',
+    'common.select_language': 'Select language',
+    'common.loading': 'Loading...',
+    'common.save': 'Save',
+    'common.cancel': 'Cancel',
+    'common.close': 'Close',
   },
   zh: {
     // Nav
@@ -410,6 +460,31 @@ const TRANSLATIONS = {
     'passport.badges_title': '徽章与声学成就',
     'passport.badges_subtitle': '通过聆听、评测和配置您的 Hi-Fi 体验解锁里程碑。',
     'passport.badges_unlocked_count': '已解锁',
+
+    // Auth
+    'auth.welcome': '欢迎回来！',
+    'auth.login_subtitle': '登录您的 SONAR 帐户，继续探索高品质发烧音乐。',
+    'auth.google_login': '使用 Google 账号登录',
+    'auth.or_email': '或使用电子邮箱登录',
+    'auth.email_label': '电子邮箱',
+    'auth.password_label': '密码',
+    'auth.forgot_password': '忘记密码？',
+    'auth.enter_btn': '进入 SONAR',
+    'auth.no_account': '还没有帐户？',
+    'auth.create_account': '创建新帐户',
+    'auth.register_title': '加入 SONAR',
+    'auth.register_subtitle': '创建您的帐户，开启尊享听觉体验。',
+
+    // Player & UI
+    'player.now_playing': '正在播放',
+    'player.pause': '暂停',
+    'player.play': '播放',
+    'common.language': '语言',
+    'common.select_language': '选择语言',
+    'common.loading': '加载中...',
+    'common.save': '保存',
+    'common.cancel': '取消',
+    'common.close': '关闭',
   },
   fr: {
     // Nav
@@ -544,6 +619,31 @@ const TRANSLATIONS = {
     'passport.badges_title': 'Badges et accomplissements acoustiques',
     'passport.badges_subtitle': 'Débloquez des jalons en écoutant, donnant votre avis et configurant votre expérience Hi-Fi.',
     'passport.badges_unlocked_count': 'Débloqués',
+
+    // Auth
+    'auth.welcome': 'Bon retour !',
+    'auth.login_subtitle': 'Connectez-vous à votre compte SONAR pour poursuivre votre exploration musicale.',
+    'auth.google_login': 'Continuer avec Google',
+    'auth.or_email': 'ou connectez-vous par e-mail',
+    'auth.email_label': 'Adresse e-mail',
+    'auth.password_label': 'Mot de passe',
+    'auth.forgot_password': 'Mot de passe oublié ?',
+    'auth.enter_btn': 'Entrer dans SONAR',
+    'auth.no_account': "Vous n'avez pas de compte ?",
+    'auth.create_account': 'Créer un compte',
+    'auth.register_title': 'Rejoignez SONAR',
+    'auth.register_subtitle': 'Créez votre compte et vivez une expérience d’écoute exceptionnelle.',
+
+    // Player & UI
+    'player.now_playing': 'En lecture',
+    'player.pause': 'Pause',
+    'player.play': 'Lecture',
+    'common.language': 'Langue',
+    'common.select_language': 'Choisir la langue',
+    'common.loading': 'Chargement...',
+    'common.save': 'Enregistrer',
+    'common.cancel': 'Annuler',
+    'common.close': 'Fermer',
   },
   it: {
     // Nav
@@ -678,6 +778,31 @@ const TRANSLATIONS = {
     'passport.badges_title': 'Distintivi e traguardi acustici',
     'passport.badges_subtitle': 'Sblocca traguardi ascoltando, recensendo e configurando la tua esperienza Hi-Fi.',
     'passport.badges_unlocked_count': 'Sbloccat',
+
+    // Auth
+    'auth.welcome': 'Bentornato!',
+    'auth.login_subtitle': 'Accedi al tuo account SONAR per continuare ad ascoltare la musica migliore.',
+    'auth.google_login': 'Continua con Google',
+    'auth.or_email': 'o accedi con la tua email',
+    'auth.email_label': 'Indirizzo Email',
+    'auth.password_label': 'Password',
+    'auth.forgot_password': 'Password dimenticata?',
+    'auth.enter_btn': 'Entra in SONAR',
+    'auth.no_account': 'Non hai un account?',
+    'auth.create_account': 'Crea un account',
+    'auth.register_title': 'Unisciti a SONAR',
+    'auth.register_subtitle': 'Crea il tuo account per una straordinaria esperienza d’ascolto.',
+
+    // Player & UI
+    'player.now_playing': 'In riproduzione',
+    'player.pause': 'Pausa',
+    'player.play': 'Riproduci',
+    'common.language': 'Lingua',
+    'common.select_language': 'Seleziona lingua',
+    'common.loading': 'Caricamento...',
+    'common.save': 'Salva',
+    'common.cancel': 'Annulla',
+    'common.close': 'Chiudi',
   },
   ja: {
     // Nav
@@ -812,6 +937,31 @@ const TRANSLATIONS = {
     'passport.badges_title': 'バッジ＆アコースティック実績',
     'passport.badges_subtitle': '試聴、レビュー、Hi-Fi設定でマイルストーンを解除しましょう。',
     'passport.badges_unlocked_count': '解除済み',
+
+    // Auth
+    'auth.welcome': 'おかえりなさい！',
+    'auth.login_subtitle': 'SONARアカウントにログインして、究極の音楽体験を続けましょう。',
+    'auth.google_login': 'Googleでログイン',
+    'auth.or_email': 'またはメールアドレスでログイン',
+    'auth.email_label': 'メールアドレス',
+    'auth.password_label': 'パスワード',
+    'auth.forgot_password': 'パスワードをお忘れですか？',
+    'auth.enter_btn': 'SONARに入る',
+    'auth.no_account': 'アカウントをお持ちではありませんか？',
+    'auth.create_account': 'アカウントを作成',
+    'auth.register_title': 'SONARに参加',
+    'auth.register_subtitle': 'アカウントを作成して、プレミアムなリスニング体験を。',
+
+    // Player & UI
+    'player.now_playing': '再生中',
+    'player.pause': '一時停止',
+    'player.play': '再生',
+    'common.language': '言語',
+    'common.select_language': '言語を選択',
+    'common.loading': '読み込み中...',
+    'common.save': '保存',
+    'common.cancel': 'キャンセル',
+    'common.close': '閉じる',
   },
 };
 
