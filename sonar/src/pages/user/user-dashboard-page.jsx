@@ -17,6 +17,7 @@ import {
   getFallbackCoverForAlbum,
 } from '../../shared/services/recommendations-service';
 import ReviewFeedCard from '../../features/reviews/components/review-feed-card';
+import AudiophilePassportTab from '../../features/profile/components/audiophile-passport-tab';
 
 export const UserDashboardPage = () => {
   const { user, updateUser, updateParentalControl, isParentalControlActive } = useAuth();
@@ -31,7 +32,7 @@ export const UserDashboardPage = () => {
         return pendingTab;
       }
     } catch {}
-    return 'recommendations';
+    return 'passport';
   });
   const [collectionFilter, setCollectionFilter] = useState('Todos');
   const [genreFilter, setGenreFilter] = useState('Todos');
@@ -216,6 +217,26 @@ export const UserDashboardPage = () => {
           <div className="flex items-center gap-4 sm:gap-8 border-b border-[#e6d5e2] dark:border-white/10 overflow-x-auto pb-1 scrollbar-none">
             <button
               type="button"
+              onClick={() => setActiveTab('passport')}
+              className={`pb-3 text-sm sm:text-base font-bold transition-all cursor-pointer relative whitespace-nowrap flex items-center gap-2 ${
+                activeTab === 'passport'
+                  ? 'text-[#B80C09]'
+                  : 'text-[#5c435a] dark:text-[#B89CB0] hover:text-[#231123] dark:hover:text-white'
+              }`}
+            >
+              <span className="material-symbols-outlined text-[18px]">badge</span>
+              <span>Pasaporte & Estadísticas</span>
+              {activeTab === 'passport' && (
+                <motion.div
+                  layoutId="dashboard-tab-indicator"
+                  className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#B80C09]"
+                  transition={{ type: 'spring', stiffness: 400, damping: 30 }}
+                />
+              )}
+            </button>
+
+            <button
+              type="button"
               onClick={() => setActiveTab('recommendations')}
               className={`pb-3 text-sm sm:text-base font-bold transition-all cursor-pointer relative whitespace-nowrap flex items-center gap-2 ${
                 activeTab === 'recommendations'
@@ -387,6 +408,20 @@ export const UserDashboardPage = () => {
               </button>
             </div>
           </div>
+
+          {/* TAB 0: PASAPORTE Y ESTADÍSTICAS AUDIÓFILAS */}
+          {activeTab === 'passport' && (
+            <AudiophilePassportTab
+              user={user}
+              savedAlbums={savedAlbums}
+              userReviews={userReviews}
+              recentlyPlayed={recentlyPlayed}
+              followedArtists={followedArtists}
+              followedUsers={followedUsers}
+              gearSetup={gearSetup}
+              onExportBackup={handleExportBackup}
+            />
+          )}
 
           {/* TAB 1: RECOMENDACIONES PERSONALIZADAS */}
           {activeTab === 'recommendations' && (
