@@ -8,11 +8,13 @@ import {
 } from '../../../shared/services/recommendations-service';
 import { usePlayer } from '../../../shared/context/player-context';
 import { useAuth } from '../../../shared/context/auth-context';
+import { useLanguage } from '../../../shared/context/language-context';
 import { interactionsService } from '../../../shared/services/interactions-service';
 import Toast from '../../../shared/components/ui/toast';
 
 export const TrendingGrid = () => {
   const { user, isJunior, isParentalControlActive } = useAuth() || {};
+  const { t } = useLanguage();
   const [activeTab, setActiveTab] = useState(() => (isJunior || isParentalControlActive ? 'junior-safe' : (user ? 'for-you' : 'week')));
   const [viewMode, setViewMode] = useState('grid'); // 'grid' | 'list'
   const [sortBy, setSortBy] = useState('rating'); // 'rating' | 'trending' | 'year'
@@ -64,15 +66,15 @@ export const TrendingGrid = () => {
 
   const tabs = useMemo(() => {
     const list = [
-      { id: 'for-you', label: 'Para ti' },
-      { id: 'junior-safe', label: '⭐ Modo Kids & Familiar' },
-      { id: 'week', label: 'Esta semana' },
-      { id: 'acclaimed', label: 'Más aclamados' },
-      { id: 'news', label: 'Novedades' },
-      { id: 'classics', label: 'Clásicos' },
+      { id: 'for-you', label: t('explore.tab_for_you', 'Para ti') },
+      { id: 'junior-safe', label: t('explore.tab_kids_family', '⭐ Modo Kids & Familiar') },
+      { id: 'week', label: t('explore.tab_this_week', 'Esta semana') },
+      { id: 'acclaimed', label: t('explore.tab_top_acclaimed', 'Más aclamados') },
+      { id: 'news', label: t('explore.tab_new_releases', 'Novedades') },
+      { id: 'classics', label: t('explore.tab_classics', 'Clásicos') },
     ];
     return list;
-  }, []);
+  }, [t]);
 
   const handleCreateAccount = () => {
     if (user) {
@@ -172,7 +174,7 @@ export const TrendingGrid = () => {
     const uniqueList = Array.from(uniqueMap.values());
 
     if (activeTab === 'junior-safe') {
-      // Filtrar estrictamente álbumes sin contenido explícito y con afinidad familiar
+      // Filtrar strictly álbumes sin contenido explícito y con afinidad familiar
       list = uniqueList.filter(a => !a.explicit && !a.explicit_lyrics);
       list.sort((a, b) => (b.isKidSafe ? 1 : 0) - (a.isKidSafe ? 1 : 0) || parseFloat(b.rating) - parseFloat(a.rating));
       return list.slice(0, 8);
@@ -252,10 +254,10 @@ export const TrendingGrid = () => {
         <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 border-b border-[#e6d5e2] dark:border-white/10 pb-4">
           <div className="flex flex-col gap-1">
             <span className="text-xs uppercase tracking-widest text-[#5c1d5e] dark:text-pink-300 font-extrabold">
-              RADAR MUSICAL · EXPLORACIÓN
+              {t('explore.radar_eyebrow', 'RADAR MUSICAL · EXPLORACIÓN')}
             </span>
             <h2 className="text-2xl sm:text-3xl lg:text-4xl text-[#231123] dark:text-[#FAF5F8] font-extrabold">
-              Canciones en Tendencia
+              {t('explore.radar_title', 'Canciones en Tendencia')}
             </h2>
           </div>
 
@@ -303,9 +305,9 @@ export const TrendingGrid = () => {
                 onChange={(e) => setSortBy(e.target.value)}
                 className="px-3 py-1.5 rounded-xl bg-white dark:bg-[#4B2840] border border-[#e6d5e2] dark:border-white/10 text-xs font-bold text-[#231123] dark:text-gray-200 cursor-pointer shadow-xs focus:outline-none"
               >
-                <option value="rating">⭐ Calificación</option>
-                <option value="trending">🔥 Popularidad</option>
-                <option value="year">📅 Año</option>
+                <option value="rating">{t('explore.sort_rating', '⭐ Calificación')}</option>
+                <option value="trending">{t('explore.sort_trending', '🔥 Popularidad')}</option>
+                <option value="year">{t('explore.sort_year', '📅 Año')}</option>
               </select>
 
               <div className="flex items-center p-1 rounded-xl bg-white dark:bg-[#4B2840] border border-[#e6d5e2] dark:border-white/10 shadow-xs">
@@ -315,7 +317,7 @@ export const TrendingGrid = () => {
                   className={`p-1.5 rounded-lg transition-colors cursor-pointer ${
                     viewMode === 'grid' ? 'bg-[#B80C09] text-white' : 'text-[#5c435a] dark:text-gray-300 hover:text-[#B80C09]'
                   }`}
-                  title="Vista Cuadrícula"
+                  title={t('explore.view_grid', 'Vista Cuadrícula')}
                 >
                   <span className="material-symbols-outlined text-[18px]">grid_view</span>
                 </button>
@@ -325,7 +327,7 @@ export const TrendingGrid = () => {
                   className={`p-1.5 rounded-lg transition-colors cursor-pointer ${
                     viewMode === 'list' ? 'bg-[#B80C09] text-white' : 'text-[#5c435a] dark:text-gray-300 hover:text-[#B80C09]'
                   }`}
-                  title="Vista Lista"
+                  title={t('explore.view_list', 'Vista Lista')}
                 >
                   <span className="material-symbols-outlined text-[18px]">view_list</span>
                 </button>
@@ -399,12 +401,12 @@ export const TrendingGrid = () => {
                         title="Escribir crítica"
                       >
                         <span className="material-symbols-outlined text-[16px]">rate_review</span>
-                        <span>Criticar</span>
+                        <span>{t('explore.review_btn', 'Criticar')}</span>
                       </button>
                       <button
                         onClick={() => handlePlayAlbum(album)}
                         aria-label={`Reproducir muestra de ${album.title}`}
-                        title={isItemPlaying ? 'Pausar' : 'Escuchar muestra de 30s'}
+                        title={isItemPlaying ? t('player.pause', 'Pausar') : 'Escuchar muestra'}
                         className={`pointer-events-auto w-9 h-9 rounded-full ${
                           isItemPlaying ? 'bg-[#B80C09] text-white' : 'bg-white text-[#231123]'
                         } flex items-center justify-center hover:scale-110 transition-transform shadow-md cursor-pointer`}
@@ -511,7 +513,7 @@ export const TrendingGrid = () => {
                         <span className="material-symbols-outlined text-[16px]">
                           {isItemPlaying ? 'pause' : 'play_arrow'}
                         </span>
-                        <span>{isItemPlaying ? 'Pausar' : 'Muestra'}</span>
+                        <span>{isItemPlaying ? t('player.pause', 'Pausar') : t('explore.sample_play', 'Muestra')}</span>
                       </button>
 
                       <button
@@ -520,7 +522,7 @@ export const TrendingGrid = () => {
                         type="button"
                       >
                         <span className="material-symbols-outlined text-[16px]">rate_review</span>
-                        <span className="hidden sm:inline">Criticar</span>
+                        <span className="hidden sm:inline">{t('explore.review_btn', 'Criticar')}</span>
                       </button>
 
                       <button
@@ -554,13 +556,13 @@ export const TrendingGrid = () => {
           <div className="relative z-10 flex flex-col gap-2 max-w-xl text-center md:text-left">
             <div className="inline-flex items-center gap-2 self-center md:self-start text-pink-200 text-xs uppercase tracking-widest font-bold">
               <span className="material-symbols-outlined text-[16px] text-[#B80C09]">album</span>
-              <span>Bitácora de Escucha Personal</span>
+              <span>{t('cta.personal_log_eyebrow', 'Bitácora de Escucha Personal')}</span>
             </div>
             <h3 className="text-2xl sm:text-3xl text-white font-extrabold">
-              ¿Listo para registrar tu viaje musical?
+              {t('cta.personal_log_title', '¿Listo para registrar tu viaje musical?')}
             </h3>
             <p className="text-sm sm:text-base text-white/85">
-              Califica cada surco, escribe ensayos detallados y conecta con audiófilos que sienten la música con la misma intensidad que tú.
+              {t('cta.personal_log_subtitle', 'Califica cada surco, escribe ensayos detallados y conecta con audiófilos que sienten la música con la misma intensidad que tú.')}
             </p>
           </div>
 
@@ -572,7 +574,7 @@ export const TrendingGrid = () => {
               className="px-6 py-3.5 rounded-xl bg-[#B80C09] text-white text-sm uppercase tracking-wider shadow-[0_10px_25px_-6px_rgba(184,12,9,0.6)] hover:bg-[#9c0a07] transition-all font-bold cursor-pointer"
               type="button"
             >
-              {user ? 'Ir a Mi Perfil' : 'Crear Cuenta Gratis'}
+              {user ? t('cta.go_to_profile', 'IR A MI PERFIL') : t('cta.create_free_account', 'CREAR CUENTA GRATIS')}
             </motion.button>
             <motion.button
               whileHover={{ scale: 1.04, y: -2 }}
@@ -581,7 +583,7 @@ export const TrendingGrid = () => {
               className="px-6 py-3.5 rounded-xl bg-white/10 hover:bg-white/15 text-white border border-white/20 text-sm uppercase tracking-wider backdrop-blur-md transition-all font-semibold cursor-pointer"
               type="button"
             >
-              Explorar Catálogo Completo
+              {t('cta.explore_full_catalog', 'EXPLORAR CATÁLOGO COMPLETO')}
             </motion.button>
           </div>
         </div>

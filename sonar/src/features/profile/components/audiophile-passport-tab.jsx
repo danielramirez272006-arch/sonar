@@ -2,6 +2,7 @@ import React, { useState, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Avatar } from '../../../shared/components/ui/avatar';
 import { BlobatarAvatar } from '../../../shared/components/ui/blobatar-avatar';
+import { useLanguage } from '../../../shared/context/language-context';
 import AudiophileMonthlyWrapped from './audiophile-monthly-wrapped';
 import AudiophileQuests from './audiophile-quests';
 
@@ -15,6 +16,7 @@ export const AudiophilePassportTab = ({
   gearSetup = {},
   onExportBackup,
 }) => {
+  const { t } = useLanguage();
   const [copiedLink, setCopiedLink] = useState(false);
   const [selectedBadge, setSelectedBadge] = useState(null);
 
@@ -67,16 +69,16 @@ export const AudiophilePassportTab = ({
       .slice(0, 5);
 
     // Rango Audiófilo
-    let rankTitle = 'Melómano Iniciado';
+    let rankTitle = t('passport.rank_novice', 'Melómano Iniciado');
     let rankColor = '#003844';
     if (userReviews.length >= 10 || savedAlbums.length >= 20) {
-      rankTitle = 'Maestro de la Frecuencia (Master Audiophile)';
+      rankTitle = t('passport.rank_master', 'Maestro de la Frecuencia');
       rankColor = '#B80C09';
     } else if (userReviews.length >= 4 || savedAlbums.length >= 8) {
-      rankTitle = 'Curador Hi-Fi Avanzado';
+      rankTitle = t('passport.rank_advanced', 'Curador Hi-Fi Avanzado');
       rankColor = '#4B2840';
     } else if (userReviews.length >= 1 || savedAlbums.length >= 3) {
-      rankTitle = 'Explorador Acústico';
+      rankTitle = t('passport.rank_novice', 'Melómano Iniciado');
       rankColor = '#003844';
     }
 
@@ -90,7 +92,7 @@ export const AudiophilePassportTab = ({
       totalHistory: recentlyPlayed.length,
       totalFollowing: followedArtists.length + followedUsers.length,
     };
-  }, [user, userReviews, savedAlbums, recentlyPlayed, followedArtists, followedUsers]);
+  }, [user, userReviews, savedAlbums, recentlyPlayed, followedArtists, followedUsers, t]);
 
   // Lista de insignias y logros calculados dinámicamente
   const badges = useMemo(() => [
@@ -205,16 +207,16 @@ export const AudiophilePassportTab = ({
             <div className="flex flex-col text-center sm:text-left gap-1.5">
               <div className="flex flex-wrap items-center justify-center sm:justify-start gap-2">
                 <span className="text-[11px] font-mono tracking-widest text-[#DCDCDD]/70 uppercase bg-white/10 px-2.5 py-0.5 rounded-md border border-white/10">
-                  PASAPORTE AUDIÓFILO #{passportNumber}
+                  {t('passport.title', 'PASAPORTE AUDIÓFILO')} #{passportNumber}
                 </span>
                 <span className="text-[11px] font-bold text-emerald-300 bg-emerald-950/60 px-2 py-0.5 rounded-md border border-emerald-500/30 flex items-center gap-1">
                   <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-                  SISTEMA CALIBRADO
+                  {t('passport.system_calibrated', 'SISTEMA CALIBRADO')}
                 </span>
               </div>
 
               <h2 className="text-2xl sm:text-3xl font-black text-white tracking-tight">
-                {user?.name || 'Melómano Sonar'}
+                {user?.name || t('passport.melomane_sonar', 'Melómano Sonar')}
               </h2>
               <p className="text-sm font-medium text-pink-200/80">
                 {user?.username ? `@${user.username.replace('@', '')}` : '@audiophile'} • Rango:{' '}
@@ -246,7 +248,7 @@ export const AudiophilePassportTab = ({
                 <span className="material-symbols-outlined text-[16px] text-[#B80C09]">
                   {copiedLink ? 'check_circle' : 'share'}
                 </span>
-                <span>{copiedLink ? '¡Enlace Copiado!' : 'Compartir Pasaporte'}</span>
+                <span>{copiedLink ? t('passport.link_copied', '¡Enlace Copiado!') : t('passport.share_passport', 'Compartir Pasaporte')}</span>
               </button>
 
               {onExportBackup && (
@@ -263,7 +265,7 @@ export const AudiophilePassportTab = ({
 
             <div className="text-right">
               <span className="text-[10px] text-white/60 uppercase font-mono tracking-wider block">
-                Frecuencia de Muestreo
+                {t('passport.sampling_rate', 'Frecuencia de Muestreo')}
               </span>
               <span className="text-xs font-mono font-bold text-pink-300">
                 192 kHz / 24-bit Hi-Res FLAC
@@ -284,7 +286,7 @@ export const AudiophilePassportTab = ({
         >
           <div className="flex items-center justify-between">
             <span className="text-xs font-bold text-[#5c435a] dark:text-[#B89CB0] uppercase tracking-wider">
-              En Colección
+              {t('passport.stat_in_collection', 'EN COLECCIÓN')}
             </span>
             <span className="p-2 rounded-xl bg-red-50 dark:bg-[#B80C09]/20 text-[#B80C09]">
               <span className="material-symbols-outlined text-[20px]">collections_bookmark</span>
@@ -295,7 +297,7 @@ export const AudiophilePassportTab = ({
               {stats.totalSaved}
             </span>
             <p className="text-xs text-[#5c435a] dark:text-pink-200/80 mt-1 font-medium">
-              Álbumes y vinilos archivados
+              {t('passport.stat_in_collection_sub', 'Álbumes y vinilos archivados')}
             </p>
           </div>
         </motion.div>
@@ -309,7 +311,7 @@ export const AudiophilePassportTab = ({
         >
           <div className="flex items-center justify-between">
             <span className="text-xs font-bold text-[#5c435a] dark:text-[#B89CB0] uppercase tracking-wider">
-              Veredicto Crítico
+              {t('passport.stat_critical_verdict', 'VEREDICTO CRÍTICO')}
             </span>
             <span className="p-2 rounded-xl bg-amber-50 dark:bg-amber-500/20 text-amber-500">
               <span className="material-symbols-outlined text-[20px]">star</span>
@@ -323,7 +325,7 @@ export const AudiophilePassportTab = ({
               <span className="text-xs font-bold text-[#5c435a] dark:text-[#B89CB0]">/ 5.0</span>
             </div>
             <p className="text-xs text-[#5c435a] dark:text-pink-200/80 mt-1 font-medium">
-              {stats.totalReviews} {stats.totalReviews === 1 ? 'reseña publicada' : 'reseñas publicadas'}
+              {stats.totalReviews} {t('passport.stat_critical_verdict_sub', 'reseñas publicadas')}
             </p>
           </div>
         </motion.div>
@@ -337,7 +339,7 @@ export const AudiophilePassportTab = ({
         >
           <div className="flex items-center justify-between">
             <span className="text-xs font-bold text-[#5c435a] dark:text-[#B89CB0] uppercase tracking-wider">
-              Sesiones de Escucha
+              {t('passport.stat_listening_sessions', 'SESIONES DE ESCUCHA')}
             </span>
             <span className="p-2 rounded-xl bg-teal-50 dark:bg-[#003844]/40 text-[#003844] dark:text-teal-300">
               <span className="material-symbols-outlined text-[20px]">graphic_eq</span>
@@ -348,7 +350,7 @@ export const AudiophilePassportTab = ({
               {stats.totalHistory}
             </span>
             <p className="text-xs text-[#5c435a] dark:text-pink-200/80 mt-1 font-medium">
-              Pistas en alta definición
+              {t('passport.stat_listening_sessions_sub', 'Pistas en alta definición')}
             </p>
           </div>
         </motion.div>
@@ -362,7 +364,7 @@ export const AudiophilePassportTab = ({
         >
           <div className="flex items-center justify-between">
             <span className="text-xs font-bold text-[#5c435a] dark:text-[#B89CB0] uppercase tracking-wider">
-              Red Acústica
+              {t('passport.stat_acoustic_network', 'RED ACÚSTICA')}
             </span>
             <span className="p-2 rounded-xl bg-purple-50 dark:bg-purple-900/30 text-purple-600 dark:text-purple-300">
               <span className="material-symbols-outlined text-[20px]">hub</span>
@@ -373,7 +375,7 @@ export const AudiophilePassportTab = ({
               {stats.totalFollowing}
             </span>
             <p className="text-xs text-[#5c435a] dark:text-pink-200/80 mt-1 font-medium">
-              Artistas y audiófilos seguidos
+              {t('passport.stat_acoustic_network_sub', 'Artistas y audiófilos seguidos')}
             </p>
           </div>
         </motion.div>
@@ -387,11 +389,11 @@ export const AudiophilePassportTab = ({
             <div className="flex items-center gap-2.5">
               <span className="material-symbols-outlined text-[22px] text-[#B80C09]">tune</span>
               <h3 className="text-base font-bold text-[#231123] dark:text-white">
-                Distribución de Afinidad Sonora
+                {t('passport.affinity_distribution', 'Distribución de Afinidad Sonora')}
               </h3>
             </div>
             <span className="text-xs font-mono font-bold text-[#B80C09] dark:text-pink-300">
-              Top 5 Géneros
+              {t('passport.top_5_genres', 'Top 5 Géneros')}
             </span>
           </div>
 
@@ -429,7 +431,7 @@ export const AudiophilePassportTab = ({
           </div>
 
           <p className="text-xs text-[#5c435a] dark:text-[#B89CB0]">
-            Calculado en tiempo real en base a tus preferencias seleccionadas, reproducciones y colecciones guardadas.
+            {t('passport.realtime_calc_desc', 'Calculado en tiempo real en base a tus preferencias seleccionadas, reproducciones y colecciones guardadas.')}
           </p>
         </div>
 
@@ -438,27 +440,27 @@ export const AudiophilePassportTab = ({
           <div className="flex items-center gap-2">
             <span className="material-symbols-outlined text-[22px] text-teal-400">speed</span>
             <h3 className="text-base font-bold text-[#231123] dark:text-white">
-              Calibración del Sistema
+              {t('passport.system_calibration', 'Calibración del Sistema')}
             </h3>
           </div>
 
           <div className="flex flex-col gap-3 text-xs">
             <div className="p-3 rounded-xl bg-white dark:bg-black/20 border border-[#e6d5e2] dark:border-white/10">
-              <span className="text-[#5c435a] dark:text-pink-200/70 block text-[11px]">Fuente Preferida</span>
+              <span className="text-[#5c435a] dark:text-pink-200/70 block text-[11px]">{t('passport.preferred_source', 'Fuente Preferida')}</span>
               <span className="font-bold text-[#231123] dark:text-white text-sm">
                 {gearSetup.favoriteFormat || 'Vinilo 180g Prensado Japonés'}
               </span>
             </div>
 
             <div className="p-3 rounded-xl bg-white dark:bg-black/20 border border-[#e6d5e2] dark:border-white/10">
-              <span className="text-[#5c435a] dark:text-pink-200/70 block text-[11px]">DAC / Procesador</span>
+              <span className="text-[#5c435a] dark:text-pink-200/70 block text-[11px]">{t('passport.dac_processor', 'DAC / Procesador')}</span>
               <span className="font-bold text-[#231123] dark:text-white text-sm">
                 {gearSetup.dac || 'Cambridge Audio DacMagic 200M'}
               </span>
             </div>
 
             <div className="p-3 rounded-xl bg-white dark:bg-black/20 border border-[#e6d5e2] dark:border-white/10">
-              <span className="text-[#5c435a] dark:text-pink-200/70 block text-[11px]">Cápsula / Aguja</span>
+              <span className="text-[#5c435a] dark:text-pink-200/70 block text-[11px]">{t('passport.cartridge_needle', 'Cápsula / Aguja')}</span>
               <span className="font-bold text-[#231123] dark:text-white text-sm">
                 {gearSetup.stylus || 'Ortofon 2M Blue'}
               </span>
@@ -473,7 +475,7 @@ export const AudiophilePassportTab = ({
             }}
             className="text-xs font-bold text-[#B80C09] dark:text-pink-300 hover:underline flex items-center justify-center gap-1 mt-1"
           >
-            <span>Ajustar Equipamiento</span>
+            <span>{t('passport.adjust_equipment', 'Ajustar Equipamiento')}</span>
             <span className="material-symbols-outlined text-[14px]">arrow_forward</span>
           </a>
         </div>
@@ -497,15 +499,15 @@ export const AudiophilePassportTab = ({
             <span className="material-symbols-outlined text-[24px] text-amber-500">workspace_premium</span>
             <div>
               <h3 className="text-lg font-bold text-[#231123] dark:text-white">
-                Insignias & Logros Acústicos
+                {t('passport.badges_title', 'Insignias & Logros Acústicos')}
               </h3>
               <p className="text-xs text-[#5c435a] dark:text-[#B89CB0]">
-                Desbloquea hitos escuchando, reseñando y configurando tu experiencia Hi-Fi.
+                {t('passport.badges_subtitle', 'Desbloquea hitos escuchando, reseñando y configurando tu experiencia Hi-Fi.')}
               </p>
             </div>
           </div>
           <span className="text-xs font-bold text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-500/10 px-3 py-1 rounded-full border border-amber-200 dark:border-amber-500/20">
-            {badges.filter((b) => b.unlocked).length} de {badges.length} Desbloqueados
+            {badges.filter((b) => b.unlocked).length} / {badges.length} {t('passport.badges_unlocked_count', 'Desbloqueados')}
           </span>
         </div>
 
