@@ -8,13 +8,14 @@ import {
 } from '../../../shared/services/recommendations-service';
 import { usePlayer } from '../../../shared/context/player-context';
 import { useAuth } from '../../../shared/context/auth-context';
+import { useTranslation } from 'react-i18next';
 import { useLanguage } from '../../../shared/context/language-context';
 import { interactionsService } from '../../../shared/services/interactions-service';
 import Toast from '../../../shared/components/ui/toast';
 
 export const TrendingGrid = () => {
   const { user, isJunior, isParentalControlActive } = useAuth() || {};
-  const { t } = useLanguage();
+  const { t } = useTranslation();
   const [activeTab, setActiveTab] = useState(() => (isJunior || isParentalControlActive ? 'junior-safe' : (user ? 'for-you' : 'week')));
   const [viewMode, setViewMode] = useState('grid'); // 'grid' | 'list'
   const [sortBy, setSortBy] = useState('rating'); // 'rating' | 'trending' | 'year'

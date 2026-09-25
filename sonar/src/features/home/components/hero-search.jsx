@@ -4,6 +4,7 @@ import { useTheme } from '../../../shared/context/theme-context';
 import { searchAlbums, searchTracks, searchArtists, getAlbumTracks, isKidsSafeTrack } from '../../../shared/services/deezer-service';
 import { usePlayer } from '../../../shared/context/player-context';
 import { useAuth } from '../../../shared/context/auth-context';
+import { useTranslation } from 'react-i18next';
 import { useLanguage } from '../../../shared/context/language-context';
 import { handleImageFallbackError, getFallbackCoverForAlbum } from '../../../shared/services/recommendations-service';
 
@@ -107,7 +108,7 @@ export const HeroSearch = ({ onSearch = () => {}, onSubmit = () => {} }) => {
   const { isDarkMode } = useTheme();
   const { toggleTrack, currentTrack, isPlaying } = usePlayer();
   const { isJunior, isParentalControlActive } = useAuth() || {};
-  const { t } = useLanguage();
+  const { t } = useTranslation();
   const isKidsActive = Boolean(isJunior || isParentalControlActive);
 
   const currentSuggestionsPool = isKidsActive ? KIDS_TYPEWRITER_SUGGESTIONS : TYPEWRITER_SUGGESTIONS;

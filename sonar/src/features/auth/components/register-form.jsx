@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { ArrowRight, Check, Eye, EyeOff, Headphones, Music2, Sparkles, User, Disc3, ShieldCheck, Mail, KeyRound, ArrowLeft, RefreshCw } from 'lucide-react';
 import { useAuth } from '../../../shared/context/auth-context';
+import { useTranslation } from 'react-i18next';
 import { useLanguage } from '../../../shared/context/language-context';
 import { GoogleIcon } from './social-provider-icon';
 import { RotatingReview } from './rotating-review';
@@ -63,7 +64,7 @@ const EditorialPanel = () => (
 
 export const RegisterForm = () => {
   const { register, isLoading } = useAuth();
-  const { t } = useLanguage();
+  const { t } = useTranslation();
   const [step, setStep] = useState('info'); // 'info' | 'otp' | 'password'
   const [formData, setFormData] = useState({
     username: '',

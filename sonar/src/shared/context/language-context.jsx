@@ -2,7 +2,7 @@ import React, { createContext, useContext, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import i18n, { LANGUAGES } from '../config/i18n';
 
-export { LANGUAGES };
+export { LANGUAGES, useTranslation };
 
 const LanguageContext = createContext();
 
@@ -22,11 +22,6 @@ export function LanguageProvider({ children }) {
     document.documentElement.lang = currentLang;
   }, [currentLang]);
 
-  const customT = (key, fallback = '') => {
-    const res = t(key, { defaultValue: fallback });
-    return res;
-  };
-
   const currentLanguageObj = LANGUAGES.find((l) => l.code === currentLang) || LANGUAGES[0];
 
   return (
@@ -34,7 +29,7 @@ export function LanguageProvider({ children }) {
       value={{
         currentLang,
         changeLanguage,
-        t: customT,
+        t,
         languages: LANGUAGES,
         currentLanguageObj,
         i18n: i18nInstance,
@@ -52,3 +47,4 @@ export function useLanguage() {
   }
   return context;
 }
+

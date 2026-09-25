@@ -5,15 +5,10 @@ import { AnimatedLogo } from '../ui/AnimatedLogo';
 import { useTheme } from '../../context/theme-context';
 import { useAuth } from '../../context/auth-context';
 import { usePlayer } from '../../context/player-context';
+import { useTranslation } from 'react-i18next';
 import { useLanguage } from '../../context/language-context';
 import { LanguageSelector } from '../ui/language-selector';
 import { searchEverything, buildNewsHash, NEWS_KINDS } from '../../services/global-search';
-
-const SEARCH_SCOPES = [
-  { id: 'all', label: 'Todo', icon: 'apps' },
-  { id: 'tracks', label: 'Canciones', icon: 'music_note' },
-  { id: 'news', label: 'Noticias', icon: 'newspaper' },
-];
 
 export const Navbar = ({
   links: customLinks = null,
@@ -21,6 +16,17 @@ export const Navbar = ({
   onSearch = null,
   showSearch = true,
 }) => {
+  const { t } = useTranslation();
+  const { isDark, toggleTheme } = useTheme();
+  const { user: authUser, isAuthenticated, logout, isJunior, isParentalControlActive } = useAuth();
+  const { toggleTrack, currentTrack, isPlaying } = usePlayer();
+
+  const searchScopes = useMemo(() => [
+    { id: 'all', label: t('nav.all', 'Todo'), icon: 'apps' },
+    { id: 'tracks', label: t('nav.tracks', 'Canciones'), icon: 'music_note' },
+    { id: 'news', label: t('nav.news', 'Noticias'), icon: 'newspaper' },
+  ], [t]);
+
   const [activeTab, setActiveTab] = useState(() => {
     const hash = window.location.hash.replace(/^#/, '');
     return hash || 'explore';
@@ -36,15 +42,10 @@ export const Navbar = ({
   const navDropdownRef = useRef(null);
   const navDebounceRef = useRef(null);
 
-  const { isDark, toggleTheme } = useTheme();
-  const { user: authUser, isAuthenticated, logout, isJunior, isParentalControlActive } = useAuth();
-  const { toggleTrack, currentTrack, isPlaying } = usePlayer();
-  const { t } = useLanguage();
-
   const defaultNavLinks = useMemo(() => [
-    { id: 'explore', label: t('nav.explore'), path: '#explore' },
-    { id: 'noticias', label: t('nav.news'), path: '#noticias' },
-    { id: 'community', label: t('nav.community'), path: '#community' },
+    { id: 'explore', label: t('nav.explore', 'Explorar'), path: '#explore' },
+    { id: 'noticias', label: t('nav.news', 'Noticias'), path: '#noticias' },
+    { id: 'community', label: t('nav.community', 'Comunidad'), path: '#community' },
   ], [t]);
 
   const links = customLinks || defaultNavLinks;
