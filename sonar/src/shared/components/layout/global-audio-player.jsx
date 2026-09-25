@@ -80,12 +80,13 @@ export const GlobalAudioPlayer = () => {
     const saved = interactionsService.getUserSavedAlbums(userId);
     const map = {};
     saved.forEach((item) => {
-      const idKey = String(item.id);
+      if (!item) return;
+      const idKey = String(item.id || item.albumId || '');
       const trackIdKey = String(item.trackId || '');
-      const titleKey = item.title.toLowerCase();
-      map[idKey] = true;
+      const titleKey = String(item.title || item.name || '').trim().toLowerCase();
+      if (idKey) map[idKey] = true;
       if (trackIdKey) map[trackIdKey] = true;
-      map[titleKey] = true;
+      if (titleKey) map[titleKey] = true;
     });
     setSavedMap(map);
   };
