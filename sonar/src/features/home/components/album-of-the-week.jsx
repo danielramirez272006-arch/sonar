@@ -118,24 +118,29 @@ export const ALL_SPOTLIGHT_ALBUMS = [
 ];
 
 export const AlbumOfTheWeek = () => {
-  const { user } = useAuth() || {};
+  const { user, isJunior, isParentalControlActive } = useAuth() || {};
+  const isKidsActive = Boolean(isJunior || isParentalControlActive);
   const { playTrack, toggleTrack, currentTrack, isPlaying, openReviewModal } = usePlayer();
   const [toastMessage, setToastMessage] = useState(null);
 
   const userPreferences = useMemo(() => {
-    return user?.preferences || ['Art Rock', 'Electrónica'];
-  }, [user]);
+    return user?.preferences || (isKidsActive ? ['Electrónica', 'Art Rock', 'Bandas Sonoras'] : ['Art Rock', 'Electrónica']);
+  }, [user, isKidsActive]);
 
   // Ordenar los álbumes del spotlight priorizando las preferencias del usuario activo
   const sortedSpotlightAlbums = useMemo(() => {
-    return [...ALL_SPOTLIGHT_ALBUMS].sort((a, b) => {
+    let pool = ALL_SPOTLIGHT_ALBUMS;
+    if (isKidsActive) {
+      pool = pool.filter(a => a.title !== 'To Pimp a Butterfly' && a.title !== 'Blonde');
+    }
+    return [...pool].sort((a, b) => {
       const matchA = userPreferences.some(p => p.toLowerCase() === a.genre.toLowerCase() || a.genre.toLowerCase().includes(p.toLowerCase()));
       const matchB = userPreferences.some(p => p.toLowerCase() === b.genre.toLowerCase() || b.genre.toLowerCase().includes(p.toLowerCase()));
       if (matchA && !matchB) return -1;
       if (!matchA && matchB) return 1;
       return b.rating - a.rating;
     });
-  }, [userPreferences]);
+  }, [userPreferences, isKidsActive]);
 
   const [selectedIndex, setSelectedIndex] = useState(0);
 

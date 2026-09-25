@@ -65,7 +65,7 @@ export const TrendingGrid = () => {
   const tabs = useMemo(() => {
     const list = [
       { id: 'for-you', label: 'Para ti' },
-      { id: 'junior-safe', label: '⭐ Junior & Familiar' },
+      { id: 'junior-safe', label: '⭐ Modo Kids & Familiar' },
       { id: 'week', label: 'Esta semana' },
       { id: 'acclaimed', label: 'Más aclamados' },
       { id: 'news', label: 'Novedades' },
@@ -365,8 +365,8 @@ export const TrendingGrid = () => {
                     )}
                     {Boolean(album.isKidSafe) && (
                       <span className="absolute top-2.5 left-2.5 px-2 py-0.5 rounded-md bg-emerald-950/85 text-emerald-300 border border-emerald-500/40 text-[9px] font-black tracking-wider uppercase z-20 flex items-center gap-1 backdrop-blur-md shadow-xs">
-                        <span className="material-symbols-outlined text-[12px]">child_care</span>
-                        <span>JUNIOR SAFE</span>
+                        <span className="material-symbols-outlined text-[12px]">toys</span>
+                        <span>KIDS SAFE</span>
                       </span>
                     )}
 
