@@ -6,6 +6,7 @@ import ProfileHeader from '../../features/profile/components/profile-header';
 import { Avatar } from '../../shared/components/ui/avatar';
 import { useAuth } from '../../shared/context/auth-context';
 import { usePlayer } from '../../shared/context/player-context';
+import { useLanguage } from '../../shared/context/language-context';
 import { interactionsService } from '../../shared/services/interactions-service';
 import { socialService } from '../../shared/services/social-service';
 import {
@@ -27,6 +28,7 @@ import RewardsStoreTab from '../../features/profile/components/rewards-store-tab
 export const UserDashboardPage = () => {
   const { user, updateUser } = useAuth();
   const { playTrack, openReviewModal } = usePlayer();
+  const { t } = useLanguage();
   const userId = user?.id || null;
   const backupFileInputRef = useRef(null);
 
@@ -328,7 +330,7 @@ export const UserDashboardPage = () => {
               }`}
             >
               <span className="material-symbols-outlined text-[18px]">badge</span>
-              <span>Pasaporte & Estadísticas</span>
+              <span>{t('profile.passport', 'Pasaporte & Estadísticas')}</span>
               {activeTab === 'passport' && (
                 <motion.div
                   layoutId="dashboard-tab-indicator"
@@ -348,7 +350,7 @@ export const UserDashboardPage = () => {
               }`}
             >
               <span className="material-symbols-outlined text-[18px]">auto_awesome</span>
-              <span>Recomendados Para Ti ({recommendations.length})</span>
+              <span>{t('profile.recommendations', 'Recomendados Para Ti')} ({recommendations.length})</span>
               {activeTab === 'recommendations' && (
                 <motion.div
                   layoutId="dashboard-tab-indicator"
@@ -368,7 +370,7 @@ export const UserDashboardPage = () => {
               }`}
             >
               <span className="material-symbols-outlined text-[18px]">collections_bookmark</span>
-              <span>Mis Colecciones ({savedAlbums.length})</span>
+              <span>{t('profile.collections', 'Mis Colecciones')} ({savedAlbums.length})</span>
               {activeTab === 'saved' && (
                 <motion.div
                   layoutId="dashboard-tab-indicator"
@@ -388,7 +390,7 @@ export const UserDashboardPage = () => {
               }`}
             >
               <span className="material-symbols-outlined text-[18px]">rate_review</span>
-              <span>Mis Reseñas ({userReviews.length})</span>
+              <span>{t('profile.reviews', 'Mis Reseñas')} ({userReviews.length})</span>
               {activeTab === 'reviews' && (
                 <motion.div
                   layoutId="dashboard-tab-indicator"
