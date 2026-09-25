@@ -389,8 +389,8 @@ export const UserDashboardPage = () => {
                   : 'text-[#5c435a] dark:text-[#B89CB0] hover:text-[#231123] dark:hover:text-white'
               }`}
             >
-              <span className="material-symbols-outlined text-[18px]">verified_user</span>
-              <span>Control Parental {user?.accountType === 'junior' ? '(Junior)' : ''}</span>
+              <span className="material-symbols-outlined text-[18px]">toys</span>
+              <span>Modo Kids & Control {user?.accountType === 'junior' ? '(Kids Activo)' : ''}</span>
               {activeTab === 'parental_control' && (
                 <motion.div
                   layoutId="dashboard-tab-indicator"

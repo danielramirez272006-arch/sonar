@@ -446,7 +446,7 @@ export const RegisterForm = () => {
                       <div style={{ display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
                         <ShieldCheck size={13} color={formData.accountType === 'junior' ? '#B80C09' : '#5c435a'} />
                         <span style={{ fontSize: '0.74rem', fontWeight: '800', color: formData.accountType === 'junior' ? '#B80C09' : '#231123' }}>
-                          Junior (Segura)
+                          <span>Junior (Segura)</span> <span style={{ fontSize: '0.65rem', opacity: 0.8 }}>(Kids / Kiks)</span>
                         </span>
                       </div>
                       <p style={{ fontSize: '0.6rem', color: '#665163', margin: '2px 0 0 0', lineHeight: 1.2 }}>

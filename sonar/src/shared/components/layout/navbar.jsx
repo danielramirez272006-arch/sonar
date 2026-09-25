@@ -352,11 +352,11 @@ export const Navbar = ({
                     sessionStorage.setItem('sonar_active_profile_tab', 'parental_control');
                     window.dispatchEvent(new CustomEvent('sonar:navigate-tab', { detail: 'parental_control' }));
                   }}
-                  title="Modo Junior y Control Parental activo. Clic para administrar."
-                  className="hidden sm:flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emerald-500/10 dark:bg-emerald-500/20 text-emerald-700 dark:text-emerald-300 border border-emerald-500/30 text-[11px] font-black tracking-wide cursor-pointer shadow-xs hover:bg-emerald-500/20 transition-all"
+                  title="Modo Kids y Control Parental activo. Clic para administrar."
+                  className="hidden sm:flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-amber-500/15 dark:bg-amber-500/25 text-amber-800 dark:text-amber-300 border border-amber-500/30 text-[11px] font-black tracking-wide cursor-pointer shadow-xs hover:bg-amber-500/25 transition-all"
                 >
-                  <span className="material-symbols-outlined text-[14px]">shield</span>
-                  <span>Modo Junior</span>
+                  <span className="material-symbols-outlined text-[14px]">toys</span>
+                  <span>Modo Kids</span>
                 </motion.button>
               )}
 
