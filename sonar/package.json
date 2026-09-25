@@ -13,6 +13,7 @@
   },
   "dependencies": {
     "@blobatar/react": "^2.7.0",
+    "@react-oauth/google": "^0.13.5",
     "blobatar": "^2.7.0",
     "db": "^6.0.3",
     "exceljs": "^4.4.0",

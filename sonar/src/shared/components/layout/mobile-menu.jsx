@@ -97,9 +97,6 @@ export const MobileMenu = ({
 
             {/* Bloque de Selección de Idioma para Móvil */}
             <div className="pt-6 border-t border-gray-100 dark:border-white/10 mt-6">
-              <h4 className="text-xs font-black uppercase tracking-wider text-gray-400 mb-3">
-                {t('common.language')} / Language
-              </h4>
               <LanguageSelector variant="footer" />
             </div>
           </motion.div>

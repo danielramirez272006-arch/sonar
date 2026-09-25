@@ -87,10 +87,7 @@ export const Footer = () => {
           </div>
 
           {/* Links Col 3: Selector de Idioma Footer */}
-          <div className="flex flex-col gap-3 text-left">
-            <h4 className="text-xs uppercase tracking-wider text-[#231123] dark:text-white font-black">
-              {t('common.language')}
-            </h4>
+          <div className="flex flex-col justify-end gap-3 text-left">
             <LanguageSelector variant="footer" />
           </div>
         </div>
