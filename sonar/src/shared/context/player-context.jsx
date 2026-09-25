@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, useRef, useEffect, useCallback } from 'react';
-import { resolvePlayablePreview, isExplicitTrack } from '../services/deezer-service';
+import { resolvePlayablePreview, isExplicitTrack, isKidsSafeTrack } from '../services/deezer-service';
 import { interactionsService } from '../services/interactions-service';
 import { resolveAccurateCoverForTrack } from '../services/recommendations-service';
 
@@ -112,9 +112,10 @@ export const PlayerProvider = ({ children }) => {
     const audio = audioRef.current;
     if (!audio) return;
 
-    // Verificar filtro de Control Parental para pistas explícitas
+    // Verificar filtro de Control Parental y Modo Kids
     const isExplicit = isExplicitTrack(track);
     let isParentalFilterActive = false;
+    let extraParentalSettings = null;
     try {
       const stored = typeof window !== 'undefined' ? window.localStorage?.getItem('sonar_auth_user') : null;
       if (stored) {
@@ -126,12 +127,18 @@ export const PlayerProvider = ({ children }) => {
           isParentalFilterActive = true;
         }
       }
+      const extra = typeof window !== 'undefined' ? window.localStorage?.getItem('sonar_parental_extra_settings') : null;
+      if (extra) {
+        extraParentalSettings = JSON.parse(extra);
+      }
     } catch {}
 
-    if (isExplicit && isParentalFilterActive && !unlockedExplicitSession && !options.bypassParentalLock) {
+    const isSafeForKids = !isParentalFilterActive || isKidsSafeTrack(track, extraParentalSettings);
+
+    if ((!isSafeForKids || isExplicit) && isParentalFilterActive && !unlockedExplicitSession && !options.bypassParentalLock) {
       const blockedTrackObj = {
         id: track.id || track.deezerId || Date.now(),
-        title: track.title || track.albumTitle || 'Pista Explícita',
+        title: track.title || track.albumTitle || 'Pista no permitida en Modo Kids',
         artist: track.artist || 'Artista',
         album: track.album || track.albumTitle || track.title || '',
         cover: resolveAccurateCoverForTrack(track),
@@ -141,7 +148,7 @@ export const PlayerProvider = ({ children }) => {
       setExplicitLockModal({
         isOpen: true,
         track: blockedTrackObj,
-        reason: 'Esta pista contiene contenido explícito no apto para cuentas Junior o con filtro parental activo.',
+        reason: 'Esta pista contiene contenido explícito o restringido para menores en el Modo Kids / Control Parental.',
       });
       return { blocked: true, reason: 'explicit_blocked' };
     }

@@ -174,15 +174,16 @@ async function fetchDeezerApi(endpoint) {
   }
   candidateUrls.push(`https://api.deezer.com${cleanEndpoint}`);
   candidateUrls.push(`https://corsproxy.io/?${encodeURIComponent(`https://api.deezer.com${cleanEndpoint}`)}`);
+  candidateUrls.push(`https://api.allorigins.win/raw?url=${encodeURIComponent(`https://api.deezer.com${cleanEndpoint}`)}`);
 
   for (const url of candidateUrls) {
     try {
       let res;
       if (typeof AbortSignal !== 'undefined' && AbortSignal.timeout) {
-        res = await fetch(url, { signal: AbortSignal.timeout(6500) });
+        res = await fetch(url, { signal: AbortSignal.timeout(3500) });
       } else {
         const controller = new AbortController();
-        const tid = setTimeout(() => controller.abort(), 6500);
+        const tid = setTimeout(() => controller.abort(), 3500);
         res = await fetch(url, { signal: controller.signal });
         clearTimeout(tid);
       }
@@ -196,7 +197,7 @@ async function fetchDeezerApi(endpoint) {
         }
       }
     } catch {
-      // Continuar al siguiente endpoint
+      // Continuar al siguiente proxy
       continue;
     }
   }
@@ -216,11 +217,46 @@ export const isExplicitTrack = (track) => {
     title.includes('[explicit]') ||
     title.includes('(explicit)') ||
     album.includes('[explicit]') ||
-    album.includes('(explicit)')
+    album.includes('(explicit)') ||
+    title.includes('[e]')
   ) {
     return true;
   }
   return false;
+};
+
+/**
+ * Validador estricto para Modo Kids: Bloquea pistas explícitas, palabras clave prohibidas y temas para adultos
+ */
+export const isKidsSafeTrack = (track, extraSettings = null) => {
+  if (!track) return false;
+  if (isExplicitTrack(track)) return false;
+
+  const title = String(track.title || '').toLowerCase();
+  const artist = String(track.artist || '').toLowerCase();
+  const album = String(track.album || track.albumTitle || '').toLowerCase();
+
+  const defaultBlocked = [
+    'explicit', 'violencia', 'drogas', 'sex', 'sexual', 'matar', 'muerte', 'asesinato',
+    'gun', 'shot', 'gang', 'blood', 'fuck', 'bitch', 'shit', 'weed', 'cocaína', 'perreo sucio'
+  ];
+
+  const customBlocked = extraSettings?.blockedKeywords || [];
+  const allBlocked = [...defaultBlocked, ...customBlocked.map((k) => String(k).toLowerCase())];
+
+  for (const kw of allBlocked) {
+    if (kw && kw.trim().length > 1 && (title.includes(kw) || artist.includes(kw) || album.includes(kw))) {
+      return false;
+    }
+  }
+
+  if (extraSettings?.blockedArtists && Array.isArray(extraSettings.blockedArtists)) {
+    if (extraSettings.blockedArtists.some((a) => artist.includes(String(a).toLowerCase()))) {
+      return false;
+    }
+  }
+
+  return true;
 };
 
 /**
@@ -546,12 +582,14 @@ export const resolvePlayablePreview = async (item) => {
   }
 
   // 5. Fallback con muestra sonora garantizada
-  const fallbackResults = await searchTracks('Radiohead 15 Step');
-  if (fallbackResults.length > 0 && fallbackResults[0].preview) {
-    return fallbackResults[0].preview;
-  }
+  try {
+    const fallbackResults = await searchTracks('Radiohead 15 Step');
+    if (fallbackResults.length > 0 && fallbackResults[0].preview) {
+      return fallbackResults[0].preview;
+    }
+  } catch {}
 
-  return null;
+  return 'https://cdns-preview-d.dzcdn.net/stream/c-deda7fac944b3f76bfa77d75010eaddc-3.mp3';
 };
 
 /**
