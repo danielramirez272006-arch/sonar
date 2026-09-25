@@ -52,41 +52,41 @@ export const Footer = () => {
             </div>
           </div>
 
-          {/* Links Col 1 */}
+          {/* Links Col 1: Plataforma */}
           <div className="flex flex-col gap-3 text-left">
             <h4 className="text-xs uppercase tracking-wider text-[#231123] dark:text-white font-black">
-              Plataforma
+              {t('footer.platform')}
             </h4>
             <ul className="flex flex-col gap-2.5 text-sm list-none p-0 m-0">
-              <li><a href="#explore" className="text-[#3c253a] dark:text-[#d8c5d3] hover:text-[#B80C09] dark:hover:text-[#ff6b68] font-semibold transition-colors">Explorar Discos</a></li>
-              <li><a href="#reviews" className="text-[#3c253a] dark:text-[#d8c5d3] hover:text-[#B80C09] dark:hover:text-[#ff6b68] font-semibold transition-colors">Críticas del Mes</a></li>
-              <li><a href="#lists" className="text-[#3c253a] dark:text-[#d8c5d3] hover:text-[#B80C09] dark:hover:text-[#ff6b68] font-semibold transition-colors">Listas Esenciales</a></li>
-              <li><a href="#community" className="text-[#3c253a] dark:text-[#d8c5d3] hover:text-[#B80C09] dark:hover:text-[#ff6b68] font-semibold transition-colors">Comunidad Audiófila</a></li>
+              <li><a href="#explore" className="text-[#3c253a] dark:text-[#d8c5d3] hover:text-[#B80C09] dark:hover:text-[#ff6b68] font-semibold transition-colors">{t('footer.explore_discs')}</a></li>
+              <li><a href="#reviews" className="text-[#3c253a] dark:text-[#d8c5d3] hover:text-[#B80C09] dark:hover:text-[#ff6b68] font-semibold transition-colors">{t('footer.reviews_month')}</a></li>
+              <li><a href="#lists" className="text-[#3c253a] dark:text-[#d8c5d3] hover:text-[#B80C09] dark:hover:text-[#ff6b68] font-semibold transition-colors">{t('footer.essential_lists')}</a></li>
+              <li><a href="#community" className="text-[#3c253a] dark:text-[#d8c5d3] hover:text-[#B80C09] dark:hover:text-[#ff6b68] font-semibold transition-colors">{t('footer.community_audiophile')}</a></li>
             </ul>
           </div>
 
-          {/* Links Col 2 */}
+          {/* Links Col 2: Recursos */}
           <div className="flex flex-col gap-3 text-left">
             <h4 className="text-xs uppercase tracking-wider text-[#231123] dark:text-white font-black">
-              Recursos
+              {t('footer.resources')}
             </h4>
             <ul className="flex flex-col gap-2.5 text-sm list-none p-0 m-0">
-              <li><a href="#collections" className="text-[#3c253a] dark:text-[#d8c5d3] hover:text-[#B80C09] dark:hover:text-[#ff6b68] font-semibold transition-colors">Colecciones Vinilo</a></li>
+              <li><a href="#collections" className="text-[#3c253a] dark:text-[#d8c5d3] hover:text-[#B80C09] dark:hover:text-[#ff6b68] font-semibold transition-colors">{t('footer.collections_vinyl')}</a></li>
               {user?.role === 'admin' && (
                 <li>
                   <a href="#api" className="text-[#3c253a] dark:text-[#d8c5d3] hover:text-[#B80C09] dark:hover:text-[#ff6b68] font-semibold transition-colors flex items-center gap-1.5">
-                    <span>API para Desarrolladores</span>
+                    <span>{t('footer.developer_api')}</span>
                     <span className="text-[10px] bg-[#B80C09] text-white px-1.5 py-0.5 rounded font-black tracking-wider uppercase">Admin</span>
                   </a>
                 </li>
               )}
-              <li><a href="#noticias" className="text-[#3c253a] dark:text-[#d8c5d3] hover:text-[#B80C09] dark:hover:text-[#ff6b68] font-semibold transition-colors">Noticias & Radar</a></li>
-              <li><a href="#blog" className="text-[#3c253a] dark:text-[#d8c5d3] hover:text-[#B80C09] dark:hover:text-[#ff6b68] font-semibold transition-colors">Blog Sonar</a></li>
-              <li><a href="#labels" className="text-[#3c253a] dark:text-[#d8c5d3] hover:text-[#B80C09] dark:hover:text-[#ff6b68] font-semibold transition-colors">Directorio de Sellos</a></li>
+              <li><a href="#noticias" className="text-[#3c253a] dark:text-[#d8c5d3] hover:text-[#B80C09] dark:hover:text-[#ff6b68] font-semibold transition-colors">{t('footer.news_radar')}</a></li>
+              <li><a href="#blog" className="text-[#3c253a] dark:text-[#d8c5d3] hover:text-[#B80C09] dark:hover:text-[#ff6b68] font-semibold transition-colors">{t('footer.blog')}</a></li>
+              <li><a href="#labels" className="text-[#3c253a] dark:text-[#d8c5d3] hover:text-[#B80C09] dark:hover:text-[#ff6b68] font-semibold transition-colors">{t('footer.record_labels')}</a></li>
             </ul>
           </div>
 
-          {/* Links Col 3 + Selector de Idioma Footer */}
+          {/* Links Col 3: Selector de Idioma Footer */}
           <div className="flex flex-col gap-3 text-left">
             <h4 className="text-xs uppercase tracking-wider text-[#231123] dark:text-white font-black">
               {t('common.language')}
@@ -116,4 +116,3 @@ export const Footer = () => {
 };
 
 export default Footer;
-
