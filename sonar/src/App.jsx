@@ -32,6 +32,7 @@ import "./Styles/App.css";
 import './Styles/admin.css'
 import './Styles/admin-dashboard.css'
 import './Styles/admin-moderation.css'
+import './Styles/admin-users.css'
 import './Styles/accessibility.css'
 
 export function AdminConsole() {
@@ -224,7 +225,7 @@ export function AdminConsole() {
       <main id="contenido" tabIndex={-1} className="shell main-content transition-colors duration-300 dark:bg-sonar-base dark:text-sonar-text">
         {currentError && <div className="error-banner" role="alert"><div><strong>No pudimos completar la consulta.</strong><p>{currentError} Comprueba que la API local esté disponible.</p></div><button onClick={refresh} disabled={loading}>Reintentar</button></div>}
         <div className="live-notice" role="status">{notice}</div>
-        {page === 'catalog' ? <CatalogPage key={catalogType} type={catalogType} /> : page === 'reports' ? <ReportsPage users={data.users} reviews={data.reviews} onUserUpdate={handleUserUpdate} onSendToModeration={sendToModeration} /> : page === 'reviews' ? <ModerationTable key={window.location.hash} {...shared} compact={!routeParams.has('review')} reviews={routeParams.get('review') ? data.reviews.filter(review => String(review.id) === routeParams.get('review')) : data.reviews} initialFilter={routeParams.get('filter') || 'all'} /> : page === 'dashboard' ? <AdminDashboardPage {...shared} reviews={data.reviews} metrics={dashboardMetrics(data.users, data.reviews)} onRefresh={refresh} onExport={exportCsv} error={currentError} /> : page === 'usuarios' ? <UsersPage reviews={data.reviews} initialUserId={routeParams.get('user')} users={data.users} onUserUpdate={handleUserUpdate} /> : <ModerationPage {...shared} allReviews={data.reviews} reviews={moderation.reviews} onRefresh={refresh} error={currentError} />}
+        {page === 'catalog' ? <CatalogPage key={catalogType} type={catalogType} /> : page === 'reports' ? <ReportsPage users={data.users} reviews={data.reviews} onUserUpdate={handleUserUpdate} onSendToModeration={sendToModeration} /> : page === 'reviews' ? <ModerationTable key={window.location.hash} {...shared} compact={!routeParams.has('review')} userFilterId={routeParams.get('user')} query={routeParams.has('user') ? '' : query} reviews={routeParams.get('review') ? data.reviews.filter(review => String(review.id) === routeParams.get('review')) : data.reviews} initialFilter={routeParams.get('filter') || 'all'} /> : page === 'dashboard' ? <AdminDashboardPage {...shared} reviews={data.reviews} metrics={dashboardMetrics(data.users, data.reviews)} onRefresh={refresh} onExport={exportCsv} error={currentError} /> : page === 'usuarios' ? <UsersPage reviews={data.reviews} initialUserId={routeParams.get('user')} users={data.users} onUserUpdate={handleUserUpdate} /> : <ModerationPage {...shared} allReviews={data.reviews} reviews={moderation.reviews} onRefresh={refresh} error={currentError} />}
       </main>
       <footer className="console-footer">
         <div className="console-footer__inner shell">

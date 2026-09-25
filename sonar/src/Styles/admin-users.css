@@ -1,0 +1,35 @@
+.user-page .users-metrics { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:12px; margin:24px 0; }
+.users-metrics article { display:flex; flex-direction:column; gap:8px; padding:20px; border-radius:14px; background:#231123; color:#fff; border-top:3px solid #4B2840; }
+.users-metrics article:nth-child(2) { background:#4B2840; }
+.users-metrics article:last-child { background:#003844; }
+.users-metrics span { font-size:12px; min-height:32px; }
+.users-metrics strong { font-size:clamp(26px,3vw,38px); font-variant-numeric:tabular-nums; }
+.users-metrics small { color:#ded5df; font-size:11px; }
+.user-page .admin-filters { display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); align-items:end; padding:18px; border:1px solid #bda9b8; border-radius:14px; }
+.user-page .admin-filters label { min-width:0; }
+.user-page .admin-filters :is(input,select,button) { width:100%; min-height:44px; }
+.user-page .users-results { font-size:12px; margin:16px 0; line-height:1.6; }
+.user-page .admin-users-table { border:1px solid #bda9b8; border-radius:14px; }
+.user-page .admin-users-table table { min-width:980px; }
+.user-page .admin-users-table th { background:#231123; color:#fff; padding:16px 12px; }
+.user-page .admin-users-table td { padding:16px 12px; }
+.user-page .admin-users-table tbody tr:hover { background:#4b28400d; }
+.user-page .admin-user-identity small { overflow-wrap:anywhere; max-width:220px; }
+.users-badge { display:inline-flex; align-items:center; gap:6px; padding:6px 9px; border-radius:30px; background:#4B2840; color:#fff; font-size:11px; white-space:nowrap; }
+.users-conduct--green { background:#003844; color:#c4f5dd; }
+.users-conduct--yellow { background:#594213; color:#ffe6a1; }
+.users-conduct--red { background:#672737; color:#ffdde3; }
+.users-badge[class*="users-conduct"]::before { content:''; width:7px; height:7px; border-radius:50%; background:currentColor; }
+.users-actions { display:flex; flex-wrap:wrap; gap:8px; }
+.user-page .users-actions :is(a,button), .users-review-link { display:inline-flex; align-items:center; justify-content:center; min-height:40px; padding:8px 12px; border:1px solid #003844; border-radius:8px; background:#003844; color:#fff; font-size:12px; text-decoration:none; }
+.user-page :is(a,button,input,select):focus-visible, .admin-profile-modal :is(a,button,input,select,textarea):focus-visible { outline:3px solid #ba799f; outline-offset:3px; }
+.users-review-filter { padding:16px; margin-bottom:18px; background:#003844; color:#fff; border-radius:12px; }
+.users-review-filter a { color:#fff; text-decoration:underline; }
+dialog.sonar-modal.admin-profile-modal { inset:0 0 0 auto; margin:0; width:min(680px,100%); height:100dvh; max-height:100dvh; border-radius:18px 0 0 18px; border-color:#4B2840; }
+.admin-profile-modal .user-profile-drawer { min-height:100%; background:#faf6fa; }
+.admin-profile-modal .user-profile-drawer > header, html.dark .admin-profile-modal .user-profile-drawer > header { background:#231123; color:#fff; padding:18px; border-radius:12px; border-color:#4B2840; }
+.admin-profile-modal .user-profile-drawer > header p { color:#e1d5df; }
+html.dark .admin-profile-modal .user-profile-drawer { background:#231123; }
+html.dark .user-page .admin-users-table tbody tr:hover { background:#4B2840; }
+@media(max-width:900px) { .user-page .users-metrics { grid-template-columns:repeat(2,minmax(0,1fr)); } }
+@media(max-width:480px) { .user-page .users-metrics { gap:8px; } .users-metrics article { padding:14px; } .users-metrics span { min-height:48px; overflow-wrap:anywhere; } .user-page .admin-filters { grid-template-columns:1fr; } dialog.sonar-modal.admin-profile-modal { width:100%; border-radius:0; } }
