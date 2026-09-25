@@ -69,6 +69,10 @@ const KIDS_TYPEWRITER_SUGGESTIONS = [
   "Prueba 'Canciones de Cuna'..."
 ];
 
+const TRENDING_SEARCHES = [
+  'Radiohead', 'Tame Impala', 'Miles Davis', 'Daft Punk', 'Pink Floyd', 'Rosalía', 'Kendrick Lamar', 'Björk'
+];
+
 const KIDS_TRENDING_SEARCHES = [
   'Mozart', 'The Beatles', 'Daft Punk', 'Lo-Fi Estudio', 'Bandas Sonoras', 'Clásicos Kids'
 ];

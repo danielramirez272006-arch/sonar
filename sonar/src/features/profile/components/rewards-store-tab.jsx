@@ -53,7 +53,7 @@ export const REWARD_ITEMS = [
     name: 'Skin Reproductor Cassette 1984',
     category: 'Skins de Audio',
     cost: 600,
-    icon: 'cassette',
+    icon: 'radio',
     color: 'from-rose-600 to-red-800',
     description: 'Diseño retro con carretes giratorios analógicos para el reproductor global de Sonar.',
     badge: 'Popular',
@@ -565,9 +565,9 @@ export const RewardsStoreTab = () => {
                 <div className="flex items-start justify-between gap-3">
                   <div className="flex items-center gap-3">
                     <div
-                      className={`w-12 h-12 rounded-2xl bg-gradient-to-tr ${item.color} text-white flex items-center justify-center shadow-md shrink-0`}
+                      className={`w-12 h-12 rounded-2xl bg-gradient-to-tr ${item.color} text-white flex items-center justify-center shadow-md shrink-0 overflow-hidden`}
                     >
-                      <span className="material-symbols-outlined text-[24px]">{item.icon}</span>
+                      <span className="material-symbols-outlined text-[24px] select-none pointer-events-none">{item.icon}</span>
                     </div>
                     <div>
                       <h4 className="text-sm font-extrabold text-[#231123] dark:text-[#DCDCDD] flex items-center gap-1.5">
