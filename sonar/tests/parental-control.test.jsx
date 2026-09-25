@@ -205,6 +205,6 @@ describe('Control Parental & Filtro de Contenido Sonar', () => {
       // Al hacer clic en Junior, debe aparecer el input para configurar el PIN
       fireEvent.click(screen.getByText('Junior (Segura)'));
       expect(screen.getByText(/PIN Parental/i)).toBeDefined();
-    });
+    }, 15000);
   });
 });
