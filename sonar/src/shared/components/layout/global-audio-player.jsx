@@ -265,13 +265,27 @@ export const GlobalAudioPlayer = () => {
                 ? 'ring-2 ring-amber-500/40 shadow-[0_0_30px_rgba(245,158,11,0.25)]'
                 : equippedSkin === 'skin-cassette'
                 ? 'ring-2 ring-rose-500/40 shadow-[0_0_30px_rgba(244,63,94,0.25)]'
+                : equippedSkin === 'skin-vinyl-turntable'
+                ? 'ring-2 ring-yellow-600/50 shadow-[0_0_35px_rgba(202,138,4,0.3)]'
+                : equippedSkin === 'skin-tube-glow'
+                ? 'ring-2 ring-orange-500/50 shadow-[0_0_35px_rgba(249,115,22,0.35)]'
                 : ''
             }`}
             style={{
-              backgroundColor: equippedSkin === 'skin-vu-meter' ? 'rgba(28, 18, 12, 0.96)' : 'rgba(35, 17, 35, 0.94)',
+              backgroundColor: equippedSkin === 'skin-vu-meter'
+                ? 'rgba(28, 18, 12, 0.96)'
+                : equippedSkin === 'skin-tube-glow'
+                ? 'rgba(30, 15, 10, 0.96)'
+                : equippedSkin === 'skin-vinyl-turntable'
+                ? 'rgba(18, 18, 20, 0.97)'
+                : 'rgba(35, 17, 35, 0.94)',
               color: '#DCDCDD',
               borderRadius: '24px',
-              border: equippedSkin === 'skin-vu-meter' ? '1px solid rgba(245, 158, 11, 0.4)' : '1px solid rgba(75, 40, 64, 0.7)',
+              border: equippedSkin === 'skin-vu-meter' || equippedSkin === 'skin-tube-glow'
+                ? '1px solid rgba(245, 158, 11, 0.4)'
+                : equippedSkin === 'skin-vinyl-turntable'
+                ? '1px solid rgba(202, 138, 4, 0.4)'
+                : '1px solid rgba(75, 40, 64, 0.7)',
               boxShadow: '0 24px 60px -12px rgba(0, 0, 0, 0.85), 0 0 25px rgba(184, 12, 9, 0.18), inset 0 1px 0 rgba(220, 220, 221, 0.12)',
             }}
           >
@@ -330,6 +344,49 @@ export const GlobalAudioPlayer = () => {
                 </span>
                 <span className="text-[9px] font-black uppercase text-rose-300/90 tracking-wider">
                   Cassette 1984
+                </span>
+              </div>
+            )}
+
+            {/* Skin Tornamesa Direct Drive 33/45 RPM */}
+            {equippedSkin === 'skin-vinyl-turntable' && (
+              <div className="flex items-center justify-between gap-3 px-3 py-1.5 rounded-xl bg-zinc-950/80 border border-amber-500/30 text-amber-200 text-[10px] font-mono shadow-inner">
+                <div className="flex items-center gap-2">
+                  <motion.div
+                    animate={{ rotate: isPlaying ? 360 : 0 }}
+                    transition={{ repeat: Infinity, duration: 1.8, ease: 'linear' }}
+                    className="w-5 h-5 rounded-full bg-zinc-900 border-2 border-amber-400 flex items-center justify-center text-[8px] font-mono shadow-md text-amber-300"
+                  >
+                    ◎
+                  </motion.div>
+                  <span className="text-[10px] font-bold text-amber-300 uppercase tracking-widest">
+                    33 ⅓ RPM · Strobe Lock
+                  </span>
+                </div>
+                <span className="text-[9px] font-black uppercase text-amber-400/90 tracking-wider flex items-center gap-1">
+                  <span className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-ping" />
+                  Tornamesa Direct Drive
+                </span>
+              </div>
+            )}
+
+            {/* Skin Bulbos Valvulares Hi-End */}
+            {equippedSkin === 'skin-tube-glow' && (
+              <div className="flex items-center justify-between gap-3 px-3 py-1.5 rounded-xl bg-orange-950/70 border border-orange-500/40 text-orange-200 text-[10px] font-mono shadow-inner">
+                <div className="flex items-center gap-2">
+                  <motion.span
+                    animate={{ opacity: isPlaying ? [0.7, 1, 0.85, 1] : 0.4 }}
+                    transition={{ repeat: Infinity, duration: 1.2, ease: 'easeInOut' }}
+                    className="text-orange-400 text-sm"
+                  >
+                    💡
+                  </motion.span>
+                  <span className="text-[10px] font-bold text-orange-300 uppercase tracking-wider">
+                    Termoiónico 12AX7 · Saturación Clase A
+                  </span>
+                </div>
+                <span className="text-[9px] font-black uppercase text-orange-400 tracking-wider">
+                  Bulbos Valvulares
                 </span>
               </div>
             )}

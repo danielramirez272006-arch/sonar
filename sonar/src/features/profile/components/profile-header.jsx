@@ -108,6 +108,8 @@ export const ProfileHeader = ({
     'frame-neon-cyber': 'ring-4 ring-cyan-400 shadow-[0_0_25px_rgba(6,182,212,0.85)]',
     'frame-valve-tube': 'ring-4 ring-orange-500 shadow-[0_0_20px_rgba(249,115,22,0.75)]',
     'frame-hologram': 'ring-4 ring-purple-400 shadow-[0_0_26px_rgba(168,85,247,0.8)]',
+    'frame-prism-rainbow': 'ring-4 ring-pink-500 shadow-[0_0_26px_rgba(236,72,153,0.85)]',
+    'frame-analog-wood': 'ring-4 ring-amber-700 shadow-[0_0_20px_rgba(180,83,9,0.75)]',
   }[equippedFrame] || 'ring-4 ring-white dark:ring-[#4B2840] shadow-xl';
 
   return (
