@@ -54,6 +54,9 @@ export const ProfileHeader = ({
   const bio = currentUser.bio || 'Melómano explorando nuevas texturas acústicas en Sonar.';
 
   const handleEditClick = () => {
+    try {
+      sessionStorage.setItem('sonar_profile_settings_tab', 'profile');
+    } catch {}
     if (onEditProfile) {
       onEditProfile();
     } else if (router?.navigate) {

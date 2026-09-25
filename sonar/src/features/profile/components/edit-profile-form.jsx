@@ -113,7 +113,16 @@ export const ICON_CHOICES = [
 
 export const EditProfileForm = ({ initialData = {}, onSave = () => {} }) => {
   const { changePassword, deleteAccount } = useAuth();
-  const [activeTab, setActiveTab] = useState('profile'); // 'profile' | 'gear' | 'security' | 'danger'
+  const [activeTab, setActiveTab] = useState(() => {
+    try {
+      const saved = sessionStorage.getItem('sonar_profile_settings_tab');
+      if (saved) {
+        sessionStorage.removeItem('sonar_profile_settings_tab');
+        return saved;
+      }
+    } catch {}
+    return 'profile';
+  });
   const [deleteConfirmText, setDeleteConfirmText] = useState('');
   const [deleteError, setDeleteError] = useState(null);
   const [isDeleting, setIsDeleting] = useState(false);
