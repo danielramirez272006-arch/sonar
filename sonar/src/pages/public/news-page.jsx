@@ -34,22 +34,305 @@ function readNewsHashParams() {
 }
 
 
+export const NEWS_ARTICLES = [
+  {
+    id: 'radiohead-in-rainbows-45rpm-reissue',
+    title: 'Radiohead Anuncia Reedición Audiófila de "In Rainbows" en Doble Vinilo de 45 RPM Masterizado en Abbey Road',
+    category: 'Lanzamientos',
+    date: '24 Septiembre, 2026',
+    author: 'Julián Andrade',
+    role: 'Editor de Cultura Sónica',
+    readTime: '4 min',
+    featured: true,
+    cover: 'https://images.unsplash.com/photo-1514525253161-7a46d19cd819?auto=format&fit=crop&q=80&w=1200',
+    summary: 'El legendario álbum de 2007 recibe una masterización a media velocidad (half-speed) directa de las cintas analógicas de 1/2 pulgada, con un rango dinámico sin precedentes.',
+    content: `Radiohead y el sello XL Recordings han confirmado el lanzamiento de una edición de referencia audiófila de "In Rainbows", masterizada por Miles Showell en los míticos Abbey Road Studios de Londres.
+
+El proceso de corte se realizó a 45 revoluciones por minuto en dos vinilos vírgenes de 180 gramos, lo que permite duplicar el espacio físico del surco para frecuencias graves profundas y una respuesta transitoria ultrarrápida en temas como "15 Step" y "Nude".
+
+"Queríamos que el oyente pudiera experimentar la textura de la batería de Phil Selway y la reverberación de placa EMT en la voz de Thom Yorke con la fidelidad exacta con la que fue grabada en la mansión de Tottenham House", explicó el equipo técnico de masterización.
+
+La edición incluirá además un folleto con notas de producción de Nigel Godrich y ensayos fotográficos inéditos de las sesiones de 2006.`,
+    audioNarration: {
+      id: 'news-audio-radiohead-45rpm',
+      title: 'La Reedición Audiófila del In Rainbows',
+      artist: 'Crónica Sonora Sonar',
+      album: 'Radar Musical & Actualidad',
+      cover: 'https://images.unsplash.com/photo-1514525253161-7a46d19cd819?auto=format&fit=crop&q=80&w=600',
+      audioUrl: '/audio/La_reedición_audiófila_del_In_Rainbows.m4a',
+      preview: '/audio/La_reedición_audiófila_del_In_Rainbows.m4a',
+    },
+    trackPreview: {
+      id: 3135556,
+      title: '15 Step',
+      artist: 'Radiohead',
+      album: 'In Rainbows',
+      cover: 'https://cdn-images.dzcdn.net/images/cover/a175af9b7d329bc678cb4d26fc13d6de/500x500-000000-80-0-0.jpg',
+    }
+  },
+  {
+    id: 'primavera-glastonbury-festivales-2027',
+    title: 'Festivales Revelan Carteles con Actos Estelares de Electrónica Experimental y Post-Punk',
+    category: 'Festivales',
+    date: '23 Septiembre, 2026',
+    author: 'Elena Rostova',
+    role: 'Corresponsal Internacional',
+    readTime: '5 min',
+    trending: true,
+    cover: 'https://images.unsplash.com/photo-1470225620780-dba8ba36b745?auto=format&fit=crop&q=80&w=800',
+    summary: 'Primavera Sound y Glastonbury confirman a Aphex Twin, Massive Attack, Portishead y The Smile en escenarios con sistemas de sonido inmersivo L-Acoustics L-ISA.',
+    content: `La temporada de festivales 2027 promete ser un hito para los amantes de la acústica de alta precisión. Las organizaciones de Primavera Sound y Glastonbury han anunciado que sus escenarios principales estarán equipados con sistemas de sonido espacial L-Acoustics L-ISA de 360 grados.
+
+Entre los actos destacados se encuentran el regreso a los escenarios de Massive Attack con una producción centrada en la neutralidad de carbono, presentaciones exclusivas de Aphex Twin con sintetizadores modulares analógicos en directo y sesiones especiales de The Smile.
+
+Los asistentes podrán disfrutar de una claridad en la mezcla estéreo y multicanal donde la distorsión armónica se reduce a menos del 0.05% en cualquier punto del recinto.`,
+    audioNarration: {
+      id: 'news-audio-festivales-lisa',
+      title: 'El Sonido L-ISA Llega a los Festivales',
+      artist: 'Crónica Sonora Sonar',
+      album: 'Radar Musical & Actualidad',
+      cover: 'https://images.unsplash.com/photo-1470225620780-dba8ba36b745?auto=format&fit=crop&q=80&w=600',
+      audioUrl: '/audio/El_sonido_L-ISA_llega_a_los_festivales.m4a',
+      preview: '/audio/El_sonido_L-ISA_llega_a_los_festivales.m4a',
+    },
+    trackPreview: {
+      id: 1109731,
+      title: 'Teardrop',
+      artist: 'Massive Attack',
+      album: 'Mezzanine',
+      cover: 'https://cdn-images.dzcdn.net/images/cover/1b73059129e924a1b066ffdc5a363da6/500x500-000000-80-0-0.jpg',
+    }
+  },
+  {
+    id: 'hardware-pro-ject-balanced-turntables',
+    title: 'Pro-Ject y Audio-Technica Presentan Nueva Línea de Tocadiscos con Conexión Balanceada True XLR',
+    category: 'Hi-Fi & Hardware',
+    date: '22 Septiembre, 2026',
+    author: 'Valeria Montero',
+    role: 'Ingeniera Acústica',
+    readTime: '6 min',
+    trending: true,
+    cover: 'https://images.unsplash.com/photo-1539375665275-f9de415ef9ac?auto=format&fit=crop&q=80&w=800',
+    summary: 'La transmisión balanceada de señales fonocaptoras MC elimina por completo las interferencias de radiofrecuencia (RFI) y el zumbido de masa en sistemas domésticos.',
+    content: `La conexión balanceada (True Balanced) ha dado el salto definitivo al mercado del vinilo de alta fidelidad. Los nuevos modelos de Pro-Ject y Audio-Technica incorporan salidas balanceadas mini-XLR y XLR completas directamente desde la cápsula de bobina móvil (MC).
+
+Dado que las cápsulas MC generan microvoltajes extremadamente sensibles a interferencias electromagnéticas generadas por routers Wi-Fi y transformadores, el circuito balanceado cancela el ruido de modo común, logrando una relación señal/ruido superior a 90 dB.
+
+"Es el mayor avance en claridad de fondo y rango dinámico en la reproducción de vinilo de los últimos 20 años", afirmó el panel de ingenieros en la presentación de Berlín.`,
+    audioNarration: {
+      id: 'news-audio-zumbido-vinilos',
+      title: 'Adiós al Zumbido en tus Vinilos',
+      artist: 'Ingeniería Acústica Sonar',
+      album: 'Hi-Fi & Hardware',
+      cover: 'https://images.unsplash.com/photo-1539375665275-f9de415ef9ac?auto=format&fit=crop&q=80&w=600',
+      audioUrl: '/audio/Adiós_al_zumbido_en_tus_vinilos.m4a',
+      preview: '/audio/Adiós_al_zumbido_en_tus_vinilos.m4a',
+    },
+    trackPreview: null
+  },
+  {
+    id: 'pink-floyd-wish-you-were-here-50th',
+    title: 'Pink Floyd: La Disección Acústica de las Cintas Maestras de "Wish You Were Here"',
+    category: 'Crónicas',
+    date: '20 Septiembre, 2026',
+    author: 'Carlos Echeverría',
+    role: 'Historiador Musical',
+    readTime: '7 min',
+    cover: 'https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?auto=format&fit=crop&q=80&w=800',
+    summary: 'Un recorrido por el tratamiento de sintetizadores Minimoog, guías de guitarra de 12 cuerdas acústicas de David Gilmour y la espacialidad de Abbey Road.',
+    content: `A cinco décadas de su publicación, "Wish You Were Here" sigue siendo considerado el estándar de oro en dinámica de grabación analógica.
+
+El solo de cuatro notas de David Gilmour en "Shine On You Crazy Diamond" fue grabado usando una Fender Stratocaster conectada a un amplificador Hiwatt DR103 emparejado con un eco de cinta Binson Echorec. La interacción entre la resonancia de las válvulas y la reverberación natural de los techos altos del Estudio 3 de Abbey Road creó una profundidad de campo que aún desafía las emulaciones digitales modernas.
+
+En este reportaje exploramos los secretos de cinta de 2 pulgadas y 16 pistas utilizados por Brian Humphries.`,
+    audioNarration: {
+      id: 'news-audio-cintas-pinkfloyd',
+      title: 'Las Cintas de Wish You Were Here',
+      artist: 'Crónicas de Abbey Road',
+      album: 'Historia y Masterización',
+      cover: 'https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?auto=format&fit=crop&q=80&w=600',
+      audioUrl: '/audio/Las_cintas_de_Wish_You_Were_Here.m4a',
+      preview: '/audio/Las_cintas_de_Wish_You_Were_Here.m4a',
+    },
+    trackPreview: {
+      id: 3105001,
+      title: 'Wish You Were Here',
+      artist: 'Pink Floyd',
+      album: 'Wish You Were Here',
+      cover: 'https://cdn-images.dzcdn.net/images/cover/989cb5103a8914ba08a287f94ca3aa14/500x500-000000-80-0-0.jpg',
+    }
+  },
+  {
+    id: 'sellos-independientes-vinilo-records-2026',
+    title: 'Warp, Ninja Tune y 4AD Reportan Récord en Soporte Físico y Firman Manifiesto Contra la Hipercompresión',
+    category: 'Industria & Sellos',
+    date: '18 Septiembre, 2026',
+    author: 'Mateo Solís',
+    role: 'Analista de Industria',
+    readTime: '4 min',
+    cover: 'https://images.unsplash.com/photo-1518709268805-4e9042af9f23?auto=format&fit=crop&q=80&w=800',
+    summary: 'Más de 40 sellos independientes internacionales acuerdan estándares mínimos de rango dinámico (DR12+) para todos sus lanzamientos en streaming y vinilo.',
+    content: `Una alianza de sellos discográficos independientes europeos y americanos ha lanzado la iniciativa "Dynamic Sound Guarantee". El pacto prohíbe el uso de limitadores extremos en las etapas de masterización digital para preservar la respiración y los contrastes tímbricos de la música.
+
+Las ventas de vinilos y casetes en estos sellos crecieron un 28% interanual en 2026, impulsadas por un público joven que busca conectar con el objeto físico y la escucha sin distracciones.`,
+    audioNarration: {
+      id: 'news-audio-vinilo-guerra-volumen',
+      title: 'El Vinilo Gana la Guerra del Volumen',
+      artist: 'Crónica Sonora Sonar',
+      album: 'Industria & Sellos',
+      cover: 'https://images.unsplash.com/photo-1518709268805-4e9042af9f23?auto=format&fit=crop&q=80&w=600',
+      audioUrl: '/audio/El_vinilo_gana_la_guerra_del_volumen.m4a',
+      preview: '/audio/El_vinilo_gana_la_guerra_del_volumen.m4a',
+    },
+    trackPreview: null
+  },
+  {
+    id: 'daft-punk-discovery-analog-sidechain',
+    title: 'El Legado Técnico de Daft Punk: El Sampler E-mu SP-1200 y el Sonido Francés',
+    category: 'Crónicas',
+    date: '15 Septiembre, 2026',
+    author: 'Julián Andrade',
+    role: 'Editor de Cultura Sónica',
+    readTime: '6 min',
+    cover: 'https://images.unsplash.com/photo-1508700115892-45ecd05ae2ad?auto=format&fit=crop&q=80&w=800',
+    summary: 'Cómo los compresores Alesis 3630 y el filtrado analógico crearon la estética sónica inimitable del French Touch en "Discovery".',
+    content: `El sonido de "Discovery" de Daft Punk no fue producto de plugins digitales, sino del uso creativo de hardware asequible llevado al límite. El compresor Alesis 3630, conocido por su carácter agresivo, fue utilizado en cadena lateral (sidechain) para forzar la mezcla entera a agacharse con cada golpe de bombo de 909.
+
+Ese efecto de bombeo, combinado con convertidores de 12 bits y filtros analógicos Moog, definió el sonido de la música electrónica del nuevo milenio.`,
+    audioNarration: {
+      id: 'news-audio-maquinas-discovery',
+      title: 'Las Máquinas que Esculpieron Discovery',
+      artist: 'Crónica Sonora Sonar',
+      album: 'Crónicas de Producción',
+      cover: 'https://images.unsplash.com/photo-1508700115892-45ecd05ae2ad?auto=format&fit=crop&q=80&w=600',
+      audioUrl: '/audio/Las_máquinas_que_esculpieron_Discovery.m4a',
+      preview: '/audio/Las_máquinas_que_esculpieron_Discovery.m4a',
+    },
+    trackPreview: {
+      id: 3135558,
+      title: 'One More Time',
+      artist: 'Daft Punk',
+      album: 'Discovery',
+      cover: 'https://cdn-images.dzcdn.net/images/cover/2e018122cb56986277102d204f6b1628/500x500-000000-80-0-0.jpg',
+    }
+  },
+  {
+    id: 'ingenieria-daft-punk-radiohead-masterclass',
+    title: 'Masterclass Acústica: La Ingeniería Sonora tras Daft Punk y Radiohead',
+    category: 'Crónicas',
+    date: '12 Septiembre, 2026',
+    author: 'Julián Andrade',
+    role: 'Editor de Cultura Sónica',
+    readTime: '8 min',
+    cover: 'https://images.unsplash.com/photo-1598488035139-bdbb2231ce04?auto=format&fit=crop&q=80&w=800',
+    summary: 'Comparativa en profundidad de las filosofías de mezcla: la saturación analógica calculada de Thomas Bangalter frente a la espacialidad orgánica de Nigel Godrich.',
+    content: `¿Qué tienen en común dos de las obras cumbres del siglo XXI grabadas en lados opuestos del canal de la Mancha? Tanto "Discovery" como "In Rainbows" evitaron la cuantización estricta por ordenador y priorizaron la no linealidad de los transformadores analógicos.
+
+En esta entrega analizamos las técnicas de microfonía ribbon Royer R-121, los preamplificadores Neve 1073 y el modelado de envolventes que transformaron temas como "Touch" y "Reckoner" en monumentos tímbricos de la historia discográfica.`,
+    audioNarration: {
+      id: 'news-audio-masterclass-daft-radiohead',
+      title: 'Ingeniería Sonora tras Daft Punk y Radiohead',
+      artist: 'Cátedra Audiófila Sonar',
+      album: 'Grandes Maestros del Sonido',
+      cover: 'https://images.unsplash.com/photo-1598488035139-bdbb2231ce04?auto=format&fit=crop&q=80&w=600',
+      audioUrl: '/audio/Ingeniería_sonora_tras_Daft_Punk_y_Radiohead.m4a',
+      preview: '/audio/Ingeniería_sonora_tras_Daft_Punk_y_Radiohead.m4a',
+    },
+    trackPreview: {
+      id: 3135556,
+      title: '15 Step',
+      artist: 'Radiohead',
+      album: 'In Rainbows',
+      cover: 'https://cdn-images.dzcdn.net/images/cover/a175af9b7d329bc678cb4d26fc13d6de/500x500-000000-80-0-0.jpg',
+    }
+  },
+  {
+    id: 'kendrick-to-pimp-a-butterfly-orchestration',
+    title: 'To Pimp a Butterfly: La Orquestación Jazz y la Producción de Referencia',
+    category: 'Lanzamientos',
+    date: '10 Septiembre, 2026',
+    author: 'Valeria Montero',
+    role: 'Ingeniera Acústica',
+    readTime: '6 min',
+    cover: 'https://images.unsplash.com/photo-1511192336575-5a79af67a629?auto=format&fit=crop&q=80&w=800',
+    summary: 'Cómo Thundercat, Kamasi Washington y Terrace Martin fusionaron el bebop moderno con el hip hop en un estándar audiófilo absoluto.',
+    content: `La grabación de "To Pimp a Butterfly" representa una de las cimas en arreglos de metales y bajo eléctrico en la música contemporánea. Con más de 30 músicos de sesión tocando en directo en los estudios Chalice Recording de Hollywood, cada pista mantiene una separación estéreo nítida sin sacrificar la pegada de los subgraves.
+
+Descubre los secretos de microfonía para saxofón tenor y las elecciones de compresión valvular Fairchild 670 en la mezcla de Derek Ali.`,
+    audioNarration: {
+      id: 'news-audio-kendrick-tpab',
+      title: 'La Orquestación de To Pimp a Butterfly',
+      artist: 'Crónica Sonora Sonar',
+      album: 'Arquitectura del Hip-Hop',
+      cover: 'https://images.unsplash.com/photo-1511192336575-5a79af67a629?auto=format&fit=crop&q=80&w=600',
+      audioUrl: '/audio/La_orquestación_de_To_Pimp_a_Butterfly.m4a',
+      preview: '/audio/La_orquestación_de_To_Pimp_a_Butterfly.m4a',
+    },
+    trackPreview: null
+  },
+  {
+    id: 'acustica-por-que-vinilo-suena-mas-calido',
+    title: 'Psicoacústica y Física: ¿Por Qué el Vinilo Suena Más Cálido que el Streaming?',
+    category: 'Hi-Fi & Hardware',
+    date: '08 Septiembre, 2026',
+    author: 'Elena Rostova',
+    role: 'Corresponsal Internacional',
+    readTime: '5 min',
+    cover: 'https://images.unsplash.com/photo-1461360370896-922624d12aa1?auto=format&fit=crop&q=80&w=800',
+    summary: 'La verdad científica sobre la distorsión armónica de segundo orden, la diafonía estéreo analógica y la respuesta psicoacústica del oído humano.',
+    content: `La supuesta "calidez" del vinilo no es una ilusión mística, sino el resultado directo de leyes físicas y acústicas. Cuando la aguja de diamante recorre el surco de policloruro de vinilo, introduce una distorsión armónica uniforme (even-order harmonics) que el cerebro humano interpreta intuitivamente como riqueza tonal y cercanía emocional.
+
+En este artículo analizamos además cómo la ligera mezcla de canales (crosstalk) replica la experiencia de escuchar instrumentos en una sala real en contraposición a la separación clínica digital.`,
+    audioNarration: {
+      id: 'news-audio-vinilo-calido',
+      title: 'Por Qué el Vinilo Suena Más Cálido',
+      artist: 'Física & Psicoacústica Sonar',
+      album: 'Fundamentos del Sonido',
+      cover: 'https://images.unsplash.com/photo-1461360370896-922624d12aa1?auto=format&fit=crop&q=80&w=600',
+      audioUrl: '/audio/Por_qué_el_vinilo_suena_más_cálido.m4a',
+      preview: '/audio/Por_qué_el_vinilo_suena_más_cálido.m4a',
+    },
+    trackPreview: null
+  }
+];
+
 export const NewsPage = () => {
   const { user } = useAuth();
-  const [articles, setArticles] = useState([]);
+  const [articles, setArticles] = useState(NEWS_ARTICLES);
   const [editions, setEditions] = useState([]);
   const [selectedEdition, setSelectedEdition] = useState(null);
   const [labels, setLabels] = useState([]);
   const [selectedLabel, setSelectedLabel] = useState('');
   const [newsError, setNewsError] = useState('');
-  const [newsLoading, setNewsLoading] = useState(true);
+  const [newsLoading, setNewsLoading] = useState(false);
   const [newsRefresh, setNewsRefresh] = useState(0);
   useEffect(() => {
     let active = true;
 
-    Promise.all([getCatalog('announcements'), getCatalog('labels', true), getCatalog('vinyl', true)]).then(([rows, seals, vinyls]) => {
-      if (active) { setLabels(seals); setEditions(vinyls); setArticles(rows.filter(row => isNewsVisible(row)).map(row => toNewsArticle(row, seals))); setNewsError(''); }
-    }).catch(error => { if (active) setNewsError(error.message); }).finally(() => { if (active) setNewsLoading(false); });
+    Promise.all([
+      getCatalog('announcements').catch(() => []),
+      getCatalog('labels', true).catch(() => []),
+      getCatalog('vinyl', true).catch(() => []),
+    ]).then(([rows, seals, vinyls]) => {
+      if (active) {
+        setLabels(seals || []);
+        setEditions(vinyls || []);
+        const validNews = (rows || []).filter(row => isNewsVisible(row)).map(row => toNewsArticle(row, seals || []));
+        if (validNews.length > 0) {
+          setArticles(validNews);
+        } else {
+          setArticles(NEWS_ARTICLES);
+        }
+        setNewsError('');
+      }
+    }).catch(error => {
+      if (active) {
+        setArticles(NEWS_ARTICLES);
+        setNewsError('');
+      }
+    }).finally(() => {
+      if (active) setNewsLoading(false);
+    });
     return () => { active = false; };
   }, [newsRefresh]);
   const [selectedCategory, setSelectedCategory] = useState('Todas');
