@@ -5,6 +5,7 @@ import { GoogleIcon, SpotifyIcon } from './social-provider-icon';
 import { RotatingReview } from './rotating-review';
 import { GENRE_OPTIONS } from '../../../shared/services/recommendations-service';
 import { requestRegisterOtpWebhook } from '../../../shared/services/n8n-webhooks';
+import { getUserByEmail } from '../../../shared/services/api-client';
 
 const AVATAR_PALETTES = [
   { color: '#B80C09', label: 'Carmesí Vinilo' },
@@ -151,6 +152,20 @@ export const RegisterForm = () => {
 
     setIsSendingOtp(true);
     try {
+      // Validación preventiva: Comprobar si el correo ya existe antes de enviar OTP
+      let existingUser = null;
+      try {
+        existingUser = await getUserByEmail(formData.email.trim().toLowerCase());
+      } catch {
+        // Fallback
+      }
+
+      if (existingUser) {
+        setErrorMessage('Este correo ya está registrado en SONAR. Por favor inicia sesión o recupera tu contraseña.');
+        setIsSendingOtp(false);
+        return;
+      }
+
       const otpCode = Math.floor(100000 + Math.random() * 900000).toString();
       const res = await requestRegisterOtpWebhook(formData.email, formData.username, otpCode);
       const codeToVerify = res.code || otpCode;
@@ -550,9 +565,46 @@ export const RegisterForm = () => {
                 </div>
 
                 {errorMessage && (
-                  <p className="auth-error" role="alert">
-                    {errorMessage}
-                  </p>
+                  <div className="auth-error" role="alert" style={{ display: 'flex', flexDirection: 'column', gap: '0.45rem', padding: '0.65rem 0.8rem', borderRadius: '10px' }}>
+                    <span style={{ fontSize: '0.78rem', lineHeight: '1.4' }}>{errorMessage}</span>
+                    {errorMessage.includes('ya está registrado') && (
+                      <div style={{ display: 'flex', gap: '0.5rem', marginTop: '0.2rem', flexWrap: 'wrap' }}>
+                        <a
+                          href="#login"
+                          style={{
+                            fontSize: '0.72rem',
+                            fontWeight: '800',
+                            color: '#ffffff',
+                            backgroundColor: '#B80C09',
+                            padding: '0.35rem 0.75rem',
+                            borderRadius: '8px',
+                            textDecoration: 'none',
+                            display: 'inline-flex',
+                            alignItems: 'center',
+                            gap: '4px',
+                            boxShadow: '0 2px 5px rgba(184,12,9,0.3)',
+                          }}
+                        >
+                          Iniciar Sesión ➔
+                        </a>
+                        <a
+                          href="#forgot-password"
+                          style={{
+                            fontSize: '0.72rem',
+                            fontWeight: '800',
+                            color: '#5c1d5e',
+                            backgroundColor: '#ffffff',
+                            padding: '0.35rem 0.75rem',
+                            borderRadius: '8px',
+                            textDecoration: 'none',
+                            border: '1px solid rgba(92,29,94,0.25)',
+                          }}
+                        >
+                          Recuperar Contraseña
+                        </a>
+                      </div>
+                    )}
+                  </div>
                 )}
 
                 <button className="auth-submit" type="submit" disabled={isSendingOtp} style={{ marginTop: '0.6rem' }}>
