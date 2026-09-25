@@ -22,6 +22,7 @@ import SoundSignatureSelector from '../../features/profile/components/sound-sign
 import AudiophileSignalChain from '../../features/profile/components/audiophile-signal-chain';
 import ListeningJournalModal from '../../features/profile/components/listening-journal-modal';
 import EnhancedParentalControl from '../../features/profile/components/enhanced-parental-control';
+import RewardsStoreTab from '../../features/profile/components/rewards-store-tab';
 
 export const UserDashboardPage = () => {
   const { user, updateUser } = useAuth();
@@ -436,6 +437,26 @@ export const UserDashboardPage = () => {
               <span className="material-symbols-outlined text-[18px]">headphones</span>
               <span>Equipamiento Hi-Fi</span>
               {activeTab === 'audiophile_gear' && (
+                <motion.div
+                  layoutId="dashboard-tab-indicator"
+                  className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#B80C09]"
+                  transition={{ type: 'spring', stiffness: 400, damping: 30 }}
+                />
+              )}
+            </button>
+
+            <button
+              type="button"
+              onClick={() => setActiveTab('recompensas')}
+              className={`pb-3 text-sm sm:text-base font-bold transition-all cursor-pointer relative whitespace-nowrap flex items-center gap-2 ${
+                activeTab === 'recompensas'
+                  ? 'text-[#B80C09]'
+                  : 'text-[#5c435a] dark:text-[#B89CB0] hover:text-[#231123] dark:hover:text-white'
+              }`}
+            >
+              <span className="material-symbols-outlined text-[18px] text-amber-500">redeem</span>
+              <span>Recompensas & Boutique</span>
+              {activeTab === 'recompensas' && (
                 <motion.div
                   layoutId="dashboard-tab-indicator"
                   className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#B80C09]"
@@ -1099,7 +1120,25 @@ export const UserDashboardPage = () => {
                           "{bio}"
                         </p>
 
-                        <div className="flex items-center justify-end pt-2 border-t border-[#e6d5e2]/60 dark:border-white/10">
+                        <div className="flex items-center justify-between pt-2 border-t border-[#e6d5e2]/60 dark:border-white/10">
+                          {(() => {
+                            const userPrefs = user?.preferences || ['Art Rock', 'Electrónica'];
+                            const matchCount = (profile?.preferences || ['Art Rock']).filter((p) =>
+                              userPrefs.some((up) => up.toLowerCase() === p.toLowerCase())
+                            ).length;
+                            const affinity = Math.min(99, 82 + matchCount * 7 + (idx % 3) * 4);
+
+                            return (
+                              <span
+                                className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-emerald-500/15 text-emerald-700 dark:text-emerald-300 border border-emerald-500/30 text-[10px] font-bold"
+                                title="Porcentaje de afinidad y compatibilidad en géneros musicales"
+                              >
+                                <span className="material-symbols-outlined text-[12px] text-emerald-500">favorite</span>
+                                <span>{affinity}% Afinidad Sonora</span>
+                              </span>
+                            );
+                          })()}
+
                           <button
                             type="button"
                             onClick={() => handleToggleUnfollowUser(uid)}
@@ -1339,7 +1378,12 @@ export const UserDashboardPage = () => {
             </section>
           )}
 
-          {/* TAB 6: CONTROL PARENTAL Y FILTRO DE CONTENIDO */}
+          {/* TAB 6: BOUTIQUE & RECOMPENSAS SONAR */}
+          {activeTab === 'recompensas' && (
+            <RewardsStoreTab />
+          )}
+
+          {/* TAB 7: CONTROL PARENTAL Y FILTRO DE CONTENIDO */}
           {activeTab === 'parental_control' && (
             <EnhancedParentalControl />
           )}

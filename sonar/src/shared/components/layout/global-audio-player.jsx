@@ -44,6 +44,24 @@ export const GlobalAudioPlayer = () => {
   const [parentPinInput, setParentPinInput] = useState('');
   const [pinError, setPinError] = useState('');
 
+  const [equippedSkin, setEquippedSkin] = useState(() => {
+    try {
+      return localStorage.getItem('sonar_equipped_skin') || '';
+    } catch {
+      return '';
+    }
+  });
+
+  useEffect(() => {
+    const handleCustomizationChange = (e) => {
+      if (e.detail?.equippedSkin !== undefined) {
+        setEquippedSkin(e.detail.equippedSkin);
+      }
+    };
+    window.addEventListener('sonar:profile-customization-changed', handleCustomizationChange);
+    return () => window.removeEventListener('sonar:profile-customization-changed', handleCustomizationChange);
+  }, []);
+
   const isPodcast = Boolean(
     currentTrack?.isPodcast ||
     currentTrack?.type === 'podcast' ||
@@ -62,12 +80,13 @@ export const GlobalAudioPlayer = () => {
     const saved = interactionsService.getUserSavedAlbums(userId);
     const map = {};
     saved.forEach((item) => {
-      const idKey = String(item.id);
+      if (!item) return;
+      const idKey = String(item.id || item.albumId || '');
       const trackIdKey = String(item.trackId || '');
-      const titleKey = item.title.toLowerCase();
-      map[idKey] = true;
+      const titleKey = String(item.title || item.name || '').trim().toLowerCase();
+      if (idKey) map[idKey] = true;
       if (trackIdKey) map[trackIdKey] = true;
-      map[titleKey] = true;
+      if (titleKey) map[titleKey] = true;
     });
     setSavedMap(map);
   };
@@ -239,15 +258,79 @@ export const GlobalAudioPlayer = () => {
             animate={{ y: 0, opacity: 1, scale: 1 }}
             exit={{ y: 70, opacity: 0, scale: 0.96 }}
             transition={{ type: 'spring', stiffness: 350, damping: 28 }}
-            className="fixed bottom-4 sm:bottom-6 left-3 sm:left-6 z-50 w-[calc(100%-1.5rem)] sm:w-[600px] md:w-[680px] max-w-[720px] flex flex-col gap-2.5 p-3 sm:p-4 select-none backdrop-blur-2xl transition-all duration-300"
+            className={`fixed bottom-4 sm:bottom-6 left-3 sm:left-6 z-50 w-[calc(100%-1.5rem)] sm:w-[600px] md:w-[680px] max-w-[720px] flex flex-col gap-2.5 p-3 sm:p-4 select-none backdrop-blur-2xl transition-all duration-300 ${
+              equippedSkin === 'skin-vu-meter'
+                ? 'ring-2 ring-amber-500/40 shadow-[0_0_30px_rgba(245,158,11,0.25)]'
+                : equippedSkin === 'skin-cassette'
+                ? 'ring-2 ring-rose-500/40 shadow-[0_0_30px_rgba(244,63,94,0.25)]'
+                : ''
+            }`}
             style={{
-              backgroundColor: 'rgba(35, 17, 35, 0.94)',
+              backgroundColor: equippedSkin === 'skin-vu-meter' ? 'rgba(28, 18, 12, 0.96)' : 'rgba(35, 17, 35, 0.94)',
               color: '#DCDCDD',
               borderRadius: '24px',
-              border: '1px solid rgba(75, 40, 64, 0.7)',
+              border: equippedSkin === 'skin-vu-meter' ? '1px solid rgba(245, 158, 11, 0.4)' : '1px solid rgba(75, 40, 64, 0.7)',
               boxShadow: '0 24px 60px -12px rgba(0, 0, 0, 0.85), 0 0 25px rgba(184, 12, 9, 0.18), inset 0 1px 0 rgba(220, 220, 221, 0.12)',
             }}
           >
+            {/* Skin VU Meter Analógico */}
+            {equippedSkin === 'skin-vu-meter' && (
+              <div className="flex items-center justify-between gap-3 px-3 py-1.5 rounded-xl bg-amber-950/60 border border-amber-500/30 text-amber-300 text-[10px] font-mono shadow-inner">
+                <span className="flex items-center gap-1 font-bold shrink-0">
+                  <span className="material-symbols-outlined text-[13px] text-amber-400">speed</span>
+                  <span>VU L</span>
+                </span>
+                <div className="flex-1 h-2 bg-black/70 rounded-full overflow-hidden flex items-center p-0.5 border border-amber-500/20">
+                  <motion.div
+                    animate={{ width: isPlaying ? ['25%', '85%', '45%', '92%', '35%'] : '8%' }}
+                    transition={{ repeat: Infinity, duration: 0.7, ease: 'easeInOut' }}
+                    className="h-full bg-gradient-to-r from-emerald-500 via-amber-400 to-rose-500 rounded-full"
+                  />
+                </div>
+                <span className="flex items-center gap-1 font-bold shrink-0">
+                  <span>VU R</span>
+                </span>
+                <div className="flex-1 h-2 bg-black/70 rounded-full overflow-hidden flex items-center p-0.5 border border-amber-500/20">
+                  <motion.div
+                    animate={{ width: isPlaying ? ['35%', '90%', '55%', '78%', '48%'] : '8%' }}
+                    transition={{ repeat: Infinity, duration: 0.65, ease: 'easeInOut' }}
+                    className="h-full bg-gradient-to-r from-emerald-500 via-amber-400 to-rose-500 rounded-full"
+                  />
+                </div>
+                <span className="text-[9px] font-black uppercase text-amber-400/90 tracking-wider">
+                  Skin VU Meter
+                </span>
+              </div>
+            )}
+
+            {/* Skin Cassette 1984 */}
+            {equippedSkin === 'skin-cassette' && (
+              <div className="flex items-center justify-between gap-3 px-3 py-1.5 rounded-xl bg-rose-950/60 border border-rose-500/30 text-rose-200 text-[10px] font-mono shadow-inner">
+                <div className="flex items-center gap-2">
+                  <motion.div
+                    animate={{ rotate: isPlaying ? 360 : 0 }}
+                    transition={{ repeat: Infinity, duration: 2, ease: 'linear' }}
+                    className="w-4 h-4 rounded-full border border-dashed border-rose-300 flex items-center justify-center text-[9px] font-bold text-rose-300"
+                  >
+                    ⚙
+                  </motion.div>
+                  <span className="w-6 h-1 bg-white/30 rounded-full" />
+                  <motion.div
+                    animate={{ rotate: isPlaying ? 360 : 0 }}
+                    transition={{ repeat: Infinity, duration: 2, ease: 'linear' }}
+                    className="w-4 h-4 rounded-full border border-dashed border-rose-300 flex items-center justify-center text-[9px] font-bold text-rose-300"
+                  >
+                    ⚙
+                  </motion.div>
+                </div>
+                <span className="text-[10px] font-bold text-rose-200 tracking-widest font-mono">
+                  TAPE COUNTER #{Math.floor(currentTime * 10).toString().padStart(4, '0')}
+                </span>
+                <span className="text-[9px] font-black uppercase text-rose-300/90 tracking-wider">
+                  Cassette 1984
+                </span>
+              </div>
+            )}
             {/* Barra de progreso interactiva superior con degradado oficial */}
             <div
               onClick={(e) => {

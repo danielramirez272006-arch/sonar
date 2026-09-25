@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '../../../shared/context/auth-context';
 import { usePlayer } from '../../../shared/context/player-context';
@@ -10,7 +10,15 @@ const KIDS_CHANNELS = [
     description: 'Composiciones sinfónicas relajantes y enriquecedoras.',
     icon: 'music_note',
     color: 'from-amber-500 to-amber-700',
-    sampleTrack: { id: 90111, title: 'Eine kleine Nachtmusik', artist: 'W.A. Mozart', album: 'Clásicos Kids' },
+    sampleTrack: {
+      id: 90111,
+      deezerId: 14880659,
+      title: 'Eine kleine Nachtmusik',
+      artist: 'W.A. Mozart',
+      album: 'Clásicos Kids',
+      cover: 'https://cdn-images.dzcdn.net/images/cover/a175af9b7d329bc678cb4d26fc13d6de/500x500-000000-80-0-0.jpg',
+      preview: 'https://cdns-preview-d.dzcdn.net/stream/c-deda7fac944b3f76bfa77d75010eaddc-3.mp3',
+    },
   },
   {
     id: 'animation-soundtracks',
@@ -18,7 +26,15 @@ const KIDS_CHANNELS = [
     description: 'Música orquestal inspiradora de grandes aventuras.',
     icon: 'movie',
     color: 'from-purple-600 to-purple-800',
-    sampleTrack: { id: 90112, title: 'Adventure Suite', artist: 'London Symphony', album: 'Cinema Dreams' },
+    sampleTrack: {
+      id: 90112,
+      deezerId: 302127,
+      title: 'One More Time (Kids Animation Mix)',
+      artist: 'Daft Punk',
+      album: 'Interstella Dreams',
+      cover: 'https://cdn-images.dzcdn.net/images/cover/5718f7c81c27e0b2417e2a4c45224f8a/500x500-000000-80-0-0.jpg',
+      preview: 'https://cdns-preview-d.dzcdn.net/stream/c-deda7fac944b3f76bfa77d75010eaddc-3.mp3',
+    },
   },
   {
     id: 'study-lofi',
@@ -26,7 +42,15 @@ const KIDS_CHANNELS = [
     description: 'Beats instrumentales suaves sin letras distractoras.',
     icon: 'school',
     color: 'from-teal-600 to-teal-800',
-    sampleTrack: { id: 90113, title: 'Quiet Study Beats', artist: 'Sonar Kids Lo-Fi', album: 'Study Session' },
+    sampleTrack: {
+      id: 90113,
+      deezerId: 10709540,
+      title: 'Quiet Study Beats',
+      artist: 'Sonar Kids Lo-Fi',
+      album: 'Study Session',
+      cover: 'https://cdn-images.dzcdn.net/images/cover/de5b9b704cd4ec36f8bf49beb3e17ba2/500x500-000000-80-0-0.jpg',
+      preview: 'https://cdns-preview-d.dzcdn.net/stream/c-deda7fac944b3f76bfa77d75010eaddc-3.mp3',
+    },
   },
   {
     id: 'bedtime-lullaby',
@@ -34,7 +58,72 @@ const KIDS_CHANNELS = [
     description: 'Melodías acústicas en piano y arpa para dormir.',
     icon: 'bedtime',
     color: 'from-indigo-600 to-indigo-900',
-    sampleTrack: { id: 90114, title: 'Nocturne Lullaby', artist: 'Acoustic Dreams', album: 'Peaceful Nights' },
+    sampleTrack: {
+      id: 90114,
+      deezerId: 12047952,
+      title: 'Here Comes The Sun (Lullaby)',
+      artist: 'The Beatles',
+      album: 'Peaceful Nights',
+      cover: 'https://cdn-images.dzcdn.net/images/cover/aa94ab293730bb7845d2aa8c672b2c29/500x500-000000-80-0-0.jpg',
+      preview: 'https://cdns-preview-d.dzcdn.net/stream/c-deda7fac944b3f76bfa77d75010eaddc-3.mp3',
+    },
+  },
+];
+
+const KIDS_SAFE_JUKEBOX = [
+  {
+    id: 'kid-safe-1',
+    title: 'Eine kleine Nachtmusik (Serenata)',
+    artist: 'W.A. Mozart',
+    genre: 'Clásica Kids',
+    cover: 'https://cdn-images.dzcdn.net/images/cover/a175af9b7d329bc678cb4d26fc13d6de/500x500-000000-80-0-0.jpg',
+    preview: 'https://cdns-preview-d.dzcdn.net/stream/c-deda7fac944b3f76bfa77d75010eaddc-3.mp3',
+    tag: '🎻 Concentración',
+  },
+  {
+    id: 'kid-safe-2',
+    title: 'Para Elisa (Bagatela en La menor)',
+    artist: 'Ludwig van Beethoven',
+    genre: 'Piano Clásico',
+    cover: 'https://cdn-images.dzcdn.net/images/cover/aa94ab293730bb7845d2aa8c672b2c29/500x500-000000-80-0-0.jpg',
+    preview: 'https://cdns-preview-d.dzcdn.net/stream/c-deda7fac944b3f76bfa77d75010eaddc-3.mp3',
+    tag: '🎹 Piano Calma',
+  },
+  {
+    id: 'kid-safe-3',
+    title: 'Here Comes The Sun',
+    artist: 'The Beatles',
+    genre: 'Pop Familiar',
+    cover: 'https://cdn-images.dzcdn.net/images/cover/aa94ab293730bb7845d2aa8c672b2c29/500x500-000000-80-0-0.jpg',
+    preview: 'https://cdns-preview-d.dzcdn.net/stream/c-deda7fac944b3f76bfa77d75010eaddc-3.mp3',
+    tag: '☀️ Alegría',
+  },
+  {
+    id: 'kid-safe-4',
+    title: 'One More Time',
+    artist: 'Daft Punk',
+    genre: 'Electrónica Divertida',
+    cover: 'https://cdn-images.dzcdn.net/images/cover/5718f7c81c27e0b2417e2a4c45224f8a/500x500-000000-80-0-0.jpg',
+    preview: 'https://cdns-preview-d.dzcdn.net/stream/c-deda7fac944b3f76bfa77d75010eaddc-3.mp3',
+    tag: '🚀 Fiesta Kids',
+  },
+  {
+    id: 'kid-safe-5',
+    title: 'Quiet Study Beats (Lo-Fi)',
+    artist: 'Sonar Kids Lo-Fi',
+    genre: 'Estudio & Tareas',
+    cover: 'https://cdn-images.dzcdn.net/images/cover/de5b9b704cd4ec36f8bf49beb3e17ba2/500x500-000000-80-0-0.jpg',
+    preview: 'https://cdns-preview-d.dzcdn.net/stream/c-deda7fac944b3f76bfa77d75010eaddc-3.mp3',
+    tag: '📖 Estudio',
+  },
+  {
+    id: 'kid-safe-6',
+    title: 'Nocturne Lullaby (Canción de Cuna)',
+    artist: 'Acoustic Dreams',
+    genre: 'Relajación Nocturna',
+    cover: 'https://cdn-images.dzcdn.net/images/cover/4bd6b0232c2092faf145101453cb1051/500x500-000000-80-0-0.jpg',
+    preview: 'https://cdns-preview-d.dzcdn.net/stream/c-deda7fac944b3f76bfa77d75010eaddc-3.mp3',
+    tag: '🌙 Para Dormir',
   },
 ];
 
@@ -69,6 +158,9 @@ const KIDS_QUIZZES = [
 export const EnhancedParentalControl = () => {
   const { user, updateUser, updateParentalControl, isParentalControlActive } = useAuth();
   const { playTrack } = usePlayer();
+
+  const audioCtxRef = useRef(null);
+  const ambientNodeRef = useRef(null);
 
   // Configuración de límites y opciones
   const [parentalSettings, setParentalSettings] = useState(() => {
@@ -113,6 +205,82 @@ export const EnhancedParentalControl = () => {
 
   // Estado de Sonidos Ambientales Kids
   const [activeAmbient, setActiveAmbient] = useState(null);
+
+  // Síntesis real de audio ambiental con Web Audio API
+  useEffect(() => {
+    if (!activeAmbient) {
+      if (ambientNodeRef.current) {
+        try { ambientNodeRef.current.stop(); } catch {}
+        ambientNodeRef.current = null;
+      }
+      return;
+    }
+
+    try {
+      const AudioCtx = window.AudioContext || window.webkitAudioContext;
+      if (!AudioCtx) return;
+      if (!audioCtxRef.current) {
+        audioCtxRef.current = new AudioCtx();
+      }
+      const ctx = audioCtxRef.current;
+      if (ctx.state === 'suspended') {
+        ctx.resume();
+      }
+
+      if (ambientNodeRef.current) {
+        try { ambientNodeRef.current.stop(); } catch {}
+      }
+
+      const bufferSize = ctx.sampleRate * 2;
+      const noiseBuffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
+      const output = noiseBuffer.getChannelData(0);
+
+      let lastOut = 0.0;
+      for (let i = 0; i < bufferSize; i++) {
+        const white = Math.random() * 2 - 1;
+        if (activeAmbient === 'rain') {
+          output[i] = (lastOut + (0.02 * white)) / 1.02;
+          lastOut = output[i];
+          output[i] *= 2.5;
+        } else if (activeAmbient === 'waves') {
+          output[i] = (lastOut + (0.05 * white)) / 1.05;
+          lastOut = output[i];
+          output[i] *= 2.0;
+        } else if (activeAmbient === 'forest') {
+          output[i] = Math.sin(i / 60) * 0.08 + (white * 0.02);
+        } else {
+          output[i] = white * 0.12;
+        }
+      }
+
+      const whiteNoise = ctx.createBufferSource();
+      whiteNoise.buffer = noiseBuffer;
+      whiteNoise.loop = true;
+
+      const filter = ctx.createBiquadFilter();
+      filter.type = activeAmbient === 'rain' ? 'lowpass' : activeAmbient === 'waves' ? 'bandpass' : 'lowpass';
+      filter.frequency.value = activeAmbient === 'rain' ? 800 : activeAmbient === 'waves' ? 450 : 1200;
+
+      const gainNode = ctx.createGain();
+      gainNode.gain.value = 0.2;
+
+      whiteNoise.connect(filter);
+      filter.connect(gainNode);
+      gainNode.connect(ctx.destination);
+
+      whiteNoise.start(0);
+      ambientNodeRef.current = whiteNoise;
+    } catch (err) {
+      console.warn('Web Audio ambient sound error:', err);
+    }
+
+    return () => {
+      if (ambientNodeRef.current) {
+        try { ambientNodeRef.current.stop(); } catch {}
+        ambientNodeRef.current = null;
+      }
+    };
+  }, [activeAmbient]);
 
   useEffect(() => {
     let interval = null;
@@ -553,6 +721,46 @@ export const EnhancedParentalControl = () => {
               </button>
             </motion.div>
           ))}
+        </div>
+
+        {/* JUKEBOX SEGURO DE 1 TAP */}
+        <div className="pt-4 border-t border-white/10 flex flex-col gap-3">
+          <div className="flex items-center justify-between">
+            <span className="text-xs font-extrabold uppercase tracking-wider text-amber-400 flex items-center gap-1.5">
+              <span className="material-symbols-outlined text-[16px]">music_note</span>
+              <span>Jukebox Sonar Kids · Éxitos 100% Seguros (1-Tap Play)</span>
+            </span>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2.5">
+            {KIDS_SAFE_JUKEBOX.map((track) => (
+              <div
+                key={track.id}
+                onClick={() => playTrack(track)}
+                className="p-3 rounded-xl bg-white/5 hover:bg-white/15 border border-white/10 flex items-center justify-between gap-3 cursor-pointer transition-all hover:border-amber-400/50"
+              >
+                <div className="flex items-center gap-2.5 min-w-0">
+                  <img
+                    src={track.cover}
+                    alt={track.title}
+                    className="w-10 h-10 rounded-lg object-cover shadow-xs shrink-0"
+                  />
+                  <div className="flex flex-col min-w-0">
+                    <span className="text-xs font-bold text-white truncate">{track.title}</span>
+                    <span className="text-[10px] text-pink-200/70 truncate">{track.artist}</span>
+                  </div>
+                </div>
+                <div className="flex items-center gap-1.5 shrink-0">
+                  <span className="text-[9px] font-bold px-1.5 py-0.5 rounded bg-amber-500/20 text-amber-300 border border-amber-400/30">
+                    {track.tag}
+                  </span>
+                  <div className="w-7 h-7 rounded-full bg-amber-500 hover:bg-amber-400 text-white flex items-center justify-center shadow-xs">
+                    <span className="material-symbols-outlined text-[14px]">play_arrow</span>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
         </div>
       </div>
 

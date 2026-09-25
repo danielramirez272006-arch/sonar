@@ -7,10 +7,11 @@ import FeaturedReviews from '../../features/home/components/featured-reviews';
 import TrendingGrid from '../../features/home/components/trending-grid';
 import Footer from '../../shared/components/layout/footer';
 import Skeleton from '../../shared/components/ui/loader';
-import { searchAlbums, getAlbumTracks } from '../../shared/services/deezer-service';
+import { searchAlbums, getAlbumTracks, isKidsSafeTrack } from '../../shared/services/deezer-service';
 import { usePlayer } from '../../shared/context/player-context';
 import { useAuth } from '../../shared/context/auth-context';
 import { interactionsService } from '../../shared/services/interactions-service';
+import { handleImageFallbackError, getFallbackCoverForAlbum } from '../../shared/services/recommendations-service';
 
 const pageContainerVariants = {
   hidden: { opacity: 0 },
@@ -68,11 +69,12 @@ const HomePageSkeleton = () => {
 export const HomePage = () => {
   const { user, isJunior, isParentalControlActive } = useAuth();
   const userId = user?.id || '1';
+  const isKidsActive = Boolean(isJunior || isParentalControlActive);
   const [isLoading, setIsLoading] = useState(true);
   const [searchResults, setSearchResults] = useState([]);
   const [isSearching, setIsSearching] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
-  const [hideExplicitInSearch, setHideExplicitInSearch] = useState(false);
+  const [hideExplicitInSearch, setHideExplicitInSearch] = useState(() => isKidsActive);
   const [savedCollection, setSavedCollection] = useState([]);
   const resultsRef = React.useRef(null);
   const { playTrack, currentTrack, isPlaying, toggleTrack, openReviewModal } = usePlayer();
@@ -245,7 +247,7 @@ export const HomePage = () => {
                   ) : (
                     <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4 sm:gap-5">
                       {searchResults
-                        .filter(s => !hideExplicitInSearch || (!s.explicit && !s.explicit_lyrics))
+                        .filter(s => !hideExplicitInSearch || isKidsSafeTrack(s))
                         .slice(0, 12)
                         .map((song) => {
                         const isSaved = savedCollection.some(

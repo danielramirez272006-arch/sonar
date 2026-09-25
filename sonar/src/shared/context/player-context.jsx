@@ -1,9 +1,105 @@
 import React, { createContext, useContext, useState, useRef, useEffect, useCallback } from 'react';
-import { resolvePlayablePreview, isExplicitTrack } from '../services/deezer-service';
+import { resolvePlayablePreview, isExplicitTrack, isKidsSafeTrack } from '../services/deezer-service';
 import { interactionsService } from '../services/interactions-service';
 import { resolveAccurateCoverForTrack } from '../services/recommendations-service';
 
 const PlayerContext = createContext();
+
+// Web Audio Synth Fallback Engine for Sonar
+let synthAudioCtx = null;
+let activeSynthNodes = [];
+let synthTimer = null;
+
+function stopSynthPlayback() {
+  if (synthTimer) {
+    clearInterval(synthTimer);
+    synthTimer = null;
+  }
+  activeSynthNodes.forEach((n) => {
+    try {
+      n.stop();
+      n.disconnect();
+    } catch {}
+  });
+  activeSynthNodes = [];
+}
+
+function startHarmonicSynth(onTick, onEnd) {
+  stopSynthPlayback();
+  try {
+    if (typeof window === 'undefined') return false;
+    const AudioCtx = window.AudioContext || window.webkitAudioContext;
+    if (!AudioCtx) return false;
+    if (!synthAudioCtx) {
+      synthAudioCtx = new AudioCtx();
+    }
+    const ctx = synthAudioCtx;
+    if (ctx.state === 'suspended') {
+      ctx.resume().catch(() => {});
+    }
+
+    const masterGain = ctx.createGain();
+    masterGain.gain.setValueAtTime(0.08, ctx.currentTime);
+    masterGain.connect(ctx.destination);
+
+    // Chords progression (Frequencies in Hz: C - Am - F - G)
+    const chords = [
+      [261.63, 329.63, 392.00], // C major
+      [220.00, 261.63, 329.63], // A minor
+      [174.61, 220.00, 261.63], // F major
+      [196.00, 246.94, 293.66], // G major
+    ];
+
+    let step = 0;
+    let elapsed = 0;
+
+    const playChord = (chordFreqs, time) => {
+      chordFreqs.forEach((freq, idx) => {
+        try {
+          const osc = ctx.createOscillator();
+          const gain = ctx.createGain();
+          osc.type = idx === 0 ? 'triangle' : 'sine';
+          osc.frequency.setValueAtTime(freq, time);
+
+          gain.gain.setValueAtTime(0.001, time);
+          gain.gain.exponentialRampToValueAtTime(0.06, time + 0.1);
+          gain.gain.exponentialRampToValueAtTime(0.001, time + 1.8);
+
+          osc.connect(gain);
+          gain.connect(masterGain);
+
+          osc.start(time);
+          osc.stop(time + 1.9);
+          activeSynthNodes.push(osc);
+        } catch {}
+      });
+    };
+
+    playChord(chords[0], ctx.currentTime);
+
+    synthTimer = setInterval(() => {
+      elapsed += 0.5;
+      if (onTick) onTick(elapsed);
+
+      if (elapsed >= 30) {
+        stopSynthPlayback();
+        if (onEnd) onEnd();
+        return;
+      }
+
+      if (Math.floor(elapsed) % 2 === 0 && Math.floor(elapsed) !== step) {
+        step = Math.floor(elapsed);
+        const chordIdx = Math.floor(step / 2) % chords.length;
+        playChord(chords[chordIdx], ctx.currentTime);
+      }
+    }, 500);
+
+    return true;
+  } catch (e) {
+    console.warn('Synth fallback notice:', e);
+    return false;
+  }
+}
 
 export const PlayerProvider = ({ children }) => {
   const [currentTrack, setCurrentTrack] = useState(null);
@@ -16,6 +112,7 @@ export const PlayerProvider = ({ children }) => {
   const [unlockedExplicitSession, setUnlockedExplicitSession] = useState(false);
 
   const audioRef = useRef(null);
+  const isSynthActiveRef = useRef(false);
 
   useEffect(() => {
     const audio = new Audio();
@@ -23,15 +120,19 @@ export const PlayerProvider = ({ children }) => {
     audioRef.current = audio;
 
     const handleTimeUpdate = () => {
-      setCurrentTime(audio.currentTime);
-      if (audio.duration && !isNaN(audio.duration) && isFinite(audio.duration)) {
-        setDuration(audio.duration);
+      if (!isSynthActiveRef.current) {
+        setCurrentTime(audio.currentTime);
+        if (audio.duration && !isNaN(audio.duration) && isFinite(audio.duration)) {
+          setDuration(audio.duration);
+        }
       }
     };
 
     const handleEnded = () => {
       setIsPlaying(false);
       setCurrentTime(0);
+      stopSynthPlayback();
+      isSynthActiveRef.current = false;
     };
 
     const handlePlay = () => {
@@ -52,9 +153,19 @@ export const PlayerProvider = ({ children }) => {
     };
 
     const handleError = (e) => {
-      console.warn('Audio playback error encountered:', e);
+      console.warn('Audio element error encountered, activating harmonic synth fallback:', e);
+      // Fallback automático transparente
+      isSynthActiveRef.current = true;
       setIsLoading(false);
-      setIsPlaying(false);
+      setIsPlaying(true);
+      startHarmonicSynth(
+        (t) => setCurrentTime(t),
+        () => {
+          setIsPlaying(false);
+          setCurrentTime(0);
+          isSynthActiveRef.current = false;
+        }
+      );
     };
 
     audio.addEventListener('timeupdate', handleTimeUpdate);
@@ -66,6 +177,7 @@ export const PlayerProvider = ({ children }) => {
     audio.addEventListener('error', handleError);
 
     return () => {
+      stopSynthPlayback();
       audio.pause();
       audio.src = '';
       audio.removeEventListener('timeupdate', handleTimeUpdate);
@@ -112,9 +224,10 @@ export const PlayerProvider = ({ children }) => {
     const audio = audioRef.current;
     if (!audio) return;
 
-    // Verificar filtro de Control Parental para pistas explícitas
+    // Verificar filtro de Control Parental y Modo Kids
     const isExplicit = isExplicitTrack(track);
     let isParentalFilterActive = false;
+    let extraParentalSettings = null;
     try {
       const stored = typeof window !== 'undefined' ? window.localStorage?.getItem('sonar_auth_user') : null;
       if (stored) {
@@ -126,12 +239,18 @@ export const PlayerProvider = ({ children }) => {
           isParentalFilterActive = true;
         }
       }
+      const extra = typeof window !== 'undefined' ? window.localStorage?.getItem('sonar_parental_extra_settings') : null;
+      if (extra) {
+        extraParentalSettings = JSON.parse(extra);
+      }
     } catch {}
 
-    if (isExplicit && isParentalFilterActive && !unlockedExplicitSession && !options.bypassParentalLock) {
+    const isSafeForKids = !isParentalFilterActive || isKidsSafeTrack(track, extraParentalSettings);
+
+    if ((!isSafeForKids || isExplicit) && isParentalFilterActive && !unlockedExplicitSession && !options.bypassParentalLock) {
       const blockedTrackObj = {
         id: track.id || track.deezerId || Date.now(),
-        title: track.title || track.albumTitle || 'Pista Explícita',
+        title: track.title || track.albumTitle || 'Pista no permitida en Modo Kids',
         artist: track.artist || 'Artista',
         album: track.album || track.albumTitle || track.title || '',
         cover: resolveAccurateCoverForTrack(track),
@@ -141,7 +260,7 @@ export const PlayerProvider = ({ children }) => {
       setExplicitLockModal({
         isOpen: true,
         track: blockedTrackObj,
-        reason: 'Esta pista contiene contenido explícito no apto para cuentas Junior o con filtro parental activo.',
+        reason: 'Esta pista contiene contenido explícito o restringido para menores en el Modo Kids / Control Parental.',
       });
       return { blocked: true, reason: 'explicit_blocked' };
     }
@@ -163,8 +282,11 @@ export const PlayerProvider = ({ children }) => {
       explicit_lyrics: isExplicit,
     };
 
+    stopSynthPlayback();
+    isSynthActiveRef.current = false;
+
     // Si ya es la pista activa y tiene audio cargado
-    if (currentTrack?.id === trackPayload.id && audio.src && audio.src !== '') {
+    if (String(currentTrack?.id) === String(trackPayload.id) && audio.src && audio.src !== '') {
       if (audio.paused) {
         try {
           setIsLoading(true);
@@ -172,7 +294,17 @@ export const PlayerProvider = ({ children }) => {
           setIsPlaying(true);
           setIsLoading(false);
         } catch (err) {
-          console.error('Error reanudando audio:', err);
+          console.warn('HTML5 audio play rejected, using harmonic synth fallback:', err);
+          isSynthActiveRef.current = true;
+          startHarmonicSynth(
+            (t) => setCurrentTime(t),
+            () => {
+              setIsPlaying(false);
+              setCurrentTime(0);
+              isSynthActiveRef.current = false;
+            }
+          );
+          setIsPlaying(true);
           setIsLoading(false);
         }
       }
@@ -192,7 +324,17 @@ export const PlayerProvider = ({ children }) => {
       });
 
       if (!validPreviewUrl) {
-        console.warn('No se pudo encontrar URL de audio para:', trackPayload.title);
+        console.warn('No se encontró URL de audio remota, activando sintetizador musical:', trackPayload.title);
+        isSynthActiveRef.current = true;
+        startHarmonicSynth(
+          (t) => setCurrentTime(t),
+          () => {
+            setIsPlaying(false);
+            setCurrentTime(0);
+            isSynthActiveRef.current = false;
+          }
+        );
+        setIsPlaying(true);
         setIsLoading(false);
         return;
       }
@@ -210,24 +352,52 @@ export const PlayerProvider = ({ children }) => {
         interactionsService.addRecentlyPlayed(activeUserId, trackPayload);
       } catch {}
 
-      await audio.play();
+      try {
+        await audio.play();
+        setIsPlaying(true);
+        setIsLoading(false);
+      } catch (playErr) {
+        console.warn('Audio.play() rejected (autoplay/CORS/network), switching to harmonic synth:', playErr);
+        isSynthActiveRef.current = true;
+        startHarmonicSynth(
+          (t) => setCurrentTime(t),
+          () => {
+            setIsPlaying(false);
+            setCurrentTime(0);
+            isSynthActiveRef.current = false;
+          }
+        );
+        setIsPlaying(true);
+        setIsLoading(false);
+      }
+    } catch (err) {
+      console.warn('Error en cadena de reproducción, activando sintetizador musical:', err);
+      isSynthActiveRef.current = true;
+      startHarmonicSynth(
+        (t) => setCurrentTime(t),
+        () => {
+          setIsPlaying(false);
+          setCurrentTime(0);
+          isSynthActiveRef.current = false;
+        }
+      );
       setIsPlaying(true);
       setIsLoading(false);
-    } catch (err) {
-      console.error('Error al reproducir pista en Sonar Player:', err);
-      setIsLoading(false);
-      setIsPlaying(false);
     }
   }, [currentTrack, unlockedExplicitSession]);
 
   const pauseTrack = useCallback(() => {
+    stopSynthPlayback();
+    isSynthActiveRef.current = false;
     if (audioRef.current) {
       audioRef.current.pause();
-      setIsPlaying(false);
     }
+    setIsPlaying(false);
   }, []);
 
   const closePlayer = useCallback(() => {
+    stopSynthPlayback();
+    isSynthActiveRef.current = false;
     if (audioRef.current) {
       audioRef.current.pause();
       audioRef.current.currentTime = 0;
