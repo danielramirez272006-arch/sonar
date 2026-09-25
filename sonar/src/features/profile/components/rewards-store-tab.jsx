@@ -385,59 +385,59 @@ export const RewardsStoreTab = () => {
       {/* 1. TARJETA PRINCIPAL: BALANCE DE MONEDAS, NIVEL XP & RACHA */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
         {/* Saldo de Sonar Coins */}
-        <div className="p-6 sm:p-7 rounded-3xl bg-gradient-to-br from-amber-500 via-amber-600 to-[#B80C09] text-white shadow-xl flex flex-col justify-between gap-4 relative overflow-hidden">
-          <div className="absolute top-0 right-0 -mt-4 -mr-4 w-32 h-32 rounded-full bg-white/10 blur-xl pointer-events-none" />
+        <div className="p-6 sm:p-7 rounded-3xl bg-gradient-to-br from-[#003844] via-[#003844] to-[#231123] text-[#DCDCDD] shadow-xl flex flex-col justify-between gap-4 relative overflow-hidden border border-[#003844]/40">
+          <div className="absolute top-0 right-0 -mt-4 -mr-4 w-32 h-32 rounded-full bg-white/5 blur-xl pointer-events-none" />
           <div className="flex items-center justify-between">
-            <span className="text-xs font-black uppercase tracking-wider text-amber-100 flex items-center gap-1.5">
-              <span className="material-symbols-outlined text-[18px]">toll</span>
+            <span className="text-xs font-black uppercase tracking-wider text-[#DCDCDD] flex items-center gap-1.5">
+              <span className="material-symbols-outlined text-[18px] text-[#52a2b0]">toll</span>
               <span>Saldo Sonar Coins</span>
             </span>
-            <span className="px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase bg-black/30 backdrop-blur-md text-amber-200 border border-white/20">
+            <span className="px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase bg-[#231123]/60 backdrop-blur-md text-[#DCDCDD] border border-white/20">
               Boutique Activa
             </span>
           </div>
 
           <div className="flex items-baseline gap-3 my-1">
-            <span className="text-4xl sm:text-5xl font-black tracking-tight font-mono">
+            <span className="text-4xl sm:text-5xl font-black tracking-tight font-mono text-white">
               {points.toLocaleString()}
             </span>
-            <span className="text-xs font-bold text-amber-100 uppercase tracking-widest">
+            <span className="text-xs font-bold text-[#DCDCDD]/80 uppercase tracking-widest">
               Monedas
             </span>
           </div>
 
-          <p className="text-xs text-amber-100/90 leading-relaxed">
-            Acumula monedas escuchando pistas en alta resolución, redactando reseñas y manteniendo tu racha.
+          <p className="text-xs text-[#DCDCDD]/80 leading-relaxed">
+            Acumula monedas escuchando pistas en alta resolución, redactando reseñas y manteniendo tu racha de escucha.
           </p>
         </div>
 
         {/* Nivel Audiófilo & Barra de XP */}
         <div className="p-6 sm:p-7 rounded-3xl bg-white dark:bg-[#4B2840] border border-[#e6d5e2] dark:border-white/10 shadow-xs flex flex-col justify-between gap-4">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-black uppercase tracking-wider text-[#B80C09] dark:text-pink-400 flex items-center gap-1.5">
+            <span className="text-xs font-black uppercase tracking-wider text-[#B80C09] dark:text-[#ff4d4a] flex items-center gap-1.5">
               <span className="material-symbols-outlined text-[18px]">military_tech</span>
               <span>Rango & Experiencia</span>
             </span>
-            <span className="text-xs font-mono font-extrabold text-[#5c435a] dark:text-[#B89CB0]">
+            <span className="text-xs font-mono font-extrabold text-[#5c435a] dark:text-[#DCDCDD]">
               {userXp.toLocaleString()} XP
             </span>
           </div>
 
           <div>
             <div className="flex items-baseline justify-between mb-1.5">
-              <h3 className="text-xl sm:text-2xl font-black text-[#231123] dark:text-white">
-                Nivel {userLevel} · <span className="text-sm text-[#5c435a] dark:text-pink-200">{equippedTitle}</span>
+              <h3 className="text-xl sm:text-2xl font-black text-[#231123] dark:text-[#DCDCDD]">
+                Nivel {userLevel} · <span className="text-sm text-[#5c435a] dark:text-[#B89CB0]">{equippedTitle}</span>
               </h3>
-              <span className="text-xs font-mono font-bold text-[#B80C09] dark:text-pink-300">
+              <span className="text-xs font-mono font-bold text-[#B80C09] dark:text-[#ff4d4a]">
                 {percentToNextLevel}%
               </span>
             </div>
 
-            <div className="w-full h-3 bg-gray-100 dark:bg-black/30 rounded-full overflow-hidden p-0.5 border border-[#e6d5e2] dark:border-white/10">
+            <div className="w-full h-3 bg-gray-100 dark:bg-black/40 rounded-full overflow-hidden p-0.5 border border-[#e6d5e2] dark:border-white/10">
               <motion.div
                 initial={{ width: 0 }}
                 animate={{ width: `${percentToNextLevel}%` }}
-                className="h-full rounded-full bg-gradient-to-r from-[#B80C09] via-amber-500 to-emerald-500"
+                className="h-full rounded-full bg-gradient-to-r from-[#003844] via-[#4B2840] to-[#B80C09]"
               />
             </div>
           </div>
@@ -448,13 +448,13 @@ export const RewardsStoreTab = () => {
         </div>
 
         {/* Racha de Días & Caja Sorpresa Diaria */}
-        <div className="p-6 sm:p-7 rounded-3xl bg-gradient-to-br from-[#231123] to-[#3a1b32] text-white border border-white/15 shadow-xl flex flex-col justify-between gap-4">
+        <div className="p-6 sm:p-7 rounded-3xl bg-gradient-to-br from-[#4B2840] to-[#231123] text-[#DCDCDD] border border-white/15 shadow-xl flex flex-col justify-between gap-4">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-black uppercase tracking-wider text-amber-400 flex items-center gap-1.5">
-              <span className="material-symbols-outlined text-[18px]">local_fire_department</span>
+            <span className="text-xs font-black uppercase tracking-wider text-[#DCDCDD] flex items-center gap-1.5">
+              <span className="material-symbols-outlined text-[18px] text-[#B80C09]">local_fire_department</span>
               <span>Racha de Escucha</span>
             </span>
-            <span className="px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase bg-emerald-500/20 text-emerald-300 border border-emerald-500/40">
+            <span className="px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase bg-[#003844]/60 text-[#DCDCDD] border border-[#003844]/80">
               🔥 5 Días Seguidos
             </span>
           </div>
@@ -462,7 +462,7 @@ export const RewardsStoreTab = () => {
           {/* Botón de Caja Diaria */}
           <div className="p-4 rounded-2xl bg-black/40 border border-white/10 flex items-center justify-between gap-3">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-amber-400 to-[#B80C09] text-white flex items-center justify-center shadow-md shrink-0">
+              <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-[#003844] to-[#B80C09] text-white flex items-center justify-center shadow-md shrink-0">
                 <span className="material-symbols-outlined text-[22px]">
                   {crateOpened ? 'lock_open' : 'redeem'}
                 </span>
@@ -471,7 +471,7 @@ export const RewardsStoreTab = () => {
                 <span className="text-xs font-extrabold block text-white">
                   {crateOpened ? 'Caja Diaria Reclamada' : 'Caja Sorpresa Diaria'}
                 </span>
-                <span className="text-[10px] text-pink-200/70">
+                <span className="text-[10px] text-[#B89CB0]">
                   {crateOpened ? 'Vuelve mañana para más premios' : 'Gira y gana monedas y XP'}
                 </span>
               </div>
@@ -485,17 +485,17 @@ export const RewardsStoreTab = () => {
                 crateOpened
                   ? 'bg-white/10 text-white/40 cursor-not-allowed'
                   : isOpeningCrate
-                  ? 'bg-amber-500 text-white animate-pulse'
-                  : 'bg-gradient-to-r from-amber-500 to-[#B80C09] hover:from-amber-400 hover:to-[#ff3b38] text-white hover:scale-105'
+                  ? 'bg-[#003844] text-white animate-pulse'
+                  : 'bg-gradient-to-r from-[#003844] to-[#B80C09] hover:from-[#002830] hover:to-[#9c0a07] text-white hover:scale-105'
               }`}
             >
               {crateOpened ? '✓ Abierta' : isOpeningCrate ? 'Abriendo...' : 'Abrir Gratis'}
             </button>
           </div>
 
-          <div className="flex items-center justify-between text-[11px] text-pink-200/80">
+          <div className="flex items-center justify-between text-[11px] text-[#B89CB0]">
             <span>Multiplicador de puntos:</span>
-            <span className="font-mono font-bold text-amber-300">1.5x Bonificación Activa</span>
+            <span className="font-mono font-bold text-[#DCDCDD]">1.5x Bonificación Activa</span>
           </div>
         </div>
       </div>
@@ -556,10 +556,10 @@ export const RewardsStoreTab = () => {
                 whileHover={{ y: -4 }}
                 className={`p-5 rounded-2xl border transition-all flex flex-col justify-between gap-4 ${
                   isEquipped
-                    ? 'bg-gradient-to-br from-amber-50/70 to-rose-50/50 dark:from-[#3f1937] dark:to-[#2b1225] border-amber-400 dark:border-amber-500/50 shadow-md ring-2 ring-amber-400/30'
+                    ? 'bg-[#003844]/10 dark:bg-[#003844]/30 border-[#003844] dark:border-[#52a2b0] shadow-md ring-2 ring-[#003844]/40'
                     : isOwned
-                    ? 'bg-emerald-50/40 dark:bg-emerald-950/20 border-emerald-400/40'
-                    : 'bg-gray-50/60 dark:bg-black/20 border-gray-200 dark:border-white/10 hover:border-amber-400'
+                    ? 'bg-[#4B2840]/10 dark:bg-[#4B2840]/25 border-[#4B2840]/30 dark:border-white/15'
+                    : 'bg-gray-50/60 dark:bg-black/20 border-gray-200 dark:border-white/10 hover:border-[#003844]/50'
                 }`}
               >
                 <div className="flex items-start justify-between gap-3">
@@ -570,7 +570,7 @@ export const RewardsStoreTab = () => {
                       <span className="material-symbols-outlined text-[24px]">{item.icon}</span>
                     </div>
                     <div>
-                      <h4 className="text-sm font-extrabold text-[#231123] dark:text-white flex items-center gap-1.5">
+                      <h4 className="text-sm font-extrabold text-[#231123] dark:text-[#DCDCDD] flex items-center gap-1.5">
                         <span>{item.name}</span>
                         {item.badge && (
                           <span className="px-1.5 py-0.2 rounded text-[9px] font-black uppercase bg-[#B80C09] text-white">
@@ -595,7 +595,7 @@ export const RewardsStoreTab = () => {
                     <div className={`w-9 h-9 rounded-full bg-gradient-to-tr ${item.color} flex items-center justify-center text-white ${item.previewBorder}`}>
                       <span className="material-symbols-outlined text-[16px]">person</span>
                     </div>
-                    <span className="text-[11px] font-bold text-[#5c435a] dark:text-gray-300">
+                    <span className="text-[11px] font-bold text-[#5c435a] dark:text-[#DCDCDD]">
                       Vista previa en avatar
                     </span>
                   </div>
@@ -603,8 +603,8 @@ export const RewardsStoreTab = () => {
 
                 {/* Botón de Acción: Canjear o Equipar */}
                 <div className="pt-3 border-t border-[#e6d5e2] dark:border-white/10 flex items-center justify-between gap-3">
-                  <div className="flex items-center gap-1 font-mono font-extrabold text-sm text-[#231123] dark:text-white">
-                    <span className="material-symbols-outlined text-amber-500 text-[18px]">toll</span>
+                  <div className="flex items-center gap-1 font-mono font-extrabold text-sm text-[#231123] dark:text-[#DCDCDD]">
+                    <span className="material-symbols-outlined text-[#003844] dark:text-[#52a2b0] text-[18px]">toll</span>
                     <span>{isOwned ? 'Adquirido' : `${item.cost} Monedas`}</span>
                   </div>
 
@@ -614,8 +614,8 @@ export const RewardsStoreTab = () => {
                       onClick={() => handleEquip(item)}
                       className={`px-3.5 py-1.5 rounded-xl text-xs font-extrabold transition-all cursor-pointer flex items-center gap-1 shadow-xs ${
                         isEquipped
-                          ? 'bg-amber-500 hover:bg-amber-600 text-white shadow-amber-500/30'
-                          : 'bg-gray-200 dark:bg-white/10 hover:bg-[#B80C09] hover:text-white text-[#231123] dark:text-white'
+                          ? 'bg-[#003844] hover:bg-[#002830] text-[#DCDCDD] shadow-[#003844]/30'
+                          : 'bg-gray-200 dark:bg-white/10 hover:bg-[#B80C09] hover:text-white text-[#231123] dark:text-[#DCDCDD]'
                       }`}
                     >
                       <span className="material-symbols-outlined text-[15px]">
@@ -630,7 +630,7 @@ export const RewardsStoreTab = () => {
                       disabled={points < item.cost}
                       className={`px-3.5 py-1.5 rounded-xl text-xs font-black uppercase tracking-wider transition-all cursor-pointer shadow-md flex items-center gap-1 ${
                         points >= item.cost
-                          ? 'bg-gradient-to-r from-amber-500 to-[#B80C09] hover:from-amber-400 hover:to-[#ff3b38] text-white hover:scale-105'
+                          ? 'bg-gradient-to-r from-[#003844] to-[#B80C09] hover:from-[#002830] hover:to-[#9c0a07] text-white hover:scale-105'
                           : 'bg-gray-200 dark:bg-white/10 text-gray-400 dark:text-gray-500 cursor-not-allowed'
                       }`}
                     >

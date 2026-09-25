@@ -387,9 +387,9 @@ export const Navbar = ({
                     window.dispatchEvent(new CustomEvent('sonar:navigate-tab', { detail: 'parental_control' }));
                   }}
                   title="Modo Kids y Control Parental activo. Clic para administrar."
-                  className="hidden sm:flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-amber-500/15 dark:bg-amber-500/25 text-amber-800 dark:text-amber-300 border border-amber-500/30 text-[11px] font-black tracking-wide cursor-pointer shadow-xs hover:bg-amber-500/25 transition-all"
+                  className="hidden sm:flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-[#4B2840]/15 dark:bg-[#4B2840]/40 text-[#4B2840] dark:text-[#DCDCDD] border border-[#4B2840]/30 text-[11px] font-black tracking-wide cursor-pointer shadow-xs hover:bg-[#4B2840]/25 transition-all"
                 >
-                  <span className="material-symbols-outlined text-[14px]">toys</span>
+                  <span className="material-symbols-outlined text-[14px]">child_care</span>
                   <span>Modo Kids</span>
                 </motion.button>
               )}
@@ -404,9 +404,9 @@ export const Navbar = ({
                   window.dispatchEvent(new CustomEvent('sonar:navigate-tab', { detail: 'recompensas' }));
                 }}
                 title="Tus Sonar Coins acumuladas. Clic para canjear en la Boutique."
-                className="hidden md:flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-amber-500/15 dark:bg-amber-500/25 text-amber-800 dark:text-amber-300 border border-amber-500/30 text-[11px] font-mono font-black tracking-wide cursor-pointer shadow-xs hover:bg-amber-500/30 transition-all"
+                className="hidden md:flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-[#003844]/10 dark:bg-[#003844]/40 text-[#003844] dark:text-[#DCDCDD] border border-[#003844]/30 text-[11px] font-mono font-black tracking-wide cursor-pointer shadow-xs hover:bg-[#003844]/20 transition-all"
               >
-                <span className="material-symbols-outlined text-[14px] text-amber-500">toll</span>
+                <span className="material-symbols-outlined text-[14px] text-[#003844] dark:text-[#52a2b0]">toll</span>
                 <span>{userPoints.toLocaleString()}</span>
               </motion.button>
 
