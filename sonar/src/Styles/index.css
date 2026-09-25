@@ -177,23 +177,3 @@ html, body {
 
 @media (max-width: 380px) { .auth-demo-access > div { grid-template-columns:1fr; } }
 
-/* Modo Oscuro & Alto Contraste para Autenticación y Registro */
-html.dark .auth-page { background: #120d14; color: #f5edf3; }
-html.dark .auth-form-area { background: #18121a; }
-html.dark .auth-heading h2 { color: #ffffff; }
-html.dark .auth-heading p { color: #bcaeb9; }
-html.dark .auth-form label { color: #e9dce7; }
-html.dark .auth-form input { background: #251b28; color: #ffffff; border: 1px solid #45334a; }
-html.dark .auth-form input::placeholder { color: #877484; }
-html.dark .auth-form input:focus { background: #2a1f2e; border-color: #d946ef; box-shadow: 0 0 0 3px rgba(217, 70, 239, 0.2); }
-html.dark .auth-socials button { background: #2b1f2e; color: #f5edf3; border: 1px solid #4a364e; }
-html.dark .auth-socials button:hover { background: #37283b; }
-html.dark .auth-divider { color: #a1909e; }
-html.dark .auth-divider span { background: #3f2e42; }
-html.dark .auth-demo-access { background: #231826; border-color: #433147; }
-html.dark .auth-demo-access > p { color: #cbb9c7; }
-html.dark .auth-demo-access button { background: #2f2133; color: #f5edf3; border-color: #4b3650; }
-html.dark .auth-demo-access button:hover:not(:disabled) { background: #3f2d45; border-color: #7b4f84; }
-html.dark .auth-switch { color: #bcaeb9; }
-html.dark .auth-switch a { color: #f472b6; }
-html.dark .auth-legal { color: #8a7886; }
