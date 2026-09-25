@@ -5,6 +5,7 @@ import Footer from '../../shared/components/layout/footer';
 import ReviewFeedCard from '../../features/reviews/components/review-feed-card';
 import { useAuth } from '../../shared/context/auth-context';
 import { usePlayer } from '../../shared/context/player-context';
+import { useTranslation } from 'react-i18next';
 import { useLanguage } from '../../shared/context/language-context';
 import { Avatar } from '../../shared/components/ui/avatar';
 import { getReviews, getUsers, createReview } from '../../shared/services/api-client';
@@ -112,7 +113,7 @@ const containerVariants = {
 export const CommunityPage = () => {
   const { user } = useAuth();
   const { playTrack } = usePlayer();
-  const { t } = useLanguage();
+  const { t } = useTranslation();
 
   // Estados principales de la API
   const [reviews, setReviews] = useState([]);
@@ -534,7 +535,7 @@ export const CommunityPage = () => {
                   />
                   <div className="flex flex-col min-w-0 flex-1">
                     <span className="text-xs font-bold text-[#5c1d5e] dark:text-pink-300 uppercase tracking-wider">
-                      Álbum Seleccionado
+                      {t('community.selected_album', 'Álbum Seleccionado')}
                     </span>
                     <strong className="text-sm text-[#231123] dark:text-white truncate">
                       {selectedAlbum.title}
@@ -548,7 +549,7 @@ export const CommunityPage = () => {
                 {/* Calificación */}
                 <div className="flex flex-col gap-1.5">
                   <label className="text-xs font-bold uppercase tracking-wider text-[#5c435a] dark:text-[#B89CB0]">
-                    Puntuación (★ {rating} / 5)
+                    {t('community.score', 'Puntuación')} (★ {rating} / 5)
                   </label>
                   <div className="flex items-center gap-2">
                     {[1, 2, 3, 4, 5].map((star) => (
@@ -569,13 +570,13 @@ export const CommunityPage = () => {
                 {/* Texto del Ensayo */}
                 <div className="flex flex-col gap-1.5">
                   <label className="text-xs font-bold uppercase tracking-wider text-[#5c435a] dark:text-[#B89CB0]">
-                    Tu Crítica / Ensayo
+                    {t('community.write_review', 'Tu Crítica / Ensayo')}
                   </label>
                   <textarea
                     rows={3}
                     value={reviewText}
                     onChange={(e) => setReviewText(e.target.value)}
-                    placeholder="Escribe tu análisis sobre la masterización, espacialidad, letras o texturas acústicas..."
+                    placeholder={t('community.essay_placeholder', 'Escribe tu análisis sobre la masterización, espacialidad, letras o texturas acústicas...')}
                     required
                     className="w-full p-3.5 rounded-2xl border border-[#e6d5e2] dark:border-white/10 bg-gray-50 dark:bg-[#231123] text-sm text-[#231123] dark:text-white placeholder-[#5c435a]/60 dark:placeholder-gray-400 focus:outline-none focus:border-[#B80C09] resize-none"
                   />
@@ -583,7 +584,7 @@ export const CommunityPage = () => {
 
                 {/* Tags */}
                 <div className="flex flex-wrap items-center gap-2">
-                  <span className="text-xs font-bold text-[#5c435a] dark:text-[#B89CB0]">Etiquetas:</span>
+                  <span className="text-xs font-bold text-[#5c435a] dark:text-[#B89CB0]">{t('community.tags', 'Etiquetas')}:</span>
                   {['Art Rock', 'Hi-Fi', 'Psicodelia', 'Vinilo', 'Electrónica', 'Mastering'].map((tag) => {
                     const isSelected = selectedReviewTags.includes(tag);
                     return (
