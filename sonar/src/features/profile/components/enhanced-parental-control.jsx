@@ -372,30 +372,52 @@ export const EnhancedParentalControl = () => {
     setCurrentQuizIdx((prev) => (prev + 1) % KIDS_QUIZZES.length);
   };
 
+  const isKidsMode = Boolean(user?.accountType === 'junior' && user?.parentalControl?.enabled && user?.parentalControl?.blockExplicit);
+  const isSupervisedMode = Boolean(user?.accountType !== 'junior' && user?.parentalControl?.enabled && user?.parentalControl?.blockExplicit);
+  const isFreeAdultMode = !isKidsMode && !isSupervisedMode;
+
   return (
     <div className="flex flex-col gap-6">
       {/* 1. CABECERA Y ESTADO PRINCIPAL */}
       <div className="p-6 sm:p-8 rounded-3xl bg-white dark:bg-[#4B2840] border border-[#e6d5e2] dark:border-white/10 shadow-xs flex flex-col gap-6">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-5 border-b border-gray-100 dark:border-white/10">
           <div className="flex items-center gap-3.5">
-            <div className="w-14 h-14 rounded-2xl bg-amber-500/15 dark:bg-amber-500/20 text-amber-600 dark:text-amber-400 flex items-center justify-center shrink-0">
-              <span className="material-symbols-outlined text-[32px]">toys</span>
+            <div className={`w-14 h-14 rounded-2xl flex items-center justify-center shrink-0 ${
+              isKidsMode
+                ? 'bg-[#4B2840]/15 dark:bg-[#4B2840]/40 text-[#4B2840] dark:text-[#DCDCDD]'
+                : isSupervisedMode
+                ? 'bg-[#B80C09]/15 dark:bg-[#B80C09]/20 text-[#B80C09] dark:text-[#ff4d4a]'
+                : 'bg-[#003844]/15 dark:bg-[#003844]/30 text-[#003844] dark:text-[#52a2b0]'
+            }`}>
+              <span className="material-symbols-outlined text-[32px]">
+                {isKidsMode ? 'child_care' : isSupervisedMode ? 'pin' : 'lock_open'}
+              </span>
             </div>
             <div>
-              <h3 className="text-xl sm:text-2xl font-black text-[#231123] dark:text-white flex items-center gap-2">
+              <h3 className="text-xl sm:text-2xl font-black text-[#231123] dark:text-[#DCDCDD] flex items-center gap-2">
                 <span>Modo Kids & Control Parental</span>
-                <span className="px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase bg-amber-500/15 text-amber-700 dark:bg-amber-950/60 dark:text-amber-300 border border-amber-500/30">
-                  {user?.accountType === 'junior' || isParentalControlActive ? '🛡️ Modo Kids Activo' : '🔓 Modo Libre'}
+                <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase border ${
+                  isKidsMode
+                    ? 'bg-[#4B2840]/15 text-[#4B2840] dark:bg-[#231123] dark:text-[#DCDCDD] border-[#4B2840]/30'
+                    : isSupervisedMode
+                    ? 'bg-[#B80C09]/15 text-[#B80C09] dark:bg-[#B80C09]/30 dark:text-[#DCDCDD] border-[#B80C09]/30'
+                    : 'bg-[#003844]/15 text-[#003844] dark:bg-[#003844]/60 dark:text-[#DCDCDD] border-[#003844]/30'
+                }`}>
+                  {isKidsMode ? '🛡️ Modo Kids Activo' : isSupervisedMode ? '🔑 Modo Supervisado' : '🔓 Modo Libre (Adultos)'}
                 </span>
               </h3>
               <p className="text-xs sm:text-sm text-[#5c435a] dark:text-[#B89CB0] mt-0.5">
-                Experiencia musical 100% segura, educativa y adaptada para niños con temporizador de tareas y cuidado auditivo.
+                {isKidsMode
+                  ? 'Experiencia musical 100% segura, educativa y adaptada para niños con temporizador de tareas y cuidado auditivo.'
+                  : isSupervisedMode
+                  ? 'Catálogo con filtro parental y desbloqueo temporal mediante PIN de 4 dígitos.'
+                  : 'Catálogo completo sin restricciones para adultos, audiófilos y melómanos.'}
               </p>
             </div>
           </div>
 
           {toastNotice && (
-            <span className="text-xs font-bold text-amber-700 dark:text-amber-300 bg-amber-50 dark:bg-amber-950/60 px-3.5 py-2 rounded-xl border border-amber-200 dark:border-amber-800 self-start sm:self-auto animate-fade-in shadow-xs">
+            <span className="text-xs font-bold text-[#003844] dark:text-[#DCDCDD] bg-[#003844]/10 dark:bg-[#003844]/40 px-3.5 py-2 rounded-xl border border-[#003844]/20 dark:border-[#003844]/40 self-start sm:self-auto animate-fade-in shadow-xs">
               {toastNotice}
             </span>
           )}
@@ -406,27 +428,26 @@ export const EnhancedParentalControl = () => {
           {/* Kids Estricto */}
           <div
             onClick={() => {
-              updateUser({ accountType: 'junior' });
-              updateParentalControl({ enabled: true, blockExplicit: true });
+              updateParentalControl({ enabled: true, blockExplicit: true, accountType: 'junior' });
               setToastNotice('🛡️ Modo Kids Seguro activado: Música 100% familiar y protegida');
               setTimeout(() => setToastNotice(''), 3000);
             }}
             className={`p-5 rounded-2xl border-2 transition-all cursor-pointer flex flex-col justify-between gap-3 ${
-              user?.accountType === 'junior' && user?.parentalControl?.blockExplicit
-                ? 'border-amber-500 bg-amber-50/50 dark:bg-amber-950/20 shadow-md ring-2 ring-amber-500/30'
-                : 'border-gray-200 dark:border-white/10 bg-gray-50/70 dark:bg-black/20 hover:border-amber-400'
+              isKidsMode
+                ? 'border-[#4B2840] dark:border-[#e6d5e2]/60 bg-[#4B2840]/10 dark:bg-[#4B2840]/40 shadow-md ring-2 ring-[#4B2840]/30'
+                : 'border-gray-200 dark:border-white/10 bg-gray-50/70 dark:bg-black/20 hover:border-[#4B2840]/40'
             }`}
           >
             <div className="flex items-center justify-between">
-              <span className="material-symbols-outlined text-amber-600 dark:text-amber-400 text-[26px]">child_care</span>
-              {user?.accountType === 'junior' && user?.parentalControl?.blockExplicit && (
-                <span className="text-[10px] font-black uppercase text-amber-700 dark:text-amber-300 bg-amber-100 dark:bg-amber-900/60 px-2 py-0.5 rounded-full">
+              <span className="material-symbols-outlined text-[#4B2840] dark:text-[#DCDCDD] text-[26px]">child_care</span>
+              {isKidsMode && (
+                <span className="text-[10px] font-black uppercase text-[#4B2840] dark:text-[#DCDCDD] bg-[#4B2840]/15 dark:bg-[#231123] px-2 py-0.5 rounded-full border border-[#4B2840]/20 dark:border-white/10">
                   Activo
                 </span>
               )}
             </div>
             <div>
-              <h4 className="text-sm font-bold text-[#231123] dark:text-white">Modo Kids (Recomendado)</h4>
+              <h4 className="text-sm font-bold text-[#231123] dark:text-[#DCDCDD]">Modo Kids (Recomendado)</h4>
               <p className="text-xs text-[#5c435a] dark:text-[#B89CB0] mt-1">
                 Bloquea todo contenido explícito, limita búsquedas a contenido familiar y activa el protector auditivo.
               </p>
@@ -436,27 +457,26 @@ export const EnhancedParentalControl = () => {
           {/* Supervisado con PIN */}
           <div
             onClick={() => {
-              updateUser({ accountType: 'standard' });
-              updateParentalControl({ enabled: true, blockExplicit: true });
+              updateParentalControl({ enabled: true, blockExplicit: true, accountType: 'standard' });
               setToastNotice('🔑 Modo Supervisado activado: Requiere PIN de 4 dígitos para pistas explícitas');
               setTimeout(() => setToastNotice(''), 3000);
             }}
             className={`p-5 rounded-2xl border-2 transition-all cursor-pointer flex flex-col justify-between gap-3 ${
-              user?.accountType === 'standard' && user?.parentalControl?.blockExplicit
-                ? 'border-[#B80C09] bg-rose-50/50 dark:bg-rose-950/20 shadow-md ring-2 ring-[#B80C09]/30'
-                : 'border-gray-200 dark:border-white/10 bg-gray-50/70 dark:bg-black/20 hover:border-[#B80C09]/50'
+              isSupervisedMode
+                ? 'border-[#B80C09] bg-[#B80C09]/10 dark:bg-[#B80C09]/20 shadow-md ring-2 ring-[#B80C09]/30'
+                : 'border-gray-200 dark:border-white/10 bg-gray-50/70 dark:bg-black/20 hover:border-[#B80C09]/40'
             }`}
           >
             <div className="flex items-center justify-between">
-              <span className="material-symbols-outlined text-[#B80C09] dark:text-rose-400 text-[26px]">pin</span>
-              {user?.accountType === 'standard' && user?.parentalControl?.blockExplicit && (
-                <span className="text-[10px] font-black uppercase text-[#B80C09] dark:text-rose-300 bg-rose-100 dark:bg-rose-900/60 px-2 py-0.5 rounded-full">
+              <span className="material-symbols-outlined text-[#B80C09] dark:text-[#ff4d4a] text-[26px]">pin</span>
+              {isSupervisedMode && (
+                <span className="text-[10px] font-black uppercase text-[#B80C09] dark:text-[#DCDCDD] bg-[#B80C09]/15 dark:bg-[#B80C09]/30 px-2 py-0.5 rounded-full border border-[#B80C09]/30">
                   Activo
                 </span>
               )}
             </div>
             <div>
-              <h4 className="text-sm font-bold text-[#231123] dark:text-white">Supervisado Familiar</h4>
+              <h4 className="text-sm font-bold text-[#231123] dark:text-[#DCDCDD]">Supervisado Familiar</h4>
               <p className="text-xs text-[#5c435a] dark:text-[#B89CB0] mt-1">
                 Permite a los padres o tutores autorizar temporalmente canciones mediante su PIN secreto.
               </p>
@@ -466,27 +486,26 @@ export const EnhancedParentalControl = () => {
           {/* Modo Adulto */}
           <div
             onClick={() => {
-              updateUser({ accountType: 'standard' });
-              updateParentalControl({ enabled: false, blockExplicit: false });
+              updateParentalControl({ enabled: false, blockExplicit: false, accountType: 'standard' });
               setToastNotice('🔓 Modo Adulto Libre activado (sin restricciones de contenido)');
               setTimeout(() => setToastNotice(''), 3000);
             }}
             className={`p-5 rounded-2xl border-2 transition-all cursor-pointer flex flex-col justify-between gap-3 ${
-              !user?.parentalControl?.blockExplicit
-                ? 'border-purple-600 bg-purple-50/50 dark:bg-purple-950/20 shadow-md ring-2 ring-purple-600/30'
-                : 'border-gray-200 dark:border-white/10 bg-gray-50/70 dark:bg-black/20 hover:border-purple-400'
+              isFreeAdultMode
+                ? 'border-[#003844] dark:border-[#52a2b0] bg-[#003844]/10 dark:bg-[#003844]/30 shadow-md ring-2 ring-[#003844]/40'
+                : 'border-gray-200 dark:border-white/10 bg-gray-50/70 dark:bg-black/20 hover:border-[#003844]/40'
             }`}
           >
             <div className="flex items-center justify-between">
-              <span className="material-symbols-outlined text-purple-600 dark:text-purple-300 text-[26px]">lock_open</span>
-              {!user?.parentalControl?.blockExplicit && (
-                <span className="text-[10px] font-black uppercase text-purple-700 dark:text-purple-300 bg-purple-100 dark:bg-purple-900/60 px-2 py-0.5 rounded-full">
+              <span className="material-symbols-outlined text-[#003844] dark:text-[#52a2b0] text-[26px]">lock_open</span>
+              {isFreeAdultMode && (
+                <span className="text-[10px] font-black uppercase text-[#003844] dark:text-[#DCDCDD] bg-[#003844]/15 dark:bg-[#003844]/50 px-2 py-0.5 rounded-full border border-[#003844]/30">
                   Activo
                 </span>
               )}
             </div>
             <div>
-              <h4 className="text-sm font-bold text-[#231123] dark:text-white">Modo Libre (Adultos)</h4>
+              <h4 className="text-sm font-bold text-[#231123] dark:text-[#DCDCDD]">Modo Libre (Adultos)</h4>
               <p className="text-xs text-[#5c435a] dark:text-[#B89CB0] mt-1">
                 Acceso sin restricciones a todo el catálogo discográfico, letras y podcasts de la plataforma.
               </p>

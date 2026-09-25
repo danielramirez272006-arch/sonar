@@ -53,27 +53,27 @@ export class ErrorBoundary extends React.Component {
         <div
           role="alert"
           aria-live="assertive"
-          className="min-h-[380px] w-full flex flex-col items-center justify-center p-6 sm:p-10 my-4 bg-sonar-surface/90 border border-red-500/20 rounded-2xl backdrop-blur-md shadow-2xl text-center"
+          className="min-h-[380px] w-full flex flex-col items-center justify-center p-6 sm:p-10 my-4 bg-white dark:bg-[#4B2840] border border-[#B80C09]/20 rounded-2xl backdrop-blur-md shadow-2xl text-center"
         >
           {/* Icono de señal acústica interrumpida */}
-          <div className="w-16 h-16 rounded-full bg-red-500/10 border border-red-500/30 flex items-center justify-center mb-5 text-red-500 shadow-[0_0_20px_rgba(239,68,68,0.2)]">
+          <div className="w-16 h-16 rounded-full bg-[#B80C09]/10 border border-[#B80C09]/30 flex items-center justify-center mb-5 text-[#B80C09] shadow-[0_0_20px_rgba(184,12,9,0.2)]">
             <span className="material-symbols-outlined text-3xl animate-pulse">
               signal_disconnected
             </span>
           </div>
 
-          <h2 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-sonar-text mb-2 tracking-tight">
+          <h2 className="text-xl sm:text-2xl font-bold text-[#231123] dark:text-[#DCDCDD] mb-2 tracking-tight">
             Interferencia acústica momentánea
           </h2>
 
-          <p className="text-sm sm:text-base text-gray-600 dark:text-gray-300 max-w-md mb-6 leading-relaxed">
+          <p className="text-sm sm:text-base text-[#5c435a] dark:text-[#B89CB0] max-w-md mb-6 leading-relaxed">
             Esta sección experimentó una anomalía imprevista. La señal se ha aislado para proteger tu experiencia de escucha.
           </p>
 
           <div className="flex flex-wrap gap-3 justify-center items-center">
             <button
               onClick={this.handleReset}
-              className="px-5 py-2.5 bg-sonar-primary hover:bg-sonar-primary-hover text-white text-sm font-semibold rounded-xl transition-all duration-200 shadow-md hover:shadow-lg flex items-center gap-2 cursor-pointer"
+              className="px-5 py-2.5 bg-[#B80C09] hover:bg-[#9c0a07] text-white text-sm font-semibold rounded-xl transition-all duration-200 shadow-md hover:shadow-lg flex items-center gap-2 cursor-pointer"
             >
               <span className="material-symbols-outlined text-lg">refresh</span>
               Reconectar señal
@@ -81,7 +81,7 @@ export class ErrorBoundary extends React.Component {
 
             <button
               onClick={this.handleGoHome}
-              className="px-5 py-2.5 bg-gray-200 dark:bg-sonar-base/80 hover:bg-gray-300 dark:hover:bg-sonar-base text-gray-800 dark:text-sonar-text text-sm font-semibold rounded-xl border border-gray-300 dark:border-white/10 transition-all duration-200 flex items-center gap-2 cursor-pointer"
+              className="px-5 py-2.5 bg-[#003844] hover:bg-[#002830] text-[#DCDCDD] text-sm font-semibold rounded-xl border border-[#003844] transition-all duration-200 flex items-center gap-2 cursor-pointer"
             >
               <span className="material-symbols-outlined text-lg">home</span>
               Ir al Inicio

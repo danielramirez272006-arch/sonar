@@ -475,7 +475,9 @@ export const UserDashboardPage = () => {
               }`}
             >
               <span className="material-symbols-outlined text-[18px]">toys</span>
-              <span>Modo Kids & Control {user?.accountType === 'junior' ? '(Kids Activo)' : ''}</span>
+              <span>
+                Modo Kids & Control {user?.accountType === 'junior' && user?.parentalControl?.enabled && user?.parentalControl?.blockExplicit ? '(Kids Activo)' : ''}
+              </span>
               {activeTab === 'parental_control' && (
                 <motion.div
                   layoutId="dashboard-tab-indicator"

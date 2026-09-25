@@ -270,7 +270,7 @@ export function AuthProvider({ children }) {
       })
     }
 
-    function updateParentalControl({ enabled, blockExplicit, pin }) {
+    function updateParentalControl({ enabled, blockExplicit, pin, accountType }) {
       if (!user) throw new Error('Debes iniciar sesión para configurar el control parental.');
       const currentPC = user.parentalControl || { enabled: false, blockExplicit: false, pin: '1234' };
       const nextPC = {
@@ -280,7 +280,16 @@ export function AuthProvider({ children }) {
         ...(pin !== undefined && pin ? { pin: String(pin).trim() } : {}),
       };
       
-      const nextAccountType = nextPC.enabled ? (user.accountType === 'junior' ? 'junior' : user.accountType) : user.accountType;
+      let nextAccountType = accountType !== undefined ? accountType : user.accountType;
+      if (nextPC.enabled === false || nextPC.blockExplicit === false) {
+        if (nextAccountType === 'junior') {
+          nextAccountType = 'standard';
+        }
+      } else if (nextPC.enabled && nextPC.blockExplicit) {
+        if (accountType === 'junior') {
+          nextAccountType = 'junior';
+        }
+      }
       
       updateUser({
         parentalControl: nextPC,
