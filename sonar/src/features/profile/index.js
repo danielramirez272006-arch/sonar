@@ -9,3 +9,4 @@ export * from './components/audiophile-signal-chain';
 export * from './components/listening-journal-modal';
 export * from './components/audiophile-monthly-wrapped';
 export * from './components/audiophile-quests';
+export * from './components/enhanced-parental-control';
