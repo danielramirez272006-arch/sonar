@@ -156,11 +156,6 @@ export const LoginForm = () => {
     </div>
   );
 };
-          <p className="auth-legal">Al ingresar aceptas las Condiciones de Servicio y la Política de Privacidad de Sonar.</p>
-        </div>
-      </section>
-    </div>
-  );
-};
 
 export default LoginForm;
+

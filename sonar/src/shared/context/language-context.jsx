@@ -16,12 +16,19 @@ const TRANSLATIONS = {
     'nav.explore': 'Explorar',
     'nav.albums': 'Álbumes',
     'nav.reviews': 'Reseñas',
+    'nav.news': 'Noticias',
+    'nav.community': 'Comunidad',
+    'nav.podcasts': 'Podcasts',
+    'nav.collections': 'Colecciones',
     'nav.profile': 'Mi Perfil',
     'nav.admin': 'Administración',
     'nav.login': 'Iniciar Sesión',
     'nav.register': 'Registrarse',
     'nav.logout': 'Cerrar Sesión',
+    'nav.all': 'Todo',
+    'nav.tracks': 'Canciones',
     'nav.search_placeholder': 'Buscar por álbum, artista o género...',
+    'nav.search_hint': 'Busca canciones, artistas o noticias…',
     'nav.accessibility': 'Accesibilidad',
     'nav.notifications': 'Notificaciones',
     
@@ -34,6 +41,12 @@ const TRANSLATIONS = {
     'footer.privacy': 'Privacidad',
     'footer.terms': 'Términos de servicio',
     'footer.cookies': 'Cookies',
+
+    // Hero / Home
+    'hero.title': 'Crítica Musical & Archivo Audiófilo',
+    'hero.subtitle': 'Califica discos, descubre producciones en vinilo de 33⅓ RPM y comparte con una comunidad dedicada a la escucha atenta.',
+    'hero.explore_btn': 'Explorar Catálogo',
+    'hero.listen_btn': 'Escuchar Ahora',
 
     // Auth
     'auth.welcome': '¡Hola de nuevo!',
@@ -49,7 +62,10 @@ const TRANSLATIONS = {
     'auth.register_title': 'Únete a SONAR',
     'auth.register_subtitle': 'Crea tu cuenta y vive la mejor experiencia de escucha.',
 
-    // Common / UI
+    // Player & UI
+    'player.now_playing': 'Reproduciendo ahora',
+    'player.pause': 'Pausar',
+    'player.play': 'Reproducir',
     'common.language': 'Idioma',
     'common.select_language': 'Seleccionar idioma',
     'common.loading': 'Cargando...',
@@ -63,12 +79,19 @@ const TRANSLATIONS = {
     'nav.explore': 'Explore',
     'nav.albums': 'Albums',
     'nav.reviews': 'Reviews',
+    'nav.news': 'News',
+    'nav.community': 'Community',
+    'nav.podcasts': 'Podcasts',
+    'nav.collections': 'Collections',
     'nav.profile': 'My Profile',
     'nav.admin': 'Administration',
     'nav.login': 'Sign In',
     'nav.register': 'Sign Up',
     'nav.logout': 'Sign Out',
+    'nav.all': 'All',
+    'nav.tracks': 'Songs',
     'nav.search_placeholder': 'Search by album, artist, or genre...',
+    'nav.search_hint': 'Search songs, artists, or news…',
     'nav.accessibility': 'Accessibility',
     'nav.notifications': 'Notifications',
 
@@ -81,6 +104,12 @@ const TRANSLATIONS = {
     'footer.privacy': 'Privacy Policy',
     'footer.terms': 'Terms of Service',
     'footer.cookies': 'Cookies',
+
+    // Hero / Home
+    'hero.title': 'Music Criticism & Audiophile Archive',
+    'hero.subtitle': 'Rate records, discover 33⅓ RPM vinyl productions and share with a community dedicated to attentive listening.',
+    'hero.explore_btn': 'Explore Catalog',
+    'hero.listen_btn': 'Listen Now',
 
     // Auth
     'auth.welcome': 'Welcome back!',
@@ -96,7 +125,10 @@ const TRANSLATIONS = {
     'auth.register_title': 'Join SONAR',
     'auth.register_subtitle': 'Create your account and experience premium listening.',
 
-    // Common / UI
+    // Player & UI
+    'player.now_playing': 'Now Playing',
+    'player.pause': 'Pause',
+    'player.play': 'Play',
     'common.language': 'Language',
     'common.select_language': 'Select language',
     'common.loading': 'Loading...',
@@ -110,12 +142,19 @@ const TRANSLATIONS = {
     'nav.explore': '探索',
     'nav.albums': '专辑',
     'nav.reviews': '乐评',
+    'nav.news': '资讯',
+    'nav.community': '社区',
+    'nav.podcasts': '播客',
+    'nav.collections': '收藏',
     'nav.profile': '个人资料',
     'nav.admin': '后台管理',
     'nav.login': '登录',
     'nav.register': '注册',
     'nav.logout': '退出',
+    'nav.all': '全部',
+    'nav.tracks': '歌曲',
     'nav.search_placeholder': '按专辑、艺术家或流派搜索...',
+    'nav.search_hint': '搜索歌曲、艺术家或新闻…',
     'nav.accessibility': '无障碍设置',
     'nav.notifications': '通知',
 
@@ -128,6 +167,12 @@ const TRANSLATIONS = {
     'footer.privacy': '隐私政策',
     'footer.terms': '服务条款',
     'footer.cookies': 'Cookie 设置',
+
+    // Hero / Home
+    'hero.title': '乐评与发烧音乐档案',
+    'hero.subtitle': '评价唱片，探索 33⅓ RPM 黑胶制作，与专业听众社区共享乐感。',
+    'hero.explore_btn': '探索目录',
+    'hero.listen_btn': '立即聆听',
 
     // Auth
     'auth.welcome': '欢迎回来！',
@@ -143,7 +188,10 @@ const TRANSLATIONS = {
     'auth.register_title': '加入 SONAR',
     'auth.register_subtitle': '创建您的帐户，开启尊享听觉体验。',
 
-    // Common / UI
+    // Player & UI
+    'player.now_playing': '正在播放',
+    'player.pause': '暂停',
+    'player.play': '播放',
     'common.language': '语言',
     'common.select_language': '选择语言',
     'common.loading': '加载中...',
@@ -157,12 +205,19 @@ const TRANSLATIONS = {
     'nav.explore': 'Explorer',
     'nav.albums': 'Albums',
     'nav.reviews': 'Critiques',
+    'nav.news': 'Actualités',
+    'nav.community': 'Communauté',
+    'nav.podcasts': 'Podcasts',
+    'nav.collections': 'Collections',
     'nav.profile': 'Mon Profil',
     'nav.admin': 'Administration',
     'nav.login': 'Se connecter',
     'nav.register': "S'inscrire",
     'nav.logout': 'Déconnexion',
+    'nav.all': 'Tout',
+    'nav.tracks': 'Chansons',
     'nav.search_placeholder': 'Rechercher par album, artiste ou genre...',
+    'nav.search_hint': 'Rechercher des chansons, artistes ou actualités…',
     'nav.accessibility': 'Accessibilité',
     'nav.notifications': 'Notifications',
 
@@ -175,6 +230,12 @@ const TRANSLATIONS = {
     'footer.privacy': 'Confidentialité',
     'footer.terms': "Conditions d'utilisation",
     'footer.cookies': 'Cookies',
+
+    // Hero / Home
+    'hero.title': 'Critique Musicale & Archives Audiophiles',
+    'hero.subtitle': 'Évaluez vos vinyles, découvrez des pressages 33⅓ RPM et échangez avec une communauté d’écoute exigeante.',
+    'hero.explore_btn': 'Explorer le catalogue',
+    'hero.listen_btn': 'Écouter maintenant',
 
     // Auth
     'auth.welcome': 'Bon retour !',
@@ -190,7 +251,10 @@ const TRANSLATIONS = {
     'auth.register_title': 'Rejoignez SONAR',
     'auth.register_subtitle': 'Créez votre compte et vivez une expérience d’écoute exceptionnelle.',
 
-    // Common / UI
+    // Player & UI
+    'player.now_playing': 'En lecture',
+    'player.pause': 'Pause',
+    'player.play': 'Lecture',
     'common.language': 'Langue',
     'common.select_language': 'Choisir la langue',
     'common.loading': 'Chargement...',
@@ -204,12 +268,19 @@ const TRANSLATIONS = {
     'nav.explore': 'Esplora',
     'nav.albums': 'Album',
     'nav.reviews': 'Recensioni',
+    'nav.news': 'Notizie',
+    'nav.community': 'Comunità',
+    'nav.podcasts': 'Podcast',
+    'nav.collections': 'Collezioni',
     'nav.profile': 'Il Mio Profilo',
     'nav.admin': 'Amministrazione',
     'nav.login': 'Accedi',
     'nav.register': 'Registrati',
     'nav.logout': 'Esci',
+    'nav.all': 'Tutto',
+    'nav.tracks': 'Brani',
     'nav.search_placeholder': 'Cerca per album, artista o genere...',
+    'nav.search_hint': 'Cerca brani, artisti o notizie…',
     'nav.accessibility': 'Accessibilità',
     'nav.notifications': 'Notifiche',
 
@@ -222,6 +293,12 @@ const TRANSLATIONS = {
     'footer.privacy': 'Informativa sulla Privacy',
     'footer.terms': 'Termini di Servizio',
     'footer.cookies': 'Cookie',
+
+    // Hero / Home
+    'hero.title': 'Critica Musicale & Archivio Audiofilo',
+    'hero.subtitle': 'Valuta vinili, scopri produzioni a 33⅓ RPM e condividi con una comunità di ascoltatori attenti.',
+    'hero.explore_btn': 'Esplora Catalogo',
+    'hero.listen_btn': 'Ascolta Ora',
 
     // Auth
     'auth.welcome': 'Bentornato!',
@@ -237,7 +314,10 @@ const TRANSLATIONS = {
     'auth.register_title': 'Unisciti a SONAR',
     'auth.register_subtitle': 'Crea il tuo account per una straordinaria esperienza d’ascolto.',
 
-    // Common / UI
+    // Player & UI
+    'player.now_playing': 'In riproduzione',
+    'player.pause': 'Pausa',
+    'player.play': 'Riproduci',
     'common.language': 'Lingua',
     'common.select_language': 'Seleziona lingua',
     'common.loading': 'Caricamento...',
@@ -251,12 +331,19 @@ const TRANSLATIONS = {
     'nav.explore': '探索',
     'nav.albums': 'アルバム',
     'nav.reviews': 'レビュー',
+    'nav.news': 'ニュース',
+    'nav.community': 'コミュニティ',
+    'nav.podcasts': 'ポッドキャスト',
+    'nav.collections': 'コレクション',
     'nav.profile': 'マイプロフィール',
     'nav.admin': '管理者',
     'nav.login': 'ログイン',
     'nav.register': '新規登録',
     'nav.logout': 'ログアウト',
+    'nav.all': 'すべて',
+    'nav.tracks': '楽曲',
     'nav.search_placeholder': 'アルバム、アーティスト、ジャンルで検索...',
+    'nav.search_hint': '楽曲、アーティスト、ニュースを検索…',
     'nav.accessibility': 'アクセシビリティ',
     'nav.notifications': '通知',
 
@@ -269,6 +356,12 @@ const TRANSLATIONS = {
     'footer.privacy': 'プライバシーポリシー',
     'footer.terms': '利用規約',
     'footer.cookies': 'クッキー設定',
+
+    // Hero / Home
+    'hero.title': '音楽レビュー ＆ オーディオファイルアーカイブ',
+    'hero.subtitle': 'レコードを評価し、33⅓ RPMのLPレコード作品を発見し、リスナーコミュニティと共有しましょう。',
+    'hero.explore_btn': 'カタログを探索',
+    'hero.listen_btn': '今すぐ聴く',
 
     // Auth
     'auth.welcome': 'おかえりなさい！',
@@ -284,7 +377,10 @@ const TRANSLATIONS = {
     'auth.register_title': 'SONARに参加',
     'auth.register_subtitle': 'アカウントを作成して、プレミアムなリスニング体験を。',
 
-    // Common / UI
+    // Player & UI
+    'player.now_playing': '再生中',
+    'player.pause': '一時停止',
+    'player.play': '再生',
     'common.language': '言語',
     'common.select_language': '言語を選択',
     'common.loading': '読み込み中...',
@@ -306,6 +402,8 @@ export function LanguageProvider({ children }) {
       setCurrentLang(langCode);
       localStorage.setItem('sonar_language', langCode);
       document.documentElement.lang = langCode;
+      // Emit event so dynamic components can re-render if needed
+      window.dispatchEvent(new CustomEvent('sonar:language-changed', { detail: langCode }));
     }
   };
 

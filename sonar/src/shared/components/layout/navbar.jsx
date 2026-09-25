@@ -16,11 +16,7 @@ const SEARCH_SCOPES = [
 ];
 
 export const Navbar = ({
-  links = [
-    { id: 'explore', label: 'Explorar', path: '#explore' },
-    { id: 'noticias', label: 'Noticias', path: '#noticias' },
-    { id: 'community', label: 'Comunidad', path: '#community' },
-  ],
+  links: customLinks = null,
   onNavigate = () => {},
   onSearch = null,
   showSearch = true,
@@ -44,6 +40,14 @@ export const Navbar = ({
   const { user: authUser, isAuthenticated, logout, isJunior, isParentalControlActive } = useAuth();
   const { toggleTrack, currentTrack, isPlaying } = usePlayer();
   const { t } = useLanguage();
+
+  const defaultNavLinks = useMemo(() => [
+    { id: 'explore', label: t('nav.explore'), path: '#explore' },
+    { id: 'noticias', label: t('nav.news'), path: '#noticias' },
+    { id: 'community', label: t('nav.community'), path: '#community' },
+  ], [t]);
+
+  const links = customLinks || defaultNavLinks;
 
   const totalResults = navResults.tracks.length + navResults.news.length;
   const flatResults = useMemo(
@@ -296,7 +300,7 @@ export const Navbar = ({
                   aria-controls="sonar-search-results"
                   aria-autocomplete="list"
                   aria-label="Buscar canciones, artistas y noticias"
-                  placeholder="Busca canciones, artistas o noticias…"
+                  placeholder={t('nav.search_hint', 'Busca canciones, artistas o noticias…')}
                   value={navSearch}
                   onChange={handleNavSearchChange}
                   onKeyDown={handleNavKeyDown}
@@ -715,7 +719,7 @@ export const Navbar = ({
                   logout();
                   window.location.hash = '#explore';
                 }}
-                title="Cerrar sesión"
+                title={t('nav.logout')}
                 className="p-2 rounded-xl text-[#5c435a] dark:text-[#B89CB0] hover:text-[#B80C09] hover:bg-gray-100 dark:hover:bg-white/10 transition-colors cursor-pointer"
               >
                 <span className="material-symbols-outlined text-[18px]">logout</span>
@@ -727,13 +731,13 @@ export const Navbar = ({
                 href="#login"
                 className="px-3.5 py-1.5 rounded-xl text-xs sm:text-sm font-bold text-[#231123] dark:text-white hover:text-[#B80C09] dark:hover:text-[#ff6b68] bg-[#f0e2ee] dark:bg-white/10 border border-[#ddcadb] dark:border-white/10 transition-all shadow-2xs cursor-pointer"
               >
-                Ingresar
+                {t('nav.login')}
               </a>
               <a
                 href="#register"
                 className="px-3.5 py-1.5 rounded-xl bg-[#B80C09] hover:bg-[#9c0a07] text-white text-xs sm:text-sm font-bold shadow-xs transition-colors cursor-pointer"
               >
-                Registrarse
+                {t('nav.register')}
               </a>
             </div>
           )}

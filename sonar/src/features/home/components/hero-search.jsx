@@ -4,6 +4,7 @@ import { useTheme } from '../../../shared/context/theme-context';
 import { searchAlbums, searchTracks, searchArtists, getAlbumTracks, isKidsSafeTrack } from '../../../shared/services/deezer-service';
 import { usePlayer } from '../../../shared/context/player-context';
 import { useAuth } from '../../../shared/context/auth-context';
+import { useLanguage } from '../../../shared/context/language-context';
 import { handleImageFallbackError, getFallbackCoverForAlbum } from '../../../shared/services/recommendations-service';
 
 const SEARCH_TABS = [
@@ -106,6 +107,7 @@ export const HeroSearch = ({ onSearch = () => {}, onSubmit = () => {} }) => {
   const { isDarkMode } = useTheme();
   const { toggleTrack, currentTrack, isPlaying } = usePlayer();
   const { isJunior, isParentalControlActive } = useAuth() || {};
+  const { t } = useLanguage();
   const isKidsActive = Boolean(isJunior || isParentalControlActive);
 
   const currentSuggestionsPool = isKidsActive ? KIDS_TYPEWRITER_SUGGESTIONS : TYPEWRITER_SUGGESTIONS;
@@ -399,11 +401,11 @@ export const HeroSearch = ({ onSearch = () => {}, onSubmit = () => {} }) => {
         {/* Título Principal y Subtítulo */}
         <h1 className="text-3xl sm:text-4xl md:text-5xl font-black tracking-tight leading-tight mb-2 text-[#231123] dark:text-[#FAF5F8]">
           <span className="bg-gradient-to-r from-[#231123] via-[#5c1d5e] to-[#B80C09] dark:from-white dark:via-rose-300 dark:to-[#B80C09] bg-clip-text text-transparent">
-            Descubre. Escucha. Reseña.
+            {t('hero.title', 'Descubre. Escucha. Reseña.')}
           </span>
         </h1>
         <p className="text-xs sm:text-sm text-[#5c435a] dark:text-[#B89CB0] max-w-[560px] mb-5 font-medium">
-          Explora la enciclopedia sonora con búsqueda inteligente por voz, épocas, géneros y preescucha en vivo.
+          {t('hero.subtitle', 'Explora la enciclopedia sonora con búsqueda inteligente por voz, épocas, géneros y preescucha en vivo.')}
         </p>
 
         {/* Pestañas de Búsqueda Minimalistas (Segmented Control) */}

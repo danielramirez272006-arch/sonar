@@ -114,19 +114,6 @@ export const Footer = () => {
     </footer>
   );
 };
-          <button
-            type="button"
-            onClick={() => setIsEngineOpen(true)}
-            className="flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#f0e2ee] dark:bg-white/10 border border-[#ddcadb] dark:border-white/10 text-xs text-[#231123] dark:text-white hover:border-[#B80C09] hover:text-[#B80C09] transition-all cursor-pointer font-bold shadow-xs"
-            title="Ver telemetría y estado del sistema"
-          >
-            <span className="w-2 h-2 rounded-full bg-emerald-500 inline-block animate-pulse" />
-            <span>Sonar Engine v2.4 Activo</span>
-          </button>
-        </div>
-      </div>
-    </footer>
-  );
-};
 
 export default Footer;
+
