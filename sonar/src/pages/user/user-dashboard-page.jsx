@@ -17,9 +17,15 @@ import {
   getFallbackCoverForAlbum,
 } from '../../shared/services/recommendations-service';
 import ReviewFeedCard from '../../features/reviews/components/review-feed-card';
+import AudiophilePassportTab from '../../features/profile/components/audiophile-passport-tab';
+import VinylCrateFlip from '../../features/profile/components/vinyl-crate-flip';
+import SoundSignatureSelector from '../../features/profile/components/sound-signature-selector';
+import AudiophileSignalChain from '../../features/profile/components/audiophile-signal-chain';
+import ListeningJournalModal from '../../features/profile/components/listening-journal-modal';
+import EnhancedParentalControl from '../../features/profile/components/enhanced-parental-control';
 
 export const UserDashboardPage = () => {
-  const { user, updateUser, updateParentalControl, isParentalControlActive } = useAuth();
+  const { user, updateUser } = useAuth();
   const { playTrack, openReviewModal } = usePlayer();
   const userId = user?.id || null;
 
@@ -31,9 +37,11 @@ export const UserDashboardPage = () => {
         return pendingTab;
       }
     } catch {}
-    return 'recommendations';
+    return 'passport';
   });
   const [collectionFilter, setCollectionFilter] = useState('Todos');
+  const [savedViewMode, setSavedViewMode] = useState('grid');
+  const [journalAlbum, setJournalAlbum] = useState(null);
   const [genreFilter, setGenreFilter] = useState('Todos');
   const [savedAlbums, setSavedAlbums] = useState([]);
   const [recommendations, setRecommendations] = useState([]);
@@ -41,8 +49,6 @@ export const UserDashboardPage = () => {
   const [followedArtists, setFollowedArtists] = useState([]);
   const [followedUsers, setFollowedUsers] = useState([]);
   const [recentlyPlayed, setRecentlyPlayed] = useState([]);
-  const [parentPinInput, setParentPinInput] = useState(() => user?.parentalControl?.pin || '1234');
-  const [parentalNotice, setParentalNotice] = useState('');
   const [gearSetup, setGearSetup] = useState(() => ({
     turntable: user?.audiophileSetup?.turntable || user?.gear?.turntable || 'Technics SL-1200MK7',
     headphones: user?.audiophileSetup?.headphones || user?.gear?.headphones || 'Sennheiser HD 660S',
@@ -214,6 +220,26 @@ export const UserDashboardPage = () => {
         {/* Navegación por Pestañas (Tabs) */}
         <div className="flex flex-col gap-6">
           <div className="flex items-center gap-4 sm:gap-8 border-b border-[#e6d5e2] dark:border-white/10 overflow-x-auto pb-1 scrollbar-none">
+            <button
+              type="button"
+              onClick={() => setActiveTab('passport')}
+              className={`pb-3 text-sm sm:text-base font-bold transition-all cursor-pointer relative whitespace-nowrap flex items-center gap-2 ${
+                activeTab === 'passport'
+                  ? 'text-[#B80C09]'
+                  : 'text-[#5c435a] dark:text-[#B89CB0] hover:text-[#231123] dark:hover:text-white'
+              }`}
+            >
+              <span className="material-symbols-outlined text-[18px]">badge</span>
+              <span>Pasaporte & Estadísticas</span>
+              {activeTab === 'passport' && (
+                <motion.div
+                  layoutId="dashboard-tab-indicator"
+                  className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#B80C09]"
+                  transition={{ type: 'spring', stiffness: 400, damping: 30 }}
+                />
+              )}
+            </button>
+
             <button
               type="button"
               onClick={() => setActiveTab('recommendations')}
@@ -388,6 +414,20 @@ export const UserDashboardPage = () => {
             </div>
           </div>
 
+          {/* TAB 0: PASAPORTE Y ESTADÍSTICAS AUDIÓFILAS */}
+          {activeTab === 'passport' && (
+            <AudiophilePassportTab
+              user={user}
+              savedAlbums={savedAlbums}
+              userReviews={userReviews}
+              recentlyPlayed={recentlyPlayed}
+              followedArtists={followedArtists}
+              followedUsers={followedUsers}
+              gearSetup={gearSetup}
+              onExportBackup={handleExportBackup}
+            />
+          )}
+
           {/* TAB 1: RECOMENDACIONES PERSONALIZADAS */}
           {activeTab === 'recommendations' && (
             <section className="flex flex-col gap-6">
@@ -537,25 +577,62 @@ export const UserDashboardPage = () => {
           {/* TAB 2: MIS COLECCIONES / DISCOS GUARDADOS */}
           {activeTab === 'saved' && (
             <section className="flex flex-col gap-6">
-              {/* Filtro por Categorías */}
-              <div className="flex flex-wrap items-center gap-2 pb-2">
-                {collectionTags.map((tag) => (
+              {/* Barra de Filtros y Selector de Vista */}
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2">
+                {/* Filtro por Categorías */}
+                <div className="flex flex-wrap items-center gap-2">
+                  {collectionTags.map((tag) => (
+                    <button
+                      key={tag}
+                      type="button"
+                      onClick={() => setCollectionFilter(tag)}
+                      className={`px-4 py-1.5 rounded-full text-xs font-bold transition-all cursor-pointer ${
+                        collectionFilter === tag
+                          ? 'bg-[#B80C09] text-white shadow-xs'
+                          : 'bg-white dark:bg-[#4B2840] border border-[#e6d5e2] dark:border-white/10 text-[#5c435a] dark:text-gray-200 hover:border-[#B80C09]/40'
+                      }`}
+                    >
+                      {tag}
+                    </button>
+                  ))}
+                </div>
+
+                {/* Selector de Modo de Visualización (Grid vs 3D Crate) */}
+                <div className="flex items-center gap-1 p-1 rounded-xl bg-gray-100 dark:bg-black/30 border border-[#e6d5e2] dark:border-white/10 self-start sm:self-auto">
                   <button
-                    key={tag}
                     type="button"
-                    onClick={() => setCollectionFilter(tag)}
-                    className={`px-4 py-1.5 rounded-full text-xs font-bold transition-all cursor-pointer ${
-                      collectionFilter === tag
-                        ? 'bg-[#B80C09] text-white shadow-xs'
-                        : 'bg-white dark:bg-[#4B2840] border border-[#e6d5e2] dark:border-white/10 text-[#5c435a] dark:text-gray-200 hover:border-[#B80C09]/40'
+                    onClick={() => setSavedViewMode('grid')}
+                    className={`px-3 py-1 rounded-lg text-xs font-bold flex items-center gap-1.5 transition-all cursor-pointer ${
+                      savedViewMode === 'grid'
+                        ? 'bg-white dark:bg-[#4B2840] text-[#B80C09] dark:text-white shadow-xs'
+                        : 'text-[#5c435a] dark:text-[#B89CB0] hover:text-[#231123]'
                     }`}
                   >
-                    {tag}
+                    <span className="material-symbols-outlined text-[15px]">grid_view</span>
+                    <span>Cuadrícula</span>
                   </button>
-                ))}
+                  <button
+                    type="button"
+                    onClick={() => setSavedViewMode('crate3d')}
+                    className={`px-3 py-1 rounded-lg text-xs font-bold flex items-center gap-1.5 transition-all cursor-pointer ${
+                      savedViewMode === 'crate3d'
+                        ? 'bg-[#B80C09] text-white shadow-xs'
+                        : 'text-[#5c435a] dark:text-[#B89CB0] hover:text-[#231123]'
+                    }`}
+                  >
+                    <span className="material-symbols-outlined text-[15px]">album</span>
+                    <span>Caja 3D</span>
+                  </button>
+                </div>
               </div>
 
-              {filteredSavedAlbums.length === 0 ? (
+              {savedViewMode === 'crate3d' ? (
+                <VinylCrateFlip
+                  albums={filteredSavedAlbums}
+                  onPlayAlbum={handlePlayAlbum}
+                  onToggleSave={handleToggleSaveAlbum}
+                />
+              ) : filteredSavedAlbums.length === 0 ? (
                 <div className="p-10 rounded-3xl bg-white dark:bg-[#4B2840] border border-[#e6d5e2] dark:border-white/10 text-center flex flex-col items-center gap-3">
                   <span className="material-symbols-outlined text-[48px] text-[#5c435a] dark:text-[#B89CB0]">
                     library_music
@@ -634,15 +711,24 @@ export const UserDashboardPage = () => {
                         </p>
                       </div>
 
-                      {/* Botón de acción rápida: Escribir reseña */}
+                      {/* Botón de acción rápida: Escribir reseña y Diario */}
                       <div className="flex items-center justify-between gap-2 pt-2 mt-2 border-t border-[#e6d5e2]/60 dark:border-white/10">
                         <button
                           type="button"
                           onClick={() => openReviewModal(album)}
-                          className="w-full py-1 px-2 rounded-lg text-xs font-bold bg-gray-100 dark:bg-[#231123] text-[#231123] dark:text-gray-200 hover:bg-[#B80C09] hover:text-white dark:hover:bg-[#B80C09] dark:hover:text-white transition-colors flex items-center justify-center gap-1 cursor-pointer"
+                          className="flex-1 py-1 px-2 rounded-lg text-xs font-bold bg-gray-100 dark:bg-[#231123] text-[#231123] dark:text-gray-200 hover:bg-[#B80C09] hover:text-white dark:hover:bg-[#B80C09] dark:hover:text-white transition-colors flex items-center justify-center gap-1 cursor-pointer"
                         >
                           <span className="material-symbols-outlined text-[14px]">rate_review</span>
                           <span>Criticar</span>
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => setJournalAlbum(album)}
+                          className="py-1 px-2.5 rounded-lg text-xs font-bold bg-gray-100 dark:bg-[#231123] text-[#231123] dark:text-gray-200 hover:bg-amber-600 hover:text-white transition-colors flex items-center justify-center gap-1 cursor-pointer"
+                          title="Escribir notas íntimas en tu Diario Acústico"
+                        >
+                          <span className="material-symbols-outlined text-[14px]">edit_note</span>
+                          <span className="hidden sm:inline">Diario</span>
                         </button>
                       </div>
                     </motion.article>
@@ -888,6 +974,23 @@ export const UserDashboardPage = () => {
           {/* TAB: EQUIPAMIENTO AUDIÓFILO */}
           {activeTab === 'audiophile_gear' && (
             <section className="flex flex-col gap-6">
+              {/* Firma de Sonido & Ecualizador DSP */}
+              <SoundSignatureSelector
+                initialProfile={user?.soundProfile?.presetId || 'tube-warmth'}
+                onSaveProfile={(profile) => updateUser({ soundProfile: profile })}
+              />
+
+              {/* Cadena de Señal Audiófila Visual */}
+              <AudiophileSignalChain
+                currentGear={gearSetup}
+                onUpdateGear={(chain) => {
+                  setGearSetup((prev) => ({ ...prev, ...chain }));
+                  updateUser({
+                    audiophileSetup: { ...gearSetup, ...chain },
+                  });
+                }}
+              />
+
               <div className="p-6 sm:p-8 rounded-3xl bg-white dark:bg-[#4B2840] border border-[#e6d5e2] dark:border-white/10 shadow-xs flex flex-col gap-6">
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-5 border-b border-gray-100 dark:border-white/10">
                   <div className="flex items-center gap-3.5">
@@ -1093,209 +1196,16 @@ export const UserDashboardPage = () => {
 
           {/* TAB 6: CONTROL PARENTAL Y FILTRO DE CONTENIDO */}
           {activeTab === 'parental_control' && (
-            <section className="flex flex-col gap-6">
-              <div className="p-6 sm:p-8 rounded-3xl bg-white dark:bg-[#4B2840] border border-[#e6d5e2] dark:border-white/10 shadow-xs flex flex-col gap-6">
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-5 border-b border-gray-100 dark:border-white/10">
-                  <div className="flex items-center gap-3.5">
-                    <div className="w-14 h-14 rounded-2xl bg-emerald-500/15 dark:bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 flex items-center justify-center shrink-0">
-                      <span className="material-symbols-outlined text-[30px]">shield</span>
-                    </div>
-                    <div>
-                      <h3 className="text-base sm:text-xl font-black text-[#231123] dark:text-white flex items-center gap-2">
-                        <span>Filtro de Contenido & Modo Junior</span>
-                        <span className="px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase bg-emerald-500/15 text-emerald-700 dark:bg-emerald-950/60 dark:text-emerald-300 border border-emerald-500/30">
-                          {user?.accountType === 'junior' || isParentalControlActive ? 'Protección Activa' : 'Filtro Libre'}
-                        </span>
-                      </h3>
-                      <p className="text-xs sm:text-sm text-[#5c435a] dark:text-[#B89CB0] mt-0.5">
-                        Protege a niños y jóvenes restringiendo pistas con lenguaje explícito o contenido adulto en Sonar.
-                      </p>
-                    </div>
-                  </div>
-
-                  {parentalNotice && (
-                    <span className="text-xs font-bold text-emerald-600 bg-emerald-50 dark:bg-emerald-950/40 dark:text-emerald-300 px-3 py-1.5 rounded-xl border border-emerald-200 dark:border-emerald-800 self-start sm:self-auto animate-fade-in">
-                      {parentalNotice}
-                    </span>
-                  )}
-                </div>
-
-                {/* Perfiles de Protección Rápida */}
-                <div className="flex flex-col gap-2">
-                  <span className="text-xs font-black uppercase tracking-wider text-[#5c435a] dark:text-gray-300">
-                    Nivel de Protección y Filtro
-                  </span>
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-3.5">
-                    {/* Opción 1: Junior Seguro */}
-                    <div
-                      onClick={() => {
-                        updateUser({ accountType: 'junior' });
-                        updateParentalControl({ enabled: true, blockExplicit: true });
-                        setParentalNotice('🛡️ Modo Junior Seguro activado con éxito');
-                        setTimeout(() => setParentalNotice(''), 3000);
-                      }}
-                      className={`p-4 rounded-2xl border-2 transition-all cursor-pointer flex flex-col justify-between gap-3 ${
-                        user?.accountType === 'junior' && user?.parentalControl?.blockExplicit
-                          ? 'border-emerald-500 bg-emerald-50/50 dark:bg-emerald-950/20 shadow-sm'
-                          : 'border-gray-200 dark:border-white/10 bg-gray-50/70 dark:bg-black/20 hover:border-emerald-500/50'
-                      }`}
-                    >
-                      <div className="flex items-center justify-between">
-                        <span className="material-symbols-outlined text-emerald-600 dark:text-emerald-400 text-[24px]">child_care</span>
-                        {user?.accountType === 'junior' && user?.parentalControl?.blockExplicit && (
-                          <span className="text-[10px] font-black uppercase text-emerald-600 dark:text-emerald-300 bg-emerald-100 dark:bg-emerald-900/50 px-2 py-0.5 rounded-full">
-                            Activo
-                          </span>
-                        )}
-                      </div>
-                      <div>
-                        <h4 className="text-sm font-bold text-[#231123] dark:text-white">Junior Estricto</h4>
-                        <p className="text-xs text-[#5c435a] dark:text-[#B89CB0] mt-0.5">
-                          Bloquea canciones explícitas por defecto y prioriza recomendaciones infantiles y familiares.
-                        </p>
-                      </div>
-                    </div>
-
-                    {/* Opción 2: Supervisado con PIN */}
-                    <div
-                      onClick={() => {
-                        updateUser({ accountType: 'standard' });
-                        updateParentalControl({ enabled: true, blockExplicit: true });
-                        setParentalNotice('🔑 Modo Supervisado activado (requiere PIN)');
-                        setTimeout(() => setParentalNotice(''), 3000);
-                      }}
-                      className={`p-4 rounded-2xl border-2 transition-all cursor-pointer flex flex-col justify-between gap-3 ${
-                        user?.accountType === 'standard' && user?.parentalControl?.blockExplicit
-                          ? 'border-[#B80C09] bg-rose-50/50 dark:bg-rose-950/20 shadow-sm'
-                          : 'border-gray-200 dark:border-white/10 bg-gray-50/70 dark:bg-black/20 hover:border-[#B80C09]/50'
-                      }`}
-                    >
-                      <div className="flex items-center justify-between">
-                        <span className="material-symbols-outlined text-[#B80C09] dark:text-rose-400 text-[24px]">pin</span>
-                        {user?.accountType === 'standard' && user?.parentalControl?.blockExplicit && (
-                          <span className="text-[10px] font-black uppercase text-[#B80C09] dark:text-rose-300 bg-rose-100 dark:bg-rose-900/50 px-2 py-0.5 rounded-full">
-                            Activo
-                          </span>
-                        )}
-                      </div>
-                      <div>
-                        <h4 className="text-sm font-bold text-[#231123] dark:text-white">Supervisado con PIN</h4>
-                        <p className="text-xs text-[#5c435a] dark:text-[#B89CB0] mt-0.5">
-                          Permite reproducir pistas explícitas únicamente ingresando el PIN de 4 dígitos.
-                        </p>
-                      </div>
-                    </div>
-
-                    {/* Opción 3: Modo Abierto */}
-                    <div
-                      onClick={() => {
-                        updateUser({ accountType: 'standard' });
-                        updateParentalControl({ enabled: false, blockExplicit: false });
-                        setParentalNotice('🔓 Modo Adulto Libre activado (sin restricciones)');
-                        setTimeout(() => setParentalNotice(''), 3000);
-                      }}
-                      className={`p-4 rounded-2xl border-2 transition-all cursor-pointer flex flex-col justify-between gap-3 ${
-                        !user?.parentalControl?.blockExplicit
-                          ? 'border-[#5c1d5e] bg-purple-50/50 dark:bg-purple-950/20 shadow-sm'
-                          : 'border-gray-200 dark:border-white/10 bg-gray-50/70 dark:bg-black/20 hover:border-purple-400'
-                      }`}
-                    >
-                      <div className="flex items-center justify-between">
-                        <span className="material-symbols-outlined text-[#5c1d5e] dark:text-purple-300 text-[24px]">lock_open</span>
-                        {!user?.parentalControl?.blockExplicit && (
-                          <span className="text-[10px] font-black uppercase text-[#5c1d5e] dark:text-purple-300 bg-purple-100 dark:bg-purple-900/50 px-2 py-0.5 rounded-full">
-                            Activo
-                          </span>
-                        )}
-                      </div>
-                      <div>
-                        <h4 className="text-sm font-bold text-[#231123] dark:text-white">Modo Libre (Adulto)</h4>
-                        <p className="text-xs text-[#5c435a] dark:text-[#B89CB0] mt-0.5">
-                          Acceso completo a todo el catálogo y letras sin solicitar autorización.
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Configuración de PIN y Prueba */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2">
-                  {/* Formulario de Configuración de PIN */}
-                  <div className="p-5 rounded-2xl bg-gray-50 dark:bg-black/20 border border-gray-200/70 dark:border-white/10 flex flex-col justify-between gap-3">
-                    <div>
-                      <h4 className="text-sm font-bold text-[#231123] dark:text-white flex items-center gap-2">
-                        <span className="material-symbols-outlined text-[18px] text-[#B80C09]">key</span>
-                        <span>PIN de Autorización Parental</span>
-                      </h4>
-                      <p className="text-xs text-[#5c435a] dark:text-[#B89CB0] mt-0.5">
-                        Configura un código de 4 dígitos para desbloquear canciones cuando sea requerido.
-                      </p>
-                    </div>
-
-                    <form
-                      onSubmit={(e) => {
-                        e.preventDefault();
-                        if (parentPinInput.trim().length >= 4) {
-                          updateParentalControl({ pin: parentPinInput.trim() });
-                          setParentalNotice('PIN de Control Parental guardado con éxito');
-                          setTimeout(() => setParentalNotice(''), 3000);
-                        }
-                      }}
-                      className="flex items-center gap-2 mt-1"
-                    >
-                      <input
-                        type="password"
-                        maxLength={8}
-                        value={parentPinInput}
-                        onChange={(e) => setParentPinInput(e.target.value.replace(/\D/g, '').slice(0, 4))}
-                        placeholder="1234"
-                        className="w-24 text-center tracking-[0.3em] font-mono text-sm py-2 px-3 rounded-xl bg-white dark:bg-[#341b31] border border-gray-300 dark:border-white/20 text-[#231123] dark:text-white focus:outline-hidden focus:border-[#B80C09]"
-                      />
-                      <button
-                        type="submit"
-                        disabled={parentPinInput.trim().length < 4}
-                        className="px-4 py-2 rounded-xl bg-[#B80C09] hover:bg-[#960a07] text-white text-xs font-bold transition-all disabled:opacity-50 cursor-pointer shadow-xs"
-                      >
-                        Guardar PIN
-                      </button>
-                    </form>
-                  </div>
-
-                  {/* Botón de Prueba en Vivo */}
-                  <div className="p-5 rounded-2xl bg-gray-50 dark:bg-black/20 border border-gray-200/70 dark:border-white/10 flex flex-col justify-between gap-3">
-                    <div>
-                      <h4 className="text-sm font-bold text-[#231123] dark:text-white flex items-center gap-2">
-                        <span className="material-symbols-outlined text-[18px] text-emerald-600 dark:text-emerald-400">verified</span>
-                        <span>Probar Seguridad en Vivo</span>
-                      </h4>
-                      <p className="text-xs text-[#5c435a] dark:text-[#B89CB0] mt-0.5">
-                        Ejecuta una simulación con una pista explícita para comprobar cómo se comporta el reproductor.
-                      </p>
-                    </div>
-
-                    <button
-                      type="button"
-                      onClick={() => {
-                        playTrack({
-                          id: 9896728,
-                          title: "To Pimp A Butterfly (Muestra Explícita)",
-                          artist: "Kendrick Lamar",
-                          album: "To Pimp A Butterfly",
-                          explicit: true,
-                          explicit_lyrics: true,
-                        });
-                      }}
-                      className="w-full sm:w-auto px-4 py-2 rounded-xl bg-[#231123] dark:bg-white text-white dark:text-[#231123] text-xs font-bold hover:bg-[#4B2840] dark:hover:bg-gray-200 transition-colors flex items-center justify-center gap-1.5 cursor-pointer shadow-xs"
-                    >
-                      <span className="material-symbols-outlined text-[16px]">play_circle</span>
-                      <span>Probar Bloqueo y PIN en Reproductor</span>
-                    </button>
-                  </div>
-                </div>
-              </div>
-            </section>
+            <EnhancedParentalControl />
           )}
         </div>
+
+        {/* Modal de Diario Acústico & Sleeve Notes */}
+        <ListeningJournalModal
+          album={journalAlbum}
+          isOpen={Boolean(journalAlbum)}
+          onClose={() => setJournalAlbum(null)}
+        />
       </main>
 
       {/* Pie de Página */}

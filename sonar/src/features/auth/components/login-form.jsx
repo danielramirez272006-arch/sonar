@@ -22,7 +22,7 @@ const EditorialPanel = () => (
 );
 
 export const LoginForm = () => {
-  const { login, isLoading } = useAuth();
+  const { login, isLoading, error: authError } = useAuth();
   const [formData, setFormData] = useState({ email: '', password: '' });
   const [showPassword, setShowPassword] = useState(false);
   const [message, setMessage] = useState('');
@@ -56,6 +56,8 @@ export const LoginForm = () => {
     }
   };
 
+  const activeError = message || authError;
+
   return (
     <div className="auth-shell">
       <EditorialPanel />
@@ -77,7 +79,7 @@ export const LoginForm = () => {
             <input id="email" type="email" autoComplete="email" required placeholder="tu@ejemplo.com" value={formData.email} onChange={(event) => setFormData({ ...formData, email: event.target.value })} />
             <div className="auth-label-row"><label htmlFor="password">Contraseña</label><a href="#forgot-password">¿Olvidaste tu contraseña?</a></div>
             <div className="auth-password"><input id="password" type={showPassword ? 'text' : 'password'} autoComplete="current-password" required placeholder="Mínimo 8 caracteres" value={formData.password} onChange={(event) => setFormData({ ...formData, password: event.target.value })} /><button type="button" onClick={() => setShowPassword(!showPassword)} aria-label={showPassword ? 'Ocultar contraseña' : 'Mostrar contraseña'}>{showPassword ? <EyeOff size={17} /> : <Eye size={17} />}</button></div>
-            {message && <p className="auth-error" role="alert">{message}</p>}
+            {activeError && <p className="auth-error" role="alert">{activeError}</p>}
             <button className="auth-submit" type="submit" disabled={isLoading}>{isLoading ? 'Ingresando…' : <>Entrar a Sonar <ArrowRight size={18} /></>}</button>
           </form>
           <p className="auth-switch">¿Aún no tienes cuenta? <a href="#register">Crea tu cuenta</a></p>

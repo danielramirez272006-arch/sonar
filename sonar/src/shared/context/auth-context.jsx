@@ -1,5 +1,5 @@
 import { userStatus } from '../services/admin-data.js'
-import { createContext, useContext, useMemo, useState } from 'react'
+import { createContext, useContext, useEffect, useMemo, useState } from 'react'
 import { getUserByEmail, createUser, updateUser as updateUserApi, deleteUser as deleteUserApi } from '../services/api-client.js'
 import { hashPassword, verifyPassword } from '../services/crypto-service.js'
 import { notifyLoginAlertWebhook } from '../services/n8n-webhooks.js'
@@ -19,6 +19,49 @@ export function AuthProvider({ children }) {
   })
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState(null)
+
+  // Cierre de sesión automático por inactividad:
+  // - Usuario normal: 60 segundos (1 minuto)
+  // - Administrador: 30 segundos
+  useEffect(() => {
+    if (!user) return;
+
+    const timeoutMs = user.role === 'admin' ? 30000 : 60000;
+    let timerId = null;
+
+    const handleInactivityLogout = () => {
+      const roleLabel = user.role === 'admin' ? 'administrador (30 segundos)' : 'usuario (1 minuto)';
+      setUser(null);
+      setError(`Sesión cerrada por inactividad de ${roleLabel}.`);
+      try {
+        if (typeof window !== 'undefined') {
+          window.localStorage?.removeItem('sonar_auth_user');
+          window.location.hash = '#login';
+        }
+      } catch {
+        // Fallback
+      }
+    };
+
+    const resetTimer = () => {
+      if (timerId) clearTimeout(timerId);
+      timerId = setTimeout(handleInactivityLogout, timeoutMs);
+    };
+
+    const events = ['mousemove', 'mousedown', 'keydown', 'touchstart', 'scroll', 'click'];
+    events.forEach((evt) => {
+      window.addEventListener(evt, resetTimer, { passive: true });
+    });
+
+    resetTimer();
+
+    return () => {
+      if (timerId) clearTimeout(timerId);
+      events.forEach((evt) => {
+        window.removeEventListener(evt, resetTimer);
+      });
+    };
+  }, [user]);
 
   const value = useMemo(() => {
     async function login(email, password) {

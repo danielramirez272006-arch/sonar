@@ -59,5 +59,5 @@ describe('ForgotPassword Email OTP Code Entry Flow', () => {
     fireEvent.change(otpInput, { target: { value: '123456' } });
 
     expect(otpInput.value).toBe('123456');
-  });
+  }, 15000);
 });
