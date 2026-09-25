@@ -138,12 +138,23 @@ export const GlobalAudioPlayer = () => {
     };
   }, [currentTrack?.title, currentTrack?.artist, currentTrack?.album, currentTrack?.id, currentTrack?.deezerId, isPodcast]);
 
-  const [currentHash, setCurrentHash] = useState(() => (typeof window !== 'undefined' ? window.location.hash : ''));
+  const getNormalizedRoute = () => {
+    if (typeof window === 'undefined') return '';
+    const hash = (window.location.hash || '').replace(/^#/, '').toLowerCase().split('?')[0];
+    const path = (window.location.pathname || '').replace(/^\//, '').toLowerCase().split('?')[0];
+    return hash || path;
+  };
+
+  const [currentRoute, setCurrentRoute] = useState(getNormalizedRoute);
 
   useEffect(() => {
-    const onHashChange = () => setCurrentHash(window.location.hash);
-    window.addEventListener('hashchange', onHashChange);
-    return () => window.removeEventListener('hashchange', onHashChange);
+    const handleLocationChange = () => setCurrentRoute(getNormalizedRoute());
+    window.addEventListener('hashchange', handleLocationChange);
+    window.addEventListener('popstate', handleLocationChange);
+    return () => {
+      window.removeEventListener('hashchange', handleLocationChange);
+      window.removeEventListener('popstate', handleLocationChange);
+    };
   }, []);
 
   useEffect(() => {
@@ -152,8 +163,33 @@ export const GlobalAudioPlayer = () => {
     }
   }, [currentTrack?.title, currentTrack?.artist, announce]);
 
-  const isVinylPage = currentHash === '#album' || currentHash === '#vinilo' || currentHash === '#vinyl-mode';
-  if (!currentTrack && !explicitLockModal?.isOpen) return null;
+  const isExcludedPage = Boolean(
+    currentRoute === 'login' ||
+    currentRoute === 'register' ||
+    currentRoute === 'forgot-password' ||
+    currentRoute === 'recuperar-password' ||
+    currentRoute === 'recuperar-contrasena' ||
+    currentRoute === 'reset-password' ||
+    currentRoute === 'album' ||
+    currentRoute === 'vinyl' ||
+    currentRoute === 'vinilo' ||
+    currentRoute === 'vinyl-mode' ||
+    currentRoute === 'tocadiscos' ||
+    currentRoute === 'admin' ||
+    currentRoute === 'dashboard' ||
+    currentRoute === 'moderacion' ||
+    currentRoute === 'usuarios' ||
+    currentRoute === 'admin-reports' ||
+    currentRoute === 'admin-reviews' ||
+    currentRoute.startsWith('admin-catalog') ||
+    currentRoute.startsWith('admin-') ||
+    currentRoute.startsWith('admin/') ||
+    currentRoute.startsWith('dashboard/') ||
+    currentRoute.startsWith('moderacion/') ||
+    currentRoute.startsWith('usuarios/')
+  );
+
+  if ((!currentTrack || isExcludedPage) && !explicitLockModal?.isOpen) return null;
 
   const isCurrentTrackSaved = Boolean(
     currentTrack && (
@@ -197,7 +233,7 @@ export const GlobalAudioPlayer = () => {
   return (
     <>
       <AnimatePresence>
-        {currentTrack && !isVinylPage && (
+        {currentTrack && !isExcludedPage && (
           <motion.div
             initial={{ y: 60, opacity: 0, scale: 0.95 }}
             animate={{ y: 0, opacity: 1, scale: 1 }}
