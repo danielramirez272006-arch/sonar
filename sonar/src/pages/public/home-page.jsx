@@ -220,8 +220,38 @@ export const HomePage = () => {
                       <span>Buscando canciones en la biblioteca de Deezer...</span>
                     </div>
                   ) : searchResults.length === 0 ? (
-                    <div className="text-center py-10 text-[#5c435a] dark:text-[#B89CB0]">
-                      No se encontraron canciones en Deezer para &ldquo;{searchQuery}&rdquo;.
+                    <div className="relative overflow-hidden py-14 px-6 text-center rounded-[32px] bg-gradient-to-br from-white via-[#fdf4fa] to-[#f9e9f4] dark:from-[#2c1829] dark:via-[#241026] dark:to-[#1b0a1a] border border-[#ecd9e8] dark:border-[#4d3050]">
+                      <div className="absolute -top-20 left-1/2 -translate-x-1/2 w-72 h-72 rounded-full bg-[#B80C09]/10 blur-3xl pointer-events-none" />
+                      <div className="relative flex flex-col items-center gap-3">
+                        <span className="w-16 h-16 rounded-2xl bg-white dark:bg-white/5 border border-[#f0dcea] dark:border-white/10 grid place-items-center shadow-md">
+                          <span className="material-symbols-outlined text-[32px] text-[#B80C09]">search_off</span>
+                        </span>
+                        <h4 className="text-lg sm:text-xl font-black tracking-tight text-[#231123] dark:text-white">
+                          No existe &ldquo;{searchQuery}&rdquo; en el catálogo de Deezer
+                        </h4>
+                        <p className="text-xs sm:text-sm text-[#5c435a] dark:text-[#B89CB0] max-w-md leading-relaxed">
+                          Revisa la escritura o prueba con el nombre de un artista o canción. También puedes buscar
+                          este término dentro de las noticias del radar musical.
+                        </p>
+                        <div className="flex flex-wrap items-center justify-center gap-2 pt-1">
+                          <button
+                            type="button"
+                            onClick={() => {
+                              window.location.hash = `#noticias?q=${encodeURIComponent(searchQuery)}`;
+                            }}
+                            className="px-4 py-2 rounded-full bg-[#B80C09] hover:bg-[#9c0a07] text-white text-xs font-black transition-colors cursor-pointer"
+                          >
+                            Buscar en Noticias
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => handleSearch('')}
+                            className="px-4 py-2 rounded-full bg-white dark:bg-white/10 border border-[#e6d5e2] dark:border-white/10 text-xs font-bold text-[#231123] dark:text-white hover:border-[#B80C09] transition-colors cursor-pointer"
+                          >
+                            Limpiar búsqueda
+                          </button>
+                        </div>
+                      </div>
                     </div>
                   ) : (
                     <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4 sm:gap-5">

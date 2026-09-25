@@ -1,274 +1,19 @@
-import React, { useState, useMemo, useEffect } from 'react';
+import '../../Styles/news-catalog.css';
+import { matchesNewsSearch } from '../../shared/services/news-search.js';
+import { NewsVinyl } from './news-vinyl.jsx';
+import { NewsLabels } from './news-labels.jsx';
+import { useAuth } from '../../shared/context/auth-context.jsx';
+import { useState, useMemo, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Navbar from '../../shared/components/layout/navbar';
 import Footer from '../../shared/components/layout/footer';
 import { usePlayer } from '../../shared/context/player-context';
 import { useAccessibility } from '../../shared/context/accessibility-context';
 import { subscribeNewsletterWebhook } from '../../shared/services/n8n-webhooks';
+import { toNewsArticle, isNewsVisible } from '../../shared/services/news-service.js';
 import { getCatalog } from '../../shared/services/catalog-service.js';
 
 // Catálogo curado de noticias musicales audiófilas con audios locales y crónicas narradas
-export const NEWS_ARTICLES = [
-  {
-    id: 'radiohead-in-rainbows-45rpm-reissue',
-    title: 'Radiohead Anuncia Reedición Audiófila de "In Rainbows" en Doble Vinilo de 45 RPM Masterizado en Abbey Road',
-    category: 'Lanzamientos',
-    date: '24 Septiembre, 2026',
-    author: 'Julián Andrade',
-    role: 'Editor de Cultura Sónica',
-    readTime: '4 min',
-    featured: true,
-    cover: 'https://images.unsplash.com/photo-1514525253161-7a46d19cd819?auto=format&fit=crop&q=80&w=1200',
-    summary: 'El legendario álbum de 2007 recibe una masterización a media velocidad (half-speed) directa de las cintas analógicas de 1/2 pulgada, con un rango dinámico sin precedentes.',
-    content: `Radiohead y el sello XL Recordings han confirmado el lanzamiento de una edición de referencia audiófila de "In Rainbows", masterizada por Miles Showell en los míticos Abbey Road Studios de Londres.
-
-El proceso de corte se realizó a 45 revoluciones por minuto en dos vinilos vírgenes de 180 gramos, lo que permite duplicar el espacio físico del surco para frecuencias graves profundas y una respuesta transitoria ultrarrápida en temas como "15 Step" y "Nude".
-
-"Queríamos que el oyente pudiera experimentar la textura de la batería de Phil Selway y la reverberación de placa EMT en la voz de Thom Yorke con la fidelidad exacta con la que fue grabada en la mansión de Tottenham House", explicó el equipo técnico de masterización.
-
-La edición incluirá además un folleto con notas de producción de Nigel Godrich y ensayos fotográficos inéditos de las sesiones de 2006.`,
-    audioNarration: {
-      id: 'news-audio-radiohead-45rpm',
-      title: 'La Reedición Audiófila del In Rainbows',
-      artist: 'Crónica Sonora Sonar',
-      album: 'Radar Musical & Actualidad',
-      cover: 'https://images.unsplash.com/photo-1514525253161-7a46d19cd819?auto=format&fit=crop&q=80&w=600',
-      audioUrl: '/audio/La_reedición_audiófila_del_In_Rainbows.m4a',
-      preview: '/audio/La_reedición_audiófila_del_In_Rainbows.m4a',
-    },
-    trackPreview: {
-      id: 3135556,
-      title: '15 Step',
-      artist: 'Radiohead',
-      album: 'In Rainbows',
-      cover: 'https://cdn-images.dzcdn.net/images/cover/a175af9b7d329bc678cb4d26fc13d6de/500x500-000000-80-0-0.jpg',
-    }
-  },
-  {
-    id: 'primavera-glastonbury-festivales-2027',
-    title: 'Festivales Revelan Carteles con Actos Estelares de Electrónica Experimental y Post-Punk',
-    category: 'Festivales',
-    date: '23 Septiembre, 2026',
-    author: 'Elena Rostova',
-    role: 'Corresponsal Internacional',
-    readTime: '5 min',
-    trending: true,
-    cover: 'https://images.unsplash.com/photo-1470225620780-dba8ba36b745?auto=format&fit=crop&q=80&w=800',
-    summary: 'Primavera Sound y Glastonbury confirman a Aphex Twin, Massive Attack, Portishead y The Smile en escenarios con sistemas de sonido inmersivo L-Acoustics L-ISA.',
-    content: `La temporada de festivales 2027 promete ser un hito para los amantes de la acústica de alta precisión. Las organizaciones de Primavera Sound y Glastonbury han anunciado que sus escenarios principales estarán equipados con sistemas de sonido espacial L-Acoustics L-ISA de 360 grados.
-
-Entre los actos destacados se encuentran el regreso a los escenarios de Massive Attack con una producción centrada en la neutralidad de carbono, presentaciones exclusivas de Aphex Twin con sintetizadores modulares analógicos en directo y sesiones especiales de The Smile.
-
-Los asistentes podrán disfrutar de una claridad en la mezcla estéreo y multicanal donde la distorsión armónica se reduce a menos del 0.05% en cualquier punto del recinto.`,
-    audioNarration: {
-      id: 'news-audio-festivales-lisa',
-      title: 'El Sonido L-ISA Llega a los Festivales',
-      artist: 'Crónica Sonora Sonar',
-      album: 'Radar Musical & Actualidad',
-      cover: 'https://images.unsplash.com/photo-1470225620780-dba8ba36b745?auto=format&fit=crop&q=80&w=600',
-      audioUrl: '/audio/El_sonido_L-ISA_llega_a_los_festivales.m4a',
-      preview: '/audio/El_sonido_L-ISA_llega_a_los_festivales.m4a',
-    },
-    trackPreview: {
-      id: 1109731,
-      title: 'Teardrop',
-      artist: 'Massive Attack',
-      album: 'Mezzanine',
-      cover: 'https://cdn-images.dzcdn.net/images/cover/1b73059129e924a1b066ffdc5a363da6/500x500-000000-80-0-0.jpg',
-    }
-  },
-  {
-    id: 'hardware-pro-ject-balanced-turntables',
-    title: 'Pro-Ject y Audio-Technica Presentan Nueva Línea de Tocadiscos con Conexión Balanceada True XLR',
-    category: 'Hi-Fi & Hardware',
-    date: '22 Septiembre, 2026',
-    author: 'Valeria Montero',
-    role: 'Ingeniera Acústica',
-    readTime: '6 min',
-    trending: true,
-    cover: 'https://images.unsplash.com/photo-1539375665275-f9de415ef9ac?auto=format&fit=crop&q=80&w=800',
-    summary: 'La transmisión balanceada de señales fonocaptoras MC elimina por completo las interferencias de radiofrecuencia (RFI) y el zumbido de masa en sistemas domésticos.',
-    content: `La conexión balanceada (True Balanced) ha dado el salto definitivo al mercado del vinilo de alta fidelidad. Los nuevos modelos de Pro-Ject y Audio-Technica incorporan salidas balanceadas mini-XLR y XLR completas directamente desde la cápsula de bobina móvil (MC).
-
-Dado que las cápsulas MC generan microvoltajes extremadamente sensibles a interferencias electromagnéticas generadas por routers Wi-Fi y transformadores, el circuito balanceado cancela el ruido de modo común, logrando una relación señal/ruido superior a 90 dB.
-
-"Es el mayor avance en claridad de fondo y rango dinámico en la reproducción de vinilo de los últimos 20 años", afirmó el panel de ingenieros en la presentación de Berlín.`,
-    audioNarration: {
-      id: 'news-audio-zumbido-vinilos',
-      title: 'Adiós al Zumbido en tus Vinilos',
-      artist: 'Ingeniería Acústica Sonar',
-      album: 'Hi-Fi & Hardware',
-      cover: 'https://images.unsplash.com/photo-1539375665275-f9de415ef9ac?auto=format&fit=crop&q=80&w=600',
-      audioUrl: '/audio/Adiós_al_zumbido_en_tus_vinilos.m4a',
-      preview: '/audio/Adiós_al_zumbido_en_tus_vinilos.m4a',
-    },
-    trackPreview: null
-  },
-  {
-    id: 'pink-floyd-wish-you-were-here-50th',
-    title: 'Pink Floyd: La Disección Acústica de las Cintas Maestras de "Wish You Were Here"',
-    category: 'Crónicas',
-    date: '20 Septiembre, 2026',
-    author: 'Carlos Echeverría',
-    role: 'Historiador Musical',
-    readTime: '7 min',
-    cover: 'https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?auto=format&fit=crop&q=80&w=800',
-    summary: 'Un recorrido por el tratamiento de sintetizadores Minimoog, guías de guitarra de 12 cuerdas acústicas de David Gilmour y la espacialidad de Abbey Road.',
-    content: `A cinco décadas de su publicación, "Wish You Were Here" sigue siendo considerado el estándar de oro en dinámica de grabación analógica.
-
-El solo de cuatro notas de David Gilmour en "Shine On You Crazy Diamond" fue grabado usando una Fender Stratocaster conectada a un amplificador Hiwatt DR103 emparejado con un eco de cinta Binson Echorec. La interacción entre la resonancia de las válvulas y la reverberación natural de los techos altos del Estudio 3 de Abbey Road creó una profundidad de campo que aún desafía las emulaciones digitales modernas.
-
-En este reportaje exploramos los secretos de cinta de 2 pulgadas y 16 pistas utilizados por Brian Humphries.`,
-    audioNarration: {
-      id: 'news-audio-cintas-pinkfloyd',
-      title: 'Las Cintas de Wish You Were Here',
-      artist: 'Crónicas de Abbey Road',
-      album: 'Historia y Masterización',
-      cover: 'https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?auto=format&fit=crop&q=80&w=600',
-      audioUrl: '/audio/Las_cintas_de_Wish_You_Were_Here.m4a',
-      preview: '/audio/Las_cintas_de_Wish_You_Were_Here.m4a',
-    },
-    trackPreview: {
-      id: 3105001,
-      title: 'Wish You Were Here',
-      artist: 'Pink Floyd',
-      album: 'Wish You Were Here',
-      cover: 'https://cdn-images.dzcdn.net/images/cover/989cb5103a8914ba08a287f94ca3aa14/500x500-000000-80-0-0.jpg',
-    }
-  },
-  {
-    id: 'sellos-independientes-vinilo-records-2026',
-    title: 'Warp, Ninja Tune y 4AD Reportan Récord en Soporte Físico y Firman Manifiesto Contra la Hipercompresión',
-    category: 'Industria & Sellos',
-    date: '18 Septiembre, 2026',
-    author: 'Mateo Solís',
-    role: 'Analista de Industria',
-    readTime: '4 min',
-    cover: 'https://images.unsplash.com/photo-1518709268805-4e9042af9f23?auto=format&fit=crop&q=80&w=800',
-    summary: 'Más de 40 sellos independientes internacionales acuerdan estándares mínimos de rango dinámico (DR12+) para todos sus lanzamientos en streaming y vinilo.',
-    content: `Una alianza de sellos discográficos independientes europeos y americanos ha lanzado la iniciativa "Dynamic Sound Guarantee". El pacto prohíbe el uso de limitadores extremos en las etapas de masterización digital para preservar la respiración y los contrastes tímbricos de la música.
-
-Las ventas de vinilos y casetes en estos sellos crecieron un 28% interanual en 2026, impulsadas por un público joven que busca conectar con el objeto físico y la escucha sin distracciones.`,
-    audioNarration: {
-      id: 'news-audio-vinilo-guerra-volumen',
-      title: 'El Vinilo Gana la Guerra del Volumen',
-      artist: 'Crónica Sonora Sonar',
-      album: 'Industria & Sellos',
-      cover: 'https://images.unsplash.com/photo-1518709268805-4e9042af9f23?auto=format&fit=crop&q=80&w=600',
-      audioUrl: '/audio/El_vinilo_gana_la_guerra_del_volumen.m4a',
-      preview: '/audio/El_vinilo_gana_la_guerra_del_volumen.m4a',
-    },
-    trackPreview: null
-  },
-  {
-    id: 'daft-punk-discovery-analog-sidechain',
-    title: 'El Legado Técnico de Daft Punk: El Sampler E-mu SP-1200 y el Sonido Francés',
-    category: 'Crónicas',
-    date: '15 Septiembre, 2026',
-    author: 'Julián Andrade',
-    role: 'Editor de Cultura Sónica',
-    readTime: '6 min',
-    cover: 'https://images.unsplash.com/photo-1508700115892-45ecd05ae2ad?auto=format&fit=crop&q=80&w=800',
-    summary: 'Cómo los compresores Alesis 3630 y el filtrado analógico crearon la estética sónica inimitable del French Touch en "Discovery".',
-    content: `El sonido de "Discovery" de Daft Punk no fue producto de plugins digitales, sino del uso creativo de hardware asequible llevado al límite. El compresor Alesis 3630, conocido por su carácter agresivo, fue utilizado en cadena lateral (sidechain) para forzar la mezcla entera a agacharse con cada golpe de bombo de 909.
-
-Ese efecto de bombeo, combinado con convertidores de 12 bits y filtros analógicos Moog, definió el sonido de la música electrónica del nuevo milenio.`,
-    audioNarration: {
-      id: 'news-audio-maquinas-discovery',
-      title: 'Las Máquinas que Esculpieron Discovery',
-      artist: 'Crónica Sonora Sonar',
-      album: 'Crónicas de Producción',
-      cover: 'https://images.unsplash.com/photo-1508700115892-45ecd05ae2ad?auto=format&fit=crop&q=80&w=600',
-      audioUrl: '/audio/Las_máquinas_que_esculpieron_Discovery.m4a',
-      preview: '/audio/Las_máquinas_que_esculpieron_Discovery.m4a',
-    },
-    trackPreview: {
-      id: 3135558,
-      title: 'One More Time',
-      artist: 'Daft Punk',
-      album: 'Discovery',
-      cover: 'https://cdn-images.dzcdn.net/images/cover/2e018122cb56986277102d204f6b1628/500x500-000000-80-0-0.jpg',
-    }
-  },
-  {
-    id: 'ingenieria-daft-punk-radiohead-masterclass',
-    title: 'Masterclass Acústica: La Ingeniería Sonora tras Daft Punk y Radiohead',
-    category: 'Crónicas',
-    date: '12 Septiembre, 2026',
-    author: 'Julián Andrade',
-    role: 'Editor de Cultura Sónica',
-    readTime: '8 min',
-    cover: 'https://images.unsplash.com/photo-1598488035139-bdbb2231ce04?auto=format&fit=crop&q=80&w=800',
-    summary: 'Comparativa en profundidad de las filosofías de mezcla: la saturación analógica calculada de Thomas Bangalter frente a la espacialidad orgánica de Nigel Godrich.',
-    content: `¿Qué tienen en común dos de las obras cumbres del siglo XXI grabadas en lados opuestos del canal de la Mancha? Tanto "Discovery" como "In Rainbows" evitaron la cuantización estricta por ordenador y priorizaron la no linealidad de los transformadores analógicos.
-
-En esta entrega analizamos las técnicas de microfonía ribbon Royer R-121, los preamplificadores Neve 1073 y el modelado de envolventes que transformaron temas como "Touch" y "Reckoner" en monumentos tímbricos de la historia discográfica.`,
-    audioNarration: {
-      id: 'news-audio-masterclass-daft-radiohead',
-      title: 'Ingeniería Sonora tras Daft Punk y Radiohead',
-      artist: 'Cátedra Audiófila Sonar',
-      album: 'Grandes Maestros del Sonido',
-      cover: 'https://images.unsplash.com/photo-1598488035139-bdbb2231ce04?auto=format&fit=crop&q=80&w=600',
-      audioUrl: '/audio/Ingeniería_sonora_tras_Daft_Punk_y_Radiohead.m4a',
-      preview: '/audio/Ingeniería_sonora_tras_Daft_Punk_y_Radiohead.m4a',
-    },
-    trackPreview: {
-      id: 3135556,
-      title: '15 Step',
-      artist: 'Radiohead',
-      album: 'In Rainbows',
-      cover: 'https://cdn-images.dzcdn.net/images/cover/a175af9b7d329bc678cb4d26fc13d6de/500x500-000000-80-0-0.jpg',
-    }
-  },
-  {
-    id: 'kendrick-to-pimp-a-butterfly-orchestration',
-    title: 'To Pimp a Butterfly: La Orquestación Jazz y la Producción de Referencia',
-    category: 'Lanzamientos',
-    date: '10 Septiembre, 2026',
-    author: 'Valeria Montero',
-    role: 'Ingeniera Acústica',
-    readTime: '6 min',
-    cover: 'https://images.unsplash.com/photo-1511192336575-5a79af67a629?auto=format&fit=crop&q=80&w=800',
-    summary: 'Cómo Thundercat, Kamasi Washington y Terrace Martin fusionaron el bebop moderno con el hip hop en un estándar audiófilo absoluto.',
-    content: `La grabación de "To Pimp a Butterfly" representa una de las cimas en arreglos de metales y bajo eléctrico en la música contemporánea. Con más de 30 músicos de sesión tocando en directo en los estudios Chalice Recording de Hollywood, cada pista mantiene una separación estéreo nítida sin sacrificar la pegada de los subgraves.
-
-Descubre los secretos de microfonía para saxofón tenor y las elecciones de compresión valvular Fairchild 670 en la mezcla de Derek Ali.`,
-    audioNarration: {
-      id: 'news-audio-kendrick-tpab',
-      title: 'La Orquestación de To Pimp a Butterfly',
-      artist: 'Crónica Sonora Sonar',
-      album: 'Arquitectura del Hip-Hop',
-      cover: 'https://images.unsplash.com/photo-1511192336575-5a79af67a629?auto=format&fit=crop&q=80&w=600',
-      audioUrl: '/audio/La_orquestación_de_To_Pimp_a_Butterfly.m4a',
-      preview: '/audio/La_orquestación_de_To_Pimp_a_Butterfly.m4a',
-    },
-    trackPreview: null
-  },
-  {
-    id: 'acustica-por-que-vinilo-suena-mas-calido',
-    title: 'Psicoacústica y Física: ¿Por Qué el Vinilo Suena Más Cálido que el Streaming?',
-    category: 'Hi-Fi & Hardware',
-    date: '08 Septiembre, 2026',
-    author: 'Elena Rostova',
-    role: 'Corresponsal Internacional',
-    readTime: '5 min',
-    cover: 'https://images.unsplash.com/photo-1461360370896-922624d12aa1?auto=format&fit=crop&q=80&w=800',
-    summary: 'La verdad científica sobre la distorsión armónica de segundo orden, la diafonía estéreo analógica y la respuesta psicoacústica del oído humano.',
-    content: `La supuesta "calidez" del vinilo no es una ilusión mística, sino el resultado directo de leyes físicas y acústicas. Cuando la aguja de diamante recorre el surco de policloruro de vinilo, introduce una distorsión armónica uniforme (even-order harmonics) que el cerebro humano interpreta intuitivamente como riqueza tonal y cercanía emocional.
-
-En este artículo analizamos además cómo la ligera mezcla de canales (crosstalk) replica la experiencia de escuchar instrumentos en una sala real en contraposición a la separación clínica digital.`,
-    audioNarration: {
-      id: 'news-audio-vinilo-calido',
-      title: 'Por Qué el Vinilo Suena Más Cálido',
-      artist: 'Física & Psicoacústica Sonar',
-      album: 'Fundamentos del Sonido',
-      cover: 'https://images.unsplash.com/photo-1461360370896-922624d12aa1?auto=format&fit=crop&q=80&w=600',
-      audioUrl: '/audio/Por_qué_el_vinilo_suena_más_cálido.m4a',
-      preview: '/audio/Por_qué_el_vinilo_suena_más_cálido.m4a',
-    },
-    trackPreview: null
-  }
-];
 
 const CATEGORIES = [
   'Todas',
@@ -279,11 +24,55 @@ const CATEGORIES = [
   'Crónicas',
 ];
 
+/** Lee los parámetros de búsqueda que envía la barra de la navbar (#noticias?q=...&abrir=...). */
+function readNewsHashParams() {
+  if (typeof window === 'undefined') return null;
+  const hash = window.location.hash.replace(/^#/, '');
+  const [path, query = ''] = hash.split('?');
+  if (path.toLowerCase() !== 'noticias') return null;
+  return new URLSearchParams(query);
+}
+
+
 export const NewsPage = () => {
+  const { user } = useAuth();
+  const [articles, setArticles] = useState([]);
+  const [editions, setEditions] = useState([]);
+  const [selectedEdition, setSelectedEdition] = useState(null);
+  const [labels, setLabels] = useState([]);
+  const [selectedLabel, setSelectedLabel] = useState('');
+  const [newsError, setNewsError] = useState('');
+  const [newsLoading, setNewsLoading] = useState(true);
+  const [newsRefresh, setNewsRefresh] = useState(0);
+  useEffect(() => {
+    let active = true;
+
+    Promise.all([getCatalog('announcements'), getCatalog('labels', true), getCatalog('vinyl', true)]).then(([rows, seals, vinyls]) => {
+      if (active) { setLabels(seals); setEditions(vinyls); setArticles(rows.filter(row => isNewsVisible(row)).map(row => toNewsArticle(row, seals))); setNewsError(''); }
+    }).catch(error => { if (active) setNewsError(error.message); }).finally(() => { if (active) setNewsLoading(false); });
+    return () => { active = false; };
+  }, [newsRefresh]);
   const [selectedCategory, setSelectedCategory] = useState('Todas');
-  const [searchQuery, setSearchQuery] = useState('');
+  const [searchQuery, setSearchQuery] = useState(() => readNewsHashParams()?.get('q') || '');
   const [activeArticleModal, setActiveArticleModal] = useState(null);
   const [activeReleaseModal, setActiveReleaseModal] = useState(null);
+  const deepLinkRef = useRef(readNewsHashParams());
+
+  // Sincroniza la búsqueda con la barra de la navbar (#noticias?q=termino&abrir=id)
+  useEffect(() => {
+    const syncFromHash = () => {
+      const params = readNewsHashParams();
+      if (!params) return;
+      deepLinkRef.current = params;
+      setSearchQuery(params.get('q') || '');
+      setSelectedLabel(params.get('sello') || '');
+      setSelectedCategory('Todas');
+    };
+
+    syncFromHash();
+    window.addEventListener('hashchange', syncFromHash);
+    return () => window.removeEventListener('hashchange', syncFromHash);
+  }, []);
 
   // Estado de Suscripción Newsletter
   const [newsletterEmail, setNewsletterEmail] = useState('');
@@ -313,25 +102,66 @@ export const NewsPage = () => {
     return () => { active = false; };
   }, []);
 
+  // Abre el recurso solicitado desde la navbar una vez que el catálogo está cargado
+  useEffect(() => {
+    if (newsLoading || releasesLoading) return;
+    const params = deepLinkRef.current;
+    if (!params) return;
+
+    const articleId = params.get('abrir');
+    if (articleId) {
+      const article = articles.find((item) => String(item.id) === articleId);
+      if (article) {
+        deepLinkRef.current = null;
+        setActiveArticleModal(article);
+        return;
+      }
+    }
+
+    const vinylId = params.get('vinilo');
+    if (vinylId) {
+      const edition = editions.find((item) => String(item.id) === vinylId);
+      if (edition) {
+        deepLinkRef.current = null;
+        setSelectedEdition(edition);
+        return;
+      }
+    }
+
+    const releaseId = params.get('lanzamiento');
+    if (releaseId) {
+      const release = featuredReleases.find((item) => String(item.id) === releaseId);
+      if (release) {
+        deepLinkRef.current = null;
+        setActiveReleaseModal(release);
+        return;
+      }
+    }
+
+    const labelId = params.get('sello');
+    if (labelId && labels.some((label) => String(label.id) === labelId)) {
+      deepLinkRef.current = null;
+      setSelectedLabel(labelId);
+    }
+  }, [newsLoading, releasesLoading, articles, editions, featuredReleases, labels]);
+
   // Filtrado de artículos
   const filteredArticles = useMemo(() => {
-    return NEWS_ARTICLES.filter((article) => {
+    return articles.filter((article) => {
       const matchesCategory =
         selectedCategory === 'Todas' || article.category === selectedCategory;
-      const query = searchQuery.toLowerCase().trim();
-      const matchesQuery =
-        !query ||
-        article.title.toLowerCase().includes(query) ||
-        article.summary.toLowerCase().includes(query) ||
-        article.author.toLowerCase().includes(query) ||
-        article.category.toLowerCase().includes(query);
+      const matchesQuery = matchesNewsSearch(searchQuery, article.title, article.summary, article.content, article.author, article.category, article.labelName, article.artist, article.album);
 
-      return matchesCategory && matchesQuery;
+      return matchesCategory && matchesQuery && (!selectedLabel || String(article.labelId) === selectedLabel);
     });
-  }, [selectedCategory, searchQuery]);
+  }, [articles, selectedCategory, searchQuery, selectedLabel]);
 
-  const featuredArticle = NEWS_ARTICLES.find((a) => a.featured) || NEWS_ARTICLES[0];
-  const sideArticles = NEWS_ARTICLES.filter((a) => a.id !== featuredArticle.id).slice(0, 2);
+  const visibleLabels = labels.filter(label => matchesNewsSearch(searchQuery, label.name, label.country, label.description));
+  const visibleEditions = editions.filter(edition => (!selectedLabel || String(edition.labelId) === selectedLabel) && matchesNewsSearch(searchQuery, edition.title, edition.artist, edition.format, edition.color, edition.description, edition.catalogNumber, labels.find(label => String(label.id) === String(edition.labelId))?.name));
+  const visibleReleases = featuredReleases.filter(release => (!selectedLabel || String(release.labelId) === selectedLabel) && matchesNewsSearch(searchQuery, release.title, release.artist, release.genre, release.description, labels.find(label => String(label.id) === String(release.labelId))?.name));
+  const resultCount = filteredArticles.length + visibleLabels.length + visibleEditions.length + visibleReleases.length;
+  const featuredArticle = articles.find((a) => a.featured) || articles[0];
+  const sideArticles = articles.filter((a) => a.id !== featuredArticle?.id).slice(0, 2);
 
   const handleNewsletterSubmit = async (e) => {
     e.preventDefault();
@@ -399,22 +229,43 @@ export const NewsPage = () => {
           </div>
 
           {/* Buscador de Noticias */}
-          <div className="w-full lg:w-80 relative">
-            <span className="material-symbols-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400 text-[20px]">
-              search
-            </span>
-            <input
-              type="text"
-              placeholder="Buscar noticias, artistas, sellos..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-10 pr-4 py-2.5 rounded-2xl text-xs sm:text-sm font-medium bg-white dark:bg-[#4B2840]/60 border border-[#e6d5e2] dark:border-white/10 text-[#231123] dark:text-white placeholder-[#876a84] dark:placeholder-gray-400 focus:outline-none focus:border-[#B80C09] shadow-xs transition-all"
-            />
+          <div className="w-full lg:w-96">
+            <div className="relative">
+              <span className="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-[#a186a0] dark:text-[#B89CB0] text-[20px] pointer-events-none">
+                search
+              </span>
+              <input
+                type="search"
+                placeholder="Buscar noticias, artistas, sellos o vinilos…"
+                aria-label="Buscar en Noticias"
+                value={searchQuery}
+                onChange={(e) => { setSearchQuery(e.target.value); setSelectedLabel(''); setSelectedCategory('Todas'); }}
+                className="w-full pl-11 pr-11 py-3 rounded-2xl text-sm font-semibold bg-white dark:bg-[#4B2840]/60 border border-[#e6d5e2] dark:border-white/10 text-[#231123] dark:text-white placeholder-[#a186a0] dark:placeholder-gray-400 focus:outline-none focus:border-[#B80C09] focus:shadow-[0_0_0_4px_rgba(184,12,9,0.12)] shadow-xs transition-all"
+              />
+              {searchQuery && (
+                <button
+                  type="button"
+                  onClick={() => { setSearchQuery(''); setSelectedLabel(''); setSelectedCategory('Todas'); }}
+                  aria-label="Limpiar búsqueda de noticias"
+                  className="absolute right-2.5 top-1/2 -translate-y-1/2 w-7 h-7 rounded-full grid place-items-center text-[#a186a0] dark:text-[#B89CB0] hover:text-[#B80C09] hover:bg-[#f8e9f6] dark:hover:bg-white/10 transition-colors cursor-pointer"
+                >
+                  <span className="material-symbols-outlined text-[16px]">close</span>
+                </button>
+              )}
+            </div>
+            <p className="mt-2 text-[11px] font-semibold text-[#5c435a] dark:text-[#B89CB0]">
+              {searchQuery.trim()
+                ? `${resultCount} ${resultCount === 1 ? 'coincidencia' : 'coincidencias'} para “${searchQuery.trim()}”`
+                : 'Busca dentro del contenido de las noticias, sellos y ediciones de vinilo.'}
+            </p>
           </div>
         </header>
+        {user?.role === 'admin' && <a href="#admin-catalog-announcements" className="primary-button">Administrar noticias en Anuncios</a>}
+        {newsLoading && <p role="status">Cargando noticias…</p>}
+        {newsError && <div role="alert"><p>No se pudieron cargar las noticias: {newsError}</p><button onClick={() => { setNewsLoading(true); setNewsRefresh(value => value + 1) }}>Reintentar</button></div>}
 
         {/* SECCIÓN EDITORIAL DE PORTADA (REVISTA / EDITORIAL HERO) */}
-        {!searchQuery && selectedCategory === 'Todas' && (
+        {featuredArticle && !searchQuery && selectedCategory === 'Todas' && (
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 sm:gap-8">
             {/* Historia Principal de Portada (8 Columnas) */}
             <motion.article
@@ -563,7 +414,7 @@ export const NewsPage = () => {
         {/* ═══════════════════════════════════════════════
             SECCIÓN: LANZAMIENTOS DESTACADOS (desde Admin)
             ═══════════════════════════════════════════════ */}
-        {(releasesLoading || featuredReleases.length > 0) && (
+        {(releasesLoading || visibleReleases.length > 0) && (
           <section className="space-y-5">
             {/* Cabecera de sección */}
             <div className="flex items-center justify-between pb-3 border-b border-[#e6d5e2] dark:border-white/10">
@@ -576,9 +427,9 @@ export const NewsPage = () => {
                   <p className="text-[11px] text-[#5c435a] dark:text-[#B89CB0] font-medium">Selección editorial · Actualizado por el equipo Sonar</p>
                 </div>
               </div>
-              {!releasesLoading && featuredReleases.length > 0 && (
+              {!releasesLoading && visibleReleases.length > 0 && (
                 <span className="px-2.5 py-1 rounded-full bg-[#B80C09]/10 text-[#B80C09] dark:text-rose-300 text-[10px] font-black">
-                  {featuredReleases.length} {featuredReleases.length === 1 ? 'lanzamiento' : 'lanzamientos'}
+                  {visibleReleases.length} {visibleReleases.length === 1 ? 'lanzamiento' : 'lanzamientos'}
                 </span>
               )}
             </div>
@@ -592,7 +443,7 @@ export const NewsPage = () => {
               </div>
             ) : (
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-                {featuredReleases.map((release) => {
+                {visibleReleases.map((release) => {
                   const releaseDate = release.releaseDate
                     ? new Date(release.releaseDate).toLocaleDateString('es-MX', { year: 'numeric', month: 'long', day: 'numeric' })
                     : null;
@@ -700,6 +551,18 @@ export const NewsPage = () => {
           </section>
         )}
 
+        {searchQuery.trim() && !newsLoading && !releasesLoading && <div className="news-search-summary" role="status"><span>{resultCount} resultados para <strong>«{searchQuery.trim()}»</strong></span><button onClick={() => { setSearchQuery(''); setSelectedLabel(''); setSelectedCategory('Todas'); }}>Limpiar búsqueda</button></div>}
+        <NewsVinyl editions={visibleEditions} labels={labels} articles={articles} selected={selectedEdition} onSelect={setSelectedEdition} onArticle={setActiveArticleModal} />
+        <NewsLabels
+          labels={visibleLabels}
+          articles={articles}
+          editions={editions}
+          releases={featuredReleases}
+          selected={selectedLabel}
+          onSelect={(labelId) => { setSelectedLabel(labelId); setSelectedCategory('Todas'); setSearchQuery('') }}
+          onClear={() => setSelectedLabel('')}
+        />
+
         {/* Pestañas de Filtro por Categoría */}
         <div className="flex items-center gap-2 overflow-x-auto pb-2 scrollbar-none">
           {CATEGORIES.map((cat) => (
@@ -783,7 +646,7 @@ export const NewsPage = () => {
                 {/* Pie de Tarjeta */}
                 <div className="p-5 sm:p-6 pt-0 flex items-center justify-between border-t border-gray-100 dark:border-white/5 mt-2">
                   <span className="text-[11px] font-bold text-[#231123] dark:text-gray-300">
-                    Por {article.author}
+                    {article.labelName && <span className="block font-bold">Sello: {article.labelName}</span>}{article.artist && <span className="block">Artistas: {article.artist}</span>}Por {article.author}{user?.role === 'admin' && <a href={`#admin-catalog-announcements?edit=${encodeURIComponent(article.id)}`} onClick={event => event.stopPropagation()} className="block underline mt-2">Editar noticia</a>}
                   </span>
 
                   <div className="flex items-center gap-2">
@@ -841,13 +704,49 @@ export const NewsPage = () => {
           })}
         </div>
 
-        {filteredArticles.length === 0 && (
-          <div className="py-16 text-center space-y-3 bg-white dark:bg-[#4B2840]/30 rounded-3xl border border-[#e6d5e2] dark:border-white/10 p-8">
-            <span className="material-symbols-outlined text-4xl text-[#B80C09]">newspaper</span>
-            <h3 className="text-lg font-bold">No se encontraron noticias con estos términos</h3>
-            <p className="text-xs text-gray-500 dark:text-gray-400">
-              Prueba buscando por otro término como &ldquo;vinilo&rdquo;, &ldquo;Radiohead&rdquo;, &ldquo;festivales&rdquo; o selecciona &ldquo;Todas&rdquo;.
-            </p>
+        {!newsLoading && !releasesLoading && !newsError && resultCount === 0 && (
+          <div className="relative overflow-hidden py-16 px-6 text-center rounded-[32px] bg-[var(--bg-page)] border border-[var(--border-subtle)]">
+            <div className="absolute -top-24 right-0 w-80 h-80 rounded-full bg-[var(--color-accent)]/10 blur-3xl pointer-events-none" />
+            <div className="relative flex flex-col items-center gap-4">
+              <span className="w-20 h-20 rounded-3xl bg-[var(--bg-card)] border border-[var(--border-subtle)] grid place-items-center shadow-lg">
+                <span className="material-symbols-outlined text-4xl text-[var(--color-accent)]">
+                  {searchQuery.trim() ? 'search_off' : 'newspaper'}
+                </span>
+              </span>
+              <div className="space-y-2 max-w-xl">
+                <h3 className="text-xl sm:text-2xl font-black tracking-tight text-[var(--text-main)]">
+                  {searchQuery.trim()
+                    ? <>No existe contenido para &ldquo;{searchQuery.trim()}&rdquo;</>
+                    : 'Todavía no hay noticias publicadas'}
+                </h3>
+                <p className="text-sm text-[var(--text-secondary)] leading-relaxed">
+                  {searchQuery.trim()
+                    ? 'Prueba con otros términos como «vinilo», «Radiohead», «festivales» o «Daft Punk», o selecciona la categoría «Todas».'
+                    : 'Cuando el equipo editorial publique anuncios, lanzamientos y reediciones aparecerán en este radar.'}
+                </p>
+              </div>
+              <div className="flex flex-wrap items-center justify-center gap-2 pt-1">
+                {['vinilo', 'festivales', 'Radiohead', 'Daft Punk'].map(suggestion => (
+                  <button
+                    key={suggestion}
+                    type="button"
+                    onClick={() => { setSearchQuery(suggestion); setSelectedLabel(''); setSelectedCategory('Todas'); }}
+                    className="px-3.5 py-2 rounded-full bg-[var(--bg-card)] border border-[var(--border-subtle)] text-xs font-bold text-[var(--text-secondary)] hover:border-[var(--color-accent)] hover:text-[var(--color-accent)] transition-colors cursor-pointer"
+                  >
+                    {suggestion}
+                  </button>
+                ))}
+                {searchQuery.trim() && (
+                  <button
+                    type="button"
+                    onClick={() => { setSearchQuery(''); setSelectedLabel(''); setSelectedCategory('Todas'); }}
+                    className="px-4 py-2 rounded-full bg-[var(--color-accent)] hover:bg-[var(--color-accent-hover)] text-white text-xs font-black transition-colors cursor-pointer"
+                  >
+                    Ver todas las noticias
+                  </button>
+                )}
+              </div>
+            </div>
           </div>
         )}
 
@@ -1021,6 +920,12 @@ export const NewsPage = () => {
 
               {/* Contenido del Artículo */}
               <div className="flex-1 overflow-y-auto p-6 sm:p-8 space-y-6 text-sm leading-relaxed text-[#231123]/90 dark:text-gray-200">
+                {editions.some(edition => String(edition.id) === String(activeArticleModal.vinylId)) && <button className="vinyl-news-link" onClick={() => { setSelectedEdition(editions.find(edition => String(edition.id) === String(activeArticleModal.vinylId))); setActiveArticleModal(null) }}>Ver edición de vinilo →</button>}
+                {activeArticleModal.labelName && <p><strong>Sello discográfico:</strong> {activeArticleModal.labelName}</p>}
+                {activeArticleModal.artist && <p><strong>Artistas:</strong> {activeArticleModal.artist}</p>}
+                {activeArticleModal.album && <p><strong>Álbum:</strong> {activeArticleModal.album}</p>}
+                {activeArticleModal.eventDate && <p><strong>Fecha del lanzamiento o fichaje:</strong> {activeArticleModal.eventDate}</p>}
+                {activeArticleModal.sourceUrl && <a href={activeArticleModal.sourceUrl} target="_blank" rel="noopener noreferrer" className="underline">Consultar anuncio oficial ↗</a>}
                 {/* Metadatos */}
                 <div className="flex flex-wrap items-center justify-between gap-3 pb-4 border-b border-gray-200 dark:border-white/10 text-xs text-[#5c435a] dark:text-[#B89CB0]">
                   <div className="flex items-center gap-2">

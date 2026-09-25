@@ -49,10 +49,10 @@ export function ConductIndicator({ user, reviews = [], onUserUpdate }) {
     <details><summary>Historial de reportes ({reports.length})</summary>
       {reports.length ? <ul>{reports.map(report => <li key={report.id}><div><strong>{report.reason}</strong><small>{report.createdAt ? new Date(report.createdAt).toLocaleDateString('es') : ''} · {({ dismissed: 'Descartado', resolved: 'Resuelto', reviewed: 'Revisado' }[report.status] || 'Pendiente de revisión')}</small></div>{report.status !== 'dismissed' && <button type="button" disabled={busy} onClick={() => save(reports.map(item => item.id === report.id ? { ...item, status: 'dismissed' } : item), 'Reporte descartado.')}>Descartar</button>}</li>)}</ul> : <p>No hay reportes registrados.</p>}
     </details>
-    <form onSubmit={addReport}><label>Contenido reportado<select value={contentId} onChange={event => setContentId(event.target.value)}><option value="">Perfil del usuario</option>{reviews.map(review => <option key={review.id} value={review.id}>Reseña #{review.id}</option>)}</select></label>
+    <form onSubmit={addReport}><h3>Registrar un nuevo reporte</h3><p className="action-help">Describe una conducta para que quede registrada. Para aplicar una restricción, utiliza «Sanciones y decisiones».</p><label>Contenido reportado<select disabled={busy} value={contentId} onChange={event => setContentId(event.target.value)}><option value="">Perfil del usuario</option>{reviews.map(review => <option key={review.id} value={review.id}>Reseña #{review.id} · {(review.content || '').slice(0, 55)}</option>)}</select></label>
       <label htmlFor={`conduct-reason-${user.id}`}>Registrar reporte de mala conducta</label>
       <textarea id={`conduct-reason-${user.id}`} value={reason} onChange={event => setReason(event.target.value)} required maxLength={1000} rows={2} placeholder="Describe el motivo del reporte…" disabled={busy} />
-      <button type="submit" disabled={busy || !reason.trim()}>{busy ? 'Guardando…' : 'Registrar reporte'}</button>
+      {!reason.trim() && <p className="action-help">Escribe el motivo para habilitar el registro.</p>}<button className="admin-action-primary" type="submit" disabled={busy || !reason.trim()}>{busy ? 'Guardando…' : 'Registrar reporte'}</button>
     </form>
     {message && <p role="status">{message}</p>}
   </section>

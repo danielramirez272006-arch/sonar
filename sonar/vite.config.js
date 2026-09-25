@@ -9,6 +9,9 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url))
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [react(), tailwindcss()],
+  preview: {
+    proxy: { '/api/catalog': { target: 'http://localhost:3001', changeOrigin: true, rewrite: path => path.replace(/^\/api\/catalog/, '') } },
+  },
   resolve: {
     alias: {
       '@': path.resolve(__dirname, './src'),
@@ -21,6 +24,11 @@ export default defineConfig({
       ignored: ['**/db.json', '**/db-*.json'],
     },
     proxy: {
+      '/api/catalog': {
+        target: 'http://localhost:3001',
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/api\/catalog/, ''),
+      },
       '/api/deezer': {
         target: 'https://api.deezer.com',
         changeOrigin: true,
