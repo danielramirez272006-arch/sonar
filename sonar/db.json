@@ -98,7 +98,12 @@
           "status": "active"
         }
       ],
-      "accountType": "standard"
+      "accountType": "standard",
+      "parentalControl": {
+        "enabled": false,
+        "blockExplicit": false,
+        "pin": "1234"
+      }
     },
     {
       "id": "admin-1",
