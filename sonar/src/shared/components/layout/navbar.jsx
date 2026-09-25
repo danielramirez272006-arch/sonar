@@ -33,6 +33,40 @@ export const Navbar = ({
   const { user: authUser, isAuthenticated, logout, isJunior, isParentalControlActive } = useAuth();
   const { toggleTrack, currentTrack, isPlaying } = usePlayer();
 
+  const [userPoints, setUserPoints] = useState(() => {
+    try {
+      return Number(localStorage.getItem('sonar_user_points') || authUser?.sonarPoints || 1250);
+    } catch {
+      return 1250;
+    }
+  });
+
+  const [equippedFrame, setEquippedFrame] = useState(() => {
+    try {
+      return localStorage.getItem('sonar_equipped_frame') || authUser?.equippedFrame || '';
+    } catch {
+      return '';
+    }
+  });
+
+  useEffect(() => {
+    const handleCustomizationChange = (e) => {
+      if (e.detail?.equippedFrame !== undefined) setEquippedFrame(e.detail.equippedFrame);
+    };
+    const handlePointsAwarded = () => {
+      try {
+        const p = Number(localStorage.getItem('sonar_user_points') || 1250);
+        setUserPoints(p);
+      } catch {}
+    };
+    window.addEventListener('sonar:profile-customization-changed', handleCustomizationChange);
+    window.addEventListener('sonar:points-awarded', handlePointsAwarded);
+    return () => {
+      window.removeEventListener('sonar:profile-customization-changed', handleCustomizationChange);
+      window.removeEventListener('sonar:points-awarded', handlePointsAwarded);
+    };
+  }, []);
+
   useEffect(() => {
     const onHashChange = () => {
       const hash = window.location.hash.replace(/^#/, '');
@@ -360,6 +394,22 @@ export const Navbar = ({
                 </motion.button>
               )}
 
+              {/* Badge Sonar Coins / Boutique */}
+              <motion.button
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                onClick={() => {
+                  window.location.hash = '#usuario';
+                  sessionStorage.setItem('sonar_active_profile_tab', 'recompensas');
+                  window.dispatchEvent(new CustomEvent('sonar:navigate-tab', { detail: 'recompensas' }));
+                }}
+                title="Tus Sonar Coins acumuladas. Clic para canjear en la Boutique."
+                className="hidden md:flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-amber-500/15 dark:bg-amber-500/25 text-amber-800 dark:text-amber-300 border border-amber-500/30 text-[11px] font-mono font-black tracking-wide cursor-pointer shadow-xs hover:bg-amber-500/30 transition-all"
+              >
+                <span className="material-symbols-outlined text-[14px] text-amber-500">toll</span>
+                <span>{userPoints.toLocaleString()}</span>
+              </motion.button>
+
               <motion.div
                 whileHover={{ scale: 1.03 }}
                 whileTap={{ scale: 0.97 }}
@@ -375,6 +425,7 @@ export const Navbar = ({
                   avatarSeed={authUser?.avatarSeed}
                   avatarStyle={authUser?.avatarStyle}
                   avatarIcon={authUser?.avatarIcon}
+                  frame={equippedFrame}
                   size="sm"
                 />
                 <span className="text-xs sm:text-sm font-bold text-[#231123] dark:text-[#FAF5F8] hidden sm:inline-block max-w-[120px] truncate">

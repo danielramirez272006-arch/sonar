@@ -104,9 +104,26 @@
         "blockExplicit": false,
         "pin": "1234"
       },
-      "sonarPoints": 700,
+      "sonarPoints": 800,
       "equippedSkin": "",
-      "audiophileXp": 3850
+      "audiophileXp": 4050,
+      "avatarStyle": "image",
+      "avatarSeed": "Mateo Rivae",
+      "avatarIcon": "headphones",
+      "avatarHue": 18,
+      "avatarTone": "vivid",
+      "bannerUrl": "",
+      "bannerGradient": "linear-gradient(135deg, rgba(184, 12, 9, 0.7) 0%, rgba(75, 40, 64, 0.95) 100%)",
+      "gear": {
+        "headphones": "Sennheiser HD 600",
+        "turntable": "Technics SL-1200 / Direct Drive",
+        "dacAmp": "DAC Hi-Fi 24-bit/192kHz",
+        "favoriteFormat": "Vinilo 33⅓ RPM"
+      },
+      "badges": [
+        "Melómano Verificado",
+        "Audiófilo Vinilo"
+      ]
     },
     {
       "id": "admin-1",
@@ -7696,6 +7713,115 @@
         "Audiófilo Inicial"
       ],
       "createdAt": "2026-09-25T15:26:34.229Z"
+    },
+    {
+      "id": "user-1790350434638",
+      "username": "melomano_junior",
+      "email": "junior_1790350434330@sonar.test",
+      "password": "sha256$8dfe01dbf5580b261c9c9fee76989979$6d529119e16c39f65a25de8414e99cf09aa3d010df5d24b196229754033f9bac",
+      "role": "user",
+      "accountType": "junior",
+      "parentalControl": {
+        "enabled": true,
+        "blockExplicit": true,
+        "pin": "5555"
+      },
+      "avatarUrl": "",
+      "avatarBg": "#7c3aed",
+      "bio": "Melómano Junior explorando música segura y educativa en Sonar.",
+      "stats": {
+        "savedAlbums": 0,
+        "reviewsCount": 0,
+        "followers": 0,
+        "following": 0
+      },
+      "preferences": [
+        "Dream Pop",
+        "IDM / Techno"
+      ],
+      "gear": {
+        "headphones": "Auriculares de referencia",
+        "turntable": "Tocadiscos Direct Drive",
+        "favoriteFormat": "Vinilo 33⅓ RPM"
+      },
+      "badges": [
+        "Melómano Junior",
+        "Audio Seguro"
+      ],
+      "createdAt": "2026-09-25T15:33:54.638Z"
+    },
+    {
+      "id": "user-1790350436864",
+      "username": "Daniel Ramirez",
+      "email": "daniel_1790350436733@sonar.local",
+      "password": "sha256$700bea61135352e9f8bf644d9ec7fd6b$54728ef0b55cc68f30ed8b32d857fc3e8ee36cf150de1c3657d6b4551f99ee07",
+      "role": "user",
+      "accountType": "standard",
+      "parentalControl": {
+        "enabled": false,
+        "blockExplicit": false,
+        "pin": "1234"
+      },
+      "avatarUrl": "",
+      "avatarBg": "#B80C09",
+      "bio": "Nuevo melómano explorando vinilos y texturas acústicas en Sonar.",
+      "stats": {
+        "savedAlbums": 0,
+        "reviewsCount": 0,
+        "followers": 0,
+        "following": 0
+      },
+      "preferences": [
+        "Folk Acústico",
+        "Art Rock"
+      ],
+      "gear": {
+        "headphones": "Auriculares de referencia",
+        "turntable": "Tocadiscos Direct Drive",
+        "favoriteFormat": "Vinilo 33⅓ RPM"
+      },
+      "badges": [
+        "Melómano Verificado",
+        "Audiófilo Inicial"
+      ],
+      "createdAt": "2026-09-25T15:33:56.864Z"
+    },
+    {
+      "id": "user-1790350436953",
+      "username": "Elena Jazz",
+      "email": "audiophile_1790350436908@sonar.local",
+      "password": "sha256$59f19134b4225facfe95c01047df4a73$fa99d95eaf0da917a7406154c64f7c56acc8841342a4b5f181c7b4278a726857",
+      "role": "user",
+      "accountType": "standard",
+      "parentalControl": {
+        "enabled": false,
+        "blockExplicit": false,
+        "pin": "1234"
+      },
+      "avatarUrl": "",
+      "avatarBg": "#5c1d5e",
+      "bio": "Exploradora de sintetizadores analógicos.",
+      "stats": {
+        "savedAlbums": 0,
+        "reviewsCount": 0,
+        "followers": 0,
+        "following": 0
+      },
+      "preferences": [
+        "Synthwave",
+        "Ambient & Drone",
+        "IDM / Techno"
+      ],
+      "gear": {
+        "headphones": "Auriculares de referencia",
+        "turntable": "Tocadiscos Direct Drive",
+        "favoriteFormat": "Vinilo 33⅓ RPM"
+      },
+      "badges": [
+        "Melómano Verificado",
+        "Audiófilo Inicial"
+      ],
+      "createdAt": "2026-09-25T15:33:56.953Z"
     }
   ],
   "reviews": [
