@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { ArrowRight, Eye, EyeOff, Headphones, Music2 } from 'lucide-react';
 import { useAuth } from '../../../shared/context/auth-context';
+import { useTranslation } from 'react-i18next';
 import { useLanguage } from '../../../shared/context/language-context';
 import { GoogleIcon } from './social-provider-icon';
 import { RotatingReview } from './rotating-review';
@@ -20,7 +21,7 @@ const EditorialPanel = () => (
 
 export const LoginForm = () => {
   const { login, loginWithGoogle, isLoading, error: authError } = useAuth();
-  const { t } = useLanguage();
+  const { t } = useTranslation();
   const [formData, setFormData] = useState({ email: '', password: '' });
   const [showPassword, setShowPassword] = useState(false);
   const [message, setMessage] = useState('');

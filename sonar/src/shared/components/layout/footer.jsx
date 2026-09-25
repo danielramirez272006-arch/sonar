@@ -2,12 +2,13 @@ import React, { useState } from 'react';
 import { AnimatedLogo } from '../ui/AnimatedLogo';
 import EngineStatusModal from '../ui/engine-status-modal';
 import { useAuth } from '../../context/auth-context';
+import { useTranslation } from 'react-i18next';
 import { useLanguage } from '../../context/language-context';
 import { LanguageSelector } from '../ui/language-selector';
 
 export const Footer = () => {
   const { user } = useAuth() || {};
-  const { t } = useLanguage();
+  const { t } = useTranslation();
   const [isEngineOpen, setIsEngineOpen] = useState(false);
 
   return (

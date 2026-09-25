@@ -1,20 +1,15 @@
 import React from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
+import { useTranslation } from 'react-i18next';
 import { useLanguage } from '../../context/language-context';
 import { LanguageSelector } from '../ui/language-selector';
 
-/**
- * MobileMenu Component
- *
- * Menú lateral (Off-canvas / Sidebar) para navegación en dispositivos móviles.
- * Se desliza desde la derecha y cuenta con overlay semitransparente.
- */
 export const MobileMenu = ({
   isOpen = false,
   onClose = () => {},
   links: customLinks = null,
 }) => {
-  const { t } = useLanguage();
+  const { t } = useTranslation();
 
   const defaultLinks = [
     { name: t('nav.explore'), path: '#explore' },
