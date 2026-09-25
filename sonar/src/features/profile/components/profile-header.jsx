@@ -31,6 +31,30 @@ export const ProfileHeader = ({
     socialService.isFollowingUser(currentAuthId, targetId)
   );
 
+  const [equippedFrame, setEquippedFrame] = useState(() => {
+    try {
+      return localStorage.getItem('sonar_equipped_frame') || currentUser?.equippedFrame || '';
+    } catch {
+      return '';
+    }
+  });
+
+  const [equippedTitle, setEquippedTitle] = useState(() => {
+    try {
+      return localStorage.getItem('sonar_equipped_title') || currentUser?.equippedTitle || '';
+    } catch {
+      return '';
+    }
+  });
+
+  const [userPoints, setUserPoints] = useState(() => {
+    try {
+      return Number(localStorage.getItem('sonar_user_points') || currentUser?.sonarPoints || 1250);
+    } catch {
+      return 1250;
+    }
+  });
+
   useEffect(() => {
     setIsFollowing(socialService.isFollowingUser(currentAuthId, targetId));
     const handleFollowChange = (e) => {
@@ -38,9 +62,15 @@ export const ProfileHeader = ({
         setIsFollowing(e.detail.isFollowing);
       }
     };
+    const handleCustomizationChange = (e) => {
+      if (e.detail?.equippedFrame !== undefined) setEquippedFrame(e.detail.equippedFrame);
+      if (e.detail?.equippedTitle !== undefined) setEquippedTitle(e.detail.equippedTitle);
+    };
     window.addEventListener('sonar:follow-user-changed', handleFollowChange);
+    window.addEventListener('sonar:profile-customization-changed', handleCustomizationChange);
     return () => {
       window.removeEventListener('sonar:follow-user-changed', handleFollowChange);
+      window.removeEventListener('sonar:profile-customization-changed', handleCustomizationChange);
     };
   }, [currentAuthId, targetId]);
 
@@ -54,6 +84,9 @@ export const ProfileHeader = ({
   const bio = currentUser.bio || 'Melómano explorando nuevas texturas acústicas en Sonar.';
 
   const handleEditClick = () => {
+    try {
+      sessionStorage.setItem('sonar_profile_settings_tab', 'profile');
+    } catch {}
     if (onEditProfile) {
       onEditProfile();
     } else if (router?.navigate) {
@@ -67,6 +100,13 @@ export const ProfileHeader = ({
   const bannerBackground = currentUser.bannerUrl
     ? `url(${currentUser.bannerUrl}) center/cover no-repeat`
     : currentUser.bannerGradient || defaultBannerGradient;
+
+  const frameClass = {
+    'frame-gold-vinyl': 'ring-4 ring-amber-400 shadow-[0_0_25px_rgba(251,191,36,0.8)]',
+    'frame-neon-cyber': 'ring-4 ring-cyan-400 shadow-[0_0_25px_rgba(6,182,212,0.85)]',
+    'frame-valve-tube': 'ring-4 ring-orange-500 shadow-[0_0_20px_rgba(249,115,22,0.75)]',
+    'frame-hologram': 'ring-4 ring-purple-400 shadow-[0_0_26px_rgba(168,85,247,0.8)]',
+  }[equippedFrame] || 'ring-4 ring-white dark:ring-[#4B2840] shadow-xl';
 
   return (
     <motion.section
@@ -98,8 +138,8 @@ export const ProfileHeader = ({
         <div className="flex flex-col md:flex-row items-center md:items-start justify-between gap-6 sm:gap-8">
           {/* Lado Izquierdo: Avatar y Datos */}
           <div className="flex flex-col sm:flex-row items-center sm:items-start gap-5 sm:gap-6 text-center sm:text-left flex-1">
-            {/* Avatar con borde flotante */}
-            <div className="shrink-0 ring-4 ring-white dark:ring-[#4B2840] rounded-full shadow-xl bg-white dark:bg-[#231123]">
+            {/* Avatar con borde flotante y Marco de Boutique */}
+            <div className={`shrink-0 rounded-full bg-white dark:bg-[#231123] transition-all duration-300 ${frameClass}`}>
               <Avatar
                 src={currentUser.avatarUrl}
                 name={displayName}
@@ -122,6 +162,18 @@ export const ProfileHeader = ({
                 </h1>
                 <span className="px-2.5 py-0.5 rounded-full bg-[#f8e9f6] dark:bg-[#231123] text-[#5c1d5e] dark:text-pink-200 text-xs font-bold border border-[#e6d5e2] dark:border-white/10">
                   {currentUser.role === 'admin' ? 'Administrador' : 'Audiófilo Pro'}
+                </span>
+
+                {equippedTitle && (
+                  <span className="px-2.5 py-0.5 rounded-full bg-gradient-to-r from-amber-500 to-[#B80C09] text-white text-xs font-black shadow-xs flex items-center gap-1">
+                    <span className="material-symbols-outlined text-[13px]">military_tech</span>
+                    <span>{equippedTitle}</span>
+                  </span>
+                )}
+
+                <span className="px-2.5 py-0.5 rounded-full bg-amber-500/15 text-amber-700 dark:text-amber-300 border border-amber-500/30 text-xs font-mono font-bold flex items-center gap-1">
+                  <span className="material-symbols-outlined text-[14px]">toll</span>
+                  <span>{userPoints.toLocaleString()} Monedas</span>
                 </span>
               </div>
               <p className="text-sm font-semibold text-[#5c435a] dark:text-[#B89CB0]">
@@ -149,22 +201,44 @@ export const ProfileHeader = ({
               )}
 
               {/* Equipamiento Audiófilo del Usuario */}
-              {currentUser.gear && (currentUser.gear.headphones || currentUser.gear.turntable) && (
-                <div className="flex flex-wrap items-center justify-center sm:justify-start gap-2 pt-1">
-                  {currentUser.gear.turntable && (
-                    <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-[#B80C09]/10 text-[#B80C09] dark:text-pink-300 text-[11px] font-bold border border-[#B80C09]/20">
-                      <span className="material-symbols-outlined text-[13px]">album</span>
-                      <span>{currentUser.gear.turntable}</span>
-                    </span>
-                  )}
-                  {currentUser.gear.headphones && (
-                    <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-blue-500/10 text-blue-600 dark:text-blue-300 text-[11px] font-bold border border-blue-500/20">
-                      <span className="material-symbols-outlined text-[13px]">headphones</span>
-                      <span>{currentUser.gear.headphones}</span>
-                    </span>
-                  )}
-                </div>
-              )}
+              {(() => {
+                const setup = currentUser.audiophileSetup || currentUser.gear || {};
+                const turntable = setup.turntable;
+                const headphones = setup.headphones;
+                const dac = setup.dac || setup.amplifier;
+                const format = setup.favoriteFormat;
+
+                if (!turntable && !headphones && !dac && !format) return null;
+
+                return (
+                  <div className="flex flex-wrap items-center justify-center sm:justify-start gap-1.5 pt-1.5">
+                    {turntable && (
+                      <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-[#B80C09]/10 text-[#B80C09] dark:text-pink-300 text-[11px] font-bold border border-[#B80C09]/20">
+                        <span className="material-symbols-outlined text-[13px]">album</span>
+                        <span>{turntable}</span>
+                      </span>
+                    )}
+                    {headphones && (
+                      <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-blue-500/10 text-blue-600 dark:text-blue-300 text-[11px] font-bold border border-blue-500/20">
+                        <span className="material-symbols-outlined text-[13px]">headphones</span>
+                        <span>{headphones}</span>
+                      </span>
+                    )}
+                    {dac && (
+                      <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-300 text-[11px] font-bold border border-emerald-500/20">
+                        <span className="material-symbols-outlined text-[13px]">speaker</span>
+                        <span>{dac}</span>
+                      </span>
+                    )}
+                    {format && (
+                      <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-amber-500/10 text-amber-600 dark:text-amber-300 text-[11px] font-bold border border-amber-500/20">
+                        <span className="material-symbols-outlined text-[13px]">graphic_eq</span>
+                        <span>{format}</span>
+                      </span>
+                    )}
+                  </div>
+                );
+              })()}
             </div>
           </div>
 

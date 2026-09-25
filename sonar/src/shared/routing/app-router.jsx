@@ -1,6 +1,7 @@
 import React, { useState, useEffect, createContext, useContext } from 'react';
 import { AnimatePresence } from 'framer-motion';
 import PageTransition from '../components/ui/page-transition';
+import { ErrorBoundary } from '../components/ui/error-boundary';
 
 // Páginas Públicas
 import HomePage from '../../pages/public/home-page';
@@ -175,7 +176,9 @@ export const AppRouter = () => {
     <RouterContext.Provider value={{ currentPath, navigate }}>
       <AnimatePresence mode="wait">
         <PageTransition key={currentPath}>
-          {renderCurrentPage()}
+          <ErrorBoundary key={currentPath}>
+            {renderCurrentPage()}
+          </ErrorBoundary>
         </PageTransition>
       </AnimatePresence>
     </RouterContext.Provider>

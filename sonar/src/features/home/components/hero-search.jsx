@@ -1,8 +1,9 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useTheme } from '../../../shared/context/theme-context';
-import { searchAlbums, searchTracks, searchArtists, getAlbumTracks } from '../../../shared/services/deezer-service';
+import { searchAlbums, searchTracks, searchArtists, getAlbumTracks, isKidsSafeTrack } from '../../../shared/services/deezer-service';
 import { usePlayer } from '../../../shared/context/player-context';
+import { useAuth } from '../../../shared/context/auth-context';
 import { handleImageFallbackError, getFallbackCoverForAlbum } from '../../../shared/services/recommendations-service';
 
 const SEARCH_TABS = [
@@ -59,8 +60,21 @@ const TYPEWRITER_SUGGESTIONS = [
   "Prueba 'To Pimp A Butterfly' de Kendrick..."
 ];
 
+const KIDS_TYPEWRITER_SUGGESTIONS = [
+  "Prueba 'Mozart'...",
+  "Prueba 'The Beatles'...",
+  "Prueba 'Discovery' de Daft Punk...",
+  "Prueba 'Lo-Fi para estudiar'...",
+  "Prueba 'Bandas Sonoras para niños'...",
+  "Prueba 'Canciones de Cuna'..."
+];
+
 const TRENDING_SEARCHES = [
-  'Radiohead', 'Kendrick Lamar', 'Tame Impala', 'Daft Punk', 'Rosalía', 'Frank Ocean', 'Pink Floyd'
+  'Radiohead', 'Tame Impala', 'Miles Davis', 'Daft Punk', 'Pink Floyd', 'Rosalía', 'Kendrick Lamar', 'Björk'
+];
+
+const KIDS_TRENDING_SEARCHES = [
+  'Mozart', 'The Beatles', 'Daft Punk', 'Lo-Fi Estudio', 'Bandas Sonoras', 'Clásicos Kids'
 ];
 
 export const HeroSearch = ({ onSearch = () => {}, onSubmit = () => {} }) => {
@@ -91,11 +105,16 @@ export const HeroSearch = ({ onSearch = () => {}, onSubmit = () => {} }) => {
 
   const { isDarkMode } = useTheme();
   const { toggleTrack, currentTrack, isPlaying } = usePlayer();
+  const { isJunior, isParentalControlActive } = useAuth() || {};
+  const isKidsActive = Boolean(isJunior || isParentalControlActive);
+
+  const currentSuggestionsPool = isKidsActive ? KIDS_TYPEWRITER_SUGGESTIONS : TYPEWRITER_SUGGESTIONS;
+  const currentTrendingPool = isKidsActive ? KIDS_TRENDING_SEARCHES : TRENDING_SEARCHES;
 
   // Typewriter Effect
   useEffect(() => {
     if (searchValue) return;
-    const currentSuggestion = TYPEWRITER_SUGGESTIONS[suggestionIdx];
+    const currentSuggestion = currentSuggestionsPool[suggestionIdx % currentSuggestionsPool.length];
     let timeout;
 
     if (!isDeleting && charIdx < currentSuggestion.length) {
@@ -112,11 +131,11 @@ export const HeroSearch = ({ onSearch = () => {}, onSubmit = () => {} }) => {
       }, 35);
     } else if (isDeleting && charIdx === 0) {
       setIsDeleting(false);
-      setSuggestionIdx((prev) => (prev + 1) % TYPEWRITER_SUGGESTIONS.length);
+      setSuggestionIdx((prev) => (prev + 1) % currentSuggestionsPool.length);
     }
 
     return () => clearTimeout(timeout);
-  }, [charIdx, isDeleting, suggestionIdx, searchValue]);
+  }, [charIdx, isDeleting, suggestionIdx, searchValue, currentSuggestionsPool]);
 
   // Cargar búsquedas recientes
   useEffect(() => {
@@ -264,6 +283,9 @@ export const HeroSearch = ({ onSearch = () => {}, onSubmit = () => {} }) => {
           results = await searchTracks(val.trim());
         } else {
           results = await searchAlbums(val.trim());
+        }
+        if (isKidsActive) {
+          results = results.filter((item) => isKidsSafeTrack(item));
         }
         setLiveResults(results.slice(0, 6));
       } catch (err) {
@@ -588,12 +610,19 @@ export const HeroSearch = ({ onSearch = () => {}, onSubmit = () => {} }) => {
 
                     {/* Tendencias */}
                     <div className="flex flex-col gap-2 border-t border-gray-100 dark:border-white/5 pt-3">
-                      <div className="text-[11px] font-extrabold text-[#5c435a] dark:text-gray-400 flex items-center gap-1.5">
-                        <span className="material-symbols-outlined text-[15px] text-[#B80C09]">trending_up</span>
-                        <span>TENDENCIAS GLOBALES</span>
+                      <div className="text-[11px] font-extrabold text-[#5c435a] dark:text-gray-400 flex items-center justify-between">
+                        <span className="flex items-center gap-1.5">
+                          <span className="material-symbols-outlined text-[15px] text-[#B80C09]">trending_up</span>
+                          <span>{isKidsActive ? 'TENDENCIAS FAMILIARES (MODO KIDS)' : 'TENDENCIAS GLOBALES'}</span>
+                        </span>
+                        {isKidsActive && (
+                          <span className="text-[9px] font-extrabold text-amber-600 dark:text-amber-300 bg-amber-500/10 px-2 py-0.5 rounded-full border border-amber-500/30">
+                            🛡️ Seguro
+                          </span>
+                        )}
                       </div>
                       <div className="flex flex-wrap gap-1.5">
-                        {TRENDING_SEARCHES.map((term, i) => (
+                        {currentTrendingPool.map((term, i) => (
                           <button
                             key={i}
                             type="button"

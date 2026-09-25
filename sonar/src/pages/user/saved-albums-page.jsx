@@ -10,7 +10,7 @@ import { handleImageFallbackError, getFallbackCoverForAlbum } from '../../shared
 export const SavedAlbumsPage = () => {
   const { user } = useAuth();
   const { playTrack, openReviewModal, currentTrack, isPlaying } = usePlayer();
-  const userId = user?.id || '1';
+  const userId = user?.id || null;
 
   const [savedAlbums, setSavedAlbums] = useState([]);
   const [activeTag, setActiveTag] = useState('Todos');

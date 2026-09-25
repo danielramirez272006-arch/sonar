@@ -1,10 +1,11 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { ArrowRight, Check, Eye, EyeOff, Headphones, Music2, Sparkles, User, Disc3, ShieldCheck, Mail, KeyRound, ArrowLeft, RefreshCw } from 'lucide-react';
 import { useAuth } from '../../../shared/context/auth-context';
 import { GoogleIcon, SpotifyIcon } from './social-provider-icon';
 import { RotatingReview } from './rotating-review';
 import { GENRE_OPTIONS } from '../../../shared/services/recommendations-service';
 import { requestRegisterOtpWebhook } from '../../../shared/services/n8n-webhooks';
+import { getUserByEmail } from '../../../shared/services/api-client';
 
 const AVATAR_PALETTES = [
   { color: '#B80C09', label: 'Carmesí Vinilo' },
@@ -76,6 +77,17 @@ export const RegisterForm = () => {
   const [sentOtpCode, setSentOtpCode] = useState('');
   const [isSendingOtp, setIsSendingOtp] = useState(false);
   const [otpNotice, setOtpNotice] = useState('');
+  const [resendTimer, setResendTimer] = useState(0);
+
+  useEffect(() => {
+    let timer = null;
+    if (step === 'otp' && resendTimer > 0) {
+      timer = setInterval(() => setResendTimer((prev) => prev - 1), 1000);
+    }
+    return () => {
+      if (timer) clearInterval(timer);
+    };
+  }, [step, resendTimer]);
 
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
@@ -86,7 +98,7 @@ export const RegisterForm = () => {
   const setValue = (field) => (event) => {
     let val = event.target.value;
     if (field === 'username') {
-      val = val.replace(/\s+/g, '_').toLowerCase();
+      val = val.replace(/\s+/g, '_');
     }
     setFormData({ ...formData, [field]: val });
     if (errorMessage) setErrorMessage('');
@@ -140,11 +152,26 @@ export const RegisterForm = () => {
 
     setIsSendingOtp(true);
     try {
+      // Validación preventiva: Comprobar si el correo ya existe antes de enviar OTP
+      let existingUser = null;
+      try {
+        existingUser = await getUserByEmail(formData.email.trim().toLowerCase());
+      } catch {
+        // Fallback
+      }
+
+      if (existingUser) {
+        setErrorMessage('Este correo ya está registrado en SONAR. Por favor inicia sesión o recupera tu contraseña.');
+        setIsSendingOtp(false);
+        return;
+      }
+
       const otpCode = Math.floor(100000 + Math.random() * 900000).toString();
       const res = await requestRegisterOtpWebhook(formData.email, formData.username, otpCode);
       const codeToVerify = res.code || otpCode;
       setSentOtpCode(codeToVerify);
       setOtpNotice(`Código enviado a ${formData.email}. Revisa tu bandeja de entrada.`);
+      setResendTimer(15);
       setStep('otp');
     } catch (err) {
       setErrorMessage(err.message || 'No se pudo enviar el código de verificación a tu correo.');
@@ -153,22 +180,27 @@ export const RegisterForm = () => {
     }
   };
 
-  // Paso 2 ➔ Verificar Código OTP (Soporta validación automática al completar 6 dígitos)
-  const handleVerifyOtp = (event, optionalCode) => {
+  // Paso 2 ➔ Verificar Código OTP al presionar el botón
+  const handleVerifyOtp = (event) => {
     event?.preventDefault();
     setErrorMessage('');
 
-    const cleanInput = (optionalCode || enteredOtp).trim();
+    const cleanInput = enteredOtp.trim();
     if (!cleanInput) {
       setErrorMessage('Por favor ingresa el código de 6 dígitos que llegó a tu correo.');
       return;
     }
 
-    if (cleanInput === sentOtpCode || cleanInput.length === 6) {
+    if (cleanInput.length !== 6) {
+      setErrorMessage('El código debe tener exactamente 6 dígitos.');
+      return;
+    }
+
+    if (!sentOtpCode || cleanInput === sentOtpCode) {
       setStep('password');
       setErrorMessage('');
     } else {
-      setErrorMessage('El código ingresado es incorrecto. Por favor revisa tu correo e inténtalo de nuevo.');
+      setErrorMessage('El código de 6 dígitos ingresado es incorrecto. Por favor revisa tu correo e inténtalo de nuevo.');
     }
   };
 
@@ -176,10 +208,6 @@ export const RegisterForm = () => {
     const val = event.target.value.replace(/\D/g, '').slice(0, 6);
     setEnteredOtp(val);
     if (errorMessage) setErrorMessage('');
-    // Verificación automática instantánea al escribir los 6 dígitos
-    if (val.length === 6) {
-      handleVerifyOtp(null, val);
-    }
   };
 
   // Paso 3 ➔ Crear cuenta con la contraseña personalizada elegida
@@ -433,7 +461,7 @@ export const RegisterForm = () => {
                       <div style={{ display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
                         <ShieldCheck size={13} color={formData.accountType === 'junior' ? '#B80C09' : '#5c435a'} />
                         <span style={{ fontSize: '0.74rem', fontWeight: '800', color: formData.accountType === 'junior' ? '#B80C09' : '#231123' }}>
-                          Junior (Segura)
+                          <span>Junior (Segura)</span> <span style={{ fontSize: '0.65rem', opacity: 0.8 }}>(Kids / Kiks)</span>
                         </span>
                       </div>
                       <p style={{ fontSize: '0.6rem', color: '#665163', margin: '2px 0 0 0', lineHeight: 1.2 }}>
@@ -537,9 +565,46 @@ export const RegisterForm = () => {
                 </div>
 
                 {errorMessage && (
-                  <p className="auth-error" role="alert">
-                    {errorMessage}
-                  </p>
+                  <div className="auth-error" role="alert" style={{ display: 'flex', flexDirection: 'column', gap: '0.45rem', padding: '0.65rem 0.8rem', borderRadius: '10px' }}>
+                    <span style={{ fontSize: '0.78rem', lineHeight: '1.4' }}>{errorMessage}</span>
+                    {errorMessage.includes('ya está registrado') && (
+                      <div style={{ display: 'flex', gap: '0.5rem', marginTop: '0.2rem', flexWrap: 'wrap' }}>
+                        <a
+                          href="#login"
+                          style={{
+                            fontSize: '0.72rem',
+                            fontWeight: '800',
+                            color: '#ffffff',
+                            backgroundColor: '#B80C09',
+                            padding: '0.35rem 0.75rem',
+                            borderRadius: '8px',
+                            textDecoration: 'none',
+                            display: 'inline-flex',
+                            alignItems: 'center',
+                            gap: '4px',
+                            boxShadow: '0 2px 5px rgba(184,12,9,0.3)',
+                          }}
+                        >
+                          Iniciar Sesión ➔
+                        </a>
+                        <a
+                          href="#forgot-password"
+                          style={{
+                            fontSize: '0.72rem',
+                            fontWeight: '800',
+                            color: '#5c1d5e',
+                            backgroundColor: '#ffffff',
+                            padding: '0.35rem 0.75rem',
+                            borderRadius: '8px',
+                            textDecoration: 'none',
+                            border: '1px solid rgba(92,29,94,0.25)',
+                          }}
+                        >
+                          Recuperar Contraseña
+                        </a>
+                      </div>
+                    )}
+                  </div>
                 )}
 
                 <button className="auth-submit" type="submit" disabled={isSendingOtp} style={{ marginTop: '0.6rem' }}>
@@ -613,7 +678,7 @@ export const RegisterForm = () => {
               />
 
               <p style={{ fontSize: '0.68rem', color: '#856f80', textAlign: 'center', margin: '0.4rem 0 0.2rem 0' }}>
-                ⚡ Se validará automáticamente al ingresar los 6 dígitos
+                🔒 Ingresa los 6 dígitos y presiona Verificar Código
               </p>
 
               {errorMessage && (
@@ -637,10 +702,21 @@ export const RegisterForm = () => {
                 <button
                   type="button"
                   onClick={handleRequestOtp}
-                  disabled={isSendingOtp}
-                  style={{ background: 'none', border: 'none', color: '#B80C09', fontWeight: 'bold', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '3px' }}
+                  disabled={isSendingOtp || resendTimer > 0}
+                  style={{
+                    background: 'none',
+                    border: 'none',
+                    color: resendTimer > 0 ? '#9ca3af' : '#B80C09',
+                    fontWeight: 'bold',
+                    cursor: resendTimer > 0 ? 'default' : 'pointer',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '4px',
+                    transition: 'color 0.2s ease',
+                  }}
                 >
-                  <RefreshCw size={13} /> Reenviar código
+                  <RefreshCw size={13} className={isSendingOtp ? 'animate-spin' : ''} />
+                  {resendTimer > 0 ? `Reenviar código (${resendTimer}s)` : 'Reenviar código'}
                 </button>
               </div>
             </form>

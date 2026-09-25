@@ -12,8 +12,8 @@ import { interactionsService } from '../../../shared/services/interactions-servi
 import Toast from '../../../shared/components/ui/toast';
 
 export const TrendingGrid = () => {
-  const { user } = useAuth() || {};
-  const [activeTab, setActiveTab] = useState(() => (user ? 'for-you' : 'week'));
+  const { user, isJunior, isParentalControlActive } = useAuth() || {};
+  const [activeTab, setActiveTab] = useState(() => (isJunior || isParentalControlActive ? 'junior-safe' : (user ? 'for-you' : 'week')));
   const [viewMode, setViewMode] = useState('grid'); // 'grid' | 'list'
   const [sortBy, setSortBy] = useState('rating'); // 'rating' | 'trending' | 'year'
   const [toastMessage, setToastMessage] = useState(null);
@@ -65,6 +65,7 @@ export const TrendingGrid = () => {
   const tabs = useMemo(() => {
     const list = [
       { id: 'for-you', label: 'Para ti' },
+      { id: 'junior-safe', label: '⭐ Modo Kids & Familiar' },
       { id: 'week', label: 'Esta semana' },
       { id: 'acclaimed', label: 'Más aclamados' },
       { id: 'news', label: 'Novedades' },
@@ -145,32 +146,46 @@ export const TrendingGrid = () => {
     setToastMessage(res.isSaved ? `"${album.title}" guardado en tu colección` : `"${album.title}" eliminado de tu colección`);
   };
 
-  // Filtrado y Ordenamiento inteligente según preferencias de usuario
+  // Filtrado y Ordenamiento inteligente según preferencias de usuario y modo junior
   const processedAlbums = useMemo(() => {
     let list = [];
 
-    if (activeTab === 'for-you') {
-      // Combinar catálogo y recomendaciones personalizadas
-      const allPool = [...DEFAULT_DEEZER_ALBUMS, ...CATALOG_RECOMMENDATIONS.map(r => ({
-        id: r.deezerId || r.id,
-        deezerId: r.deezerId,
-        title: r.title,
-        artist: r.artist,
-        year: r.year,
-        genre: r.genre,
-        rating: r.rating,
-        cover: r.cover,
-      }))];
+    const allPool = [...DEFAULT_DEEZER_ALBUMS, ...CATALOG_RECOMMENDATIONS.map(r => ({
+      id: r.deezerId || r.id,
+      deezerId: r.deezerId,
+      title: r.title,
+      artist: r.artist,
+      year: r.year,
+      genre: r.genre,
+      rating: r.rating,
+      cover: r.cover,
+      explicit: Boolean(r.explicit || r.explicit_lyrics),
+      explicit_lyrics: Boolean(r.explicit || r.explicit_lyrics),
+      isKidSafe: Boolean(r.isKidSafe),
+    }))];
 
-      // Eliminar duplicados por título
-      const uniqueMap = new Map();
-      allPool.forEach(item => {
-        if (!uniqueMap.has(item.title)) uniqueMap.set(item.title, item);
-      });
-      const uniqueList = Array.from(uniqueMap.values());
+    // Eliminar duplicados por título
+    const uniqueMap = new Map();
+    allPool.forEach(item => {
+      if (!uniqueMap.has(item.title)) uniqueMap.set(item.title, item);
+    });
+    const uniqueList = Array.from(uniqueMap.values());
+
+    if (activeTab === 'junior-safe') {
+      // Filtrar estrictamente álbumes sin contenido explícito y con afinidad familiar
+      list = uniqueList.filter(a => !a.explicit && !a.explicit_lyrics);
+      list.sort((a, b) => (b.isKidSafe ? 1 : 0) - (a.isKidSafe ? 1 : 0) || parseFloat(b.rating) - parseFloat(a.rating));
+      return list.slice(0, 8);
+    }
+
+    if (activeTab === 'for-you') {
+      let filteredPool = uniqueList;
+      if (isJunior || isParentalControlActive) {
+        filteredPool = filteredPool.filter(a => !a.explicit && !a.explicit_lyrics);
+      }
 
       // Ponderar por preferencias del usuario
-      list = uniqueList.map(album => {
+      list = filteredPool.map(album => {
         const match = userPreferences.some(
           pref => pref.toLowerCase() === album.genre.toLowerCase() || album.genre.toLowerCase().includes(pref.toLowerCase())
         );
@@ -189,7 +204,11 @@ export const TrendingGrid = () => {
         return b.affinityPercentage - a.affinityPercentage;
       });
     } else {
-      list = DEFAULT_DEEZER_ALBUMS.map(album => {
+      let pool = DEFAULT_DEEZER_ALBUMS;
+      if (isJunior || isParentalControlActive) {
+        pool = pool.filter(a => !a.explicit && !a.explicit_lyrics);
+      }
+      list = pool.map(album => {
         const match = userPreferences.some(
           pref => pref.toLowerCase() === album.genre.toLowerCase() || album.genre.toLowerCase().includes(pref.toLowerCase())
         );
@@ -216,7 +235,7 @@ export const TrendingGrid = () => {
     }
 
     return list.slice(0, 8);
-  }, [activeTab, sortBy, userPreferences]);
+  }, [activeTab, sortBy, userPreferences, isJunior, isParentalControlActive]);
 
   return (
     <section className="w-full px-4 sm:px-6 lg:px-12 py-12 sm:py-16 bg-[#fff7fa] dark:bg-[#231123] transition-colors duration-300">
@@ -337,6 +356,20 @@ export const TrendingGrid = () => {
                       onError={(e) => handleImageFallbackError(e, album)}
                     />
 
+                    {/* Badges de Contenido Explícito o Junior Safe */}
+                    {Boolean(album.explicit || album.explicit_lyrics) && (
+                      <span className="absolute top-2.5 left-2.5 px-2 py-0.5 rounded-md bg-black/80 text-rose-300 border border-rose-500/40 text-[9px] font-black tracking-wider uppercase z-20 flex items-center gap-1 backdrop-blur-md shadow-xs">
+                        <span className="material-symbols-outlined text-[12px]">lock</span>
+                        <span>18+ EXPLICIT</span>
+                      </span>
+                    )}
+                    {Boolean(album.isKidSafe) && (
+                      <span className="absolute top-2.5 left-2.5 px-2 py-0.5 rounded-md bg-emerald-950/85 text-emerald-300 border border-emerald-500/40 text-[9px] font-black tracking-wider uppercase z-20 flex items-center gap-1 backdrop-blur-md shadow-xs">
+                        <span className="material-symbols-outlined text-[12px]">toys</span>
+                        <span>KIDS SAFE</span>
+                      </span>
+                    )}
+
                     {/* Botón Guardar en esquina superior con prioridad de click z-30 */}
                     <button
                       type="button"
@@ -439,6 +472,16 @@ export const TrendingGrid = () => {
                         <span className="text-sm sm:text-base font-bold text-[#231123] dark:text-white truncate">
                           {album.title}
                         </span>
+                        {Boolean(album.explicit || album.explicit_lyrics) && (
+                          <span className="px-1.5 py-0.2 rounded text-[8px] font-black uppercase bg-black text-rose-300 border border-rose-500/40">
+                            18+
+                          </span>
+                        )}
+                        {Boolean(album.isKidSafe) && (
+                          <span className="px-1.5 py-0.2 rounded text-[8px] font-black uppercase bg-emerald-950 text-emerald-300 border border-emerald-500/40">
+                            Junior Safe
+                          </span>
+                        )}
                         <span className="px-2 py-0.5 rounded-md bg-[#f8e9f6] dark:bg-[#231123] text-[#5c1d5e] dark:text-pink-200 text-[10px] font-extrabold uppercase">
                           {album.genre}
                         </span>

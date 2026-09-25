@@ -1,15 +1,32 @@
 /**
  * @vitest-environment jsdom
  */
-import { describe, it, expect, beforeEach } from 'vitest';
-import { renderHook, act } from '@testing-library/react';
+import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
+import { renderHook, act, cleanup } from '@testing-library/react';
 import React from 'react';
 import { AuthProvider, useAuth } from '../src/shared/context/auth-context';
 
 describe('AuthContext Registration Flow', () => {
   beforeEach(() => {
     window.localStorage.clear();
+    global.ResizeObserver = class ResizeObserver {
+      observe() {}
+      unobserve() {}
+      disconnect() {}
+    };
+    window.matchMedia = window.matchMedia || function () {
+      return {
+        matches: false,
+        addListener: function () {},
+        removeListener: function () {},
+        addEventListener: function () {},
+        removeEventListener: function () {},
+        dispatchEvent: function () {},
+      };
+    };
   });
+
+  afterEach(cleanup);
 
   it('debe registrar un nuevo usuario y actualizar el estado de autenticación', async () => {
     const wrapper = ({ children }) => <AuthProvider>{children}</AuthProvider>;
@@ -65,5 +82,42 @@ describe('AuthContext Registration Flow', () => {
 
     expect(result.current.user.preferences).toEqual(['Synthwave', 'Ambient & Drone', 'IDM / Techno']);
     expect(result.current.user.bio).toBe('Exploradora de sintetizadores analógicos.');
+  });
+
+  it('detecta si el correo ya está registrado en el paso 1 antes de crear la contraseña', async () => {
+    const { createUser } = await import('../src/shared/services/api-client.js');
+    const { RegisterForm } = await import('../src/features/auth/components/register-form.jsx');
+    const { render, screen, fireEvent } = await import('@testing-library/react');
+
+    const duplicateEmail = 'registrado@sonar.audio';
+    await createUser({
+      id: 'existing-user-123',
+      username: 'usuario_previo',
+      email: duplicateEmail,
+      password: 'hashedpassword123',
+      role: 'user',
+    });
+
+    render(
+      <AuthProvider>
+        <RegisterForm />
+      </AuthProvider>
+    );
+
+    // Escribir nombre de usuario y correo duplicado
+    fireEvent.change(screen.getByPlaceholderText(/tu_usuario/i), { target: { value: 'nuevo_intento' } });
+    fireEvent.change(screen.getByPlaceholderText(/tu@ejemplo\.com/i), { target: { value: duplicateEmail } });
+
+    // Intentar continuar al paso 2
+    const continueBtn = screen.getByRole('button', { name: /Continuar y Verificar Correo/i });
+    await act(async () => {
+      fireEvent.click(continueBtn);
+    });
+
+    // Debe mostrar el error inmediatamente en el paso 1 sin avanzar a contraseña
+    const alert = await screen.findByRole('alert');
+    expect(alert.textContent).toContain('Este correo ya está registrado en SONAR');
+    expect(screen.getByRole('link', { name: /Iniciar Sesión/i })).toBeDefined();
+    expect(screen.queryByLabelText(/^Contraseña/i)).toBeNull();
   });
 });

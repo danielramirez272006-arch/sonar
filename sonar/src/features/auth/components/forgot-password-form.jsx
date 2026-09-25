@@ -85,7 +85,7 @@ export const ForgotPasswordForm = () => {
       const result = await requestPasswordResetWebhook(cleanEmail, code);
 
       setExpectedCode(result.code || code);
-      setResendTimer(60);
+      setResendTimer(15);
       setStep(2);
     } catch (err) {
       setErrorMessage(err.message || 'No se pudo enviar el código al correo. Inténtalo de nuevo.');
@@ -282,7 +282,7 @@ export const ForgotPasswordForm = () => {
                     const newCode = Math.floor(100000 + Math.random() * 900000).toString();
                     await requestPasswordResetWebhook(email, newCode);
                     setExpectedCode(newCode);
-                    setResendTimer(60);
+                    setResendTimer(15);
                   }}
                   style={{
                     background: 'none',

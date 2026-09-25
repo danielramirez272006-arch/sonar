@@ -19,6 +19,7 @@ import { ThemeProvider, useTheme } from './shared/context/theme-context.jsx'
 import { PlayerProvider } from './shared/context/player-context.jsx'
 import { GlobalAudioPlayer } from './shared/components/layout/global-audio-player.jsx'
 import { ReviewModal } from './shared/components/layout/review-modal.jsx'
+import { ErrorBoundary } from './shared/components/ui/error-boundary.jsx'
 import AppRouter from './shared/routing/app-router.jsx'
 import { AccessibilityProvider } from './shared/context/accessibility-context.jsx'
 import { SkipToContent } from './shared/components/a11y/skip-to-content.jsx'
@@ -247,25 +248,31 @@ export function AdminConsole() {
 
 export default function App() {
   return (
-    <BrowserRouter>
-      <AccessibilityProvider>
-        <AuthProvider>
-          <ThemeProvider>
-            <PlayerProvider>
-              <SkipToContent />
-              <ColorBlindnessFilters />
-              <A11yScreenOverlay />
-              <AriaLiveAnnouncer />
-              <AppRouter />
-              <GlobalAudioPlayer />
-              <ReviewModal />
-              <AccessibilityWidget />
-              <KeyboardShortcutsModal />
-              <ReadingGuide />
-            </PlayerProvider>
-          </ThemeProvider>
-        </AuthProvider>
-      </AccessibilityProvider>
-    </BrowserRouter>
+    <ErrorBoundary>
+      <BrowserRouter>
+        <AccessibilityProvider>
+          <AuthProvider>
+            <ThemeProvider>
+              <PlayerProvider>
+                <SkipToContent />
+                <ColorBlindnessFilters />
+                <A11yScreenOverlay />
+                <AriaLiveAnnouncer />
+                <ErrorBoundary>
+                  <AppRouter />
+                </ErrorBoundary>
+                <ErrorBoundary>
+                  <GlobalAudioPlayer />
+                </ErrorBoundary>
+                <ReviewModal />
+                <AccessibilityWidget />
+                <KeyboardShortcutsModal />
+                <ReadingGuide />
+              </PlayerProvider>
+            </ThemeProvider>
+          </AuthProvider>
+        </AccessibilityProvider>
+      </BrowserRouter>
+    </ErrorBoundary>
   )
 }

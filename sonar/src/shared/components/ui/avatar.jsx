@@ -35,6 +35,7 @@ export const Avatar = ({
   avatarTone,
   avatarStyle = 'blobatar',
   avatarIcon,
+  frame,
   size = 'md',
   animate = 'always',
   className = '',
@@ -45,6 +46,14 @@ export const Avatar = ({
   const rawName = name || username || 'Usuario';
   const effectiveSeed = avatarSeed || rawName.trim() || 'usuario-sonar';
   const bgColor = avatarBg || backgroundColor || bg || '#4B2840';
+
+  const frameClassMap = {
+    'frame-gold-vinyl': 'ring-2 sm:ring-4 ring-amber-400 shadow-[0_0_18px_rgba(251,191,36,0.85)]',
+    'frame-neon-cyber': 'ring-2 sm:ring-4 ring-cyan-400 shadow-[0_0_18px_rgba(6,182,212,0.85)]',
+    'frame-valve-tube': 'ring-2 sm:ring-4 ring-orange-500 shadow-[0_0_16px_rgba(249,115,22,0.8)]',
+    'frame-hologram': 'ring-2 sm:ring-4 ring-purple-400 shadow-[0_0_18px_rgba(168,85,247,0.85)]',
+  };
+  const activeFrameClass = frame ? frameClassMap[frame] || '' : '';
 
   // Usamos imagen real si existe y no es un path mock local inexistente
   const shouldShowImage = Boolean(
@@ -59,7 +68,7 @@ export const Avatar = ({
 
   return (
     <motion.div
-      className={className}
+      className={`${className} ${activeFrameClass}`.trim()}
       onClick={onClick}
       whileHover={{ scale: 1.05 }}
       whileTap={{ scale: 0.95 }}
@@ -75,7 +84,7 @@ export const Avatar = ({
         userSelect: 'none',
         flexShrink: 0,
         cursor: onClick ? 'pointer' : 'default',
-        boxShadow: '0 2px 10px rgba(0, 0, 0, 0.25)',
+        boxShadow: activeFrameClass ? undefined : '0 2px 10px rgba(0, 0, 0, 0.25)',
       }}
     >
       {shouldShowImage ? (

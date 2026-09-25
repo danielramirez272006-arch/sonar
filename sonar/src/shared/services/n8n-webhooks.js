@@ -225,58 +225,51 @@ export async function requestRegisterOtpWebhook(email, username = '', code = '')
   const configuredUrl =
     typeof import.meta !== 'undefined' && import.meta.env?.VITE_N8N_REGISTER_OTP_WEBHOOK_URL
 
-  const endpoints = configuredUrl
-    ? [configuredUrl]
-    : [
-        'http://localhost:5678/webhook-test/register-otp',
-        'http://localhost:5678/webhook/register-otp',
-      ]
+  const endpoint = configuredUrl || 'http://localhost:5678/webhook/register-otp'
 
-  for (const endpoint of endpoints) {
-    try {
-      console.log(
-        '%c[n8n Webhook - Registro OTP] Enviando petición a n8n:',
-        'color: #B80C09; font-weight: bold;',
-        { email: cleanEmail, username: cleanUsername, code: generatedCode, endpoint }
-      )
+  try {
+    console.log(
+      '%c[n8n Webhook - Registro OTP] Enviando petición a n8n:',
+      'color: #B80C09; font-weight: bold;',
+      { email: cleanEmail, username: cleanUsername, code: generatedCode, endpoint }
+    )
 
-      const controller = new AbortController()
-      const timeoutId = setTimeout(() => controller.abort(), 2500)
+    const controller = new AbortController()
+    const timeoutId = setTimeout(() => controller.abort(), 1200)
 
-      const response = await fetch(endpoint, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          email: cleanEmail,
-          username: cleanUsername,
-          code: generatedCode,
-          action: 'register_otp',
-          timestamp: new Date().toISOString(),
-        }),
-        signal: controller.signal,
-      })
-      clearTimeout(timeoutId)
+    const response = await fetch(endpoint, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        email: cleanEmail,
+        username: cleanUsername,
+        code: generatedCode,
+        action: 'register_otp',
+        timestamp: new Date().toISOString(),
+      }),
+      signal: controller.signal,
+    })
+    clearTimeout(timeoutId)
 
-      if (response.ok) {
-        const data = await response.json()
-        const receivedCode =
-          typeof data.code === 'string' && !data.code.startsWith('=')
-            ? data.code
-            : generatedCode
+    if (response.ok) {
+      const data = await response.json()
+      const receivedCode =
+        typeof data.code === 'string' && !data.code.startsWith('=')
+          ? data.code
+          : generatedCode
 
-        return {
-          ...data,
-          success: true,
-          email: cleanEmail,
-          code: receivedCode,
-          message: data.message || `Código de verificación enviado a ${cleanEmail}.`,
-        }
+      return {
+        ...data,
+        success: true,
+        email: cleanEmail,
+        code: receivedCode,
+        message: data.message || `Código de verificación enviado a ${cleanEmail}.`,
       }
-    } catch {
-      // Fallback
     }
+  } catch (err) {
+    console.warn('Advertencia webhook registro n8n:', err)
   }
 
   await delay(200)

@@ -1,30 +1,48 @@
-import React, { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import React, { useState, useEffect, useRef, useMemo } from 'react';
+import { motion } from 'framer-motion';
 import Navbar from '../../shared/components/layout/navbar';
 import Footer from '../../shared/components/layout/footer';
 import ProfileHeader from '../../features/profile/components/profile-header';
+import { Avatar } from '../../shared/components/ui/avatar';
 import { useAuth } from '../../shared/context/auth-context';
 import { usePlayer } from '../../shared/context/player-context';
 import { interactionsService } from '../../shared/services/interactions-service';
 import { socialService } from '../../shared/services/social-service';
-import { getAlbumTracks, searchTracks } from '../../shared/services/deezer-service';
 import {
   getRecommendationsForUser,
   GENRE_OPTIONS,
   DEFAULT_FALLBACK_COVER,
-  DEFAULT_FALLBACK_PREVIEW,
   handleImageFallbackError,
   getFallbackCoverForAlbum,
 } from '../../shared/services/recommendations-service';
 import ReviewFeedCard from '../../features/reviews/components/review-feed-card';
+import AudiophilePassportTab from '../../features/profile/components/audiophile-passport-tab';
+import VinylCrateFlip from '../../features/profile/components/vinyl-crate-flip';
+import SoundSignatureSelector from '../../features/profile/components/sound-signature-selector';
+import AudiophileSignalChain from '../../features/profile/components/audiophile-signal-chain';
+import ListeningJournalModal from '../../features/profile/components/listening-journal-modal';
+import EnhancedParentalControl from '../../features/profile/components/enhanced-parental-control';
+import RewardsStoreTab from '../../features/profile/components/rewards-store-tab';
 
 export const UserDashboardPage = () => {
-  const { user, updateUser, updateParentalControl, isParentalControlActive } = useAuth();
+  const { user, updateUser } = useAuth();
   const { playTrack, openReviewModal } = usePlayer();
   const userId = user?.id || null;
+  const backupFileInputRef = useRef(null);
 
-  const [activeTab, setActiveTab] = useState('recommendations');
+  const [activeTab, setActiveTab] = useState(() => {
+    try {
+      const pendingTab = typeof window !== 'undefined' ? sessionStorage.getItem('sonar_active_profile_tab') : null;
+      if (pendingTab) {
+        sessionStorage.removeItem('sonar_active_profile_tab');
+        return pendingTab;
+      }
+    } catch {}
+    return 'passport';
+  });
   const [collectionFilter, setCollectionFilter] = useState('Todos');
+  const [savedViewMode, setSavedViewMode] = useState('grid');
+  const [journalAlbum, setJournalAlbum] = useState(null);
   const [genreFilter, setGenreFilter] = useState('Todos');
   const [savedAlbums, setSavedAlbums] = useState([]);
   const [recommendations, setRecommendations] = useState([]);
@@ -32,8 +50,154 @@ export const UserDashboardPage = () => {
   const [followedArtists, setFollowedArtists] = useState([]);
   const [followedUsers, setFollowedUsers] = useState([]);
   const [recentlyPlayed, setRecentlyPlayed] = useState([]);
-  const [parentPinInput, setParentPinInput] = useState(() => user?.parentalControl?.pin || '1234');
-  const [parentalNotice, setParentalNotice] = useState('');
+  const [backupNotice, setBackupNotice] = useState(null);
+  const [reviewSearch, setReviewSearch] = useState('');
+  const [reviewRatingFilter, setReviewRatingFilter] = useState('all');
+  const [reviewTypeFilter, setReviewTypeFilter] = useState('all');
+  const [reviewSort, setReviewSort] = useState('newest');
+
+  const filteredUserReviews = useMemo(() => {
+    return userReviews
+      .filter((r) => {
+        if (reviewSearch.trim()) {
+          const q = reviewSearch.toLowerCase();
+          const title = String(r.albumTitle || r.trackTitle || r.title || '').toLowerCase();
+          const artist = String(r.artist || '').toLowerCase();
+          const content = String(r.content || '').toLowerCase();
+          if (!title.includes(q) && !artist.includes(q) && !content.includes(q)) return false;
+        }
+        if (reviewRatingFilter !== 'all') {
+          if (Math.floor(Number(r.rating) || 0) !== Number(reviewRatingFilter)) return false;
+        }
+        if (reviewTypeFilter !== 'all') {
+          const isTrack = r.type === 'track' || Boolean(r.trackTitle);
+          if (reviewTypeFilter === 'track' && !isTrack) return false;
+          if (reviewTypeFilter === 'album' && isTrack) return false;
+        }
+        return true;
+      })
+      .sort((a, b) => {
+        if (reviewSort === 'highest') return (Number(b.rating) || 0) - (Number(a.rating) || 0);
+        if (reviewSort === 'lowest') return (Number(a.rating) || 0) - (Number(b.rating) || 0);
+        if (reviewSort === 'oldest') return new Date(a.createdAt || 0) - new Date(b.createdAt || 0);
+        return new Date(b.createdAt || 0) - new Date(a.createdAt || 0);
+      });
+  }, [userReviews, reviewSearch, reviewRatingFilter, reviewTypeFilter, reviewSort]);
+
+  const [gearSetup, setGearSetup] = useState(() => ({
+    turntable: user?.audiophileSetup?.turntable || user?.gear?.turntable || 'Technics SL-1200MK7',
+    headphones: user?.audiophileSetup?.headphones || user?.gear?.headphones || 'Sennheiser HD 660S',
+    dac: user?.audiophileSetup?.dac || 'Cambridge Audio DacMagic 200M',
+    favoriteFormat: user?.audiophileSetup?.favoriteFormat || 'Vinilo 180g Prensado Japonés',
+    stylus: user?.audiophileSetup?.stylus || 'Ortofon 2M Blue',
+  }));
+  const [gearSavedNotice, setGearSavedNotice] = useState(false);
+
+  // Sincronizar equipamiento cuando el usuario cambie o se actualice en perfil
+  useEffect(() => {
+    if (user?.audiophileSetup || user?.gear) {
+      setGearSetup({
+        turntable: user?.audiophileSetup?.turntable || user?.gear?.turntable || 'Technics SL-1200MK7',
+        headphones: user?.audiophileSetup?.headphones || user?.gear?.headphones || 'Sennheiser HD 660S',
+        dac: user?.audiophileSetup?.dac || 'Cambridge Audio DacMagic 200M',
+        favoriteFormat: user?.audiophileSetup?.favoriteFormat || 'Vinilo 180g Prensado Japonés',
+        stylus: user?.audiophileSetup?.stylus || 'Ortofon 2M Blue',
+      });
+    }
+  }, [user]);
+
+  const handleSaveGear = (e) => {
+    e?.preventDefault();
+    updateUser({
+      audiophileSetup: gearSetup,
+      gear: {
+        turntable: gearSetup.turntable,
+        headphones: gearSetup.headphones,
+      },
+    });
+    setGearSavedNotice(true);
+    setTimeout(() => setGearSavedNotice(false), 3000);
+  };
+
+  const handleExportBackup = () => {
+    const backupData = {
+      app: 'SONAR Hi-Fi Music Ecosystem',
+      version: '2.5.0',
+      exportDate: new Date().toISOString(),
+      user: {
+        id: user?.id,
+        name: user?.name,
+        username: user?.username,
+        email: user?.email,
+        accountType: user?.accountType,
+        preferences: user?.preferences,
+        audiophileSetup: gearSetup,
+      },
+      savedAlbums,
+      userReviews,
+      recentlyPlayed,
+      followedArtists,
+      followedUsers,
+    };
+
+    const dataStr = 'data:text/json;charset=utf-8,' + encodeURIComponent(JSON.stringify(backupData, null, 2));
+    const downloadAnchor = document.createElement('a');
+    downloadAnchor.setAttribute('href', dataStr);
+    downloadAnchor.setAttribute('download', `sonar-backup-${(user?.name || user?.username || 'usuario').toLowerCase().replace(/\s+/g, '-')}.json`);
+    document.body.appendChild(downloadAnchor);
+    downloadAnchor.click();
+    downloadAnchor.remove();
+    setBackupNotice('¡Respaldo descargado exitosamente en formato JSON!');
+    setTimeout(() => setBackupNotice(null), 4000);
+  };
+
+  const handleImportBackup = (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      try {
+        const json = JSON.parse(event.target.result);
+        if (!json || typeof json !== 'object') {
+          throw new Error('Formato de archivo inválido.');
+        }
+
+        const effectiveId = userId || 'guest_user';
+
+        if (Array.isArray(json.savedAlbums)) {
+          const currentStorage = JSON.parse(localStorage.getItem('sonar_user_saved_albums') || '{}');
+          currentStorage[effectiveId] = json.savedAlbums;
+          localStorage.setItem('sonar_user_saved_albums', JSON.stringify(currentStorage));
+          setSavedAlbums(json.savedAlbums);
+        }
+
+        if (Array.isArray(json.recentlyPlayed)) {
+          const currentRecent = JSON.parse(localStorage.getItem('sonar_user_recently_played') || '{}');
+          currentRecent[effectiveId] = json.recentlyPlayed;
+          localStorage.setItem('sonar_user_recently_played', JSON.stringify(currentRecent));
+          setRecentlyPlayed(json.recentlyPlayed);
+        }
+
+        if (json.user?.preferences && updateUser) {
+          updateUser({
+            preferences: json.user.preferences,
+            audiophileSetup: json.user.audiophileSetup || gearSetup,
+          });
+        }
+
+        window.dispatchEvent(new CustomEvent('sonar:collection-changed'));
+        setBackupNotice('¡Respaldo restaurado con éxito! Tus colecciones y preferencias se han sincronizado.');
+        setTimeout(() => setBackupNotice(null), 5000);
+      } catch (err) {
+        setBackupNotice(`Error al importar: ${err.message || 'Archivo no válido'}`);
+        setTimeout(() => setBackupNotice(null), 5000);
+      } finally {
+        if (backupFileInputRef.current) backupFileInputRef.current.value = '';
+      }
+    };
+    reader.readAsText(file);
+  };
 
   const handlePlayAlbum = (album) => {
     if (!album) return;
@@ -83,6 +247,11 @@ export const UserDashboardPage = () => {
       setRecentlyPlayed(interactionsService.getRecentlyPlayed(userId));
     };
 
+    const handleNavigateTab = (e) => {
+      if (e.detail) setActiveTab(e.detail);
+    };
+
+    window.addEventListener('sonar:navigate-tab', handleNavigateTab);
     window.addEventListener('sonar:follow-artist-changed', handleArtistChange);
     window.addEventListener('sonar:follow-user-changed', handleUserChange);
     window.addEventListener('sonar:review-created', handleReviewCreated);
@@ -92,6 +261,7 @@ export const UserDashboardPage = () => {
     };
     window.addEventListener('sonar:collection-changed', handleCollectionChange);
     return () => {
+      window.removeEventListener('sonar:navigate-tab', handleNavigateTab);
       window.removeEventListener('sonar:follow-artist-changed', handleArtistChange);
       window.removeEventListener('sonar:follow-user-changed', handleUserChange);
       window.removeEventListener('sonar:review-created', handleReviewCreated);
@@ -148,6 +318,26 @@ export const UserDashboardPage = () => {
         {/* Navegación por Pestañas (Tabs) */}
         <div className="flex flex-col gap-6">
           <div className="flex items-center gap-4 sm:gap-8 border-b border-[#e6d5e2] dark:border-white/10 overflow-x-auto pb-1 scrollbar-none">
+            <button
+              type="button"
+              onClick={() => setActiveTab('passport')}
+              className={`pb-3 text-sm sm:text-base font-bold transition-all cursor-pointer relative whitespace-nowrap flex items-center gap-2 ${
+                activeTab === 'passport'
+                  ? 'text-[#B80C09]'
+                  : 'text-[#5c435a] dark:text-[#B89CB0] hover:text-[#231123] dark:hover:text-white'
+              }`}
+            >
+              <span className="material-symbols-outlined text-[18px]">badge</span>
+              <span>Pasaporte & Estadísticas</span>
+              {activeTab === 'passport' && (
+                <motion.div
+                  layoutId="dashboard-tab-indicator"
+                  className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#B80C09]"
+                  transition={{ type: 'spring', stiffness: 400, damping: 30 }}
+                />
+              )}
+            </button>
+
             <button
               type="button"
               onClick={() => setActiveTab('recommendations')}
@@ -270,6 +460,46 @@ export const UserDashboardPage = () => {
 
             <button
               type="button"
+              onClick={() => setActiveTab('audiophile_gear')}
+              className={`pb-3 text-sm sm:text-base font-bold transition-all cursor-pointer relative whitespace-nowrap flex items-center gap-2 ${
+                activeTab === 'audiophile_gear'
+                  ? 'text-[#B80C09]'
+                  : 'text-[#5c435a] dark:text-[#B89CB0] hover:text-[#231123] dark:hover:text-white'
+              }`}
+            >
+              <span className="material-symbols-outlined text-[18px]">headphones</span>
+              <span>Equipamiento Hi-Fi</span>
+              {activeTab === 'audiophile_gear' && (
+                <motion.div
+                  layoutId="dashboard-tab-indicator"
+                  className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#B80C09]"
+                  transition={{ type: 'spring', stiffness: 400, damping: 30 }}
+                />
+              )}
+            </button>
+
+            <button
+              type="button"
+              onClick={() => setActiveTab('recompensas')}
+              className={`pb-3 text-sm sm:text-base font-bold transition-all cursor-pointer relative whitespace-nowrap flex items-center gap-2 ${
+                activeTab === 'recompensas'
+                  ? 'text-[#B80C09]'
+                  : 'text-[#5c435a] dark:text-[#B89CB0] hover:text-[#231123] dark:hover:text-white'
+              }`}
+            >
+              <span className="material-symbols-outlined text-[18px] text-amber-500">redeem</span>
+              <span>Recompensas & Boutique</span>
+              {activeTab === 'recompensas' && (
+                <motion.div
+                  layoutId="dashboard-tab-indicator"
+                  className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#B80C09]"
+                  transition={{ type: 'spring', stiffness: 400, damping: 30 }}
+                />
+              )}
+            </button>
+
+            <button
+              type="button"
               onClick={() => setActiveTab('parental_control')}
               className={`pb-3 text-sm sm:text-base font-bold transition-all cursor-pointer relative whitespace-nowrap flex items-center gap-2 ${
                 activeTab === 'parental_control'
@@ -277,8 +507,10 @@ export const UserDashboardPage = () => {
                   : 'text-[#5c435a] dark:text-[#B89CB0] hover:text-[#231123] dark:hover:text-white'
               }`}
             >
-              <span className="material-symbols-outlined text-[18px]">verified_user</span>
-              <span>Control Parental {user?.accountType === 'junior' ? '(Junior)' : ''}</span>
+              <span className="material-symbols-outlined text-[18px]">toys</span>
+              <span>
+                Modo Kids & Control {user?.accountType === 'junior' && user?.parentalControl?.enabled && user?.parentalControl?.blockExplicit ? '(Kids Activo)' : ''}
+              </span>
               {activeTab === 'parental_control' && (
                 <motion.div
                   layoutId="dashboard-tab-indicator"
@@ -287,7 +519,72 @@ export const UserDashboardPage = () => {
                 />
               )}
             </button>
+
+            <div className="ml-auto flex items-center gap-2 pb-2">
+              <input
+                ref={backupFileInputRef}
+                type="file"
+                accept=".json,application/json"
+                onChange={handleImportBackup}
+                className="hidden"
+                id="sonar-backup-file-input"
+              />
+              <button
+                type="button"
+                onClick={() => backupFileInputRef.current?.click()}
+                className="px-3 py-1.5 rounded-xl bg-gray-100 hover:bg-gray-200 dark:bg-white/10 dark:hover:bg-white/20 text-[#231123] dark:text-white text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer shadow-xs"
+                title="Restaurar tus colecciones, reseñas y preferencias desde un archivo JSON"
+              >
+                <span className="material-symbols-outlined text-[15px] text-amber-600 dark:text-amber-400">upload</span>
+                <span className="hidden sm:inline">Importar</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={handleExportBackup}
+                className="px-3 py-1.5 rounded-xl bg-gray-100 hover:bg-gray-200 dark:bg-white/10 dark:hover:bg-white/20 text-[#231123] dark:text-white text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer shadow-xs"
+                title="Descargar respaldo JSON de tus álbumes, reseñas y configuración"
+              >
+                <span className="material-symbols-outlined text-[15px] text-[#B80C09]">download</span>
+                <span className="hidden sm:inline">Exportar</span>
+                <span className="sm:hidden">Backup</span>
+              </button>
+            </div>
           </div>
+
+          {backupNotice && (
+            <motion.div
+              initial={{ opacity: 0, y: -10 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="p-3.5 rounded-2xl bg-gradient-to-r from-emerald-50 to-teal-50 dark:from-emerald-950/40 dark:to-teal-950/40 border border-emerald-200 dark:border-emerald-800 text-emerald-900 dark:text-emerald-200 text-xs sm:text-sm font-semibold flex items-center justify-between shadow-xs"
+            >
+              <div className="flex items-center gap-2">
+                <span className="material-symbols-outlined text-[18px] text-emerald-600">check_circle</span>
+                <span>{backupNotice}</span>
+              </div>
+              <button
+                type="button"
+                onClick={() => setBackupNotice(null)}
+                className="text-xs text-emerald-700 dark:text-emerald-400 hover:underline font-bold"
+              >
+                Cerrar
+              </button>
+            </motion.div>
+          )}
+
+          {/* TAB 0: PASAPORTE Y ESTADÍSTICAS AUDIÓFILAS */}
+          {activeTab === 'passport' && (
+            <AudiophilePassportTab
+              user={user}
+              savedAlbums={savedAlbums}
+              userReviews={userReviews}
+              recentlyPlayed={recentlyPlayed}
+              followedArtists={followedArtists}
+              followedUsers={followedUsers}
+              gearSetup={gearSetup}
+              onExportBackup={handleExportBackup}
+            />
+          )}
 
           {/* TAB 1: RECOMENDACIONES PERSONALIZADAS */}
           {activeTab === 'recommendations' && (
@@ -310,7 +607,7 @@ export const UserDashboardPage = () => {
                   className="text-xs font-bold text-[#B80C09] hover:underline self-start sm:self-auto flex items-center gap-1"
                 >
                   <span className="material-symbols-outlined text-[15px]">tune</span>
-                  <span>Modificar géneros</span>
+                  <span>Modificar géneros en perfil</span>
                 </a>
               </div>
 
@@ -320,21 +617,39 @@ export const UserDashboardPage = () => {
                   const isPref = user?.preferences?.some((p) => p.toLowerCase() === genre.toLowerCase());
                   const isCurrentFilter = genreFilter === genre;
                   return (
-                    <button
-                      key={genre}
-                      type="button"
-                      onClick={() => setGenreFilter(genre)}
-                      className={`px-3.5 py-1.5 rounded-full text-xs font-bold whitespace-nowrap transition-all cursor-pointer flex items-center gap-1.5 shadow-xs ${
-                        isCurrentFilter
-                          ? 'bg-[#B80C09] text-white'
-                          : isPref
-                          ? 'bg-[#f8e9f6] dark:bg-[#231123] text-[#5c1d5e] dark:text-pink-200 border border-[#B80C09]/40 hover:bg-[#B80C09]/10'
-                          : 'bg-white dark:bg-[#4B2840] text-[#5c435a] dark:text-gray-200 border border-[#e6d5e2] dark:border-white/10 hover:border-[#B80C09]/30'
-                      }`}
-                    >
-                      {isPref && <span className="w-1.5 h-1.5 rounded-full bg-[#B80C09]" />}
-                      <span>{genre}</span>
-                    </button>
+                    <div key={genre} className="flex items-center">
+                      <button
+                        type="button"
+                        onClick={() => setGenreFilter(genre)}
+                        className={`px-3.5 py-1.5 rounded-full text-xs font-bold whitespace-nowrap transition-all cursor-pointer flex items-center gap-1.5 shadow-xs ${
+                          isCurrentFilter
+                            ? 'bg-[#B80C09] text-white'
+                            : isPref
+                            ? 'bg-[#f8e9f6] dark:bg-[#231123] text-[#5c1d5e] dark:text-pink-200 border border-[#B80C09]/40 hover:bg-[#B80C09]/10'
+                            : 'bg-white dark:bg-[#4B2840] text-[#5c435a] dark:text-gray-200 border border-[#e6d5e2] dark:border-white/10 hover:border-[#B80C09]/30'
+                        }`}
+                      >
+                        {isPref && <span className="w-1.5 h-1.5 rounded-full bg-[#B80C09]" />}
+                        <span>{genre}</span>
+                      </button>
+                      {genre !== 'Todos' && (
+                        <button
+                          type="button"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleToggleGenrePreference(genre);
+                          }}
+                          className={`-ml-2 z-10 w-4 h-4 rounded-full flex items-center justify-center text-[10px] cursor-pointer transition-colors ${
+                            isPref
+                              ? 'bg-[#B80C09] text-white hover:bg-rose-700'
+                              : 'bg-gray-200 dark:bg-white/20 text-gray-600 dark:text-gray-300 hover:bg-[#B80C09] hover:text-white'
+                          }`}
+                          title={isPref ? `Quitar ${genre} de favoritos` : `Añadir ${genre} a favoritos`}
+                        >
+                          {isPref ? '★' : '+'}
+                        </button>
+                      )}
+                    </div>
                   );
                 })}
               </div>
@@ -438,25 +753,62 @@ export const UserDashboardPage = () => {
           {/* TAB 2: MIS COLECCIONES / DISCOS GUARDADOS */}
           {activeTab === 'saved' && (
             <section className="flex flex-col gap-6">
-              {/* Filtro por Categorías */}
-              <div className="flex flex-wrap items-center gap-2 pb-2">
-                {collectionTags.map((tag) => (
+              {/* Barra de Filtros y Selector de Vista */}
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2">
+                {/* Filtro por Categorías */}
+                <div className="flex flex-wrap items-center gap-2">
+                  {collectionTags.map((tag) => (
+                    <button
+                      key={tag}
+                      type="button"
+                      onClick={() => setCollectionFilter(tag)}
+                      className={`px-4 py-1.5 rounded-full text-xs font-bold transition-all cursor-pointer ${
+                        collectionFilter === tag
+                          ? 'bg-[#B80C09] text-white shadow-xs'
+                          : 'bg-white dark:bg-[#4B2840] border border-[#e6d5e2] dark:border-white/10 text-[#5c435a] dark:text-gray-200 hover:border-[#B80C09]/40'
+                      }`}
+                    >
+                      {tag}
+                    </button>
+                  ))}
+                </div>
+
+                {/* Selector de Modo de Visualización (Grid vs 3D Crate) */}
+                <div className="flex items-center gap-1 p-1 rounded-xl bg-gray-100 dark:bg-black/30 border border-[#e6d5e2] dark:border-white/10 self-start sm:self-auto">
                   <button
-                    key={tag}
                     type="button"
-                    onClick={() => setCollectionFilter(tag)}
-                    className={`px-4 py-1.5 rounded-full text-xs font-bold transition-all cursor-pointer ${
-                      collectionFilter === tag
-                        ? 'bg-[#B80C09] text-white shadow-xs'
-                        : 'bg-white dark:bg-[#4B2840] border border-[#e6d5e2] dark:border-white/10 text-[#5c435a] dark:text-gray-200 hover:border-[#B80C09]/40'
+                    onClick={() => setSavedViewMode('grid')}
+                    className={`px-3 py-1 rounded-lg text-xs font-bold flex items-center gap-1.5 transition-all cursor-pointer ${
+                      savedViewMode === 'grid'
+                        ? 'bg-white dark:bg-[#4B2840] text-[#B80C09] dark:text-white shadow-xs'
+                        : 'text-[#5c435a] dark:text-[#B89CB0] hover:text-[#231123]'
                     }`}
                   >
-                    {tag}
+                    <span className="material-symbols-outlined text-[15px]">grid_view</span>
+                    <span>Cuadrícula</span>
                   </button>
-                ))}
+                  <button
+                    type="button"
+                    onClick={() => setSavedViewMode('crate3d')}
+                    className={`px-3 py-1 rounded-lg text-xs font-bold flex items-center gap-1.5 transition-all cursor-pointer ${
+                      savedViewMode === 'crate3d'
+                        ? 'bg-[#B80C09] text-white shadow-xs'
+                        : 'text-[#5c435a] dark:text-[#B89CB0] hover:text-[#231123]'
+                    }`}
+                  >
+                    <span className="material-symbols-outlined text-[15px]">album</span>
+                    <span>Caja 3D</span>
+                  </button>
+                </div>
               </div>
 
-              {filteredSavedAlbums.length === 0 ? (
+              {savedViewMode === 'crate3d' ? (
+                <VinylCrateFlip
+                  albums={filteredSavedAlbums}
+                  onPlayAlbum={handlePlayAlbum}
+                  onToggleSave={handleToggleSaveAlbum}
+                />
+              ) : filteredSavedAlbums.length === 0 ? (
                 <div className="p-10 rounded-3xl bg-white dark:bg-[#4B2840] border border-[#e6d5e2] dark:border-white/10 text-center flex flex-col items-center gap-3">
                   <span className="material-symbols-outlined text-[48px] text-[#5c435a] dark:text-[#B89CB0]">
                     library_music
@@ -535,15 +887,24 @@ export const UserDashboardPage = () => {
                         </p>
                       </div>
 
-                      {/* Botón de acción rápida: Escribir reseña */}
+                      {/* Botón de acción rápida: Escribir reseña y Diario */}
                       <div className="flex items-center justify-between gap-2 pt-2 mt-2 border-t border-[#e6d5e2]/60 dark:border-white/10">
                         <button
                           type="button"
                           onClick={() => openReviewModal(album)}
-                          className="w-full py-1 px-2 rounded-lg text-xs font-bold bg-gray-100 dark:bg-[#231123] text-[#231123] dark:text-gray-200 hover:bg-[#B80C09] hover:text-white dark:hover:bg-[#B80C09] dark:hover:text-white transition-colors flex items-center justify-center gap-1 cursor-pointer"
+                          className="flex-1 py-1 px-2 rounded-lg text-xs font-bold bg-gray-100 dark:bg-[#231123] text-[#231123] dark:text-gray-200 hover:bg-[#B80C09] hover:text-white dark:hover:bg-[#B80C09] dark:hover:text-white transition-colors flex items-center justify-center gap-1 cursor-pointer"
                         >
                           <span className="material-symbols-outlined text-[14px]">rate_review</span>
                           <span>Criticar</span>
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => setJournalAlbum(album)}
+                          className="py-1 px-2.5 rounded-lg text-xs font-bold bg-gray-100 dark:bg-[#231123] text-[#231123] dark:text-gray-200 hover:bg-amber-600 hover:text-white transition-colors flex items-center justify-center gap-1 cursor-pointer"
+                          title="Escribir notas íntimas en tu Diario Acústico"
+                        >
+                          <span className="material-symbols-outlined text-[14px]">edit_note</span>
+                          <span className="hidden sm:inline">Diario</span>
                         </button>
                       </div>
                     </motion.article>
@@ -555,7 +916,126 @@ export const UserDashboardPage = () => {
 
           {/* TAB 3: MIS RESEÑAS */}
           {activeTab === 'reviews' && (
-            <section className="flex flex-col gap-5">
+            <section className="flex flex-col gap-6">
+              {/* Barra de Filtros, Búsqueda y Ordenamiento */}
+              <div className="p-5 rounded-2xl bg-white dark:bg-[#4B2840] border border-[#e6d5e2] dark:border-white/10 shadow-xs flex flex-col gap-4">
+                <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                  {/* Buscador en Vivo */}
+                  <div className="relative flex-1">
+                    <span className="material-symbols-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400 text-[18px]">
+                      search
+                    </span>
+                    <input
+                      type="text"
+                      value={reviewSearch}
+                      onChange={(e) => setReviewSearch(e.target.value)}
+                      placeholder="Buscar por álbum, artista o texto de tu crítica..."
+                      className="w-full pl-10 pr-4 py-2 rounded-xl bg-gray-50 dark:bg-black/30 border border-[#e6d5e2] dark:border-white/10 text-xs text-[#231123] dark:text-[#DCDCDD] focus:outline-hidden focus:border-[#B80C09] transition-all"
+                    />
+                    {reviewSearch && (
+                      <button
+                        type="button"
+                        onClick={() => setReviewSearch('')}
+                        className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-white"
+                      >
+                        <span className="material-symbols-outlined text-[16px]">close</span>
+                      </button>
+                    )}
+                  </div>
+
+                  {/* Selector de Orden */}
+                  <div className="flex items-center gap-2">
+                    <span className="text-[11px] font-bold text-[#5c435a] dark:text-[#B89CB0] whitespace-nowrap">
+                      Ordenar:
+                    </span>
+                    <select
+                      value={reviewSort}
+                      onChange={(e) => setReviewSort(e.target.value)}
+                      className="px-3 py-2 rounded-xl bg-gray-50 dark:bg-black/30 border border-[#e6d5e2] dark:border-white/10 text-xs font-semibold text-[#231123] dark:text-[#DCDCDD] focus:outline-hidden focus:border-[#B80C09] cursor-pointer"
+                    >
+                      <option value="newest">Más recientes</option>
+                      <option value="oldest">Más antiguas</option>
+                      <option value="highest">Mayor puntuación ⭐</option>
+                      <option value="lowest">Menor puntuación</option>
+                    </select>
+                  </div>
+                </div>
+
+                {/* Filtro por Calificación (Estrellas) y Tipo */}
+                <div className="flex flex-wrap items-center justify-between gap-3 pt-3 border-t border-gray-100 dark:border-white/10">
+                  <div className="flex items-center gap-1.5 flex-wrap">
+                    <span className="text-[11px] font-bold text-[#5c435a] dark:text-[#B89CB0] mr-1">
+                      Calificación:
+                    </span>
+                    {[
+                      { val: 'all', label: 'Todas' },
+                      { val: '5', label: '⭐⭐⭐⭐⭐ 5' },
+                      { val: '4', label: '⭐⭐⭐⭐ 4' },
+                      { val: '3', label: '⭐⭐⭐ 3' },
+                      { val: '2', label: '⭐⭐ 2' },
+                      { val: '1', label: '⭐ 1' },
+                    ].map((opt) => (
+                      <button
+                        key={opt.val}
+                        type="button"
+                        onClick={() => setReviewRatingFilter(opt.val)}
+                        className={`px-2.5 py-1 rounded-lg text-xs font-bold transition-all cursor-pointer ${
+                          reviewRatingFilter === opt.val
+                            ? 'bg-[#B80C09] text-white shadow-xs'
+                            : 'bg-gray-100 dark:bg-black/20 text-[#5c435a] dark:text-[#B89CB0] hover:bg-gray-200 dark:hover:bg-white/10'
+                        }`}
+                      >
+                        {opt.label}
+                      </button>
+                    ))}
+                  </div>
+
+                  <div className="flex items-center gap-1.5">
+                    <span className="text-[11px] font-bold text-[#5c435a] dark:text-[#B89CB0]">Tipo:</span>
+                    {[
+                      { val: 'all', label: 'Todos' },
+                      { val: 'album', label: '💿 Álbumes' },
+                      { val: 'track', label: '🎵 Canciones' },
+                    ].map((t) => (
+                      <button
+                        key={t.val}
+                        type="button"
+                        onClick={() => setReviewTypeFilter(t.val)}
+                        className={`px-2.5 py-1 rounded-lg text-xs font-bold transition-all cursor-pointer ${
+                          reviewTypeFilter === t.val
+                            ? 'bg-[#003844] text-white shadow-xs'
+                            : 'bg-gray-100 dark:bg-black/20 text-[#5c435a] dark:text-[#B89CB0] hover:bg-gray-200 dark:hover:bg-white/10'
+                        }`}
+                      >
+                        {t.label}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Resumen de resultados */}
+                <div className="flex items-center justify-between text-[11px] text-[#5c435a] dark:text-[#B89CB0]">
+                  <span>
+                    Mostrando <strong>{filteredUserReviews.length}</strong> de {userReviews.length} reseñas
+                  </span>
+                  {(reviewSearch || reviewRatingFilter !== 'all' || reviewTypeFilter !== 'all') && (
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setReviewSearch('');
+                        setReviewRatingFilter('all');
+                        setReviewTypeFilter('all');
+                      }}
+                      className="text-[#B80C09] hover:underline font-bold cursor-pointer flex items-center gap-1"
+                    >
+                      <span className="material-symbols-outlined text-[13px]">restart_alt</span>
+                      <span>Limpiar filtros</span>
+                    </button>
+                  )}
+                </div>
+              </div>
+
+              {/* Lista de Reseñas Filtradas */}
               {userReviews.length === 0 ? (
                 <div className="flex flex-col items-center justify-center py-16 px-4 text-center rounded-2xl bg-white dark:bg-[#4B2840] border border-[#e6d5e2] dark:border-white/10 shadow-xs">
                   <span className="material-symbols-outlined text-5xl text-[#5c435a]/50 dark:text-[#B89CB0]/50 mb-3">
@@ -575,10 +1055,22 @@ export const UserDashboardPage = () => {
                     Explorar álbumes recomendados
                   </button>
                 </div>
+              ) : filteredUserReviews.length === 0 ? (
+                <div className="flex flex-col items-center justify-center py-12 px-4 text-center rounded-2xl bg-white dark:bg-[#4B2840] border border-[#e6d5e2] dark:border-white/10 shadow-xs">
+                  <span className="material-symbols-outlined text-4xl text-gray-400 mb-2">search_off</span>
+                  <h4 className="text-base font-bold text-[#231123] dark:text-white">
+                    No se encontraron reseñas con los filtros seleccionados
+                  </h4>
+                  <p className="text-xs text-[#5c435a] dark:text-[#B89CB0] mt-1">
+                    Prueba cambiando el término de búsqueda o seleccionando otra calificación.
+                  </p>
+                </div>
               ) : (
-                userReviews.map((review) => (
-                  <ReviewFeedCard key={review.id} review={review} />
-                ))
+                <div className="flex flex-col gap-4">
+                  {filteredUserReviews.map((review) => (
+                    <ReviewFeedCard key={review.id} review={review} />
+                  ))}
+                </div>
               )}
             </section>
           )}
@@ -698,7 +1190,7 @@ export const UserDashboardPage = () => {
                 <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
                   {followedArtists.map((art, idx) => {
                     const name = typeof art === 'string' ? art : art.name;
-                    const img = typeof art === 'string' ? 'https://cdn-images.dzcdn.net/images/cover/a175af9b7d329bc678cb4d26fc13d6de/250x250-000000-80-0-0.jpg' : art.image;
+                    const img = typeof art === 'string' ? '' : (art.image || art.cover);
                     const genre = typeof art === 'string' ? 'Artista' : art.genre || 'Música';
                     return (
                       <motion.div
@@ -707,8 +1199,9 @@ export const UserDashboardPage = () => {
                         className="p-4 rounded-2xl bg-white dark:bg-[#4B2840] border border-[#e6d5e2] dark:border-white/10 shadow-xs flex flex-col items-center text-center gap-3"
                       >
                         <img
-                          src={img}
+                          src={img || getFallbackCoverForAlbum({ title: name, artist: name })}
                           alt={name}
+                          onError={(e) => handleImageFallbackError(e, { title: name })}
                           className="w-20 h-20 rounded-full object-cover shadow-md ring-2 ring-[#B80C09]/20"
                         />
                         <div className="flex flex-col min-w-0 w-full">
@@ -753,178 +1246,321 @@ export const UserDashboardPage = () => {
                 </div>
               ) : (
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                  {followedUsers.map((uid, idx) => (
-                    <motion.div
-                      key={idx}
-                      whileHover={{ y: -2 }}
-                      className="p-4 rounded-2xl bg-white dark:bg-[#4B2840] border border-[#e6d5e2] dark:border-white/10 shadow-xs flex items-center justify-between gap-3"
-                    >
-                      <div className="flex items-center gap-3 min-w-0">
-                        <div className="w-10 h-10 rounded-full bg-gradient-to-tr from-[#5c1d5e] to-[#B80C09] text-white flex items-center justify-center font-bold text-sm shadow-xs shrink-0">
-                          {String(uid).charAt(0).toUpperCase()}
-                        </div>
-                        <div className="flex flex-col min-w-0">
-                          <span className="text-sm font-bold text-[#231123] dark:text-white truncate">
-                            {uid === '1' ? 'Sofía Sound' : uid === '2' ? 'Marcos Vinyl' : `Audiófilo #${uid}`}
-                          </span>
-                          <span className="text-xs text-[#5c435a] dark:text-[#B89CB0] truncate">
-                            @{String(uid).toLowerCase()}
-                          </span>
-                        </div>
-                      </div>
-                      <button
-                        type="button"
-                        onClick={() => handleToggleUnfollowUser(uid)}
-                        className="px-3 py-1 rounded-xl border border-gray-300 dark:border-white/15 hover:border-rose-600 text-xs font-bold text-gray-700 dark:text-gray-300 hover:text-rose-600 transition-colors cursor-pointer shrink-0"
+                  {followedUsers.map((uid, idx) => {
+                    const profile = socialService.getUserProfile(uid);
+                    const displayName = profile?.name || `Audiófilo #${uid}`;
+                    const handle = profile?.handle || `@${String(uid).toLowerCase()}`;
+                    const role = profile?.role || 'Melómano';
+                    const bio = profile?.bio || 'Crítico de vinilos y texturas acústicas.';
+
+                    return (
+                      <motion.div
+                        key={idx}
+                        whileHover={{ y: -2 }}
+                        className="p-4 rounded-2xl bg-white dark:bg-[#4B2840] border border-[#e6d5e2] dark:border-white/10 shadow-xs flex flex-col justify-between gap-3"
                       >
-                        Siguiendo ✓
-                      </button>
-                    </motion.div>
-                  ))}
+                        <div className="flex items-center gap-3 min-w-0">
+                          <Avatar
+                            src={profile?.avatarUrl}
+                            name={displayName}
+                            avatarBg={profile?.avatarBg || '#B80C09'}
+                            size="md"
+                            className="w-11 h-11 shrink-0 rounded-full shadow-xs"
+                          />
+                          <div className="flex flex-col min-w-0 flex-1">
+                            <div className="flex items-center gap-1.5 truncate">
+                              <span className="text-sm font-bold text-[#231123] dark:text-white truncate">
+                                {displayName}
+                              </span>
+                              <span className="text-[10px] px-1.5 py-0.5 rounded-md bg-[#f8e9f6] dark:bg-[#231123] text-[#5c1d5e] dark:text-pink-200 font-semibold shrink-0">
+                                {role}
+                              </span>
+                            </div>
+                            <span className="text-xs text-[#5c435a] dark:text-[#B89CB0] truncate">
+                              {handle}
+                            </span>
+                          </div>
+                        </div>
+
+                        <p className="text-xs text-gray-600 dark:text-gray-300 line-clamp-2 italic">
+                          "{bio}"
+                        </p>
+
+                        <div className="flex items-center justify-between pt-2 border-t border-[#e6d5e2]/60 dark:border-white/10">
+                          {(() => {
+                            const userPrefs = user?.preferences || ['Art Rock', 'Electrónica'];
+                            const matchCount = (profile?.preferences || ['Art Rock']).filter((p) =>
+                              userPrefs.some((up) => up.toLowerCase() === p.toLowerCase())
+                            ).length;
+                            const affinity = Math.min(99, 82 + matchCount * 7 + (idx % 3) * 4);
+
+                            return (
+                              <span
+                                className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-emerald-500/15 text-emerald-700 dark:text-emerald-300 border border-emerald-500/30 text-[10px] font-bold"
+                                title="Porcentaje de afinidad y compatibilidad en géneros musicales"
+                              >
+                                <span className="material-symbols-outlined text-[12px] text-emerald-500">favorite</span>
+                                <span>{affinity}% Afinidad Sonora</span>
+                              </span>
+                            );
+                          })()}
+
+                          <button
+                            type="button"
+                            onClick={() => handleToggleUnfollowUser(uid)}
+                            className="px-3 py-1 rounded-xl border border-gray-300 dark:border-white/15 hover:border-rose-600 text-xs font-bold text-gray-700 dark:text-gray-300 hover:text-rose-600 transition-colors cursor-pointer"
+                          >
+                            Siguiendo ✓
+                          </button>
+                        </div>
+                      </motion.div>
+                    );
+                  })}
                 </div>
               )}
             </section>
           )}
 
-          {/* TAB 6: CONTROL PARENTAL Y FILTRO DE CONTENIDO */}
-          {activeTab === 'parental_control' && (
+          {/* TAB: EQUIPAMIENTO AUDIÓFILO */}
+          {activeTab === 'audiophile_gear' && (
             <section className="flex flex-col gap-6">
-              <div className="p-6 rounded-3xl bg-white dark:bg-[#4B2840] border border-[#e6d5e2] dark:border-white/10 shadow-xs flex flex-col gap-6">
+              {/* Firma de Sonido & Ecualizador DSP */}
+              <SoundSignatureSelector
+                initialProfile={user?.soundProfile?.presetId || 'tube-warmth'}
+                onSaveProfile={(profile) => updateUser({ soundProfile: profile })}
+              />
+
+              {/* Cadena de Señal Audiófila Visual */}
+              <AudiophileSignalChain
+                currentGear={gearSetup}
+                onUpdateGear={(chain) => {
+                  setGearSetup((prev) => ({ ...prev, ...chain }));
+                  updateUser({
+                    audiophileSetup: { ...gearSetup, ...chain },
+                  });
+                }}
+              />
+
+              <div className="p-6 sm:p-8 rounded-3xl bg-white dark:bg-[#4B2840] border border-[#e6d5e2] dark:border-white/10 shadow-xs flex flex-col gap-6">
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-5 border-b border-gray-100 dark:border-white/10">
                   <div className="flex items-center gap-3.5">
-                    <div className="w-12 h-12 rounded-2xl bg-rose-500/15 dark:bg-rose-500/20 text-[#B80C09] flex items-center justify-center shrink-0">
-                      <span className="material-symbols-outlined text-[26px]">lock</span>
+                    <div className="w-14 h-14 rounded-2xl bg-[#B80C09]/15 dark:bg-[#B80C09]/25 text-[#B80C09] flex items-center justify-center shrink-0">
+                      <span className="material-symbols-outlined text-[30px]">headphones</span>
                     </div>
                     <div>
-                      <h3 className="text-base sm:text-lg font-black text-[#231123] dark:text-white flex items-center gap-2">
-                        <span>Filtro de Contenido & Control Parental</span>
-                        <span className="px-2 py-0.5 rounded-full text-[10px] font-black uppercase bg-[#B80C09]/10 text-[#B80C09] dark:bg-rose-900/40 dark:text-rose-300">
-                          {user?.accountType === 'junior' ? 'Cuenta Junior Activa' : 'Filtro Configurable'}
+                      <h3 className="text-base sm:text-xl font-black text-[#231123] dark:text-white flex items-center gap-2">
+                        <span>Equipamiento Hi-Fi & Calibración</span>
+                        <span className="px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase bg-[#B80C09]/15 text-[#B80C09] dark:text-pink-300 border border-[#B80C09]/30">
+                          Calidad de Estudio
                         </span>
                       </h3>
-                      <p className="text-xs text-[#5c435a] dark:text-[#B89CB0] mt-0.5">
-                        Protege la experiencia auditiva bloqueando canciones y pistas con lenguaje explícito o temas no aptos para menores.
+                      <p className="text-xs sm:text-sm text-[#5c435a] dark:text-[#B89CB0] mt-0.5">
+                        Registra tus tornamesas, DACs y audífonos para exhibirlos en tu perfil y personalizar la respuesta acústica.
                       </p>
                     </div>
                   </div>
 
-                  {parentalNotice && (
+                  {gearSavedNotice && (
                     <span className="text-xs font-bold text-emerald-600 bg-emerald-50 dark:bg-emerald-950/40 dark:text-emerald-300 px-3 py-1.5 rounded-xl border border-emerald-200 dark:border-emerald-800 self-start sm:self-auto animate-fade-in">
-                      {parentalNotice}
+                      ✓ Equipamiento actualizado con éxito
                     </span>
                   )}
                 </div>
 
-                {/* Switch de activación del filtro explícito */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div className="p-4 rounded-2xl bg-gray-50 dark:bg-black/20 border border-gray-200/70 dark:border-white/10 flex items-center justify-between gap-4">
-                    <div className="flex flex-col min-w-0">
-                      <span className="text-sm font-bold text-[#231123] dark:text-white flex items-center gap-1.5">
-                        <span>Bloquear canciones explícitas [E]</span>
-                        <span className="px-1.5 py-0.2 rounded text-[8px] font-black bg-gray-700 text-white">E</span>
-                      </span>
-                      <span className="text-xs text-[#5c435a] dark:text-[#B89CB0] mt-0.5">
-                        Las pistas marcadas con lenguaje adulto requerirán el PIN para reproducirse.
+                {/* Resumen del Setup Actual */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                  <div className="p-4 rounded-2xl bg-[#231123] text-white border border-white/10 flex flex-col gap-2">
+                    <div className="flex items-center justify-between text-xs text-pink-300 font-bold">
+                      <span className="flex items-center gap-1.5">
+                        <span className="material-symbols-outlined text-[16px]">album</span>
+                        <span>Tornamesa</span>
                       </span>
                     </div>
-                    <button
-                      type="button"
-                      onClick={() => {
-                        const currentBlocked = Boolean(user?.parentalControl?.blockExplicit);
-                        updateParentalControl({
-                          enabled: !currentBlocked,
-                          blockExplicit: !currentBlocked,
-                        });
-                        setParentalNotice(!currentBlocked ? 'Filtro explícito activado' : 'Filtro explícito desactivado');
-                        setTimeout(() => setParentalNotice(''), 3000);
-                      }}
-                      className={`w-14 h-8 rounded-full transition-colors relative cursor-pointer shrink-0 ${
-                        user?.parentalControl?.blockExplicit ? 'bg-[#B80C09]' : 'bg-gray-300 dark:bg-gray-700'
-                      }`}
-                      aria-label="Alternar bloqueo de contenido explícito"
-                    >
-                      <motion.div
-                        className="w-6 h-6 rounded-full bg-white shadow-md absolute top-1"
-                        animate={{ left: user?.parentalControl?.blockExplicit ? '1.75rem' : '0.25rem' }}
-                        transition={{ type: 'spring', stiffness: 500, damping: 30 }}
-                      />
-                    </button>
+                    <span className="text-sm font-black text-white truncate">
+                      {gearSetup.turntable || 'Sin asignar'}
+                    </span>
                   </div>
 
-                  {/* Modalidad de Cuenta (Estándar vs Junior) */}
-                  <div className="p-4 rounded-2xl bg-gray-50 dark:bg-black/20 border border-gray-200/70 dark:border-white/10 flex items-center justify-between gap-4">
-                    <div className="flex flex-col min-w-0">
-                      <span className="text-sm font-bold text-[#231123] dark:text-white">
-                        Tipo de Cuenta Sonar
-                      </span>
-                      <span className="text-xs text-[#5c435a] dark:text-[#B89CB0] mt-0.5">
-                        {user?.accountType === 'junior'
-                          ? 'Modo Junior Seguro: Restricción estricta por defecto.'
-                          : 'Modo Estándar: Acceso libre con filtro opcional.'}
+                  <div className="p-4 rounded-2xl bg-[#231123] text-white border border-white/10 flex flex-col gap-2">
+                    <div className="flex items-center justify-between text-xs text-blue-300 font-bold">
+                      <span className="flex items-center gap-1.5">
+                        <span className="material-symbols-outlined text-[16px]">headphones</span>
+                        <span>Audífonos</span>
                       </span>
                     </div>
-                    <button
-                      type="button"
-                      onClick={() => {
-                        const nextType = user?.accountType === 'junior' ? 'standard' : 'junior';
-                        updateUser({ accountType: nextType });
-                        if (nextType === 'junior') {
-                          updateParentalControl({ enabled: true, blockExplicit: true });
-                        }
-                        setParentalNotice(`Cuenta cambiada a modo ${nextType === 'junior' ? 'Junior Seguro' : 'Estándar'}`);
-                        setTimeout(() => setParentalNotice(''), 3000);
-                      }}
-                      className="px-3.5 py-1.5 rounded-xl border border-gray-300 dark:border-white/20 hover:border-[#B80C09] text-xs font-bold text-[#231123] dark:text-white transition-colors cursor-pointer shrink-0"
-                    >
-                      {user?.accountType === 'junior' ? 'Cambiar a Estándar' : 'Cambiar a Junior'}
-                    </button>
+                    <span className="text-sm font-black text-white truncate">
+                      {gearSetup.headphones || 'Sin asignar'}
+                    </span>
+                  </div>
+
+                  <div className="p-4 rounded-2xl bg-[#231123] text-white border border-white/10 flex flex-col gap-2">
+                    <div className="flex items-center justify-between text-xs text-emerald-300 font-bold">
+                      <span className="flex items-center gap-1.5">
+                        <span className="material-symbols-outlined text-[16px]">speaker</span>
+                        <span>DAC / Amplificador</span>
+                      </span>
+                    </div>
+                    <span className="text-sm font-black text-white truncate">
+                      {gearSetup.dac || 'Sin asignar'}
+                    </span>
+                  </div>
+
+                  <div className="p-4 rounded-2xl bg-[#231123] text-white border border-white/10 flex flex-col gap-2">
+                    <div className="flex items-center justify-between text-xs text-amber-300 font-bold">
+                      <span className="flex items-center gap-1.5">
+                        <span className="material-symbols-outlined text-[16px]">graphic_eq</span>
+                        <span>Formato Clave</span>
+                      </span>
+                    </div>
+                    <span className="text-sm font-black text-white truncate">
+                      {gearSetup.favoriteFormat || 'Sin asignar'}
+                    </span>
                   </div>
                 </div>
 
-                {/* Formulario de Configuración de PIN Parental */}
-                <div className="p-5 rounded-2xl bg-gray-50 dark:bg-black/20 border border-gray-200/70 dark:border-white/10 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                  <div className="flex flex-col">
-                    <h4 className="text-sm font-bold text-[#231123] dark:text-white flex items-center gap-2">
-                      <span className="material-symbols-outlined text-[18px] text-[#B80C09]">pin</span>
-                      <span>PIN de Seguridad Parental (4 dígitos)</span>
-                    </h4>
-                    <p className="text-xs text-[#5c435a] dark:text-[#B89CB0] mt-0.5">
-                      Este PIN de 4 dígitos es solicitado en el reproductor para desbloquear pistas protegidas.
-                    </p>
+                {/* Formulario Interactivo */}
+                <form onSubmit={handleSaveGear} className="flex flex-col gap-6 pt-2">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                    {/* Tornamesa */}
+                    <div className="flex flex-col gap-2 p-4 rounded-2xl bg-gray-50 dark:bg-black/20 border border-gray-200/70 dark:border-white/10">
+                      <label className="text-xs font-black uppercase text-[#231123] dark:text-white flex items-center gap-2">
+                        <span className="material-symbols-outlined text-[18px] text-[#B80C09]">album</span>
+                        <span>Tornamesa / Reproductor</span>
+                      </label>
+                      <input
+                        type="text"
+                        value={gearSetup.turntable}
+                        onChange={(e) => setGearSetup({ ...gearSetup, turntable: e.target.value })}
+                        placeholder="Ej. Technics SL-1200MK7, Audio-Technica LP120X..."
+                        className="w-full text-xs font-semibold py-2.5 px-3 rounded-xl bg-white dark:bg-[#341b31] border border-gray-300 dark:border-white/20 text-[#231123] dark:text-white focus:outline-hidden focus:border-[#B80C09]"
+                      />
+                      <div className="flex flex-wrap gap-1.5 pt-1">
+                        {['Technics SL-1200MK7', 'Audio-Technica LP120X', 'Pro-Ject Debut Carbon', 'Rega Planar 3'].map((preset) => (
+                          <button
+                            key={preset}
+                            type="button"
+                            onClick={() => setGearSetup({ ...gearSetup, turntable: preset })}
+                            className="px-2 py-0.5 rounded-lg text-[10px] font-bold bg-white dark:bg-[#231123] text-[#5c435a] dark:text-pink-200 border border-gray-300 dark:border-white/10 hover:border-[#B80C09]"
+                          >
+                            + {preset}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* Audífonos */}
+                    <div className="flex flex-col gap-2 p-4 rounded-2xl bg-gray-50 dark:bg-black/20 border border-gray-200/70 dark:border-white/10">
+                      <label className="text-xs font-black uppercase text-[#231123] dark:text-white flex items-center gap-2">
+                        <span className="material-symbols-outlined text-[18px] text-blue-500">headphones</span>
+                        <span>Audífonos / Monitores</span>
+                      </label>
+                      <input
+                        type="text"
+                        value={gearSetup.headphones}
+                        onChange={(e) => setGearSetup({ ...gearSetup, headphones: e.target.value })}
+                        placeholder="Ej. Sennheiser HD 660S, Sony WH-1000XM5..."
+                        className="w-full text-xs font-semibold py-2.5 px-3 rounded-xl bg-white dark:bg-[#341b31] border border-gray-300 dark:border-white/20 text-[#231123] dark:text-white focus:outline-hidden focus:border-[#B80C09]"
+                      />
+                      <div className="flex flex-wrap gap-1.5 pt-1">
+                        {['Sennheiser HD 660S', 'Sony WH-1000XM5', 'Audio-Technica ATH-M50x', 'Beyerdynamic DT 990'].map((preset) => (
+                          <button
+                            key={preset}
+                            type="button"
+                            onClick={() => setGearSetup({ ...gearSetup, headphones: preset })}
+                            className="px-2 py-0.5 rounded-lg text-[10px] font-bold bg-white dark:bg-[#231123] text-[#5c435a] dark:text-pink-200 border border-gray-300 dark:border-white/10 hover:border-blue-500"
+                          >
+                            + {preset}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* DAC / Amplificador */}
+                    <div className="flex flex-col gap-2 p-4 rounded-2xl bg-gray-50 dark:bg-black/20 border border-gray-200/70 dark:border-white/10">
+                      <label className="text-xs font-black uppercase text-[#231123] dark:text-white flex items-center gap-2">
+                        <span className="material-symbols-outlined text-[18px] text-emerald-500">speaker</span>
+                        <span>DAC & Amplificación</span>
+                      </label>
+                      <input
+                        type="text"
+                        value={gearSetup.dac}
+                        onChange={(e) => setGearSetup({ ...gearSetup, dac: e.target.value })}
+                        placeholder="Ej. Cambridge Audio DacMagic, Schiit Magni, iFi Zen DAC..."
+                        className="w-full text-xs font-semibold py-2.5 px-3 rounded-xl bg-white dark:bg-[#341b31] border border-gray-300 dark:border-white/20 text-[#231123] dark:text-white focus:outline-hidden focus:border-[#B80C09]"
+                      />
+                      <div className="flex flex-wrap gap-1.5 pt-1">
+                        {['Cambridge Audio DacMagic', 'Schiit Modi/Magni', 'iFi Zen DAC V2', 'FiiO K7 Pro'].map((preset) => (
+                          <button
+                            key={preset}
+                            type="button"
+                            onClick={() => setGearSetup({ ...gearSetup, dac: preset })}
+                            className="px-2 py-0.5 rounded-lg text-[10px] font-bold bg-white dark:bg-[#231123] text-[#5c435a] dark:text-pink-200 border border-gray-300 dark:border-white/10 hover:border-emerald-500"
+                          >
+                            + {preset}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* Formato Favorito */}
+                    <div className="flex flex-col gap-2 p-4 rounded-2xl bg-gray-50 dark:bg-black/20 border border-gray-200/70 dark:border-white/10">
+                      <label className="text-xs font-black uppercase text-[#231123] dark:text-white flex items-center gap-2">
+                        <span className="material-symbols-outlined text-[18px] text-amber-500">graphic_eq</span>
+                        <span>Formato Preferido de Audición</span>
+                      </label>
+                      <input
+                        type="text"
+                        value={gearSetup.favoriteFormat}
+                        onChange={(e) => setGearSetup({ ...gearSetup, favoriteFormat: e.target.value })}
+                        placeholder="Ej. Vinilo 180g Prensado Japonés, FLAC 24-bit/192kHz..."
+                        className="w-full text-xs font-semibold py-2.5 px-3 rounded-xl bg-white dark:bg-[#341b31] border border-gray-300 dark:border-white/20 text-[#231123] dark:text-white focus:outline-hidden focus:border-[#B80C09]"
+                      />
+                      <div className="flex flex-wrap gap-1.5 pt-1">
+                        {['Vinilo 180g Prensado Japonés', 'FLAC Lossless 24-bit/192kHz', 'Master DSD 5.6MHz', 'Cinta Analógica Reel'].map((preset) => (
+                          <button
+                            key={preset}
+                            type="button"
+                            onClick={() => setGearSetup({ ...gearSetup, favoriteFormat: preset })}
+                            className="px-2 py-0.5 rounded-lg text-[10px] font-bold bg-white dark:bg-[#231123] text-[#5c435a] dark:text-pink-200 border border-gray-300 dark:border-white/10 hover:border-amber-500"
+                          >
+                            + {preset}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
                   </div>
 
-                  <form
-                    onSubmit={(e) => {
-                      e.preventDefault();
-                      if (parentPinInput.trim().length >= 4) {
-                        updateParentalControl({ pin: parentPinInput.trim() });
-                        setParentalNotice('PIN de Control Parental guardado con éxito');
-                        setTimeout(() => setParentalNotice(''), 3000);
-                      }
-                    }}
-                    className="flex items-center gap-2"
-                  >
-                    <input
-                      type="password"
-                      maxLength={8}
-                      value={parentPinInput}
-                      onChange={(e) => setParentPinInput(e.target.value.replace(/\D/g, '').slice(0, 4))}
-                      placeholder="1234"
-                      className="w-24 text-center tracking-[0.3em] font-mono text-sm py-2 px-3 rounded-xl bg-white dark:bg-[#341b31] border border-gray-300 dark:border-white/20 text-[#231123] dark:text-white focus:outline-hidden focus:border-[#B80C09]"
-                    />
+                  <div className="flex items-center justify-end gap-3 pt-2">
                     <button
                       type="submit"
-                      disabled={parentPinInput.trim().length < 4}
-                      className="px-4 py-2 rounded-xl bg-[#B80C09] hover:bg-[#960a07] text-white text-xs font-bold transition-all disabled:opacity-50 cursor-pointer shadow-xs"
+                      className="px-6 py-2.5 rounded-xl bg-[#B80C09] hover:bg-[#960a07] text-white text-xs sm:text-sm font-bold transition-all cursor-pointer shadow-xs flex items-center gap-2"
                     >
-                      Guardar PIN
+                      <span className="material-symbols-outlined text-[18px]">save</span>
+                      <span>Guardar Equipamiento en Perfil</span>
                     </button>
-                  </form>
-                </div>
+                  </div>
+                </form>
               </div>
             </section>
           )}
+
+          {/* TAB 6: BOUTIQUE & RECOMPENSAS SONAR */}
+          {activeTab === 'recompensas' && (
+            <RewardsStoreTab />
+          )}
+
+          {/* TAB 7: CONTROL PARENTAL Y FILTRO DE CONTENIDO */}
+          {activeTab === 'parental_control' && (
+            <EnhancedParentalControl />
+          )}
         </div>
+
+        {/* Modal de Diario Acústico & Sleeve Notes */}
+        <ListeningJournalModal
+          album={journalAlbum}
+          isOpen={Boolean(journalAlbum)}
+          onClose={() => setJournalAlbum(null)}
+        />
       </main>
 
       {/* Pie de Página */}

@@ -1,6 +1,7 @@
-import { resolveAccurateCoverForTrack, getFallbackCoverForAlbum } from './recommendations-service';
+import { resolveAccurateCoverForTrack } from './recommendations-service';
 
-const BASE_URL = '/api/deezer';
+const DEEZER_CACHE = new Map();
+const CACHE_TTL_MS = 5 * 60 * 1000; // 5 minutos de cache en memoria
 
 /**
  * Curated real Deezer albums with official high-res Deezer cover images
@@ -152,6 +153,59 @@ export const DEFAULT_DEEZER_ALBUMS = [
 ];
 
 /**
+ * Cliente HTTP resiliente con fallbacks automáticos, timeout y caché en memoria
+ */
+async function fetchDeezerApi(endpoint) {
+  if (!endpoint) return null;
+  const cleanEndpoint = endpoint.startsWith('/') ? endpoint : `/${endpoint}`;
+  const cacheKey = cleanEndpoint.toLowerCase().trim();
+
+  // Revisar caché
+  const cached = DEEZER_CACHE.get(cacheKey);
+  if (cached && Date.now() - cached.timestamp < CACHE_TTL_MS) {
+    return cached.data;
+  }
+
+  const isBrowser = typeof window !== 'undefined' && typeof window.document !== 'undefined';
+  const candidateUrls = [];
+
+  if (isBrowser) {
+    candidateUrls.push(`/api/deezer${cleanEndpoint}`);
+  }
+  candidateUrls.push(`https://api.deezer.com${cleanEndpoint}`);
+  candidateUrls.push(`https://corsproxy.io/?${encodeURIComponent(`https://api.deezer.com${cleanEndpoint}`)}`);
+  candidateUrls.push(`https://api.allorigins.win/raw?url=${encodeURIComponent(`https://api.deezer.com${cleanEndpoint}`)}`);
+
+  for (const url of candidateUrls) {
+    try {
+      let res;
+      if (typeof AbortSignal !== 'undefined' && AbortSignal.timeout) {
+        res = await fetch(url, { signal: AbortSignal.timeout(3500) });
+      } else {
+        const controller = new AbortController();
+        const tid = setTimeout(() => controller.abort(), 3500);
+        res = await fetch(url, { signal: controller.signal });
+        clearTimeout(tid);
+      }
+
+      if (res && res.ok) {
+        const json = await res.json();
+        // Verificar que Deezer no devolvió un error de cuota o similar
+        if (json && !json.error) {
+          DEEZER_CACHE.set(cacheKey, { timestamp: Date.now(), data: json });
+          return json;
+        }
+      }
+    } catch {
+      // Continuar al siguiente proxy
+      continue;
+    }
+  }
+
+  return null;
+}
+
+/**
  * Determina si una pista o álbum contiene contenido explícito (lenguaje adulto / letras explícitas)
  */
 export const isExplicitTrack = (track) => {
@@ -163,11 +217,46 @@ export const isExplicitTrack = (track) => {
     title.includes('[explicit]') ||
     title.includes('(explicit)') ||
     album.includes('[explicit]') ||
-    album.includes('(explicit)')
+    album.includes('(explicit)') ||
+    title.includes('[e]')
   ) {
     return true;
   }
   return false;
+};
+
+/**
+ * Validador estricto para Modo Kids: Bloquea pistas explícitas, palabras clave prohibidas y temas para adultos
+ */
+export const isKidsSafeTrack = (track, extraSettings = null) => {
+  if (!track) return false;
+  if (isExplicitTrack(track)) return false;
+
+  const title = String(track.title || '').toLowerCase();
+  const artist = String(track.artist || '').toLowerCase();
+  const album = String(track.album || track.albumTitle || '').toLowerCase();
+
+  const defaultBlocked = [
+    'explicit', 'violencia', 'drogas', 'sex', 'sexual', 'matar', 'muerte', 'asesinato',
+    'gun', 'shot', 'gang', 'blood', 'fuck', 'bitch', 'shit', 'weed', 'cocaína', 'perreo sucio'
+  ];
+
+  const customBlocked = extraSettings?.blockedKeywords || [];
+  const allBlocked = [...defaultBlocked, ...customBlocked.map((k) => String(k).toLowerCase())];
+
+  for (const kw of allBlocked) {
+    if (kw && kw.trim().length > 1 && (title.includes(kw) || artist.includes(kw) || album.includes(kw))) {
+      return false;
+    }
+  }
+
+  if (extraSettings?.blockedArtists && Array.isArray(extraSettings.blockedArtists)) {
+    if (extraSettings.blockedArtists.some((a) => artist.includes(String(a).toLowerCase()))) {
+      return false;
+    }
+  }
+
+  return true;
 };
 
 /**
@@ -194,106 +283,73 @@ export const formatDeezerAlbum = (album) => {
 };
 
 /**
- * Busca canciones y pistas en la API de Deezer
+ * Busca canciones y pistas en la API de Deezer con fallbacks resilientes
  * @param {string} query - Término de búsqueda
  * @returns {Promise<Array>} Lista de canciones normalizadas con preview y carátula
  */
 export const searchAlbums = async (query) => {
   if (!query || !query.trim()) return [];
-  
   const cleanQuery = query.trim();
+
   try {
-    // 1. Búsqueda directa de canciones/pistas en Deezer (/search?q=...)
-    let response = await fetch(`${BASE_URL}/search?q=${encodeURIComponent(cleanQuery)}`);
-    
-    if (response.ok) {
-      const data = await response.json();
-      if (data.data && Array.isArray(data.data) && data.data.length > 0) {
-        return data.data.map((item) => {
-          const isExplicit = Boolean(item.explicit_lyrics || item.explicit_content_lyrics === 1);
-          const rawObj = {
-            id: item.id,
-            title: item.title,
-            artist: item.artist?.name || 'Artista',
-            album: item.album?.title || item.title,
-            albumTitle: item.album?.title || item.title,
-            cover: item.album?.cover_big || item.album?.cover_medium || item.album?.cover || item.artist?.picture_big || '',
-            cover_xl: item.album?.cover_xl || item.album?.cover_big || '',
-            cover_medium: item.album?.cover_medium || item.album?.cover || '',
-            genre: 'Música',
-            year: item.album?.release_date ? item.album.release_date.substring(0, 4) : '2024',
-            rating: (4.5 + ((item.id % 5) * 0.1)).toFixed(1),
-            duration: item.duration,
-            preview: item.preview,
-            link: item.link,
-            type: 'track',
-            explicit_lyrics: isExplicit,
-            explicit: isExplicit,
-          };
-          const accurateCover = resolveAccurateCoverForTrack(rawObj);
-          return {
-            ...rawObj,
-            cover: accurateCover,
-            cover_medium: accurateCover,
-          };
-        });
-      }
+    // 1. Búsqueda directa de pistas en Deezer (/search?q=...)
+    const data = await fetchDeezerApi(`/search?q=${encodeURIComponent(cleanQuery)}`);
+    if (data && data.data && Array.isArray(data.data) && data.data.length > 0) {
+      return data.data.map((item) => {
+        const isExplicit = Boolean(item.explicit_lyrics || item.explicit_content_lyrics === 1);
+        const rawObj = {
+          id: item.id,
+          title: item.title,
+          artist: item.artist?.name || 'Artista',
+          album: item.album?.title || item.title,
+          albumTitle: item.album?.title || item.title,
+          cover: item.album?.cover_big || item.album?.cover_medium || item.album?.cover || item.artist?.picture_big || '',
+          cover_xl: item.album?.cover_xl || item.album?.cover_big || '',
+          cover_medium: item.album?.cover_medium || item.album?.cover || '',
+          genre: 'Música',
+          year: item.album?.release_date ? item.album.release_date.substring(0, 4) : '2024',
+          rating: (4.5 + ((item.id % 5) * 0.1)).toFixed(1),
+          duration: item.duration,
+          preview: item.preview,
+          link: item.link,
+          type: 'track',
+          explicit_lyrics: isExplicit,
+          explicit: isExplicit,
+        };
+        const accurateCover = resolveAccurateCoverForTrack(rawObj);
+        return {
+          ...rawObj,
+          cover: accurateCover,
+          cover_medium: accurateCover,
+        };
+      });
     }
-    
+
     // 2. Fallback de búsqueda de álbumes si /search no trajo nada
-    response = await fetch(`${BASE_URL}/search/album?q=${encodeURIComponent(cleanQuery)}`);
-    if (response.ok) {
-      const data = await response.json();
-      if (data.data && Array.isArray(data.data) && data.data.length > 0) {
-        return data.data.map(formatDeezerAlbum);
-      }
+    const albumData = await fetchDeezerApi(`/search/album?q=${encodeURIComponent(cleanQuery)}`);
+    if (albumData && albumData.data && Array.isArray(albumData.data) && albumData.data.length > 0) {
+      return albumData.data.map(formatDeezerAlbum);
     }
-
-    // 3. Fallback inteligente si se buscaron múltiples palabras juntas
-    const words = cleanQuery.split(' ').filter(w => w.length > 2);
-    if (words.length > 1) {
-      const fallbackQuery = words[0];
-      response = await fetch(`${BASE_URL}/search?q=${encodeURIComponent(fallbackQuery)}`);
-      if (response.ok) {
-        const data = await response.json();
-        if (data.data && Array.isArray(data.data) && data.data.length > 0) {
-          return data.data.map((item) => {
-            const isExplicit = Boolean(item.explicit_lyrics || item.explicit_content_lyrics === 1);
-            const rawObj = {
-              id: item.id,
-              title: item.title,
-              artist: item.artist?.name || 'Artista',
-              album: item.album?.title || item.title,
-              albumTitle: item.album?.title || item.title,
-              cover: item.album?.cover_big || item.album?.cover_medium || item.album?.cover || '',
-              cover_xl: item.album?.cover_xl || item.album?.cover_big || '',
-              cover_medium: item.album?.cover_medium || item.album?.cover || '',
-              genre: 'Música',
-              year: '2024',
-              rating: (4.5 + ((item.id % 5) * 0.1)).toFixed(1),
-              duration: item.duration,
-              preview: item.preview,
-              link: item.link,
-              type: 'track',
-              explicit_lyrics: isExplicit,
-              explicit: isExplicit,
-            };
-            const accurateCover = resolveAccurateCoverForTrack(rawObj);
-            return {
-              ...rawObj,
-              cover: accurateCover,
-              cover_medium: accurateCover,
-            };
-          });
-        }
-      }
-    }
-
-    return [];
   } catch (error) {
-    console.error("Error al conectar con la API de Deezer:", error);
-    return [];
+    console.warn('Fallo en búsqueda remota de Deezer, usando catálogo local:', error);
   }
+
+  // 3. Fallback a catálogo curado offline si Deezer no responde
+  const lower = cleanQuery.toLowerCase();
+  const matchedCurated = DEFAULT_DEEZER_ALBUMS.filter(
+    (a) => a.title.toLowerCase().includes(lower) || a.artist.toLowerCase().includes(lower)
+  );
+  if (matchedCurated.length > 0) {
+    return matchedCurated.map((a) => ({
+      ...a,
+      album: a.title,
+      albumTitle: a.title,
+      type: 'track',
+      preview: a.topTrack?.preview || null,
+    }));
+  }
+
+  return [];
 };
 
 /**
@@ -302,15 +358,17 @@ export const searchAlbums = async (query) => {
 export const getAlbumById = async (id) => {
   if (!/^\d+$/.test(String(id))) return null;
   try {
-    const response = await fetch(`${BASE_URL}/album/${id}`, { signal: AbortSignal.timeout(10000) });
-    if (!response.ok) throw new Error(`HTTP ${response.status}`);
-    const data = await response.json();
-    if (data.error || !data.id || !data.title) return null;
-    return formatDeezerAlbum(data);
+    const data = await fetchDeezerApi(`/album/${id}`);
+    if (data && !data.error && data.id && data.title) {
+      return formatDeezerAlbum(data);
+    }
   } catch (error) {
-    console.error("Error al obtener álbum de Deezer:", error);
-    return null;
+    console.warn('Error al obtener álbum de Deezer:', error);
   }
+
+  // Fallback local por ID
+  const local = DEFAULT_DEEZER_ALBUMS.find((a) => String(a.id) === String(id));
+  return local ? formatDeezerAlbum(local) : null;
 };
 
 /**
@@ -319,27 +377,28 @@ export const getAlbumById = async (id) => {
 export const getAlbumTracks = async (albumId) => {
   if (!albumId) return [];
   try {
-    const response = await fetch(`${BASE_URL}/album/${albumId}/tracks`);
-    if (!response.ok) throw new Error(`HTTP ${response.status}`);
-    const data = await response.json();
-    return (data.data || []).map((track) => {
-      const isExplicit = Boolean(track.explicit_lyrics || track.explicit_content_lyrics === 1);
-      return {
-        id: track.id,
-        title: track.title,
-        duration: track.duration,
-        preview: track.preview,
-        rank: track.rank,
-        artist: track.artist?.name || 'Artista',
-        link: track.link,
-        explicit_lyrics: isExplicit,
-        explicit: isExplicit,
-      };
-    });
+    const data = await fetchDeezerApi(`/album/${albumId}/tracks`);
+    if (data && data.data && Array.isArray(data.data)) {
+      return data.data.map((track) => {
+        const isExplicit = Boolean(track.explicit_lyrics || track.explicit_content_lyrics === 1);
+        return {
+          id: track.id,
+          title: track.title,
+          duration: track.duration,
+          preview: track.preview,
+          rank: track.rank,
+          artist: track.artist?.name || 'Artista',
+          link: track.link,
+          explicit_lyrics: isExplicit,
+          explicit: isExplicit,
+        };
+      });
+    }
   } catch (error) {
-    console.error("Error al obtener canciones del álbum de Deezer:", error);
-    return [];
+    console.warn('Error al obtener canciones del álbum de Deezer:', error);
   }
+
+  return [];
 };
 
 /**
@@ -348,45 +407,8 @@ export const getAlbumTracks = async (albumId) => {
 export const getTrackById = async (trackId) => {
   if (!trackId) return null;
   try {
-    const response = await fetch(`${BASE_URL}/track/${trackId}`);
-    if (!response.ok) throw new Error(`HTTP ${response.status}`);
-    const track = await response.json();
-    const isExplicit = Boolean(track.explicit_lyrics || track.explicit_content_lyrics === 1);
-    const rawObj = {
-      id: track.id,
-      title: track.title,
-      artist: track.artist?.name || 'Artista',
-      album: track.album?.title || '',
-      cover: track.album?.cover_medium || track.album?.cover || '',
-      cover_xl: track.album?.cover_xl || track.album?.cover_big || '',
-      preview: track.preview,
-      duration: track.duration,
-      link: track.link,
-      explicit_lyrics: isExplicit,
-      explicit: isExplicit,
-    };
-    const accurateCover = resolveAccurateCoverForTrack(rawObj);
-    return {
-      ...rawObj,
-      cover: accurateCover,
-      cover_medium: accurateCover,
-    };
-  } catch (error) {
-    console.error("Error al obtener canción por ID de Deezer:", error);
-    return null;
-  }
-};
-
-/**
- * Busca canciones directamente en Deezer con preview de 30 segundos
- */
-export const searchTracks = async (query) => {
-  if (!query || !query.trim()) return [];
-  try {
-    const response = await fetch(`${BASE_URL}/search?q=${encodeURIComponent(query.trim())}`);
-    if (!response.ok) throw new Error(`HTTP ${response.status}`);
-    const data = await response.json();
-    return (data.data || []).map((track) => {
+    const track = await fetchDeezerApi(`/track/${trackId}`);
+    if (track && !track.error && track.id) {
       const isExplicit = Boolean(track.explicit_lyrics || track.explicit_content_lyrics === 1);
       const rawObj = {
         id: track.id,
@@ -407,11 +429,50 @@ export const searchTracks = async (query) => {
         cover: accurateCover,
         cover_medium: accurateCover,
       };
-    });
+    }
   } catch (error) {
-    console.error("Error al buscar canciones en Deezer:", error);
-    return [];
+    console.warn('Error al obtener canción por ID de Deezer:', error);
   }
+
+  return null;
+};
+
+/**
+ * Busca canciones directamente en Deezer con preview de 30 segundos
+ */
+export const searchTracks = async (query) => {
+  if (!query || !query.trim()) return [];
+  try {
+    const data = await fetchDeezerApi(`/search?q=${encodeURIComponent(query.trim())}`);
+    if (data && data.data && Array.isArray(data.data)) {
+      return data.data.map((track) => {
+        const isExplicit = Boolean(track.explicit_lyrics || track.explicit_content_lyrics === 1);
+        const rawObj = {
+          id: track.id,
+          title: track.title,
+          artist: track.artist?.name || 'Artista',
+          album: track.album?.title || '',
+          cover: track.album?.cover_medium || track.album?.cover || '',
+          cover_xl: track.album?.cover_xl || track.album?.cover_big || '',
+          preview: track.preview,
+          duration: track.duration,
+          link: track.link,
+          explicit_lyrics: isExplicit,
+          explicit: isExplicit,
+        };
+        const accurateCover = resolveAccurateCoverForTrack(rawObj);
+        return {
+          ...rawObj,
+          cover: accurateCover,
+          cover_medium: accurateCover,
+        };
+      });
+    }
+  } catch (error) {
+    console.warn('Error al buscar canciones en Deezer:', error);
+  }
+
+  return [];
 };
 
 /**
@@ -420,11 +481,10 @@ export const searchTracks = async (query) => {
 export const searchArtists = async (query) => {
   if (!query || !query.trim()) return [];
   const cleanQuery = query.trim();
+
   try {
-    const response = await fetch(`${BASE_URL}/search/artist?q=${encodeURIComponent(cleanQuery)}`);
-    if (!response.ok) throw new Error(`HTTP ${response.status}`);
-    const data = await response.json();
-    if (!data.data || data.data.length === 0) {
+    const data = await fetchDeezerApi(`/search/artist?q=${encodeURIComponent(cleanQuery)}`);
+    if (!data || !data.data || data.data.length === 0) {
       return searchTracks(cleanQuery);
     }
 
@@ -432,35 +492,32 @@ export const searchArtists = async (query) => {
     const topArtists = data.data.slice(0, 3);
     for (const artist of topArtists) {
       try {
-        const topRes = await fetch(`${BASE_URL}/artist/${artist.id}/top?limit=10`);
-        if (topRes.ok) {
-          const topData = await topRes.json();
-          if (topData.data && topData.data.length > 0) {
-            topData.data.forEach((track) => {
-              const rawObj = {
-                id: track.id,
-                title: track.title,
-                artist: artist.name,
-                album: track.album?.title || 'Sencillo',
-                albumTitle: track.album?.title || 'Sencillo',
-                cover: track.album?.cover_big || track.album?.cover_medium || artist.picture_big || '',
-                cover_xl: track.album?.cover_xl || track.album?.cover_big || artist.picture_xl || '',
-                cover_medium: track.album?.cover_medium || artist.picture_medium || '',
-                preview: track.preview,
-                duration: track.duration,
-                link: track.link,
-                type: 'track',
-                artistId: artist.id,
-                rating: (4.6 + ((track.id % 4) * 0.1)).toFixed(1),
-              };
-              const accurateCover = resolveAccurateCoverForTrack(rawObj);
-              results.push({
-                ...rawObj,
-                cover: accurateCover,
-                cover_medium: accurateCover,
-              });
+        const topData = await fetchDeezerApi(`/artist/${artist.id}/top?limit=10`);
+        if (topData && topData.data && topData.data.length > 0) {
+          topData.data.forEach((track) => {
+            const rawObj = {
+              id: track.id,
+              title: track.title,
+              artist: artist.name,
+              album: track.album?.title || 'Sencillo',
+              albumTitle: track.album?.title || 'Sencillo',
+              cover: track.album?.cover_big || track.album?.cover_medium || artist.picture_big || '',
+              cover_xl: track.album?.cover_xl || track.album?.cover_big || artist.picture_xl || '',
+              cover_medium: track.album?.cover_medium || artist.picture_medium || '',
+              preview: track.preview,
+              duration: track.duration,
+              link: track.link,
+              type: 'track',
+              artistId: artist.id,
+              rating: (4.6 + ((track.id % 4) * 0.1)).toFixed(1),
+            };
+            const accurateCover = resolveAccurateCoverForTrack(rawObj);
+            results.push({
+              ...rawObj,
+              cover: accurateCover,
+              cover_medium: accurateCover,
             });
-          }
+          });
         }
       } catch (err) {
         console.warn('Error al obtener canciones del artista:', err);
@@ -469,7 +526,7 @@ export const searchArtists = async (query) => {
 
     return results.length > 0 ? results : searchTracks(cleanQuery);
   } catch (error) {
-    console.error("Error al buscar artistas en Deezer:", error);
+    console.warn('Error al buscar artistas en Deezer:', error);
     return searchTracks(cleanQuery);
   }
 };
@@ -492,18 +549,18 @@ export const resolvePlayablePreview = async (item) => {
     return rawPreview;
   }
 
-  // 1. Si ya cuenta con una URL de preview firmada y fresca con HMAC
-  if (item.preview && typeof item.preview === 'string' && item.preview.includes('hdnea=')) {
+  // 1. Si ya cuenta con una URL de preview válida
+  if (item.preview && typeof item.preview === 'string' && item.preview.startsWith('http')) {
     return item.preview;
   }
-  if (item.previewUrl && typeof item.previewUrl === 'string' && item.previewUrl.includes('hdnea=')) {
+  if (item.previewUrl && typeof item.previewUrl === 'string' && item.previewUrl.startsWith('http')) {
     return item.previewUrl;
   }
 
   // 2. Si tiene trackId o id numérico de canción
   if (item.trackId || (item.type === 'track' && item.id)) {
     const t = await getTrackById(item.trackId || item.id);
-    if (t?.preview && t.preview.includes('hdnea=')) {
+    if (t?.preview) {
       return t.preview;
     }
   }
@@ -512,7 +569,7 @@ export const resolvePlayablePreview = async (item) => {
   const albumId = item.deezerId || item.albumId || (typeof item.id === 'number' && item.id < 1000000000 ? item.id : null);
   if (albumId) {
     const tracks = await getAlbumTracks(albumId);
-    const found = tracks.find((t) => t.preview && t.preview.includes('hdnea=')) || tracks.find((t) => t.preview);
+    const found = tracks.find((t) => t.preview);
     if (found?.preview) return found.preview;
   }
 
@@ -520,17 +577,19 @@ export const resolvePlayablePreview = async (item) => {
   const query = `${item.title || item.albumTitle || ''} ${item.artist || ''}`.trim();
   if (query) {
     const searchResults = await searchTracks(query);
-    const found = searchResults.find((t) => t.preview && t.preview.includes('hdnea=')) || searchResults[0];
+    const found = searchResults.find((t) => t.preview) || searchResults[0];
     if (found?.preview) return found.preview;
   }
 
-  // 5. Fallback con muestra sonora de alta fidelidad garantizada
-  const fallbackResults = await searchTracks('Radiohead 15 Step');
-  if (fallbackResults.length > 0 && fallbackResults[0].preview) {
-    return fallbackResults[0].preview;
-  }
+  // 5. Fallback con muestra sonora garantizada
+  try {
+    const fallbackResults = await searchTracks('Radiohead 15 Step');
+    if (fallbackResults.length > 0 && fallbackResults[0].preview) {
+      return fallbackResults[0].preview;
+    }
+  } catch {}
 
-  return null;
+  return 'https://cdns-preview-d.dzcdn.net/stream/c-deda7fac944b3f76bfa77d75010eaddc-3.mp3';
 };
 
 /**

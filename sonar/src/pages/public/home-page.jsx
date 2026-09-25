@@ -7,10 +7,11 @@ import FeaturedReviews from '../../features/home/components/featured-reviews';
 import TrendingGrid from '../../features/home/components/trending-grid';
 import Footer from '../../shared/components/layout/footer';
 import Skeleton from '../../shared/components/ui/loader';
-import { searchAlbums, getAlbumTracks } from '../../shared/services/deezer-service';
+import { searchAlbums, getAlbumTracks, isKidsSafeTrack } from '../../shared/services/deezer-service';
 import { usePlayer } from '../../shared/context/player-context';
 import { useAuth } from '../../shared/context/auth-context';
 import { interactionsService } from '../../shared/services/interactions-service';
+import { handleImageFallbackError, getFallbackCoverForAlbum } from '../../shared/services/recommendations-service';
 
 const pageContainerVariants = {
   hidden: { opacity: 0 },
@@ -66,12 +67,14 @@ const HomePageSkeleton = () => {
 };
 
 export const HomePage = () => {
-  const { user } = useAuth();
+  const { user, isJunior, isParentalControlActive } = useAuth();
   const userId = user?.id || '1';
+  const isKidsActive = Boolean(isJunior || isParentalControlActive);
   const [isLoading, setIsLoading] = useState(true);
   const [searchResults, setSearchResults] = useState([]);
   const [isSearching, setIsSearching] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
+  const [hideExplicitInSearch, setHideExplicitInSearch] = useState(() => isKidsActive);
   const [savedCollection, setSavedCollection] = useState([]);
   const resultsRef = React.useRef(null);
   const { playTrack, currentTrack, isPlaying, toggleTrack, openReviewModal } = usePlayer();
@@ -200,16 +203,34 @@ export const HomePage = () => {
               {/* Resultados de Búsqueda Deezer en Vivo */}
               {searchQuery && (
                 <section id="search-results" ref={resultsRef} className="w-full max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-10 py-6 scroll-mt-20">
-                  <div className="flex items-center justify-between gap-4 mb-6 border-b border-[#e6d5e2] dark:border-white/10 pb-3">
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6 border-b border-[#e6d5e2] dark:border-white/10 pb-3">
                     <div className="flex items-center gap-2">
                       <span className="w-2.5 h-2.5 rounded-full bg-[#B80C09] animate-pulse" />
                       <h3 className="text-xl sm:text-2xl font-extrabold text-[#231123] dark:text-[#FAF5F8]">
                         Canciones en Deezer para &ldquo;{searchQuery}&rdquo;
                       </h3>
                     </div>
-                    <span className="text-xs text-[#5c435a] dark:text-[#B89CB0] font-semibold">
-                      {searchResults.length} canciones encontradas
-                    </span>
+                    <div className="flex items-center gap-3">
+                      {(isJunior || isParentalControlActive) && (
+                        <button
+                          type="button"
+                          onClick={() => setHideExplicitInSearch(!hideExplicitInSearch)}
+                          className={`px-3 py-1 rounded-full text-xs font-bold border transition-colors flex items-center gap-1.5 cursor-pointer ${
+                            hideExplicitInSearch
+                              ? 'bg-emerald-500/20 text-emerald-700 dark:text-emerald-300 border-emerald-500/40'
+                              : 'bg-gray-100 dark:bg-white/10 text-[#5c435a] dark:text-[#B89CB0] border-transparent'
+                          }`}
+                        >
+                          <span className="material-symbols-outlined text-[14px]">
+                            {hideExplicitInSearch ? 'check_circle' : 'filter_alt'}
+                          </span>
+                          <span>{hideExplicitInSearch ? 'Ocultando 18+ (Activo)' : 'Ocultar explícitas [18+]'}</span>
+                        </button>
+                      )}
+                      <span className="text-xs text-[#5c435a] dark:text-[#B89CB0] font-semibold">
+                        {searchResults.filter(s => !hideExplicitInSearch || (!s.explicit && !s.explicit_lyrics)).length} canciones
+                      </span>
+                    </div>
                   </div>
 
                   {isSearching ? (
@@ -255,7 +276,10 @@ export const HomePage = () => {
                     </div>
                   ) : (
                     <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4 sm:gap-5">
-                      {searchResults.slice(0, 12).map((song) => {
+                      {searchResults
+                        .filter(s => !hideExplicitInSearch || isKidsSafeTrack(s))
+                        .slice(0, 12)
+                        .map((song) => {
                         const isSaved = savedCollection.some(
                           (a) =>
                             String(a.id) === String(song.id) ||
@@ -275,6 +299,11 @@ export const HomePage = () => {
                                 alt={song.title}
                                 className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                               />
+                              {Boolean(song.explicit || song.explicit_lyrics) && (
+                                <span className="absolute top-2 left-2 px-1.5 py-0.2 rounded text-[8px] font-black uppercase bg-black/80 text-rose-300 border border-rose-500/40 z-10">
+                                  18+
+                                </span>
+                              )}
                               {isSaved && (
                                 <div className="absolute top-2 right-2 w-6 h-6 rounded-full bg-[#B80C09] text-white flex items-center justify-center shadow-xs z-10">
                                   <span className="material-symbols-outlined text-[14px]">bookmark</span>
