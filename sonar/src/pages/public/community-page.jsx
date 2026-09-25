@@ -5,6 +5,7 @@ import Footer from '../../shared/components/layout/footer';
 import ReviewFeedCard from '../../features/reviews/components/review-feed-card';
 import { useAuth } from '../../shared/context/auth-context';
 import { usePlayer } from '../../shared/context/player-context';
+import { useLanguage } from '../../shared/context/language-context';
 import { Avatar } from '../../shared/components/ui/avatar';
 import { getReviews, getUsers, createReview } from '../../shared/services/api-client';
 import { searchAlbums, DEFAULT_DEEZER_ALBUMS } from '../../shared/services/deezer-service';
@@ -111,6 +112,7 @@ const containerVariants = {
 export const CommunityPage = () => {
   const { user } = useAuth();
   const { playTrack } = usePlayer();
+  const { t } = useLanguage();
 
   // Estados principales de la API
   const [reviews, setReviews] = useState([]);
@@ -427,10 +429,10 @@ export const CommunityPage = () => {
               ÁGORA SONORA · COMUNIDAD EN VIVO
             </span>
             <h1 className="text-2xl sm:text-4xl font-extrabold tracking-tight">
-              Diálogos audiófilos sin algoritmo complaciente.
+              {t('community.title', 'Diálogos audiófilos sin algoritmo complaciente.')}
             </h1>
             <p className="text-sm text-white/80">
-              Conectado a la API en vivo de Sonar y al catálogo musical de Deezer. Publica ensayos y debate en tiempo real.
+              {t('community.subtitle', 'Conectado a la API en vivo de Sonar y al catálogo musical de Deezer. Publica ensayos y debate en tiempo real.')}
             </p>
           </div>
 

@@ -61,6 +61,18 @@ const TRANSLATIONS = {
     'hero.explore_btn': 'Explorar Catálogo',
     'hero.listen_btn': 'Escuchar Ahora',
 
+    // Profile & Community & Reviews
+    'profile.title': 'Mi Perfil',
+    'profile.edit': 'Editar Perfil',
+    'profile.saved': 'Guardados',
+    'profile.reviews': 'Mis Reseñas',
+    'profile.rewards': 'Recompensas & Boutique',
+    'profile.parental': 'Control Parental',
+    'community.title': 'Comunidad Audiófila',
+    'community.subtitle': 'Conecta con melómanos y críticos de todo el mundo.',
+    'reviews.title': 'Críticas del Mes & Análisis Líricos',
+    'albums.title': 'Catálogo Audiófilo de Vinilos & Álbumes',
+
     // Auth
     'auth.welcome': '¡Hola de nuevo!',
     'auth.login_subtitle': 'Ingresa a tu cuenta de SONAR para continuar explorando la mejor música audiófila.',
@@ -136,6 +148,18 @@ const TRANSLATIONS = {
     'hero.subtitle': 'Rate records, discover 33⅓ RPM vinyl productions and share with a community dedicated to attentive listening.',
     'hero.explore_btn': 'Explore Catalog',
     'hero.listen_btn': 'Listen Now',
+
+    // Profile & Community & Reviews
+    'profile.title': 'My Profile',
+    'profile.edit': 'Edit Profile',
+    'profile.saved': 'Saved',
+    'profile.reviews': 'My Reviews',
+    'profile.rewards': 'Rewards & Boutique',
+    'profile.parental': 'Parental Control',
+    'community.title': 'Audiophile Community',
+    'community.subtitle': 'Connect with music lovers and critics worldwide.',
+    'reviews.title': 'Monthly Reviews & Lyrical Analysis',
+    'albums.title': 'Audiophile Vinyl & Album Catalog',
 
     // Auth
     'auth.welcome': 'Welcome back!',
@@ -213,6 +237,18 @@ const TRANSLATIONS = {
     'hero.explore_btn': '探索目录',
     'hero.listen_btn': '立即聆听',
 
+    // Profile & Community & Reviews
+    'profile.title': '个人资料',
+    'profile.edit': '编辑个人资料',
+    'profile.saved': '我的收藏',
+    'profile.reviews': '我的乐评',
+    'profile.rewards': '奖励与精品店',
+    'profile.parental': '家长控制',
+    'community.title': '发烧友社区',
+    'community.subtitle': '与来自世界各地的爱乐者和影评人联系。',
+    'reviews.title': '本月乐评与歌词分析',
+    'albums.title': '发烧级黑胶与专辑目录',
+
     // Auth
     'auth.welcome': '欢迎回来！',
     'auth.login_subtitle': '登录您的 SONAR 帐户，继续探索高品质发烧音乐。',
@@ -288,6 +324,18 @@ const TRANSLATIONS = {
     'hero.subtitle': 'Évaluez vos vinyles, découvrez des pressages 33⅓ RPM et échangez avec une communauté d’écoute exigeante.',
     'hero.explore_btn': 'Explorer le catalogue',
     'hero.listen_btn': 'Écouter maintenant',
+
+    // Profile & Community & Reviews
+    'profile.title': 'Mon Profil',
+    'profile.edit': 'Modifier le profil',
+    'profile.saved': 'Enregistrés',
+    'profile.reviews': 'Mes critiques',
+    'profile.rewards': 'Récompenses & Boutique',
+    'profile.parental': 'Contrôle parental',
+    'community.title': 'Communauté Audiophile',
+    'community.subtitle': 'Connectez-vous avec des mélomanes du monde entier.',
+    'reviews.title': 'Critiques du mois & Analyses lyriques',
+    'albums.title': 'Catalogue Vinyles & Albums Audiophiles',
 
     // Auth
     'auth.welcome': 'Bon retour !',
@@ -365,6 +413,18 @@ const TRANSLATIONS = {
     'hero.explore_btn': 'Esplora Catalogo',
     'hero.listen_btn': 'Ascolta Ora',
 
+    // Profile & Community & Reviews
+    'profile.title': 'Il Mio Profilo',
+    'profile.edit': 'Modifica Profilo',
+    'profile.saved': 'Salvati',
+    'profile.reviews': 'Le Mie Recensioni',
+    'profile.rewards': 'Premi & Boutique',
+    'profile.parental': 'Controllo Genitori',
+    'community.title': 'Comunità Audiofila',
+    'community.subtitle': 'Connettiti con amanti della musica in tutto il mondo.',
+    'reviews.title': 'Recensioni del Mese & Analisi Lirica',
+    'albums.title': 'Catalogo Vinili & Album Audiofili',
+
     // Auth
     'auth.welcome': 'Bentornato!',
     'auth.login_subtitle': 'Accedi al tuo account SONAR per continuare ad ascoltare la musica migliore.',
@@ -440,6 +500,18 @@ const TRANSLATIONS = {
     'hero.subtitle': 'レコードを評価し、33⅓ RPMのLPレコード作品を発見し、リスナーコミュニティと共有しましょう。',
     'hero.explore_btn': 'カタログを探索',
     'hero.listen_btn': '今すぐ聴く',
+
+    // Profile & Community & Reviews
+    'profile.title': 'マイプロフィール',
+    'profile.edit': 'プロフィール編集',
+    'profile.saved': '保存済み',
+    'profile.reviews': 'マイレビュー',
+    'profile.rewards': '特典＆ブティック',
+    'profile.parental': 'ペアレンタルコントロール',
+    'community.title': 'オーディオファイルコミュニティ',
+    'community.subtitle': '世界中の音楽ファンとつながりましょう。',
+    'reviews.title': '今月のレビュー＆歌詞分析',
+    'albums.title': 'オーディオファイルLP＆アルバムカタログ',
 
     // Auth
     'auth.welcome': 'おかえりなさい！',

@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { ArrowRight, Check, Eye, EyeOff, Headphones, Music2, Sparkles, User, Disc3, ShieldCheck, Mail, KeyRound, ArrowLeft, RefreshCw } from 'lucide-react';
 import { useAuth } from '../../../shared/context/auth-context';
+import { useLanguage } from '../../../shared/context/language-context';
 import { GoogleIcon } from './social-provider-icon';
 import { RotatingReview } from './rotating-review';
 import { GENRE_OPTIONS } from '../../../shared/services/recommendations-service';
@@ -62,6 +63,7 @@ const EditorialPanel = () => (
 
 export const RegisterForm = () => {
   const { register, isLoading } = useAuth();
+  const { t } = useLanguage();
   const [step, setStep] = useState('info'); // 'info' | 'otp' | 'password'
   const [formData, setFormData] = useState({
     username: '',
@@ -312,12 +314,12 @@ export const RegisterForm = () => {
           </div>
           <header className="auth-heading">
             <h2 id="register-title">
-              {step === 'info' && 'Crea tu cuenta en Sonar'}
+              {step === 'info' && t('auth.register_title')}
               {step === 'otp' && 'Verifica tu Correo'}
               {step === 'password' && 'Define tu Contraseña'}
             </h2>
             <p>
-              {step === 'info' && 'Personaliza tu identidad y recibe tu código de seguridad.'}
+              {step === 'info' && t('auth.register_subtitle')}
               {step === 'otp' && 'Ingresa el código de 6 dígitos que enviamos a tu bandeja.'}
               {step === 'password' && 'Elige la contraseña que desees para acceder a Sonar.'}
             </p>
@@ -358,10 +360,10 @@ export const RegisterForm = () => {
                   onClick={() => handleGoogleRegister()}
                   disabled={isLoading}
                   className="auth-google-btn"
-                  aria-label="Registrarse con Google"
+                  aria-label={t('auth.google_login')}
                 >
                   <GoogleIcon />
-                  Continuar con Google
+                  {t('auth.google_login')}
                 </button>
               </div>
 
