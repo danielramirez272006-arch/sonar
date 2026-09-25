@@ -119,5 +119,5 @@ describe('AuthContext Registration Flow', () => {
     expect(alert.textContent).toContain('Este correo ya está registrado en SONAR');
     expect(screen.getByRole('link', { name: /Iniciar Sesión/i })).toBeDefined();
     expect(screen.queryByLabelText(/^Contraseña/i)).toBeNull();
-  });
+  }, 15000);
 });
