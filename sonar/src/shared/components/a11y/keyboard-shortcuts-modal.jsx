@@ -1,15 +1,17 @@
 import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAccessibility } from '../../context/accessibility-context';
+import { useLanguage } from '../../context/language-context';
 
 export const KeyboardShortcutsModal = () => {
   const { isShortcutsModalOpen, setIsShortcutsModalOpen } = useAccessibility();
+  const { t } = useLanguage();
 
   if (!isShortcutsModalOpen) return null;
 
   const shortcutGroups = [
     {
-      category: 'Accesibilidad y Asistencia',
+      category: t('shortcuts.a11y_group', 'Accesibilidad y Asistencia'),
       items: [
         { keys: ['Alt', 'A'], description: 'Abrir / Cerrar Panel de Accesibilidad' },
         { keys: ['?'], description: 'Abrir esta guía de atajos de teclado' },
@@ -19,7 +21,7 @@ export const KeyboardShortcutsModal = () => {
       ],
     },
     {
-      category: 'Reproducción y Control Multimedia',
+      category: t('shortcuts.media_group', 'Reproducción y Control Multimedia'),
       items: [
         { keys: ['Espacio'], description: 'Reproducir / Pausar muestra de audio activa' },
         { keys: ['M'], description: 'Silenciar / Restaurar volumen del reproductor' },
@@ -27,7 +29,7 @@ export const KeyboardShortcutsModal = () => {
       ],
     },
     {
-      category: 'Navegación Rápida',
+      category: t('shortcuts.nav_group', 'Navegación Rápida'),
       items: [
         { keys: ['Enter'], description: 'Activar botón, reproducir tarjeta o entrar a perfil' },
         { keys: ['Inicio / Fin'], description: 'Ir al principio o final de la página' },
@@ -55,10 +57,10 @@ export const KeyboardShortcutsModal = () => {
               </div>
               <div>
                 <h2 id="shortcuts-title" className="text-xl sm:text-2xl font-black tracking-tight">
-                  Atajos de Teclado
+                  {t('shortcuts.title', 'Atajos de Teclado')}
                 </h2>
                 <p className="text-xs sm:text-sm text-[#5c435a] dark:text-[#B89CB0]">
-                  Navega de forma rápida y accesible por todo SONAR sin usar el ratón.
+                  {t('shortcuts.subtitle', 'Navega de forma rápida y accesible por todo SONAR sin usar el ratón.')}
                 </p>
               </div>
             </div>
@@ -108,15 +110,14 @@ export const KeyboardShortcutsModal = () => {
             ))}
           </div>
 
-          {/* Pie de modal */}
-          <div className="pt-4 border-t border-[#e6d5e2] dark:border-white/10 flex items-center justify-between text-xs text-[#5c435a] dark:text-[#B89CB0] shrink-0">
-            <span>Presiona <kbd className="px-1.5 py-0.5 rounded bg-gray-200 dark:bg-white/10 font-mono font-bold">Esc</kbd> para salir</span>
+          {/* Pie */}
+          <div className="pt-4 border-t border-[#e6d5e2] dark:border-white/10 flex justify-end shrink-0">
             <button
               type="button"
               onClick={() => setIsShortcutsModalOpen(false)}
-              className="px-4 py-2 rounded-xl bg-[#B80C09] text-white font-bold hover:bg-[#960a07] transition-colors cursor-pointer"
+              className="px-5 py-2.5 rounded-xl bg-[#B80C09] text-white text-xs font-bold hover:bg-[#960a07] transition-colors cursor-pointer"
             >
-              Entendido
+              {t('common.close', 'Entendido')}
             </button>
           </div>
         </motion.div>
