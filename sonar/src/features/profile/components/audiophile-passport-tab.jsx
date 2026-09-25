@@ -2,6 +2,8 @@ import React, { useState, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Avatar } from '../../../shared/components/ui/avatar';
 import { BlobatarAvatar } from '../../../shared/components/ui/blobatar-avatar';
+import AudiophileMonthlyWrapped from './audiophile-monthly-wrapped';
+import AudiophileQuests from './audiophile-quests';
 
 export const AudiophilePassportTab = ({
   user,
@@ -477,7 +479,18 @@ export const AudiophilePassportTab = ({
         </div>
       </div>
 
-      {/* 4. MURO DE INSIGNIAS Y LOGROS AUDIÓFILOS */}
+      {/* 4. REPORTE MENSUAL & WRAPPED */}
+      <AudiophileMonthlyWrapped
+        user={user}
+        savedCount={savedAlbums.length}
+        historyCount={recentlyPlayed.length}
+        reviewsCount={userReviews.length}
+      />
+
+      {/* 5. MISIONES Y DESAFÍOS SEMANALES */}
+      <AudiophileQuests />
+
+      {/* 6. MURO DE INSIGNIAS Y LOGROS AUDIÓFILOS */}
       <div className="flex flex-col gap-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2.5">
