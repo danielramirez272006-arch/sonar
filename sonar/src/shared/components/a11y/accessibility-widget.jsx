@@ -1,6 +1,7 @@
 import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAccessibility } from '../../context/accessibility-context';
+import { LanguageSelector } from '../ui/language-selector';
 
 export const AccessibilityWidget = () => {
   const {
@@ -415,6 +416,20 @@ export const AccessibilityWidget = () => {
                         </button>
                       ))}
                     </div>
+                  </div>
+                </div>
+
+                {/* SECCIÓN 4: Idioma y Región / Language & Region */}
+                <div className="space-y-3">
+                  <h3 className="text-xs font-black uppercase tracking-wider text-[#B80C09] flex items-center gap-1.5">
+                    <span className="material-symbols-outlined text-[16px]">translate</span>
+                    Idioma y Región / Language & Region
+                  </h3>
+                  <div className="p-3.5 rounded-2xl bg-gray-50 dark:bg-white/5 border border-gray-100 dark:border-white/5 flex flex-col gap-2">
+                    <div className="text-xs text-[#5c435a] dark:text-[#B89CB0] font-medium">
+                      Selecciona tu idioma preferido para la interfaz, navegación y controles:
+                    </div>
+                    <LanguageSelector variant="footer" />
                   </div>
                 </div>
 

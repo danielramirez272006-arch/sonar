@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { usePlayer } from '../../context/player-context';
 import { useAuth } from '../../context/auth-context';
 import { useAccessibility } from '../../context/accessibility-context';
+import { useLanguage } from '../../context/language-context';
 import { getTracksForAlbum, isExplicitTrack } from '../../services/deezer-service';
 import { interactionsService } from '../../services/interactions-service';
 import { getLyricsForTrack } from '../../services/lyrics-service';
@@ -29,6 +30,7 @@ export const GlobalAudioPlayer = () => {
 
   const { announce, playAudioCue, speak, isSpeaking, stopSpeaking } = useAccessibility();
   const { user } = useAuth();
+  const { t } = useLanguage();
   const userId = user?.id || null;
 
   const [showTracklist, setShowTracklist] = useState(false);
