@@ -1,5 +1,5 @@
 import { userStatus } from './admin-data.js'
-const API_BASE_URL = 'http://localhost:3001'
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || '/api/catalog'
 
 export async function apiRequest(endpoint, options = {}) {
   const headers = new Headers(options.headers)
@@ -8,10 +8,11 @@ export async function apiRequest(endpoint, options = {}) {
   }
 
   const path = endpoint.startsWith('/') ? endpoint : `/${endpoint}`
-  const response = await fetch(`${API_BASE_URL}${path}`, {
+  let response
+  try { response = await fetch(`${API_BASE_URL}${path}`, {
     ...options,
     headers,
-  })
+  }) } catch (cause) { throw new Error('Se perdió la conexión con la API. Comprueba que npm run api esté activo y vuelve a intentar.', { cause }) }
 
   if (!response.ok) {
     throw new Error(

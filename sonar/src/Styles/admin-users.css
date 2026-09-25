@@ -1,0 +1,68 @@
+.user-page .users-metrics { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:12px; margin:24px 0; }
+.users-metrics article { display:flex; flex-direction:column; gap:8px; padding:20px; border-radius:14px; background:#231123; color:#fff; border-top:3px solid #4B2840; }
+.users-metrics article:nth-child(2) { background:#4B2840; }
+.users-metrics article:last-child { background:#003844; }
+.users-metrics span { font-size:12px; min-height:32px; }
+.users-metrics strong { font-size:clamp(26px,3vw,38px); font-variant-numeric:tabular-nums; }
+.users-metrics small { color:#ded5df; font-size:11px; }
+.user-page .admin-filters { display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); align-items:end; padding:18px; border:1px solid #bda9b8; border-radius:14px; }
+.user-page .admin-filters label { min-width:0; }
+.user-page .admin-filters :is(input,select,button) { width:100%; min-height:44px; }
+.user-page .users-results { font-size:12px; margin:16px 0; line-height:1.6; }
+.user-page .admin-users-table { border:1px solid #bda9b8; border-radius:14px; }
+.user-page .admin-users-table table { min-width:980px; }
+.user-page .admin-users-table th { background:#231123; color:#fff; padding:16px 12px; }
+.user-page .admin-users-table td { padding:16px 12px; }
+.user-page .admin-users-table tbody tr:hover { background:#4b28400d; }
+.user-page .admin-user-identity small { overflow-wrap:anywhere; max-width:220px; }
+.users-badge { display:inline-flex; align-items:center; gap:6px; padding:6px 9px; border-radius:30px; background:#4B2840; color:#fff; font-size:11px; white-space:nowrap; }
+.users-conduct--green { background:#003844; color:#c4f5dd; }
+.users-conduct--yellow { background:#594213; color:#ffe6a1; }
+.users-conduct--red { background:#672737; color:#ffdde3; }
+.users-badge[class*="users-conduct"]::before { content:''; width:7px; height:7px; border-radius:50%; background:currentColor; }
+.users-actions { display:flex; flex-wrap:wrap; gap:8px; }
+.user-page .users-actions :is(a,button), .users-review-link { display:inline-flex; align-items:center; justify-content:center; min-height:40px; padding:8px 12px; border:1px solid #003844; border-radius:8px; background:#003844; color:#fff; font-size:12px; text-decoration:none; }
+.user-page :is(a,button,input,select):focus-visible, .admin-profile-modal :is(a,button,input,select,textarea):focus-visible { outline:3px solid #ba799f; outline-offset:3px; }
+.users-review-filter { padding:16px; margin-bottom:18px; background:#003844; color:#fff; border-radius:12px; }
+.users-review-filter a { color:#fff; text-decoration:underline; }
+dialog.sonar-modal.admin-profile-modal { inset:0 0 0 auto; margin:0; width:min(680px,100%); height:100dvh; max-height:100dvh; border-radius:18px 0 0 18px; border-color:#4B2840; }
+.admin-profile-modal .user-profile-drawer { min-height:100%; background:#faf6fa; }
+.admin-profile-modal .user-profile-drawer > header, html.dark .admin-profile-modal .user-profile-drawer > header { background:#231123; color:#fff; padding:18px; border-radius:12px; border-color:#4B2840; }
+.admin-profile-modal .user-profile-drawer > header p { color:#e1d5df; }
+html.dark .admin-profile-modal .user-profile-drawer { background:#231123; }
+html.dark .user-page .admin-users-table tbody tr:hover { background:#4B2840; }
+@media(max-width:900px) { .user-page .users-metrics { grid-template-columns:repeat(2,minmax(0,1fr)); } }
+@media(max-width:480px) { .user-page .users-metrics { gap:8px; } .users-metrics article { padding:14px; } .users-metrics span { min-height:48px; overflow-wrap:anywhere; } .user-page .admin-filters { grid-template-columns:1fr; } dialog.sonar-modal.admin-profile-modal { width:100%; border-radius:0; } }
+.user-page .admin-filters label { font-weight:600; color:#4B2840; }
+.user-page .admin-filters select { cursor:pointer; border-color:#9c8195; }
+html.dark .user-page .admin-filters label { color:#e9dbe6; }
+html.dark .user-page .admin-filters :is(input,select) { background:#231123; border-color:#9c8195; }
+.sanction-panel .action-help, .conduct-card .action-help { font-size:13px; line-height:1.6; color:#6c5866; margin:6px 0 14px; }
+.sanction-panel .admin-form { margin-top:20px; }
+.sanction-panel .admin-form legend { font-size:14px; font-weight:700; margin-bottom:12px; }
+.sanction-panel .sanction-options { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:10px; }
+.sanction-panel .sanction-option { display:flex; align-items:flex-start; gap:10px; padding:14px; border:1px solid #bda9b8; border-radius:12px; background:#fff; cursor:pointer; }
+.sanction-panel .sanction-option input { width:18px; height:18px; margin-top:2px; flex-shrink:0; accent-color:#003844; }
+.sanction-panel .sanction-option small { display:block; margin-top:5px; font-size:12px; line-height:1.5; color:#6c5866; }
+.sanction-panel .sanction-option:has(input:checked) { background:#e6f2f3; border-color:#003844; box-shadow:inset 0 0 0 1px #003844; }
+.sanction-panel .sanction-option:has(input:focus-visible) { outline:3px solid #ba799f; outline-offset:3px; }
+.sanction-panel .sanction-preview { padding:16px; border-left:4px solid #003844; border-radius:8px; background:#e6f2f3; color:#003844; overflow-wrap:anywhere; font-size:13px; }
+.sanction-preview p { margin-top:6px; line-height:1.6; }
+.sanction-panel .decision-buttons { display:flex; flex-wrap:wrap; gap:10px; }
+.sanction-panel button.admin-action-primary, .conduct-card button.admin-action-primary { min-height:44px; padding:12px 20px; border:1px solid #003844; border-radius:10px; background:#003844; color:#fff; font-size:14px; font-weight:700; cursor:pointer; }
+.sanction-panel button.admin-action-primary:hover:not(:disabled), .conduct-card button.admin-action-primary:hover:not(:disabled) { background:#075363; }
+.sanction-panel button.admin-action-secondary { min-height:44px; padding:12px 20px; border:1px solid #9c8195; border-radius:10px; background:transparent; color:inherit; cursor:pointer; }
+.sanction-panel button:disabled, .conduct-card button:disabled { opacity:.45; cursor:not-allowed; }
+.sanction-panel fieldset:disabled .sanction-option { opacity:.6; cursor:not-allowed; }
+.sanction-panel .sanction-history-heading { margin-top:24px; padding-top:20px; border-top:1px solid #bda9b8; }
+.conduct-card form { padding-top:20px; border-top:1px solid #bda9b8; }
+.conduct-card form label { display:grid; gap:8px; }
+.conduct-card form select { width:100%; min-height:44px; }
+.conduct-card details summary { padding:12px; border:1px solid #bda9b8; border-radius:8px; font-weight:600; }
+html.dark .sanction-panel .sanction-option { background:#231123; border-color:#80647a; }
+html.dark .sanction-panel .sanction-option:has(input:checked) { background:#003844; border-color:#8cd4dc; box-shadow:inset 0 0 0 1px #8cd4dc; }
+html.dark .sanction-panel .sanction-option input { accent-color:#8cd4dc; }
+html.dark .sanction-panel .sanction-option small, html.dark .sanction-panel .action-help, html.dark .conduct-card .action-help { color:#d4c6d1; }
+html.dark .sanction-panel .sanction-preview { background:#003844; color:#e2f5f6; border-color:#8cd4dc; }
+html.dark .sanction-panel button.admin-action-primary, html.dark .conduct-card button.admin-action-primary { border-color:#8cd4dc; }
+@media(max-width:480px) { .sanction-panel .sanction-options { grid-template-columns:1fr; } .sanction-panel .decision-buttons button, .conduct-card button.admin-action-primary { width:100%; } }

@@ -1,0 +1,110 @@
+/* ── Portada de secciones editoriales (vinilos / sellos) ───────────────
+   Toda la paleta sale de los tokens globales definidos en Styles/index.css
+   (:root / html.dark). Así las secciones respetan el tema claro y oscuro
+   sin bloques html.dark propios.
+   --sonar-invert-bg / --sonar-invert-fg: superficie invertida (contador y
+   botones). Siempre oscuro: ciruela en claro, ciruela profunda en oscuro. */
+.sonar-showcase, .sonar-vinyl-card, .sonar-label-card { --sonar-invert-bg:var(--color-sonar-base); --sonar-invert-fg:#ffffff; }
+html.dark .sonar-showcase, html.dark .sonar-vinyl-card, html.dark .sonar-label-card { --sonar-invert-bg:var(--color-sonar-surface); --sonar-invert-fg:var(--color-sonar-text); }
+
+.sonar-showcase { position:relative; padding:clamp(20px,3vw,34px); border-radius:32px; border:1px solid var(--border-subtle); background:var(--bg-page); color:var(--text-main); overflow:hidden; }
+.sonar-showcase::before { content:''; position:absolute; inset:auto -12% -55% auto; width:min(520px,80%); aspect-ratio:1; border-radius:50%; background:radial-gradient(circle,rgba(184,12,9,.16) 0%,transparent 65%); pointer-events:none; }
+.sonar-showcase__head { position:relative; display:flex; flex-wrap:wrap; align-items:flex-end; justify-content:space-between; gap:16px; padding-bottom:20px; border-bottom:1px solid var(--border-subtle); }
+.sonar-showcase__intro { display:flex; flex-direction:column; gap:9px; max-width:640px; }
+.sonar-showcase__eyebrow { display:inline-flex; align-items:center; gap:.4rem; width:max-content; padding:.3rem .7rem; border-radius:999px; background:var(--bg-card); border:1px solid var(--border-subtle); color:var(--color-accent); font-size:.58rem; font-weight:900; letter-spacing:.16em; text-transform:uppercase; box-shadow:var(--shadow-card); }
+.sonar-showcase__eyebrow .material-symbols-outlined { font-size:14px; }
+.sonar-showcase__title { margin:0; font-size:clamp(1.6rem,2.9vw,2.35rem); font-weight:900; line-height:1.08; letter-spacing:-.045em; }
+.sonar-showcase__title-accent { background:linear-gradient(100deg,var(--color-accent),var(--badge-text) 70%); -webkit-background-clip:text; background-clip:text; color:transparent; }
+.sonar-showcase__lead { margin:0; color:var(--text-secondary); font-size:.83rem; font-weight:500; line-height:1.6; }
+.sonar-showcase__count { display:inline-flex; align-items:center; gap:.4rem; padding:.5rem .9rem; border-radius:999px; background:var(--sonar-invert-bg); color:var(--sonar-invert-fg); border:1px solid var(--border-medium); font-size:.66rem; font-weight:800; letter-spacing:.04em; box-shadow:var(--shadow-card); white-space:nowrap; }
+.sonar-showcase__count .material-symbols-outlined { font-size:15px; color:var(--color-accent); }
+
+/* ── Tarjetas de vinilos ─────────────────────────────────────────────── */
+.sonar-vinyl-grid { position:relative; display:grid; grid-template-columns:repeat(auto-fill,minmax(min(268px,100%),1fr)); gap:20px; margin-top:24px; }
+.sonar-vinyl-card { display:flex; flex-direction:column; border:1px solid var(--border-subtle); border-radius:24px; background:var(--bg-card); overflow:hidden; box-shadow:var(--shadow-card); transition:transform .28s cubic-bezier(.2,.8,.3,1),box-shadow .28s,border-color .28s; }
+.sonar-vinyl-card:hover { transform:translateY(-6px); border-color:var(--border-medium); box-shadow:var(--shadow-card-hover); }
+.sonar-vinyl-card__art { position:relative; display:grid; place-items:center; aspect-ratio:1; background:radial-gradient(circle at 30% 20%,var(--color-sonar-surface) 0%,var(--color-sonar-base) 62%,#150a14 100%); overflow:hidden; }
+.sonar-vinyl-card__art::after { content:''; position:absolute; inset:0; background:linear-gradient(200deg,rgba(255,255,255,.16) 0%,transparent 42%); pointer-events:none; }
+.sonar-vinyl-disc { position:absolute; top:50%; left:50%; width:74%; aspect-ratio:1; translate:-50% -50%; border-radius:50%; background:repeating-radial-gradient(circle at 50% 50%,#171017 0 2px,#2a1c28 2px 4px),radial-gradient(circle,#3a2b38 0 22%,#0f0a0e 23%); box-shadow:0 12px 30px rgba(0,0,0,.55); transition:translate .45s cubic-bezier(.2,.8,.3,1); }
+.sonar-vinyl-disc::after { content:''; position:absolute; inset:36%; border-radius:50%; background:linear-gradient(135deg,var(--color-accent),var(--color-sonar-base)); box-shadow:0 0 0 3px rgba(0,0,0,.35); }
+.sonar-vinyl-card:hover .sonar-vinyl-disc { translate:26% -50%; animation:sonar-spin 6s linear infinite; }
+.sonar-vinyl-card__cover { position:relative; z-index:1; width:62%; aspect-ratio:1; object-fit:cover; border-radius:10px; box-shadow:0 16px 34px rgba(0,0,0,.5); transition:transform .45s cubic-bezier(.2,.8,.3,1); }
+.sonar-vinyl-card:hover .sonar-vinyl-card__cover { transform:scale(.94) translateX(-7%); }
+.sonar-vinyl-card__cover--empty { display:grid; place-items:center; background:linear-gradient(140deg,var(--color-sonar-base),var(--color-sonar-surface)); color:rgba(255,255,255,.55); }
+.sonar-vinyl-card__cover--empty .material-symbols-outlined { font-size:34px; }
+.sonar-vinyl-card__badge { position:absolute; z-index:2; top:12px; left:12px; padding:.32rem .6rem; border-radius:999px; background:var(--color-sonar-base); color:#fff; font-size:.55rem; font-weight:900; letter-spacing:.12em; text-transform:uppercase; border:1px solid var(--border-medium); }
+.sonar-vinyl-card__news { position:absolute; z-index:2; top:12px; right:12px; display:inline-flex; align-items:center; gap:.2rem; padding:.3rem .5rem; border-radius:999px; background:var(--color-accent); color:#fff; font-size:.58rem; font-weight:900; box-shadow:0 6px 14px -6px rgba(184,12,9,.9); }
+.sonar-vinyl-card__news .material-symbols-outlined { font-size:12px; }
+.sonar-vinyl-card__body { display:flex; flex-direction:column; gap:9px; padding:16px 16px 18px; flex:1; }
+.sonar-vinyl-card__title { margin:0; font-size:1.06rem; font-weight:900; line-height:1.25; letter-spacing:-.03em; }
+.sonar-vinyl-card__artist { margin:0; color:var(--text-secondary); font-size:.76rem; font-weight:700; }
+.sonar-vinyl-card__specs { display:flex; flex-wrap:wrap; gap:5px; margin:0; padding:0; list-style:none; }
+.sonar-vinyl-card__specs li { display:inline-flex; align-items:center; gap:.25rem; padding:.26rem .5rem; border-radius:8px; background:var(--bg-surface-secondary); border:1px solid var(--border-subtle); color:var(--text-secondary); font-size:.58rem; font-weight:700; max-width:100%; }
+.sonar-vinyl-card__specs .material-symbols-outlined { font-size:12px; color:var(--color-accent); }
+.sonar-vinyl-card__spec-label { opacity:.65; }
+.sonar-vinyl-card__spec-value { overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.sonar-vinyl-card__label { display:flex; align-items:center; gap:.3rem; margin:0; color:var(--badge-text); font-size:.66rem; font-weight:800; }
+.sonar-vinyl-card__label .material-symbols-outlined { font-size:13px; color:var(--color-accent); }
+.sonar-vinyl-card__cta { display:flex; align-items:center; justify-content:center; gap:.35rem; width:100%; margin-top:auto; padding:.72rem .9rem; border:0; border-radius:14px; background:var(--sonar-invert-bg); color:var(--sonar-invert-fg); font-size:.68rem; font-weight:900; letter-spacing:.03em; cursor:pointer; transition:background .2s,color .2s,transform .2s; }
+.sonar-vinyl-card__cta .material-symbols-outlined { font-size:15px; transition:transform .2s; }
+.sonar-vinyl-card__cta:hover { background:var(--color-accent); color:#fff; transform:translateY(-1px); }
+.sonar-vinyl-card__cta:hover .material-symbols-outlined { transform:translateX(3px); }
+
+/* ── Tarjetas de sellos discográficos ────────────────────────────────── */
+.sonar-labels-grid { position:relative; display:grid; grid-template-columns:repeat(auto-fill,minmax(min(300px,100%),1fr)); gap:20px; margin-top:24px; }
+.sonar-label-card { position:relative; display:flex; flex-direction:column; border:1px solid var(--border-subtle); border-radius:24px; background:var(--bg-card); overflow:hidden; box-shadow:var(--shadow-card); transition:transform .28s cubic-bezier(.2,.8,.3,1),box-shadow .28s,border-color .28s; }
+.sonar-label-card:hover { transform:translateY(-5px); border-color:var(--border-medium); box-shadow:var(--shadow-card-hover); }
+.sonar-label-card.is-active { border-color:var(--color-accent); box-shadow:0 0 0 2px rgba(184,12,9,.28),var(--shadow-card-hover); }
+.sonar-label-card__art { position:relative; display:grid; place-items:center; height:132px; background:linear-gradient(135deg,var(--color-sonar-base),var(--color-sonar-surface)); overflow:hidden; }
+.sonar-label-card__cover { position:relative; z-index:1; height:100%; width:auto; max-width:78%; object-fit:contain; filter:drop-shadow(0 10px 18px rgba(0,0,0,.45)); }
+.sonar-label-card__cover--empty { display:grid; place-items:center; width:74px; height:74px; border-radius:22px; background:linear-gradient(140deg,var(--bg-card),var(--bg-surface-secondary)); color:var(--text-main); font-size:1.5rem; font-weight:900; letter-spacing:-.02em; }
+.sonar-label-card__glow { position:absolute; width:170px; aspect-ratio:1; border-radius:50%; background:radial-gradient(circle,rgba(184,12,9,.38) 0%,transparent 70%); filter:blur(6px); }
+.sonar-label-card__body { display:flex; flex-direction:column; gap:7px; padding:16px 18px 18px; flex:1; }
+.sonar-label-card__kicker { color:var(--color-accent); font-size:.55rem; font-weight:900; letter-spacing:.16em; text-transform:uppercase; }
+.sonar-label-card__name { margin:0; font-size:1.12rem; font-weight:900; line-height:1.2; letter-spacing:-.03em; }
+.sonar-label-card__meta { margin:0; color:var(--text-secondary); font-size:.7rem; font-weight:700; }
+.sonar-label-card__text { margin:2px 0 0; color:var(--text-secondary); font-size:.76rem; line-height:1.6; display:-webkit-box; -webkit-line-clamp:3; -webkit-box-orient:vertical; overflow:hidden; }
+.sonar-label-card__stats { display:flex; gap:6px; margin:6px 0 0; padding:0; list-style:none; }
+.sonar-label-card__stats li { flex:1; display:flex; flex-direction:column; align-items:center; gap:1px; padding:.45rem .3rem; border-radius:12px; background:var(--bg-surface-secondary); border:1px solid var(--border-subtle); }
+.sonar-label-card__stats strong { color:var(--text-main); font-size:.95rem; font-weight:900; letter-spacing:-.03em; }
+.sonar-label-card__stats span { color:var(--text-muted); font-size:.53rem; font-weight:800; letter-spacing:.06em; text-transform:uppercase; }
+.sonar-label-card__footer { display:flex; align-items:center; justify-content:space-between; gap:8px; margin-top:auto; padding-top:12px; }
+.sonar-label-card__site { display:inline-flex; align-items:center; gap:.25rem; color:var(--text-secondary); font-size:.63rem; font-weight:800; text-decoration:none; }
+.sonar-label-card__site:hover { color:var(--color-accent); text-decoration:underline; }
+.sonar-label-card__site.is-empty { color:var(--text-muted); font-weight:700; }
+.sonar-label-card__site .material-symbols-outlined { font-size:13px; }
+.sonar-label-card__cta { display:inline-flex; align-items:center; gap:.3rem; padding:.55rem .8rem; border:0; border-radius:12px; background:var(--sonar-invert-bg); color:var(--sonar-invert-fg); font-size:.63rem; font-weight:900; cursor:pointer; transition:background .2s,color .2s,transform .2s; white-space:nowrap; }
+.sonar-label-card__cta .material-symbols-outlined { font-size:14px; transition:transform .2s; }
+.sonar-label-card__cta:hover { background:var(--color-accent); color:#fff; transform:translateY(-1px); }
+.sonar-label-card__cta:hover .material-symbols-outlined { transform:translateX(3px); }
+.sonar-label-card__cta[aria-pressed=true] { background:var(--color-accent); color:#fff; box-shadow:0 8px 18px -10px rgba(184,12,9,.95); }
+.sonar-labels-section__reset { position:relative; display:flex; flex-wrap:wrap; align-items:center; justify-content:center; gap:.5rem; margin-top:20px; padding:.8rem 1rem; border-radius:16px; background:var(--bg-card); border:1px dashed var(--border-medium); color:var(--text-secondary); font-size:.72rem; font-weight:700; }
+.sonar-labels-section__reset .material-symbols-outlined { font-size:16px; color:var(--color-accent); }
+.sonar-labels-section__reset button { border:0; background:transparent; color:var(--color-accent); font-size:.72rem; font-weight:900; text-decoration:underline; cursor:pointer; padding:0; }
+.sonar-labels-section__reset button:hover { color:var(--text-main); }
+
+/* ── Resumen de búsqueda y modal de detalle de vinilo ────────────────── */
+.news-search-summary { display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px; padding:16px 20px; border-radius:18px; background:var(--bg-banner); color:#fff; font-size:14px; box-shadow:var(--shadow-card); }
+.news-search-summary strong { color:var(--color-sonar-text); }
+.news-search-summary button { display:inline-flex; align-items:center; gap:.3rem; padding:.45rem .8rem; border:1px solid rgba(255,255,255,.4); border-radius:999px; background:rgba(255,255,255,.1); color:#fff; font-size:12px; font-weight:800; cursor:pointer; transition:background .2s; }
+.news-search-summary button:hover { background:rgba(255,255,255,.22); }
+dialog.vinyl-detail-modal { width:min(760px,calc(100% - 32px)); padding:clamp(20px,4vw,32px); border-radius:24px; }
+.vinyl-detail-modal .sonar-modal__header h3 { font-size:26px; letter-spacing:-.04em; }
+.vinyl-detail-modal > .news-edition-cover { height:250px; max-height:250px; object-fit:contain; padding:16px; background:radial-gradient(ellipse at center,var(--color-sonar-surface),var(--color-sonar-base)); }
+.vinyl-detail-modal > p { font-size:14px; line-height:1.8; margin:14px 0; }
+.vinyl-detail-modal .vinyl-facts { grid-template-columns:repeat(3,minmax(0,1fr)); gap:12px; }
+.vinyl-facts > div { padding:12px; border:1px solid var(--border-subtle); border-radius:10px; min-width:0; overflow-wrap:anywhere; }
+.vinyl-detail-modal .vinyl-facts dd { font-size:14px; margin-top:5px; }
+.vinyl-detail-modal > h3 { border-top:1px solid var(--border-subtle); padding-top:20px; font-size:16px; }
+.catalog-admin .catalog-publication-notice { display:flex; align-items:center; justify-content:space-between; gap:20px; padding:20px 24px; margin:18px 0; border:1px solid #739ba2; border-left:4px solid #003844; border-radius:14px; background:#eaf3f4; color:#003844; }
+.catalog-publication-notice p { font-size:13px; line-height:1.6; max-width:550px; }
+.catalog-publication-notice .primary-button { background:#003844; white-space:normal; flex-shrink:0; }
+.catalog-upload { position:relative; display:grid!important; justify-items:center; gap:8px; padding:24px!important; border:1px dashed #9c8195; border-radius:14px; background:#4b284009; cursor:pointer; text-align:center; }
+.catalog-upload input[type=file] { position:absolute; inset:0; width:100%; height:100%; opacity:0; cursor:pointer; }
+.catalog-upload:focus-within { outline:3px solid #ba799f; outline-offset:3px; }
+.catalog-upload strong { color:inherit; font-size:14px; }.catalog-upload span { font-size:12px; opacity:.8; }
+
+@keyframes sonar-spin { to { rotate:360deg; } }
+
+@media(max-width:600px) { .sonar-showcase { border-radius:24px; } .sonar-showcase__head { align-items:flex-start; } .vinyl-detail-modal .vinyl-facts { grid-template-columns:repeat(2,minmax(0,1fr)); } .catalog-admin .catalog-publication-notice { align-items:stretch; flex-direction:column; } .sonar-label-card__footer { flex-direction:column; align-items:stretch; } .sonar-label-card__cta { justify-content:center; } }
+@media(prefers-reduced-motion:reduce) { .sonar-vinyl-card, .sonar-label-card, .sonar-vinyl-disc, .sonar-vinyl-card__cover { transition:none; animation:none; } .sonar-vinyl-card:hover, .sonar-label-card:hover, .sonar-vinyl-card:hover .sonar-vinyl-disc, .sonar-vinyl-card:hover .sonar-vinyl-card__cover { transform:none; translate:-50% -50%; animation:none; } .sonar-vinyl-card:hover .sonar-vinyl-card__cover { transform:scale(.94) translateX(-7%); } }

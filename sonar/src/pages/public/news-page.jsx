@@ -1,13 +1,39 @@
-import React, { useState, useMemo, useEffect } from 'react';
+import '../../Styles/news-catalog.css';
+import { matchesNewsSearch } from '../../shared/services/news-search.js';
+import { NewsVinyl } from './news-vinyl.jsx';
+import { NewsLabels } from './news-labels.jsx';
+import { useAuth } from '../../shared/context/auth-context.jsx';
+import { useState, useMemo, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Navbar from '../../shared/components/layout/navbar';
 import Footer from '../../shared/components/layout/footer';
 import { usePlayer } from '../../shared/context/player-context';
 import { useAccessibility } from '../../shared/context/accessibility-context';
 import { subscribeNewsletterWebhook } from '../../shared/services/n8n-webhooks';
+import { toNewsArticle, isNewsVisible } from '../../shared/services/news-service.js';
 import { getCatalog } from '../../shared/services/catalog-service.js';
 
 // Catálogo curado de noticias musicales audiófilas con audios locales y crónicas narradas
+
+const CATEGORIES = [
+  'Todas',
+  'Lanzamientos',
+  'Festivales',
+  'Hi-Fi & Hardware',
+  'Industria & Sellos',
+  'Crónicas',
+];
+
+/** Lee los parámetros de búsqueda que envía la barra de la navbar (#noticias?q=...&abrir=...). */
+function readNewsHashParams() {
+  if (typeof window === 'undefined') return null;
+  const hash = window.location.hash.replace(/^#/, '');
+  const [path, query = ''] = hash.split('?');
+  if (path.toLowerCase() !== 'noticias') return null;
+  return new URLSearchParams(query);
+}
+
+
 export const NEWS_ARTICLES = [
   {
     id: 'radiohead-in-rainbows-45rpm-reissue',
@@ -270,20 +296,66 @@ En este artículo analizamos además cómo la ligera mezcla de canales (crosstal
   }
 ];
 
-const CATEGORIES = [
-  'Todas',
-  'Lanzamientos',
-  'Festivales',
-  'Hi-Fi & Hardware',
-  'Industria & Sellos',
-  'Crónicas',
-];
-
 export const NewsPage = () => {
+  const { user } = useAuth();
+  const [articles, setArticles] = useState(NEWS_ARTICLES);
+  const [editions, setEditions] = useState([]);
+  const [selectedEdition, setSelectedEdition] = useState(null);
+  const [labels, setLabels] = useState([]);
+  const [selectedLabel, setSelectedLabel] = useState('');
+  const [newsError, setNewsError] = useState('');
+  const [newsLoading, setNewsLoading] = useState(false);
+  const [newsRefresh, setNewsRefresh] = useState(0);
+  useEffect(() => {
+    let active = true;
+
+    Promise.all([
+      getCatalog('announcements').catch(() => []),
+      getCatalog('labels', true).catch(() => []),
+      getCatalog('vinyl', true).catch(() => []),
+    ]).then(([rows, seals, vinyls]) => {
+      if (active) {
+        setLabels(seals || []);
+        setEditions(vinyls || []);
+        const validNews = (rows || []).filter(row => isNewsVisible(row)).map(row => toNewsArticle(row, seals || []));
+        if (validNews.length > 0) {
+          setArticles(validNews);
+        } else {
+          setArticles(NEWS_ARTICLES);
+        }
+        setNewsError('');
+      }
+    }).catch(error => {
+      if (active) {
+        setArticles(NEWS_ARTICLES);
+        setNewsError('');
+      }
+    }).finally(() => {
+      if (active) setNewsLoading(false);
+    });
+    return () => { active = false; };
+  }, [newsRefresh]);
   const [selectedCategory, setSelectedCategory] = useState('Todas');
-  const [searchQuery, setSearchQuery] = useState('');
+  const [searchQuery, setSearchQuery] = useState(() => readNewsHashParams()?.get('q') || '');
   const [activeArticleModal, setActiveArticleModal] = useState(null);
   const [activeReleaseModal, setActiveReleaseModal] = useState(null);
+  const deepLinkRef = useRef(readNewsHashParams());
+
+  // Sincroniza la búsqueda con la barra de la navbar (#noticias?q=termino&abrir=id)
+  useEffect(() => {
+    const syncFromHash = () => {
+      const params = readNewsHashParams();
+      if (!params) return;
+      deepLinkRef.current = params;
+      setSearchQuery(params.get('q') || '');
+      setSelectedLabel(params.get('sello') || '');
+      setSelectedCategory('Todas');
+    };
+
+    syncFromHash();
+    window.addEventListener('hashchange', syncFromHash);
+    return () => window.removeEventListener('hashchange', syncFromHash);
+  }, []);
 
   // Estado de Suscripción Newsletter
   const [newsletterEmail, setNewsletterEmail] = useState('');
@@ -313,25 +385,66 @@ export const NewsPage = () => {
     return () => { active = false; };
   }, []);
 
+  // Abre el recurso solicitado desde la navbar una vez que el catálogo está cargado
+  useEffect(() => {
+    if (newsLoading || releasesLoading) return;
+    const params = deepLinkRef.current;
+    if (!params) return;
+
+    const articleId = params.get('abrir');
+    if (articleId) {
+      const article = articles.find((item) => String(item.id) === articleId);
+      if (article) {
+        deepLinkRef.current = null;
+        setActiveArticleModal(article);
+        return;
+      }
+    }
+
+    const vinylId = params.get('vinilo');
+    if (vinylId) {
+      const edition = editions.find((item) => String(item.id) === vinylId);
+      if (edition) {
+        deepLinkRef.current = null;
+        setSelectedEdition(edition);
+        return;
+      }
+    }
+
+    const releaseId = params.get('lanzamiento');
+    if (releaseId) {
+      const release = featuredReleases.find((item) => String(item.id) === releaseId);
+      if (release) {
+        deepLinkRef.current = null;
+        setActiveReleaseModal(release);
+        return;
+      }
+    }
+
+    const labelId = params.get('sello');
+    if (labelId && labels.some((label) => String(label.id) === labelId)) {
+      deepLinkRef.current = null;
+      setSelectedLabel(labelId);
+    }
+  }, [newsLoading, releasesLoading, articles, editions, featuredReleases, labels]);
+
   // Filtrado de artículos
   const filteredArticles = useMemo(() => {
-    return NEWS_ARTICLES.filter((article) => {
+    return articles.filter((article) => {
       const matchesCategory =
         selectedCategory === 'Todas' || article.category === selectedCategory;
-      const query = searchQuery.toLowerCase().trim();
-      const matchesQuery =
-        !query ||
-        article.title.toLowerCase().includes(query) ||
-        article.summary.toLowerCase().includes(query) ||
-        article.author.toLowerCase().includes(query) ||
-        article.category.toLowerCase().includes(query);
+      const matchesQuery = matchesNewsSearch(searchQuery, article.title, article.summary, article.content, article.author, article.category, article.labelName, article.artist, article.album);
 
-      return matchesCategory && matchesQuery;
+      return matchesCategory && matchesQuery && (!selectedLabel || String(article.labelId) === selectedLabel);
     });
-  }, [selectedCategory, searchQuery]);
+  }, [articles, selectedCategory, searchQuery, selectedLabel]);
 
-  const featuredArticle = NEWS_ARTICLES.find((a) => a.featured) || NEWS_ARTICLES[0];
-  const sideArticles = NEWS_ARTICLES.filter((a) => a.id !== featuredArticle.id).slice(0, 2);
+  const visibleLabels = labels.filter(label => matchesNewsSearch(searchQuery, label.name, label.country, label.description));
+  const visibleEditions = editions.filter(edition => (!selectedLabel || String(edition.labelId) === selectedLabel) && matchesNewsSearch(searchQuery, edition.title, edition.artist, edition.format, edition.color, edition.description, edition.catalogNumber, labels.find(label => String(label.id) === String(edition.labelId))?.name));
+  const visibleReleases = featuredReleases.filter(release => (!selectedLabel || String(release.labelId) === selectedLabel) && matchesNewsSearch(searchQuery, release.title, release.artist, release.genre, release.description, labels.find(label => String(label.id) === String(release.labelId))?.name));
+  const resultCount = filteredArticles.length + visibleLabels.length + visibleEditions.length + visibleReleases.length;
+  const featuredArticle = articles.find((a) => a.featured) || articles[0];
+  const sideArticles = articles.filter((a) => a.id !== featuredArticle?.id).slice(0, 2);
 
   const handleNewsletterSubmit = async (e) => {
     e.preventDefault();
@@ -399,22 +512,43 @@ export const NewsPage = () => {
           </div>
 
           {/* Buscador de Noticias */}
-          <div className="w-full lg:w-80 relative">
-            <span className="material-symbols-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400 text-[20px]">
-              search
-            </span>
-            <input
-              type="text"
-              placeholder="Buscar noticias, artistas, sellos..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-10 pr-4 py-2.5 rounded-2xl text-xs sm:text-sm font-medium bg-white dark:bg-[#4B2840]/60 border border-[#e6d5e2] dark:border-white/10 text-[#231123] dark:text-white placeholder-[#876a84] dark:placeholder-gray-400 focus:outline-none focus:border-[#B80C09] shadow-xs transition-all"
-            />
+          <div className="w-full lg:w-96">
+            <div className="relative">
+              <span className="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-[#a186a0] dark:text-[#B89CB0] text-[20px] pointer-events-none">
+                search
+              </span>
+              <input
+                type="search"
+                placeholder="Buscar noticias, artistas, sellos o vinilos…"
+                aria-label="Buscar en Noticias"
+                value={searchQuery}
+                onChange={(e) => { setSearchQuery(e.target.value); setSelectedLabel(''); setSelectedCategory('Todas'); }}
+                className="w-full pl-11 pr-11 py-3 rounded-2xl text-sm font-semibold bg-white dark:bg-[#4B2840]/60 border border-[#e6d5e2] dark:border-white/10 text-[#231123] dark:text-white placeholder-[#a186a0] dark:placeholder-gray-400 focus:outline-none focus:border-[#B80C09] focus:shadow-[0_0_0_4px_rgba(184,12,9,0.12)] shadow-xs transition-all"
+              />
+              {searchQuery && (
+                <button
+                  type="button"
+                  onClick={() => { setSearchQuery(''); setSelectedLabel(''); setSelectedCategory('Todas'); }}
+                  aria-label="Limpiar búsqueda de noticias"
+                  className="absolute right-2.5 top-1/2 -translate-y-1/2 w-7 h-7 rounded-full grid place-items-center text-[#a186a0] dark:text-[#B89CB0] hover:text-[#B80C09] hover:bg-[#f8e9f6] dark:hover:bg-white/10 transition-colors cursor-pointer"
+                >
+                  <span className="material-symbols-outlined text-[16px]">close</span>
+                </button>
+              )}
+            </div>
+            <p className="mt-2 text-[11px] font-semibold text-[#5c435a] dark:text-[#B89CB0]">
+              {searchQuery.trim()
+                ? `${resultCount} ${resultCount === 1 ? 'coincidencia' : 'coincidencias'} para “${searchQuery.trim()}”`
+                : 'Busca dentro del contenido de las noticias, sellos y ediciones de vinilo.'}
+            </p>
           </div>
         </header>
+        {user?.role === 'admin' && <a href="#admin-catalog-announcements" className="primary-button">Administrar noticias en Anuncios</a>}
+        {newsLoading && <p role="status">Cargando noticias…</p>}
+        {newsError && <div role="alert"><p>No se pudieron cargar las noticias: {newsError}</p><button onClick={() => { setNewsLoading(true); setNewsRefresh(value => value + 1) }}>Reintentar</button></div>}
 
         {/* SECCIÓN EDITORIAL DE PORTADA (REVISTA / EDITORIAL HERO) */}
-        {!searchQuery && selectedCategory === 'Todas' && (
+        {featuredArticle && !searchQuery && selectedCategory === 'Todas' && (
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 sm:gap-8">
             {/* Historia Principal de Portada (8 Columnas) */}
             <motion.article
@@ -563,7 +697,7 @@ export const NewsPage = () => {
         {/* ═══════════════════════════════════════════════
             SECCIÓN: LANZAMIENTOS DESTACADOS (desde Admin)
             ═══════════════════════════════════════════════ */}
-        {(releasesLoading || featuredReleases.length > 0) && (
+        {(releasesLoading || visibleReleases.length > 0) && (
           <section className="space-y-5">
             {/* Cabecera de sección */}
             <div className="flex items-center justify-between pb-3 border-b border-[#e6d5e2] dark:border-white/10">
@@ -576,9 +710,9 @@ export const NewsPage = () => {
                   <p className="text-[11px] text-[#5c435a] dark:text-[#B89CB0] font-medium">Selección editorial · Actualizado por el equipo Sonar</p>
                 </div>
               </div>
-              {!releasesLoading && featuredReleases.length > 0 && (
+              {!releasesLoading && visibleReleases.length > 0 && (
                 <span className="px-2.5 py-1 rounded-full bg-[#B80C09]/10 text-[#B80C09] dark:text-rose-300 text-[10px] font-black">
-                  {featuredReleases.length} {featuredReleases.length === 1 ? 'lanzamiento' : 'lanzamientos'}
+                  {visibleReleases.length} {visibleReleases.length === 1 ? 'lanzamiento' : 'lanzamientos'}
                 </span>
               )}
             </div>
@@ -592,7 +726,7 @@ export const NewsPage = () => {
               </div>
             ) : (
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-                {featuredReleases.map((release) => {
+                {visibleReleases.map((release) => {
                   const releaseDate = release.releaseDate
                     ? new Date(release.releaseDate).toLocaleDateString('es-MX', { year: 'numeric', month: 'long', day: 'numeric' })
                     : null;
@@ -700,6 +834,18 @@ export const NewsPage = () => {
           </section>
         )}
 
+        {searchQuery.trim() && !newsLoading && !releasesLoading && <div className="news-search-summary" role="status"><span>{resultCount} resultados para <strong>«{searchQuery.trim()}»</strong></span><button onClick={() => { setSearchQuery(''); setSelectedLabel(''); setSelectedCategory('Todas'); }}>Limpiar búsqueda</button></div>}
+        <NewsVinyl editions={visibleEditions} labels={labels} articles={articles} selected={selectedEdition} onSelect={setSelectedEdition} onArticle={setActiveArticleModal} />
+        <NewsLabels
+          labels={visibleLabels}
+          articles={articles}
+          editions={editions}
+          releases={featuredReleases}
+          selected={selectedLabel}
+          onSelect={(labelId) => { setSelectedLabel(labelId); setSelectedCategory('Todas'); setSearchQuery('') }}
+          onClear={() => setSelectedLabel('')}
+        />
+
         {/* Pestañas de Filtro por Categoría */}
         <div className="flex items-center gap-2 overflow-x-auto pb-2 scrollbar-none">
           {CATEGORIES.map((cat) => (
@@ -783,7 +929,7 @@ export const NewsPage = () => {
                 {/* Pie de Tarjeta */}
                 <div className="p-5 sm:p-6 pt-0 flex items-center justify-between border-t border-gray-100 dark:border-white/5 mt-2">
                   <span className="text-[11px] font-bold text-[#231123] dark:text-gray-300">
-                    Por {article.author}
+                    {article.labelName && <span className="block font-bold">Sello: {article.labelName}</span>}{article.artist && <span className="block">Artistas: {article.artist}</span>}Por {article.author}{user?.role === 'admin' && <a href={`#admin-catalog-announcements?edit=${encodeURIComponent(article.id)}`} onClick={event => event.stopPropagation()} className="block underline mt-2">Editar noticia</a>}
                   </span>
 
                   <div className="flex items-center gap-2">
@@ -841,13 +987,49 @@ export const NewsPage = () => {
           })}
         </div>
 
-        {filteredArticles.length === 0 && (
-          <div className="py-16 text-center space-y-3 bg-white dark:bg-[#4B2840]/30 rounded-3xl border border-[#e6d5e2] dark:border-white/10 p-8">
-            <span className="material-symbols-outlined text-4xl text-[#B80C09]">newspaper</span>
-            <h3 className="text-lg font-bold">No se encontraron noticias con estos términos</h3>
-            <p className="text-xs text-gray-500 dark:text-gray-400">
-              Prueba buscando por otro término como &ldquo;vinilo&rdquo;, &ldquo;Radiohead&rdquo;, &ldquo;festivales&rdquo; o selecciona &ldquo;Todas&rdquo;.
-            </p>
+        {!newsLoading && !releasesLoading && !newsError && resultCount === 0 && (
+          <div className="relative overflow-hidden py-16 px-6 text-center rounded-[32px] bg-[var(--bg-page)] border border-[var(--border-subtle)]">
+            <div className="absolute -top-24 right-0 w-80 h-80 rounded-full bg-[var(--color-accent)]/10 blur-3xl pointer-events-none" />
+            <div className="relative flex flex-col items-center gap-4">
+              <span className="w-20 h-20 rounded-3xl bg-[var(--bg-card)] border border-[var(--border-subtle)] grid place-items-center shadow-lg">
+                <span className="material-symbols-outlined text-4xl text-[var(--color-accent)]">
+                  {searchQuery.trim() ? 'search_off' : 'newspaper'}
+                </span>
+              </span>
+              <div className="space-y-2 max-w-xl">
+                <h3 className="text-xl sm:text-2xl font-black tracking-tight text-[var(--text-main)]">
+                  {searchQuery.trim()
+                    ? <>No existe contenido para &ldquo;{searchQuery.trim()}&rdquo;</>
+                    : 'Todavía no hay noticias publicadas'}
+                </h3>
+                <p className="text-sm text-[var(--text-secondary)] leading-relaxed">
+                  {searchQuery.trim()
+                    ? 'Prueba con otros términos como «vinilo», «Radiohead», «festivales» o «Daft Punk», o selecciona la categoría «Todas».'
+                    : 'Cuando el equipo editorial publique anuncios, lanzamientos y reediciones aparecerán en este radar.'}
+                </p>
+              </div>
+              <div className="flex flex-wrap items-center justify-center gap-2 pt-1">
+                {['vinilo', 'festivales', 'Radiohead', 'Daft Punk'].map(suggestion => (
+                  <button
+                    key={suggestion}
+                    type="button"
+                    onClick={() => { setSearchQuery(suggestion); setSelectedLabel(''); setSelectedCategory('Todas'); }}
+                    className="px-3.5 py-2 rounded-full bg-[var(--bg-card)] border border-[var(--border-subtle)] text-xs font-bold text-[var(--text-secondary)] hover:border-[var(--color-accent)] hover:text-[var(--color-accent)] transition-colors cursor-pointer"
+                  >
+                    {suggestion}
+                  </button>
+                ))}
+                {searchQuery.trim() && (
+                  <button
+                    type="button"
+                    onClick={() => { setSearchQuery(''); setSelectedLabel(''); setSelectedCategory('Todas'); }}
+                    className="px-4 py-2 rounded-full bg-[var(--color-accent)] hover:bg-[var(--color-accent-hover)] text-white text-xs font-black transition-colors cursor-pointer"
+                  >
+                    Ver todas las noticias
+                  </button>
+                )}
+              </div>
+            </div>
           </div>
         )}
 
@@ -1021,6 +1203,12 @@ export const NewsPage = () => {
 
               {/* Contenido del Artículo */}
               <div className="flex-1 overflow-y-auto p-6 sm:p-8 space-y-6 text-sm leading-relaxed text-[#231123]/90 dark:text-gray-200">
+                {editions.some(edition => String(edition.id) === String(activeArticleModal.vinylId)) && <button className="vinyl-news-link" onClick={() => { setSelectedEdition(editions.find(edition => String(edition.id) === String(activeArticleModal.vinylId))); setActiveArticleModal(null) }}>Ver edición de vinilo →</button>}
+                {activeArticleModal.labelName && <p><strong>Sello discográfico:</strong> {activeArticleModal.labelName}</p>}
+                {activeArticleModal.artist && <p><strong>Artistas:</strong> {activeArticleModal.artist}</p>}
+                {activeArticleModal.album && <p><strong>Álbum:</strong> {activeArticleModal.album}</p>}
+                {activeArticleModal.eventDate && <p><strong>Fecha del lanzamiento o fichaje:</strong> {activeArticleModal.eventDate}</p>}
+                {activeArticleModal.sourceUrl && <a href={activeArticleModal.sourceUrl} target="_blank" rel="noopener noreferrer" className="underline">Consultar anuncio oficial ↗</a>}
                 {/* Metadatos */}
                 <div className="flex flex-wrap items-center justify-between gap-3 pb-4 border-b border-gray-200 dark:border-white/10 text-xs text-[#5c435a] dark:text-[#B89CB0]">
                   <div className="flex items-center gap-2">

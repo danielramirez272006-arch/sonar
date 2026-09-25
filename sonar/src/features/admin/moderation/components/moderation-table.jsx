@@ -3,16 +3,18 @@ import { ReviewAlbum } from './review-album.jsx'
 
 const statuses = { pending_moderation: 'Pendiente', approved: 'Aprobada', rejected: 'Rechazada' }
 
-export function ModerationTable({ reviews, users, query, busy, onAction, analyses, compact = false, error, initialFilter = 'all' }) {
+export function ModerationTable({ reviews, users, query, busy, onAction, analyses, compact = false, error, initialFilter = 'all', userFilterId = null }) {
   const [filter, setFilter] = useState(initialFilter)
   const [rejectId, setRejectId] = useState(null)
   const options = compact ? [['all', 'Todas'], ['pending_moderation', 'Pendientes'], ['approved', 'Aprobadas'], ['rejected', 'Rechazadas'], ['flagged', 'Marcadas']] : [['all', 'Todas'], ['flagged', 'Marcadas por IA']]
   const visible = reviews.filter(review => {
-    const user = users.find(item => item.id === review.userId)
+    if (userFilterId !== null && String(review.userId) !== String(userFilterId)) return false
+    const user = users.find(item => String(item.id) === String(review.userId))
     return (filter === 'all' || (filter === 'flagged' ? review.aiFlagged : review.status === filter)) && `${user?.username ?? ''} ${review.userId} ${review.albumId} ${review.content}`.toLocaleLowerCase().includes(query.trim().toLocaleLowerCase())
   })
   return (
     <section className="review-feed" aria-label={compact ? 'Reseñas registradas' : 'Cola de moderación'} aria-busy={busy}>
+      {userFilterId !== null && <p className="users-review-filter">Reseñas de <strong>{users.find(user => String(user.id) === String(userFilterId))?.username || `Usuario ${userFilterId}`}</strong> · <a href="#admin-reviews">Quitar filtro de usuario</a> · <a href="#usuarios">Volver a usuarios</a></p>}
       <div className="feed-heading flex items-center justify-between gap-3 mb-5">
         <h2 className="text-xl font-bold text-gray-900 dark:text-sonar-text">
           {compact ? 'Las voces de la comunidad' : 'Cola de revisión'}
@@ -38,7 +40,7 @@ export function ModerationTable({ reviews, users, query, busy, onAction, analyse
               {label}
               {value === 'all' && (
                 <span className="ml-1.5 text-[10px] px-1.5 py-0.5 rounded-full bg-gray-200 dark:bg-sonar-base text-gray-800 dark:text-sonar-text">
-                  {reviews.length}
+                  {reviews.filter(review => userFilterId === null || String(review.userId) === String(userFilterId)).length}
                 </span>
               )}
             </button>
@@ -58,7 +60,7 @@ export function ModerationTable({ reviews, users, query, busy, onAction, analyse
       )}
       <div className="flex flex-col gap-4">
         {visible.map((review, index) => {
-          const user = users.find(item => item.id === review.userId)
+          const user = users.find(item => String(item.id) === String(review.userId))
           const name = user?.username || `Usuario ${review.userId}`
           const analysis = analyses[review.id]
           const isEven = index % 2 === 0

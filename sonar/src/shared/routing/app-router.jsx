@@ -73,7 +73,7 @@ export const AppRouter = () => {
 
   // Selector dinámico de componentes por ruta
   const renderCurrentPage = () => {
-    const rawPath = currentPath.toLowerCase().replace(/^\//, '');
+    const rawPath = currentPath.toLowerCase().replace(/^\//, '').split('?')[0];
 
     if (rawPath === '' || rawPath === 'explore' || rawPath === 'home') {
       return <HomePage />;

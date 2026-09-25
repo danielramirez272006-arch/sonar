@@ -4766,6 +4766,15 @@
         "Melómano Junior",
         "Audio Seguro"
       ],
+<<<<<<< HEAD
+      "createdAt": "2026-09-24T21:24:42.484Z"
+    },
+    {
+      "id": "user-1790285580159",
+      "username": "melomano_junior",
+      "email": "junior_1790285579995@sonar.test",
+      "password": "sha256$c70b1474b4ddb0263ef49321021174a9$8ddbef1432289e96bfbadcf2900e8196cdd2ab0f53d369c0bdd65f5011babaa8",
+=======
       "createdAt": "2026-09-24T20:59:11.150Z"
     },
     {
@@ -4846,6 +4855,7 @@
       "username": "melomano_junior",
       "email": "junior_1790283907113@sonar.test",
       "password": "sha256$df09a1f1109e69e60e790e32157725b8$4162aa36caf7f67ff5d3060308fe3b2f87a9822f32e859ee141ceaa8333138de",
+>>>>>>> 8533d7969676ed5bb3d343d87369308910098c53
       "role": "user",
       "accountType": "junior",
       "parentalControl": {
@@ -4854,6 +4864,9 @@
         "pin": "5555"
       },
       "avatarUrl": "",
+<<<<<<< HEAD
+      "avatarBg": "#7c3aed",
+=======
       "avatarBg": "#0284c7",
       "bio": "Melómano Junior explorando música segura y educativa en Sonar.",
       "stats": {
@@ -4964,6 +4977,7 @@
       },
       "avatarUrl": "",
       "avatarBg": "#d97706",
+>>>>>>> 8533d7969676ed5bb3d343d87369308910098c53
       "bio": "Melómano Junior explorando música segura y educativa en Sonar.",
       "stats": {
         "savedAlbums": 0,
@@ -4984,6 +4998,123 @@
         "Melómano Junior",
         "Audio Seguro"
       ],
+<<<<<<< HEAD
+      "createdAt": "2026-09-24T21:33:00.159Z"
+    },
+    {
+      "id": "user-1790285587222",
+      "username": "Daniel Ramirez",
+      "email": "daniel_1790285587141@sonar.local",
+      "password": "sha256$a89a7d31496965ca1278075b51a5390d$495375543ea7435a43734855c871c6c995e80e1a918f7d663bee594524cfd814",
+      "role": "user",
+      "accountType": "standard",
+      "parentalControl": {
+        "enabled": false,
+        "blockExplicit": false,
+        "pin": "1234"
+      },
+      "avatarUrl": "",
+      "avatarBg": "#4B2840",
+      "bio": "Nuevo melómano explorando vinilos y texturas acústicas en Sonar.",
+      "stats": {
+        "savedAlbums": 0,
+        "reviewsCount": 0,
+        "followers": 0,
+        "following": 0
+      },
+      "preferences": [
+        "Hip-Hop Experimental",
+        "Neo-Soul"
+      ],
+      "gear": {
+        "headphones": "Auriculares de referencia",
+        "turntable": "Tocadiscos Direct Drive",
+        "favoriteFormat": "Vinilo 33⅓ RPM"
+      },
+      "badges": [
+        "Melómano Verificado",
+        "Audiófilo Inicial"
+      ],
+      "createdAt": "2026-09-24T21:33:07.222Z"
+    },
+    {
+      "id": "user-1790285587285",
+      "username": "Elena Jazz",
+      "email": "audiophile_1790285587266@sonar.local",
+      "password": "sha256$daf9ea7ca74102c99cd2a6af664db7cd$1096c9c3e509622a7e5fc231981e76baa382513dc4734e7ffa98c398c2e821ef",
+      "role": "user",
+      "accountType": "standard",
+      "parentalControl": {
+        "enabled": false,
+        "blockExplicit": false,
+        "pin": "1234"
+      },
+      "avatarUrl": "",
+      "avatarBg": "#d97706",
+      "bio": "Amante del vinilo y el jazz modal.",
+      "stats": {
+        "savedAlbums": 0,
+        "reviewsCount": 0,
+        "followers": 0,
+        "following": 0
+      },
+      "preferences": [
+        "Jazz & Fusion",
+        "Post-Punk"
+      ],
+      "gear": {
+        "headphones": "Auriculares de referencia",
+        "turntable": "Tocadiscos Direct Drive",
+        "favoriteFormat": "Vinilo 33⅓ RPM"
+      },
+      "badges": [
+        "Melómano Verificado",
+        "Audiófilo Inicial"
+      ],
+      "createdAt": "2026-09-24T21:33:07.285Z"
+    },
+    {
+      "id": "user-1790285668882",
+      "username": "melomano_junior",
+      "email": "junior_1790285668780@sonar.test",
+      "password": "sha256$3ae5b531c32a812a91cdd2f940fc6fec$8109c3ad531bcd1bed6c7c32a9e75a3c6f32877d76c39020dedbd9c1616022de",
+      "role": "user",
+      "accountType": "junior",
+      "parentalControl": {
+        "enabled": true,
+        "blockExplicit": true,
+        "pin": "5555"
+      },
+      "avatarUrl": "",
+      "avatarBg": "#7c3aed",
+      "bio": "Melómano Junior explorando música segura y educativa en Sonar.",
+      "stats": {
+        "savedAlbums": 0,
+        "reviewsCount": 0,
+        "followers": 0,
+        "following": 0
+      },
+      "preferences": [
+        "Ambient & Drone",
+        "Folk Acústico"
+      ],
+      "gear": {
+        "headphones": "Auriculares de referencia",
+        "turntable": "Tocadiscos Direct Drive",
+        "favoriteFormat": "Vinilo 33⅓ RPM"
+      },
+      "badges": [
+        "Melómano Junior",
+        "Audio Seguro"
+      ],
+      "createdAt": "2026-09-24T21:34:28.882Z"
+    },
+    {
+      "id": "user-1790285675674",
+      "username": "Daniel Ramirez",
+      "email": "daniel_1790285675559@sonar.local",
+      "password": "sha256$aeada923816cbf951aeca8dc28d16183$e4ccfdaf60e5e46318eedc17b9246cd9661dcb2ce1398438492e5cc44ed5ab09",
+=======
       "createdAt": "2026-09-24T21:06:10.647Z"
     },
     {
@@ -4991,6 +5122,7 @@
       "username": "google_listener_75",
       "email": "google_user_75@sonar.local",
       "password": "sha256$67716d8acbf915a9cea5ec660981197a$ecac1dd75cc993d982ab32d9c07216bf60b644182ed7858eaf94868d4ffcb5e6",
+>>>>>>> 8533d7969676ed5bb3d343d87369308910098c53
       "role": "user",
       "accountType": "standard",
       "parentalControl": {
@@ -5008,9 +5140,14 @@
         "following": 0
       },
       "preferences": [
+<<<<<<< HEAD
+        "Jazz & Fusion",
+        "Ambient & Drone"
+=======
         "Art Rock",
         "Electrónica",
         "Psicodelia"
+>>>>>>> 8533d7969676ed5bb3d343d87369308910098c53
       ],
       "gear": {
         "headphones": "Auriculares de referencia",
@@ -5021,6 +5158,15 @@
         "Melómano Verificado",
         "Audiófilo Inicial"
       ],
+<<<<<<< HEAD
+      "createdAt": "2026-09-24T21:34:35.674Z"
+    },
+    {
+      "id": "user-1790285675739",
+      "username": "Elena Jazz",
+      "email": "audiophile_1790285675716@sonar.local",
+      "password": "sha256$dcc9097c518a0cb1772197cd503e2423$2fdaf8e54846e587345c1fc57ec1ff3b657ed7ce5f559cf10ad1173f8cdb893e",
+=======
       "createdAt": "2026-09-24T21:13:03.121Z"
     },
     {
@@ -5101,6 +5247,7 @@
       "username": "Elena Jazz",
       "email": "audiophile_1790285570153@sonar.local",
       "password": "sha256$510172bb02399ae18e2774aca835085d$11ee9acfe86c8f0fa90d7d66dd5bc6b3e6931430b05965ae17e87f5fb6d05f52",
+>>>>>>> 8533d7969676ed5bb3d343d87369308910098c53
       "role": "user",
       "accountType": "standard",
       "parentalControl": {
@@ -5131,6 +5278,15 @@
         "Melómano Verificado",
         "Audiófilo Inicial"
       ],
+<<<<<<< HEAD
+      "createdAt": "2026-09-24T21:34:35.739Z"
+    },
+    {
+      "id": "user-1790285738454",
+      "username": "melomano_junior",
+      "email": "junior_1790285738346@sonar.test",
+      "password": "sha256$fa02f25acf3aed5bb0f2e154a477e305$46e0efc42bceadee3911e945ef5e351ca29ebe081b2bb10aa6eea23ecc7e0c98",
+=======
       "createdAt": "2026-09-24T21:32:50.193Z"
     },
     {
@@ -5138,6 +5294,7 @@
       "username": "melomano_junior",
       "email": "junior_1790285572194@sonar.test",
       "password": "sha256$45e70324209d505f591d7069c19191c3$4d4a43306b83d1b217bb0a13c8644b5bca72f7d286e5cf149100c3c9f663df62",
+>>>>>>> 8533d7969676ed5bb3d343d87369308910098c53
       "role": "user",
       "accountType": "junior",
       "parentalControl": {
@@ -5146,8 +5303,49 @@
         "pin": "5555"
       },
       "avatarUrl": "",
+<<<<<<< HEAD
+      "avatarBg": "#059669",
+      "bio": "Melómano Junior explorando música segura y educativa en Sonar.",
+      "stats": {
+        "savedAlbums": 0,
+        "reviewsCount": 0,
+        "followers": 0,
+        "following": 0
+      },
+      "preferences": [
+        "Art Rock",
+        "Jazz & Fusion"
+      ],
+      "gear": {
+        "headphones": "Auriculares de referencia",
+        "turntable": "Tocadiscos Direct Drive",
+        "favoriteFormat": "Vinilo 33⅓ RPM"
+      },
+      "badges": [
+        "Melómano Junior",
+        "Audio Seguro"
+      ],
+      "createdAt": "2026-09-24T21:35:38.454Z"
+    },
+    {
+      "id": "user-1790285744922",
+      "username": "Daniel Ramirez",
+      "email": "daniel_1790285744831@sonar.local",
+      "password": "sha256$c995b25d8f42f7eef1f7b4e467d33b10$af8c70a4af3a0ca361771664305757a1d598204105a637b3bce08832b931a0d0",
+      "role": "user",
+      "accountType": "standard",
+      "parentalControl": {
+        "enabled": false,
+        "blockExplicit": false,
+        "pin": "1234"
+      },
+      "avatarUrl": "",
+      "avatarBg": "#4B2840",
+      "bio": "Nuevo melómano explorando vinilos y texturas acústicas en Sonar.",
+=======
       "avatarBg": "#4B2840",
       "bio": "Melómano Junior explorando música segura y educativa en Sonar.",
+>>>>>>> 8533d7969676ed5bb3d343d87369308910098c53
       "stats": {
         "savedAlbums": 0,
         "reviewsCount": 0,
@@ -5164,6 +5362,18 @@
         "favoriteFormat": "Vinilo 33⅓ RPM"
       },
       "badges": [
+<<<<<<< HEAD
+        "Melómano Verificado",
+        "Audiófilo Inicial"
+      ],
+      "createdAt": "2026-09-24T21:35:44.922Z"
+    },
+    {
+      "id": "user-1790285744994",
+      "username": "Elena Jazz",
+      "email": "audiophile_1790285744975@sonar.local",
+      "password": "sha256$451301f7c65aba9a889738df1d8c9310$b9de17b7112a85e0fc6fd7ceef54c741d2b2ff4521ad9e67885cf82aaa2f7d74",
+=======
         "Melómano Junior",
         "Audio Seguro"
       ],
@@ -5648,6 +5858,7 @@
       "username": "Elena Jazz",
       "email": "audiophile_1790287796769@sonar.local",
       "password": "sha256$c51b3c2ca343c9636d216c5a9ef36d71$42c544d21cf86d56c6eca94d167cc44d002b6d644919ddd0696c723497d488b3",
+>>>>>>> 8533d7969676ed5bb3d343d87369308910098c53
       "role": "user",
       "accountType": "standard",
       "parentalControl": {
@@ -5678,6 +5889,15 @@
         "Melómano Verificado",
         "Audiófilo Inicial"
       ],
+<<<<<<< HEAD
+      "createdAt": "2026-09-24T21:35:44.994Z"
+    },
+    {
+      "id": "user-1790285789837",
+      "username": "melomano_junior",
+      "email": "junior_1790285789723@sonar.test",
+      "password": "sha256$337b8b49aa9852d8b8de647307717d0c$d1964f32f7098e4f73c598d3613227524210c6debe1a54261475d505ec781c26",
+=======
       "createdAt": "2026-09-24T22:09:56.824Z"
     },
     {
@@ -8047,6 +8267,7 @@
       "username": "melomano_junior",
       "email": "junior_1790352596915@sonar.test",
       "password": "sha256$dd6e442a80e4b60dedec567f90de5812$13c43de585fc1e1bcef728d8558f6ecba30fd9620e136125043d087c620419a6",
+>>>>>>> 8533d7969676ed5bb3d343d87369308910098c53
       "role": "user",
       "accountType": "junior",
       "parentalControl": {
@@ -8076,6 +8297,15 @@
         "Melómano Junior",
         "Audio Seguro"
       ],
+<<<<<<< HEAD
+      "createdAt": "2026-09-24T21:36:29.838Z"
+    },
+    {
+      "id": "user-1790285797159",
+      "username": "Daniel Ramirez",
+      "email": "daniel_1790285797076@sonar.local",
+      "password": "sha256$e3b682a3583319f2adf1119e426eb84a$69895e68c9503c3c6970229f4fc9434ef72ae552fbf5dbe24bf0e2e558038964",
+=======
       "createdAt": "2026-09-25T16:09:57.675Z"
     },
     {
@@ -8301,6 +8531,7 @@
       "username": "Daniel Ramirez",
       "email": "daniel_1790353595234@sonar.local",
       "password": "sha256$d7ed71f39c008ded8516f89293b13966$267cf76b7769eeaf8dabd397a2e2f242148a1edd5e68cee234481e8493b15694",
+>>>>>>> 8533d7969676ed5bb3d343d87369308910098c53
       "role": "user",
       "accountType": "standard",
       "parentalControl": {
@@ -8318,6 +8549,8 @@
         "following": 0
       },
       "preferences": [
+<<<<<<< HEAD
+=======
         "IDM / Techno",
         "Electrónica"
       ],
@@ -8863,6 +9096,7 @@
         "following": 0
       },
       "preferences": [
+>>>>>>> 8533d7969676ed5bb3d343d87369308910098c53
         "Post-Punk",
         "Dream Pop"
       ],
@@ -8875,6 +9109,15 @@
         "Melómano Verificado",
         "Audiófilo Inicial"
       ],
+<<<<<<< HEAD
+      "createdAt": "2026-09-24T21:36:37.159Z"
+    },
+    {
+      "id": "user-1790285797235",
+      "username": "Elena Jazz",
+      "email": "audiophile_1790285797216@sonar.local",
+      "password": "sha256$f66c9b17abcbd5458f036eb54cf073fe$46added979484cb445688a1b2f1355ab7fd1f8deabfc7aae72672d129b90f51a",
+=======
       "createdAt": "2026-09-25T16:53:41.019Z"
     },
     {
@@ -8882,6 +9125,7 @@
       "username": "Elena Jazz",
       "email": "audiophile_1790355221657@sonar.local",
       "password": "sha256$b77b4050e6e79bcc0ff1f8a10e31dfa8$b7e30a6c6962a5e9a7edfcc90b0e2a10c81f7dc1036e5e9ee787c634ef5f26ce",
+>>>>>>> 8533d7969676ed5bb3d343d87369308910098c53
       "role": "user",
       "accountType": "standard",
       "parentalControl": {
@@ -8891,6 +9135,8 @@
       },
       "avatarUrl": "",
       "avatarBg": "#4B2840",
+<<<<<<< HEAD
+=======
       "bio": "Exploradora de sintetizadores analógicos.",
       "stats": {
         "savedAlbums": 0,
@@ -9109,6 +9355,7 @@
       },
       "avatarUrl": "",
       "avatarBg": "#B80C09",
+>>>>>>> 8533d7969676ed5bb3d343d87369308910098c53
       "bio": "Amante del vinilo y el jazz modal.",
       "stats": {
         "savedAlbums": 0,
@@ -9129,6 +9376,15 @@
         "Melómano Verificado",
         "Audiófilo Inicial"
       ],
+<<<<<<< HEAD
+      "createdAt": "2026-09-24T21:36:37.235Z"
+    },
+    {
+      "id": "user-1790287883025",
+      "username": "mr.4lexx",
+      "email": "mr.4leexx@gmail.com",
+      "password": "sha256$b9657c0c62bc8eea97fe472c72371edd$61ecccaeda8b53f0faa95aa9b8b816e535cf76737e6498e213cb16eba8b203b1",
+=======
       "createdAt": "2026-09-25T16:58:58.643Z"
     },
     {
@@ -9208,6 +9464,7 @@
       "username": "Daniel Ramirez",
       "email": "daniel_1790355784914@sonar.local",
       "password": "sha256$55ea47ca4df1918387332f1f06006aa2$94221ed3eb407246e1de5126740e76dc719291c87dc300769493e266be8f8485",
+>>>>>>> 8533d7969676ed5bb3d343d87369308910098c53
       "role": "user",
       "accountType": "standard",
       "parentalControl": {
@@ -9216,6 +9473,9 @@
         "pin": "1234"
       },
       "avatarUrl": "",
+<<<<<<< HEAD
+      "avatarBg": "#06B6D4",
+=======
       "avatarBg": "#B80C09",
       "bio": "Nuevo melómano explorando vinilos y texturas acústicas en Sonar.",
       "stats": {
@@ -9516,6 +9776,7 @@
       },
       "avatarUrl": "",
       "avatarBg": "#4B2840",
+>>>>>>> 8533d7969676ed5bb3d343d87369308910098c53
       "bio": "Nuevo melómano explorando vinilos y texturas acústicas en Sonar.",
       "stats": {
         "savedAlbums": 0,
@@ -9524,8 +9785,14 @@
         "following": 0
       },
       "preferences": [
+<<<<<<< HEAD
+        "Electrónica",
+        "Dream Pop",
+        "Hip-Hop Experimental"
+=======
         "Dream Pop",
         "IDM / Techno"
+>>>>>>> 8533d7969676ed5bb3d343d87369308910098c53
       ],
       "gear": {
         "headphones": "Auriculares de referencia",
@@ -9536,6 +9803,22 @@
         "Melómano Verificado",
         "Audiófilo Inicial"
       ],
+<<<<<<< HEAD
+      "createdAt": "2026-09-24T22:11:23.025Z",
+      "avatarStyle": "blobatar",
+      "avatarSeed": "synth-rider",
+      "avatarIcon": "headphones",
+      "avatarHue": 18,
+      "avatarTone": "vivid",
+      "bannerUrl": "",
+      "bannerGradient": "linear-gradient(135deg, rgba(184, 12, 9, 0.7) 0%, rgba(75, 40, 64, 0.95) 100%)"
+    },
+    {
+      "id": "user-1790345123262",
+      "username": "google_listener_142",
+      "email": "google_user_142@sonar.local",
+      "password": "sha256$a37e779189d6174610dadb16bf532e2c$bc3c50ded752235855fdadd7e7f2db7aef67fa04c876961c50cd759b3ccd19e7",
+=======
       "createdAt": "2026-09-25T17:06:04.497Z"
     },
     {
@@ -9543,6 +9826,7 @@
       "username": "Elena Jazz",
       "email": "audiophile_1790355964555@sonar.local",
       "password": "sha256$412ec349a7d95f78c2bfd687ebbf1e99$fadcb04994445b371e73e0c121d09a388f7db5338c490ebf9725263fa3380b57",
+>>>>>>> 8533d7969676ed5bb3d343d87369308910098c53
       "role": "user",
       "accountType": "standard",
       "parentalControl": {
@@ -9551,8 +9835,13 @@
         "pin": "1234"
       },
       "avatarUrl": "",
+<<<<<<< HEAD
+      "avatarBg": "#B80C09",
+      "bio": "Nuevo melómano explorando vinilos y texturas acústicas en Sonar.",
+=======
       "avatarBg": "#059669",
       "bio": "Exploradora de sintetizadores analógicos.",
+>>>>>>> 8533d7969676ed5bb3d343d87369308910098c53
       "stats": {
         "savedAlbums": 0,
         "reviewsCount": 0,
@@ -9560,9 +9849,15 @@
         "following": 0
       },
       "preferences": [
+<<<<<<< HEAD
+        "Art Rock",
+        "Electrónica",
+        "Psicodelia"
+=======
         "Synthwave",
         "Ambient & Drone",
         "IDM / Techno"
+>>>>>>> 8533d7969676ed5bb3d343d87369308910098c53
       ],
       "gear": {
         "headphones": "Auriculares de referencia",
@@ -9573,6 +9868,25 @@
         "Melómano Verificado",
         "Audiófilo Inicial"
       ],
+<<<<<<< HEAD
+      "createdAt": "2026-09-25T14:05:23.262Z"
+    },
+    {
+      "id": "user-1790345685799",
+      "username": "google_listener_735",
+      "email": "google_user_735@sonar.local",
+      "password": "sha256$10524fd767cad409528483905147bd61$70c8a9d3e81909de02c3950a51faf6c78cecfb5237381548e21a34a3e9175f33",
+      "role": "user",
+      "accountType": "standard",
+      "parentalControl": {
+        "enabled": false,
+        "blockExplicit": false,
+        "pin": "1234"
+      },
+      "avatarUrl": "",
+      "avatarBg": "#B80C09",
+      "bio": "Nuevo melómano explorando vinilos y texturas acústicas en Sonar.",
+=======
       "createdAt": "2026-09-25T17:06:04.599Z"
     },
     {
@@ -9590,6 +9904,7 @@
       "avatarUrl": "",
       "avatarBg": "#d97706",
       "bio": "Melómano Junior explorando música segura y educativa en Sonar.",
+>>>>>>> 8533d7969676ed5bb3d343d87369308910098c53
       "stats": {
         "savedAlbums": 0,
         "reviewsCount": 0,
@@ -9597,8 +9912,14 @@
         "following": 0
       },
       "preferences": [
+<<<<<<< HEAD
+        "Art Rock",
+        "Electrónica",
+        "Psicodelia"
+=======
         "Ambient & Drone",
         "Folk Acústico"
+>>>>>>> 8533d7969676ed5bb3d343d87369308910098c53
       ],
       "gear": {
         "headphones": "Auriculares de referencia",
@@ -9606,10 +9927,170 @@
         "favoriteFormat": "Vinilo 33⅓ RPM"
       },
       "badges": [
+<<<<<<< HEAD
+        "Melómano Verificado",
+        "Audiófilo Inicial"
+      ],
+      "createdAt": "2026-09-25T14:14:45.799Z"
+    },
+    {
+      "id": "user-1790345701068",
+      "username": "google_listener_204",
+      "email": "google_user_204@sonar.local",
+      "password": "sha256$ee0d2a5f1ce6b6d34b7c2d56b891f1de$1b52cc49b9c22394157fab7ec29173558791a84c1765da5f052eb6b020133f3c",
+      "role": "user",
+      "accountType": "standard",
+      "parentalControl": {
+        "enabled": false,
+        "blockExplicit": false,
+        "pin": "1234"
+      },
+      "avatarUrl": "",
+      "avatarBg": "#B80C09",
+      "bio": "Nuevo melómano explorando vinilos y texturas acústicas en Sonar.",
+      "stats": {
+        "savedAlbums": 0,
+        "reviewsCount": 0,
+        "followers": 0,
+        "following": 0
+      },
+      "preferences": [
+        "Art Rock",
+        "Electrónica",
+        "Psicodelia"
+      ],
+      "gear": {
+        "headphones": "Auriculares de referencia",
+        "turntable": "Tocadiscos Direct Drive",
+        "favoriteFormat": "Vinilo 33⅓ RPM"
+      },
+      "badges": [
+        "Melómano Verificado",
+        "Audiófilo Inicial"
+      ],
+      "createdAt": "2026-09-25T14:15:01.068Z"
+    },
+    {
+      "id": "user-1790345737105",
+      "username": "Audiophile_825",
+      "email": "spotify_user_825@sonar.local",
+      "password": "sha256$e5acff27e6c4bfd6b22ef3135bc4e264$9c4ee1221b5df301167eb11528739b14640063e3caf4ab50123e56048af4276f",
+      "role": "user",
+      "accountType": "standard",
+      "parentalControl": {
+        "enabled": false,
+        "blockExplicit": false,
+        "pin": "1234"
+      },
+      "avatarUrl": "",
+      "avatarBg": "#B80C09",
+      "bio": "Nuevo melómano explorando vinilos y texturas acústicas en Sonar.",
+      "stats": {
+        "savedAlbums": 0,
+        "reviewsCount": 0,
+        "followers": 0,
+        "following": 0
+      },
+      "preferences": [
+        "Art Rock",
+        "Electrónica",
+        "Psicodelia"
+      ],
+      "gear": {
+        "headphones": "Auriculares de referencia",
+        "turntable": "Tocadiscos Direct Drive",
+        "favoriteFormat": "Vinilo 33⅓ RPM"
+      },
+      "badges": [
+        "Melómano Verificado",
+        "Audiófilo Inicial"
+      ],
+      "createdAt": "2026-09-25T14:15:37.105Z",
+      "avatarStyle": "blobatar",
+      "avatarSeed": "audiophile_825",
+      "avatarIcon": "headphones",
+      "avatarHue": 18,
+      "avatarTone": "vivid",
+      "bannerUrl": "",
+      "bannerGradient": "linear-gradient(135deg, rgba(184, 12, 9, 0.7) 0%, rgba(75, 40, 64, 0.95) 100%)"
+    },
+    {
+      "id": "user-1790345905782",
+      "username": "google_listener_347",
+      "email": "google_user_347@sonar.local",
+      "password": "sha256$2955a4074cc1516dea99390f285d0751$6e35c1264b722e15dca5d55ba59a3d5cb1e0adbd8672cae1d8a01a85dc8a55a4",
+      "role": "user",
+      "accountType": "standard",
+      "parentalControl": {
+        "enabled": false,
+        "blockExplicit": false,
+        "pin": "1234"
+      },
+      "avatarUrl": "",
+      "avatarBg": "#B80C09",
+      "bio": "Nuevo melómano explorando vinilos y texturas acústicas en Sonar.",
+      "stats": {
+        "savedAlbums": 0,
+        "reviewsCount": 0,
+        "followers": 0,
+        "following": 0
+      },
+      "preferences": [
+        "Electrónica"
+      ],
+      "gear": {
+        "headphones": "Auriculares de referencia",
+        "turntable": "Tocadiscos Direct Drive",
+        "favoriteFormat": "Vinilo 33⅓ RPM"
+      },
+      "badges": [
+        "Melómano Verificado",
+        "Audiófilo Inicial"
+      ],
+      "createdAt": "2026-09-25T14:18:25.782Z"
+    },
+    {
+      "id": "user-1790345935379",
+      "username": "google_listener_930",
+      "email": "google_user_930@sonar.local",
+      "password": "sha256$234453cdfb24950848ceef1668a68659$63da2ad03a3d520284859c9479c48930e6d3aa6e0ed66313b6c1cbe429483d03",
+      "role": "user",
+      "accountType": "standard",
+      "parentalControl": {
+        "enabled": false,
+        "blockExplicit": false,
+        "pin": "1234"
+      },
+      "avatarUrl": "",
+      "avatarBg": "#ec4899",
+      "bio": "Nuevo melómano explorando vinilos y texturas acústicas en Sonar.",
+      "stats": {
+        "savedAlbums": 0,
+        "reviewsCount": 0,
+        "followers": 0,
+        "following": 0
+      },
+      "preferences": [
+        "Art Rock",
+        "Electrónica",
+        "Psicodelia"
+      ],
+      "gear": {
+        "headphones": "Auriculares de referencia",
+        "turntable": "Tocadiscos Direct Drive",
+        "favoriteFormat": "Vinilo 33⅓ RPM"
+      },
+      "badges": [
+        "Melómano Verificado",
+        "Audiófilo Inicial"
+      ],
+      "createdAt": "2026-09-25T14:18:55.379Z"
+=======
         "Melómano Junior",
         "Audio Seguro"
       ],
       "createdAt": "2026-09-25T17:06:07.402Z"
+>>>>>>> 8533d7969676ed5bb3d343d87369308910098c53
     }
   ],
   "reviews": [
@@ -9685,10 +10166,18 @@
       "rating": 3,
       "content": "nenro",
       "hasSpoilers": false,
-      "status": "pending_moderation",
+      "status": "approved",
       "aiFlagged": false,
       "createdAt": "2026-09-24T17:05:10.390Z",
-      "id": "hFg0cif"
+      "id": "hFg0cif",
+      "moderationHistory": [
+        {
+          "id": "229910ff-388a-4bdb-a18e-71b3e9e7d32c",
+          "createdAt": "2026-09-24T22:05:59.649Z",
+          "adminId": "admin-1",
+          "status": "approved"
+        }
+      ]
     },
     {
       "userId": "admin-1",
@@ -9725,6 +10214,24 @@
       "aiFlagged": false,
       "createdAt": "2026-09-24T20:31:34.107Z",
       "id": "8wbYAzt"
+    },
+    {
+      "userId": "1",
+      "userName": "Mateo Rivae",
+      "albumId": "302127",
+      "albumTitle": "dsadasdasd",
+      "parentAlbum": "Selected Ambient Works",
+      "type": "track",
+      "trackTitle": "dsadasdasd",
+      "artist": "Aphex Twin",
+      "cover": "https://cdn-images.dzcdn.net/images/cover/e5925065cdb1cefbc3bd75af4a1f1801/500x500-000000-80-0-0.jpg",
+      "rating": 4,
+      "content": "lcnslkcmaslkdalkdmsa",
+      "hasSpoilers": false,
+      "status": "pending_moderation",
+      "aiFlagged": false,
+      "createdAt": "2026-09-25T14:20:21.317Z",
+      "id": "p8vjNC2"
     }
   ],
   "featuredReleases": [
@@ -9742,10 +10249,507 @@
       "updatedAt": "2026-09-24T21:04:55.750Z",
       "id": "99f22ef3-85ac-4c50-9fbd-a7326146e6be",
       "createdAt": "2026-09-24T21:04:55.750Z"
+    },
+    {
+      "title": "Ecos de Neón",
+      "artist": "Luna Vector",
+      "releaseDate": "2026-01-17",
+      "genre": "Synthpop",
+      "type": "Álbum",
+      "cover": "https://picsum.photos/seed/sonar001/600/600",
+      "externalUrl": "https://example.com/releases/ecos-de-neon",
+      "description": "Un viaje nocturno entre sintetizadores brillantes, ritmos urbanos y melodías que evocan una ciudad iluminada después de la lluvia.",
+      "status": "published",
+      "labelId": "",
+      "updatedAt": "2026-09-25T15:50:37.785Z",
+      "id": "a86e189d-6f6b-44b0-a63b-973ca1e11313",
+      "createdAt": "2026-09-25T15:49:14.955Z"
+    },
+    {
+      "title": "Horizonte Azul",
+      "artist": "Marea Solar",
+      "releaseDate": "2025-11-21",
+      "genre": "Indie pop",
+      "type": "EP",
+      "cover": "https://picsum.photos/seed/sonar003/600/600",
+      "externalUrl": "https://example.com/releases/horizonte-azul",
+      "description": "Cinco canciones luminosas que mezclan nostalgia, verano y la sensación de empezar de nuevo.",
+      "status": "draft",
+      "labelId": "",
+      "updatedAt": "2026-09-25T15:49:24.996Z",
+      "id": "fdb45914-3d43-4228-9cec-134574d1d2c8",
+      "createdAt": "2026-09-25T15:49:24.996Z"
+    },
+    {
+      "title": "Circuitos del Corazón",
+      "artist": "Nova Prisma",
+      "releaseDate": "2026-03-13",
+      "genre": "Electropop",
+      "type": "Álbum",
+      "cover": "https://picsum.photos/seed/sonar004/600/600",
+      "externalUrl": "https://example.com/releases/circuitos-del-corazon",
+      "description": "Pop electrónico de energía alta con letras sobre relaciones modernas, mensajes pendientes y emociones digitales.",
+      "status": "draft",
+      "labelId": "",
+      "updatedAt": "2026-09-25T15:49:25.025Z",
+      "id": "fadcc794-22af-45ef-aa36-a7bda311e54c",
+      "createdAt": "2026-09-25T15:49:25.025Z"
+    },
+    {
+      "title": "Ceniza y Oro",
+      "artist": "Vértice Norte",
+      "releaseDate": "2025-09-05",
+      "genre": "Rock",
+      "type": "Vinilo",
+      "cover": "https://picsum.photos/seed/sonar005/600/600",
+      "externalUrl": "https://example.com/releases/ceniza-y-oro",
+      "description": "Una edición en vinilo con sonido cálido, baterías potentes y coros diseñados para escucharse a todo volumen.",
+      "status": "draft",
+      "labelId": "",
+      "updatedAt": "2026-09-25T15:49:25.048Z",
+      "id": "58db4f37-5b74-456c-8efb-14ea9e1fd2da",
+      "createdAt": "2026-09-25T15:49:25.048Z"
     }
   ],
-  "recordLabels": [],
-  "vinylEditions": [],
+  "recordLabels": [
+    {
+      "name": "Aurora Soundworks",
+      "country": "Costa Rica",
+      "founded": "2018",
+      "website": "https://example.com/aurora-soundworks",
+      "description": "Sello independiente enfocado en pop alternativo, electrónica y artistas emergentes de Centroamérica.",
+      "status": "draft",
+      "updatedAt": "2026-09-25T16:20:51.071Z",
+      "id": "77404d83-5c71-4896-b67b-088314bce3a8",
+      "createdAt": "2026-09-25T16:20:51.072Z"
+    },
+    {
+      "name": "Aurora Soundworks",
+      "country": "Costa Rica",
+      "founded": "2018",
+      "website": "https://example.com/aurora-soundworks",
+      "cover": "https://picsum.photos/seed/label001/600/600",
+      "description": "Sello independiente enfocado en pop alternativo, electrónica y artistas emergentes de Centroamérica.",
+      "status": "published",
+      "updatedAt": "2026-09-25T16:54:41.331Z",
+      "id": "ce326f8d-969d-4e9b-8bd9-c8694b45c88c",
+      "createdAt": "2026-09-25T16:30:59.194Z"
+    },
+    {
+      "name": "Aurora Soundworks",
+      "country": "Costa Rica",
+      "founded": "2018",
+      "website": "https://example.com/aurora-soundworks",
+      "cover": "https://picsum.photos/seed/label001/600/600",
+      "description": "Sello independiente enfocado en pop alternativo, electrónica y artistas emergentes de Centroamérica.",
+      "status": "draft",
+      "updatedAt": "2026-09-25T16:31:25.329Z",
+      "id": "3f46f468-fdca-4235-b488-145621b2a00d",
+      "createdAt": "2026-09-25T16:31:25.329Z"
+    },
+    {
+      "name": "Neon Harbor Records",
+      "country": "Estados Unidos",
+      "founded": "2012",
+      "website": "https://example.com/neon-harbor",
+      "cover": "https://picsum.photos/seed/label002/600/600",
+      "description": "Discográfica especializada en synthpop, indie electrónico y lanzamientos digitales de alcance internacional.",
+      "status": "draft",
+      "updatedAt": "2026-09-25T16:31:25.357Z",
+      "id": "d46f29ec-4de7-4ce3-925b-6cfc46f00cc8",
+      "createdAt": "2026-09-25T16:31:25.357Z"
+    },
+    {
+      "name": "Pacific Echo",
+      "country": "Chile",
+      "founded": "2014",
+      "website": "https://example.com/pacific-echo",
+      "cover": "https://picsum.photos/seed/label004/600/600",
+      "description": "Compañía independiente que trabaja con artistas de indie pop, folk moderno y música alternativa.",
+      "status": "draft",
+      "updatedAt": "2026-09-25T16:31:34.366Z",
+      "id": "cb9bdbde-9ed9-42b3-97f5-8f7207dd2b4c",
+      "createdAt": "2026-09-25T16:31:34.366Z"
+    },
+    {
+      "name": "Northern Pulse Records",
+      "country": "Canadá",
+      "founded": "2009",
+      "website": "https://example.com/northern-pulse",
+      "cover": "https://picsum.photos/seed/label005/600/600",
+      "description": "Sello de música electrónica, ambient y productores enfocados en sonidos atmosféricos.",
+      "status": "published",
+      "updatedAt": "2026-09-25T17:14:34.023Z",
+      "id": "08abbf57-4c69-49a1-afcd-f05657a24fef",
+      "createdAt": "2026-09-25T16:31:34.401Z"
+    },
+    {
+      "name": "Solaris Music Group",
+      "country": "España",
+      "founded": "2011",
+      "website": "https://example.com/solaris-music",
+      "cover": "https://picsum.photos/seed/label006/600/600",
+      "description": "Discográfica dedicada a pop, dance y proyectos colaborativos entre artistas europeos y latinoamericanos.",
+      "status": "draft",
+      "updatedAt": "2026-09-25T16:31:34.434Z",
+      "id": "b9e98159-d580-4a6b-8f8e-3a64d5d9de3d",
+      "createdAt": "2026-09-25T16:31:34.434Z"
+    },
+    {
+      "name": "Black River Audio",
+      "country": "Reino Unido",
+      "founded": "2005",
+      "website": "https://example.com/black-river-audio",
+      "cover": "https://picsum.photos/seed/label007/600/600",
+      "description": "Sello enfocado en rock, post-punk y producciones de sonido oscuro y contemporáneo.",
+      "status": "draft",
+      "updatedAt": "2026-09-25T16:31:34.472Z",
+      "id": "5cd64cde-3274-4b5d-9f06-2d9307a37c31",
+      "createdAt": "2026-09-25T16:31:34.472Z"
+    }
+  ],
+  "vinylEditions": [
+    {
+      "title": "Ecos de Neón",
+      "artist": "Luna Vector",
+      "year": "2026",
+      "format": "LP",
+      "color": "Azul translúcido",
+      "catalogNumber": "LV-001",
+      "releaseDate": "2026-01-17",
+      "editionType": "Limitada",
+      "cover": "https://picsum.photos/seed/vinyl001/600/600",
+      "description": "Edición limitada en vinilo azul translúcido con arte alternativo y masterización especial para formato analógico.",
+      "status": "draft",
+      "labelId": "",
+      "updatedAt": "2026-09-25T16:57:28.786Z",
+      "id": "9ba7d10c-aa5c-44bc-929f-e34ad4f28593",
+      "createdAt": "2026-09-25T16:57:28.786Z"
+    },
+    {
+      "title": "Sin Señal",
+      "artist": "Atlas Cero",
+      "year": "2026",
+      "format": "7 pulgadas",
+      "color": "Negro",
+      "catalogNumber": "AC-014",
+      "releaseDate": "2026-02-06",
+      "editionType": "Nueva",
+      "cover": "https://picsum.photos/seed/vinyl002/600/600",
+      "description": "Sencillo de edición física con cara B exclusiva y empaque minimalista.",
+      "status": "draft",
+      "labelId": "",
+      "updatedAt": "2026-09-25T16:57:28.873Z",
+      "id": "25a81ce8-5e06-40e0-9b2e-f2fc278da7ff",
+      "createdAt": "2026-09-25T16:57:28.873Z"
+    },
+    {
+      "title": "Horizonte Azul",
+      "artist": "Marea Solar",
+      "year": "2025",
+      "format": "LP",
+      "color": "Turquesa",
+      "catalogNumber": "MS-023",
+      "releaseDate": "2025-11-21",
+      "editionType": "Reedición",
+      "cover": "https://picsum.photos/seed/vinyl003/600/600",
+      "description": "Reedición remasterizada con acabado turquesa y libreto interior con fotografías inéditas.",
+      "status": "draft",
+      "labelId": "",
+      "updatedAt": "2026-09-25T16:57:28.952Z",
+      "id": "b3e67903-7e6d-49a2-a26b-cc5e0d7c7b80",
+      "createdAt": "2026-09-25T16:57:28.952Z"
+    },
+    {
+      "title": "Circuitos del Corazón",
+      "artist": "Nova Prisma",
+      "year": "2026",
+      "format": "Doble LP",
+      "color": "Rosa neón",
+      "catalogNumber": "NP-008",
+      "releaseDate": "2026-03-13",
+      "editionType": "Limitada",
+      "cover": "https://picsum.photos/seed/vinyl004/600/600",
+      "description": "Doble vinilo rosa neón numerado, con versiones extendidas y pistas adicionales.",
+      "status": "draft",
+      "labelId": "",
+      "updatedAt": "2026-09-25T16:57:29.032Z",
+      "id": "8ae1cc44-8851-4475-bd71-31b4fba16d35",
+      "createdAt": "2026-09-25T16:57:29.032Z"
+    },
+    {
+      "title": "Ceniza y Oro",
+      "artist": "Vértice Norte",
+      "year": "2025",
+      "format": "LP",
+      "color": "Dorado marmoleado",
+      "catalogNumber": "VN-031",
+      "releaseDate": "2025-09-05",
+      "editionType": "Limitada",
+      "cover": "https://picsum.photos/seed/vinyl005/600/600",
+      "description": "Prensado especial dorado marmoleado con portada desplegable y póster exclusivo.",
+      "status": "draft",
+      "labelId": "",
+      "updatedAt": "2026-09-25T16:57:29.096Z",
+      "id": "17029459-c300-4cc0-8543-f5edbc736f02",
+      "createdAt": "2026-09-25T16:57:29.096Z"
+    },
+    {
+      "title": "Después de las Tres",
+      "artist": "Clara Niebla",
+      "year": "2026",
+      "format": "10 pulgadas",
+      "color": "Blanco",
+      "catalogNumber": "CN-004",
+      "releaseDate": "2026-04-02",
+      "editionType": "Nueva",
+      "cover": "https://picsum.photos/seed/vinyl006/600/600",
+      "description": "Edición íntima de tiraje corto con sonido lo-fi y arte nocturno.",
+      "status": "draft",
+      "labelId": "",
+      "updatedAt": "2026-09-25T16:57:29.172Z",
+      "id": "91bf212a-6207-4806-b653-3bc4d57b04b2",
+      "createdAt": "2026-09-25T16:57:29.172Z"
+    },
+    {
+      "title": "Frecuencia Fantasma",
+      "artist": "Radio Eclipse",
+      "year": "2026",
+      "format": "LP",
+      "color": "Violeta transparente",
+      "catalogNumber": "RE-019",
+      "releaseDate": "2026-01-30",
+      "editionType": "Limitada",
+      "cover": "https://picsum.photos/seed/vinyl007/600/600",
+      "description": "Vinilo violeta transparente con insertos inspirados en transmisiones de radio ficticias.",
+      "status": "draft",
+      "labelId": "",
+      "updatedAt": "2026-09-25T16:57:29.252Z",
+      "id": "69f0ca44-02a3-4a74-bf23-029cedc24c15",
+      "createdAt": "2026-09-25T16:57:29.252Z"
+    },
+    {
+      "title": "Luz Residual",
+      "artist": "Prisma Norte",
+      "year": "2025",
+      "format": "LP",
+      "color": "Naranja",
+      "catalogNumber": "PN-011",
+      "releaseDate": "2025-08-15",
+      "editionType": "Nueva",
+      "cover": "https://picsum.photos/seed/vinyl008/600/600",
+      "description": "Edición estándar en vinilo naranja con mezcla optimizada para escucha analógica.",
+      "status": "draft",
+      "labelId": "",
+      "updatedAt": "2026-09-25T16:57:29.334Z",
+      "id": "778b6c33-2535-486d-8ba6-55fb52e12ee3",
+      "createdAt": "2026-09-25T16:57:29.334Z"
+    },
+    {
+      "title": "Mapa de Ruido",
+      "artist": "Los Paralelos",
+      "year": "2024",
+      "format": "Doble LP",
+      "color": "Negro",
+      "catalogNumber": "LP-044",
+      "releaseDate": "2024-10-18",
+      "editionType": "Reedición",
+      "cover": "https://picsum.photos/seed/vinyl009/600/600",
+      "description": "Reedición en doble LP con demos, caras B y material gráfico restaurado.",
+      "status": "draft",
+      "labelId": "",
+      "updatedAt": "2026-09-25T16:57:29.410Z",
+      "id": "1c3d9abd-62c6-4f8f-b41e-5a4354ff2fc4",
+      "createdAt": "2026-09-25T16:57:29.410Z"
+    },
+    {
+      "title": "Ciudad Magnética",
+      "artist": "Motel Saturno",
+      "year": "2026",
+      "format": "LP",
+      "color": "Rojo",
+      "catalogNumber": "MSA-006",
+      "releaseDate": "2026-05-08",
+      "editionType": "Nueva",
+      "cover": "https://picsum.photos/seed/vinyl010/600/600",
+      "description": "Vinilo rojo brillante con arte urbano y créditos impresos en funda interior.",
+      "status": "draft",
+      "labelId": "",
+      "updatedAt": "2026-09-25T16:57:29.488Z",
+      "id": "c417079b-08d1-4fb8-a483-655146e8c4b9",
+      "createdAt": "2026-09-25T16:57:29.488Z"
+    },
+    {
+      "title": "Marea Interna",
+      "artist": "Isla Vector",
+      "year": "2025",
+      "format": "LP",
+      "color": "Azul marino",
+      "catalogNumber": "IV-017",
+      "releaseDate": "2025-07-11",
+      "editionType": "Limitada",
+      "cover": "https://picsum.photos/seed/vinyl011/600/600",
+      "description": "Edición limitada azul marino con acabado mate y numeración individual.",
+      "status": "draft",
+      "labelId": "",
+      "updatedAt": "2026-09-25T16:57:29.568Z",
+      "id": "be64424a-fcd3-4eb6-a664-3a12556c7d52",
+      "createdAt": "2026-09-25T16:57:29.568Z"
+    },
+    {
+      "title": "Vértigo Digital",
+      "artist": "Pixel Fuego",
+      "year": "2026",
+      "format": "Doble LP",
+      "color": "Verde ácido",
+      "catalogNumber": "PF-002",
+      "releaseDate": "2026-06-19",
+      "editionType": "Limitada",
+      "cover": "https://picsum.photos/seed/vinyl012/600/600",
+      "description": "Doble vinilo verde ácido con remixes y una pista exclusiva no disponible en streaming.",
+      "status": "draft",
+      "labelId": "",
+      "updatedAt": "2026-09-25T16:57:29.645Z",
+      "id": "e8fa5db4-02f9-4b35-a446-e98d9745d451",
+      "createdAt": "2026-09-25T16:57:29.645Z"
+    },
+    {
+      "title": "Niebla Eléctrica",
+      "artist": "Dalia Gris",
+      "year": "2025",
+      "format": "LP",
+      "color": "Gris humo",
+      "catalogNumber": "DG-029",
+      "releaseDate": "2025-12-05",
+      "editionType": "Nueva",
+      "cover": "https://picsum.photos/seed/vinyl013/600/600",
+      "description": "Prensado gris humo con diseño monocromático y sonido de rock atmosférico.",
+      "status": "draft",
+      "labelId": "",
+      "updatedAt": "2026-09-25T16:57:29.709Z",
+      "id": "e10be191-1efc-415f-89c9-719204a87f91",
+      "createdAt": "2026-09-25T16:57:29.709Z"
+    },
+    {
+      "title": "Kilómetro Cero",
+      "artist": "Ruta 9",
+      "year": "2024",
+      "format": "LP",
+      "color": "Negro",
+      "catalogNumber": "R9-100",
+      "releaseDate": "2024-04-12",
+      "editionType": "Reedición",
+      "cover": "https://picsum.photos/seed/vinyl014/600/600",
+      "description": "Reedición con mezcla restaurada, notas de producción y funda interior renovada.",
+      "status": "draft",
+      "labelId": "",
+      "updatedAt": "2026-09-25T16:57:29.777Z",
+      "id": "256ddbf3-9a53-4094-93ed-987608eeded5",
+      "createdAt": "2026-09-25T16:57:29.777Z"
+    },
+    {
+      "title": "Solaris",
+      "artist": "Astra Club",
+      "year": "2026",
+      "format": "LP",
+      "color": "Amarillo",
+      "catalogNumber": "ACB-012",
+      "releaseDate": "2026-07-03",
+      "editionType": "Nueva",
+      "cover": "https://picsum.photos/seed/vinyl015/600/600",
+      "description": "Vinilo amarillo de alta visibilidad con estética retrofuturista y sonido electropop.",
+      "status": "draft",
+      "labelId": "",
+      "updatedAt": "2026-09-25T16:57:29.867Z",
+      "id": "6a668362-ba94-4573-bb0d-078b29524235",
+      "createdAt": "2026-09-25T16:57:29.867Z"
+    },
+    {
+      "title": "Sombras en Stereo",
+      "artist": "Noche Pública",
+      "year": "2025",
+      "format": "LP",
+      "color": "Negro y blanco marmoleado",
+      "catalogNumber": "NPB-022",
+      "releaseDate": "2025-06-27",
+      "editionType": "Limitada",
+      "cover": "https://picsum.photos/seed/vinyl016/600/600",
+      "description": "Edición marmoleada en blanco y negro con portada alternativa y postal coleccionable.",
+      "status": "draft",
+      "labelId": "",
+      "updatedAt": "2026-09-25T16:57:29.947Z",
+      "id": "2d862f4f-d176-4417-9fc1-6a8e3cc7f19c",
+      "createdAt": "2026-09-25T16:57:29.947Z"
+    },
+    {
+      "title": "Ruta Lunar",
+      "artist": "Satélite 84",
+      "year": "2026",
+      "format": "12 pulgadas",
+      "color": "Plateado",
+      "catalogNumber": "S84-084",
+      "releaseDate": "2026-08-14",
+      "editionType": "Limitada",
+      "cover": "https://picsum.photos/seed/vinyl017/600/600",
+      "description": "Maxi single plateado con versiones club y mezcla instrumental.",
+      "status": "draft",
+      "labelId": "",
+      "updatedAt": "2026-09-25T16:57:30.025Z",
+      "id": "26cad82d-8aa5-4e74-b760-6c3d5aea92e9",
+      "createdAt": "2026-09-25T16:57:30.025Z"
+    },
+    {
+      "title": "Pulso de Medianoche",
+      "artist": "Velvet Signal",
+      "year": "2025",
+      "format": "LP",
+      "color": "Morado",
+      "catalogNumber": "VS-015",
+      "releaseDate": "2025-03-21",
+      "editionType": "Nueva",
+      "cover": "https://picsum.photos/seed/vinyl018/600/600",
+      "description": "Edición morada con acabado satinado y folleto con letras completas.",
+      "status": "draft",
+      "labelId": "",
+      "updatedAt": "2026-09-25T16:57:30.104Z",
+      "id": "d744c5fe-79b0-4358-bf92-3f575712c2fa",
+      "createdAt": "2026-09-25T16:57:30.104Z"
+    },
+    {
+      "title": "Bosque Sintético",
+      "artist": "Eco Prisma",
+      "year": "2024",
+      "format": "LP",
+      "color": "Verde bosque",
+      "catalogNumber": "EP-033",
+      "releaseDate": "2024-11-08",
+      "editionType": "Reedición",
+      "cover": "https://picsum.photos/seed/vinyl019/600/600",
+      "description": "Reedición ecológica en vinilo verde bosque con empaque de cartón reciclado.",
+      "status": "draft",
+      "labelId": "",
+      "updatedAt": "2026-09-25T16:57:30.178Z",
+      "id": "43bb17b7-8b2e-4869-a499-da4edfd261fb",
+      "createdAt": "2026-09-25T16:57:30.178Z"
+    },
+    {
+      "title": "Última Frecuencia",
+      "artist": "Neon Static",
+      "year": "2026",
+      "format": "Doble LP",
+      "color": "Azul y negro dividido",
+      "catalogNumber": "NS-020",
+      "releaseDate": "2026-09-18",
+      "editionType": "Limitada",
+      "cover": "https://picsum.photos/seed/vinyl020/600/600",
+      "description": "Doble LP bicolor con grabaciones en vivo, temas extra y arte exclusivo para coleccionistas.",
+      "status": "published",
+      "labelId": "",
+      "updatedAt": "2026-09-25T16:57:42.797Z",
+      "id": "edce63f4-e296-4109-aa29-3a534af69b6d",
+      "createdAt": "2026-09-25T16:57:30.247Z"
+    }
+  ],
   "announcements": [
     {
       "title": "Daniel triple h",
@@ -9753,9 +10757,280 @@
       "startDate": "2026-09-17",
       "endDate": "2026-10-05",
       "status": "published",
-      "updatedAt": "2026-09-24T19:25:53.081Z",
+      "updatedAt": "2026-09-25T15:55:26.650Z",
       "id": "38f4f9df-e59d-4591-b797-a1b059c5131a",
-      "createdAt": "2026-09-24T17:25:52.041Z"
+      "createdAt": "2026-09-24T17:25:52.041Z",
+      "content": "",
+      "category": "",
+      "author": "",
+      "cover": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSPj1zpNsowg-AE0G7HObiR6o7W6jBBIJp_m6wz1K9VHHGqbl9iSBTn9KrPGEhCOo_34i60w32oLJsBtaOX_u-eYbnEybVLFriOmk--iL2h&s=10"
+    },
+    {
+      "id": "radiohead-in-rainbows-45rpm-reissue",
+      "title": "Radiohead Anuncia Reedición Audiófila de \"In Rainbows\" en Doble Vinilo de 45 RPM Masterizado en Abbey Road",
+      "category": "Lanzamientos",
+      "date": "24 Septiembre, 2026",
+      "author": "Julián Andrade",
+      "role": "Editor de Cultura Sónica",
+      "readTime": "4 min",
+      "featured": true,
+      "cover": "https://images.unsplash.com/photo-1514525253161-7a46d19cd819?auto=format&fit=crop&q=80&w=1200",
+      "summary": "El legendario álbum de 2007 recibe una masterización a media velocidad (half-speed) directa de las cintas analógicas de 1/2 pulgada, con un rango dinámico sin precedentes.",
+      "content": "Radiohead y el sello XL Recordings han confirmado el lanzamiento de una edición de referencia audiófila de \"In Rainbows\", masterizada por Miles Showell en los míticos Abbey Road Studios de Londres.\n\nEl proceso de corte se realizó a 45 revoluciones por minuto en dos vinilos vírgenes de 180 gramos, lo que permite duplicar el espacio físico del surco para frecuencias graves profundas y una respuesta transitoria ultrarrápida en temas como \"15 Step\" y \"Nude\".\n\n\"Queríamos que el oyente pudiera experimentar la textura de la batería de Phil Selway y la reverberación de placa EMT en la voz de Thom Yorke con la fidelidad exacta con la que fue grabada en la mansión de Tottenham House\", explicó el equipo técnico de masterización.\n\nLa edición incluirá además un folleto con notas de producción de Nigel Godrich y ensayos fotográficos inéditos de las sesiones de 2006.",
+      "audioNarration": {
+        "id": "news-audio-radiohead-45rpm",
+        "title": "La Reedición Audiófila del In Rainbows",
+        "artist": "Crónica Sonora Sonar",
+        "album": "Radar Musical & Actualidad",
+        "cover": "https://images.unsplash.com/photo-1514525253161-7a46d19cd819?auto=format&fit=crop&q=80&w=600",
+        "audioUrl": "/audio/La_reedición_audiófila_del_In_Rainbows.m4a",
+        "preview": "/audio/La_reedición_audiófila_del_In_Rainbows.m4a"
+      },
+      "trackPreview": {
+        "id": 3135556,
+        "title": "15 Step",
+        "artist": "Radiohead",
+        "album": "In Rainbows",
+        "cover": "https://cdn-images.dzcdn.net/images/cover/a175af9b7d329bc678cb4d26fc13d6de/500x500-000000-80-0-0.jpg"
+      },
+      "description": "El legendario álbum de 2007 recibe una masterización a media velocidad (half-speed) directa de las cintas analógicas de 1/2 pulgada, con un rango dinámico sin precedentes.",
+      "startDate": "2026-09-24",
+      "endDate": "",
+      "status": "published"
+    },
+    {
+      "id": "primavera-glastonbury-festivales-2027",
+      "title": "Festivales Revelan Carteles con Actos Estelares de Electrónica Experimental y Post-Punk",
+      "category": "Festivales",
+      "date": "23 Septiembre, 2026",
+      "author": "Elena Rostova",
+      "role": "Corresponsal Internacional",
+      "readTime": "5 min",
+      "trending": true,
+      "cover": "https://images.unsplash.com/photo-1470225620780-dba8ba36b745?auto=format&fit=crop&q=80&w=800",
+      "summary": "Primavera Sound y Glastonbury confirman a Aphex Twin, Massive Attack, Portishead y The Smile en escenarios con sistemas de sonido inmersivo L-Acoustics L-ISA.",
+      "content": "La temporada de festivales 2027 promete ser un hito para los amantes de la acústica de alta precisión. Las organizaciones de Primavera Sound y Glastonbury han anunciado que sus escenarios principales estarán equipados con sistemas de sonido espacial L-Acoustics L-ISA de 360 grados.\n\nEntre los actos destacados se encuentran el regreso a los escenarios de Massive Attack con una producción centrada en la neutralidad de carbono, presentaciones exclusivas de Aphex Twin con sintetizadores modulares analógicos en directo y sesiones especiales de The Smile.\n\nLos asistentes podrán disfrutar de una claridad en la mezcla estéreo y multicanal donde la distorsión armónica se reduce a menos del 0.05% en cualquier punto del recinto.",
+      "audioNarration": {
+        "id": "news-audio-festivales-lisa",
+        "title": "El Sonido L-ISA Llega a los Festivales",
+        "artist": "Crónica Sonora Sonar",
+        "album": "Radar Musical & Actualidad",
+        "cover": "https://images.unsplash.com/photo-1470225620780-dba8ba36b745?auto=format&fit=crop&q=80&w=600",
+        "audioUrl": "/audio/El_sonido_L-ISA_llega_a_los_festivales.m4a",
+        "preview": "/audio/El_sonido_L-ISA_llega_a_los_festivales.m4a"
+      },
+      "trackPreview": {
+        "id": 1109731,
+        "title": "Teardrop",
+        "artist": "Massive Attack",
+        "album": "Mezzanine",
+        "cover": "https://cdn-images.dzcdn.net/images/cover/1b73059129e924a1b066ffdc5a363da6/500x500-000000-80-0-0.jpg"
+      },
+      "description": "Primavera Sound y Glastonbury confirman a Aphex Twin, Massive Attack, Portishead y The Smile en escenarios con sistemas de sonido inmersivo L-Acoustics L-ISA.",
+      "startDate": "2026-09-23",
+      "endDate": "",
+      "status": "published"
+    },
+    {
+      "id": "hardware-pro-ject-balanced-turntables",
+      "title": "Pro-Ject y Audio-Technica Presentan Nueva Línea de Tocadiscos con Conexión Balanceada True XLR",
+      "category": "Hi-Fi & Hardware",
+      "date": "22 Septiembre, 2026",
+      "author": "Valeria Montero",
+      "role": "Ingeniera Acústica",
+      "readTime": "6 min",
+      "trending": true,
+      "cover": "https://images.unsplash.com/photo-1539375665275-f9de415ef9ac?auto=format&fit=crop&q=80&w=800",
+      "summary": "La transmisión balanceada de señales fonocaptoras MC elimina por completo las interferencias de radiofrecuencia (RFI) y el zumbido de masa en sistemas domésticos.",
+      "content": "La conexión balanceada (True Balanced) ha dado el salto definitivo al mercado del vinilo de alta fidelidad. Los nuevos modelos de Pro-Ject y Audio-Technica incorporan salidas balanceadas mini-XLR y XLR completas directamente desde la cápsula de bobina móvil (MC).\n\nDado que las cápsulas MC generan microvoltajes extremadamente sensibles a interferencias electromagnéticas generadas por routers Wi-Fi y transformadores, el circuito balanceado cancela el ruido de modo común, logrando una relación señal/ruido superior a 90 dB.\n\n\"Es el mayor avance en claridad de fondo y rango dinámico en la reproducción de vinilo de los últimos 20 años\", afirmó el panel de ingenieros en la presentación de Berlín.",
+      "audioNarration": {
+        "id": "news-audio-zumbido-vinilos",
+        "title": "Adiós al Zumbido en tus Vinilos",
+        "artist": "Ingeniería Acústica Sonar",
+        "album": "Hi-Fi & Hardware",
+        "cover": "https://images.unsplash.com/photo-1539375665275-f9de415ef9ac?auto=format&fit=crop&q=80&w=600",
+        "audioUrl": "/audio/Adiós_al_zumbido_en_tus_vinilos.m4a",
+        "preview": "/audio/Adiós_al_zumbido_en_tus_vinilos.m4a"
+      },
+      "trackPreview": null,
+      "description": "La transmisión balanceada de señales fonocaptoras MC elimina por completo las interferencias de radiofrecuencia (RFI) y el zumbido de masa en sistemas domésticos.",
+      "startDate": "2026-09-22",
+      "endDate": "",
+      "status": "published"
+    },
+    {
+      "id": "pink-floyd-wish-you-were-here-50th",
+      "title": "Pink Floyd: La Disección Acústica de las Cintas Maestras de \"Wish You Were Here\"",
+      "category": "Crónicas",
+      "date": "20 Septiembre, 2026",
+      "author": "Carlos Echeverría",
+      "role": "Historiador Musical",
+      "readTime": "7 min",
+      "cover": "https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?auto=format&fit=crop&q=80&w=800",
+      "summary": "Un recorrido por el tratamiento de sintetizadores Minimoog, guías de guitarra de 12 cuerdas acústicas de David Gilmour y la espacialidad de Abbey Road.",
+      "content": "A cinco décadas de su publicación, \"Wish You Were Here\" sigue siendo considerado el estándar de oro en dinámica de grabación analógica.\n\nEl solo de cuatro notas de David Gilmour en \"Shine On You Crazy Diamond\" fue grabado usando una Fender Stratocaster conectada a un amplificador Hiwatt DR103 emparejado con un eco de cinta Binson Echorec. La interacción entre la resonancia de las válvulas y la reverberación natural de los techos altos del Estudio 3 de Abbey Road creó una profundidad de campo que aún desafía las emulaciones digitales modernas.\n\nEn este reportaje exploramos los secretos de cinta de 2 pulgadas y 16 pistas utilizados por Brian Humphries.",
+      "audioNarration": {
+        "id": "news-audio-cintas-pinkfloyd",
+        "title": "Las Cintas de Wish You Were Here",
+        "artist": "Crónicas de Abbey Road",
+        "album": "Historia y Masterización",
+        "cover": "https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?auto=format&fit=crop&q=80&w=600",
+        "audioUrl": "/audio/Las_cintas_de_Wish_You_Were_Here.m4a",
+        "preview": "/audio/Las_cintas_de_Wish_You_Were_Here.m4a"
+      },
+      "trackPreview": {
+        "id": 3105001,
+        "title": "Wish You Were Here",
+        "artist": "Pink Floyd",
+        "album": "Wish You Were Here",
+        "cover": "https://cdn-images.dzcdn.net/images/cover/989cb5103a8914ba08a287f94ca3aa14/500x500-000000-80-0-0.jpg"
+      },
+      "description": "Un recorrido por el tratamiento de sintetizadores Minimoog, guías de guitarra de 12 cuerdas acústicas de David Gilmour y la espacialidad de Abbey Road.",
+      "startDate": "2026-09-20",
+      "endDate": "",
+      "status": "published"
+    },
+    {
+      "id": "sellos-independientes-vinilo-records-2026",
+      "title": "Warp, Ninja Tune y 4AD Reportan Récord en Soporte Físico y Firman Manifiesto Contra la Hipercompresión",
+      "category": "Industria & Sellos",
+      "date": "18 Septiembre, 2026",
+      "author": "Mateo Solís",
+      "role": "Analista de Industria",
+      "readTime": "4 min",
+      "cover": "https://images.unsplash.com/photo-1518709268805-4e9042af9f23?auto=format&fit=crop&q=80&w=800",
+      "summary": "Más de 40 sellos independientes internacionales acuerdan estándares mínimos de rango dinámico (DR12+) para todos sus lanzamientos en streaming y vinilo.",
+      "content": "Una alianza de sellos discográficos independientes europeos y americanos ha lanzado la iniciativa \"Dynamic Sound Guarantee\". El pacto prohíbe el uso de limitadores extremos en las etapas de masterización digital para preservar la respiración y los contrastes tímbricos de la música.\n\nLas ventas de vinilos y casetes en estos sellos crecieron un 28% interanual en 2026, impulsadas por un público joven que busca conectar con el objeto físico y la escucha sin distracciones.",
+      "audioNarration": {
+        "id": "news-audio-vinilo-guerra-volumen",
+        "title": "El Vinilo Gana la Guerra del Volumen",
+        "artist": "Crónica Sonora Sonar",
+        "album": "Industria & Sellos",
+        "cover": "https://images.unsplash.com/photo-1518709268805-4e9042af9f23?auto=format&fit=crop&q=80&w=600",
+        "audioUrl": "/audio/El_vinilo_gana_la_guerra_del_volumen.m4a",
+        "preview": "/audio/El_vinilo_gana_la_guerra_del_volumen.m4a"
+      },
+      "trackPreview": null,
+      "description": "Más de 40 sellos independientes internacionales acuerdan estándares mínimos de rango dinámico (DR12+) para todos sus lanzamientos en streaming y vinilo.",
+      "startDate": "2026-09-18",
+      "endDate": "",
+      "status": "published"
+    },
+    {
+      "id": "daft-punk-discovery-analog-sidechain",
+      "title": "El Legado Técnico de Daft Punk: El Sampler E-mu SP-1200 y el Sonido Francés",
+      "category": "Crónicas",
+      "date": "15 Septiembre, 2026",
+      "author": "Julián Andrade",
+      "role": "Editor de Cultura Sónica",
+      "readTime": "6 min",
+      "cover": "https://images.unsplash.com/photo-1508700115892-45ecd05ae2ad?auto=format&fit=crop&q=80&w=800",
+      "summary": "Cómo los compresores Alesis 3630 y el filtrado analógico crearon la estética sónica inimitable del French Touch en \"Discovery\".",
+      "content": "El sonido de \"Discovery\" de Daft Punk no fue producto de plugins digitales, sino del uso creativo de hardware asequible llevado al límite. El compresor Alesis 3630, conocido por su carácter agresivo, fue utilizado en cadena lateral (sidechain) para forzar la mezcla entera a agacharse con cada golpe de bombo de 909.\n\nEse efecto de bombeo, combinado con convertidores de 12 bits y filtros analógicos Moog, definió el sonido de la música electrónica del nuevo milenio.",
+      "audioNarration": {
+        "id": "news-audio-maquinas-discovery",
+        "title": "Las Máquinas que Esculpieron Discovery",
+        "artist": "Crónica Sonora Sonar",
+        "album": "Crónicas de Producción",
+        "cover": "https://images.unsplash.com/photo-1508700115892-45ecd05ae2ad?auto=format&fit=crop&q=80&w=600",
+        "audioUrl": "/audio/Las_máquinas_que_esculpieron_Discovery.m4a",
+        "preview": "/audio/Las_máquinas_que_esculpieron_Discovery.m4a"
+      },
+      "trackPreview": {
+        "id": 3135558,
+        "title": "One More Time",
+        "artist": "Daft Punk",
+        "album": "Discovery",
+        "cover": "https://cdn-images.dzcdn.net/images/cover/2e018122cb56986277102d204f6b1628/500x500-000000-80-0-0.jpg"
+      },
+      "description": "Cómo los compresores Alesis 3630 y el filtrado analógico crearon la estética sónica inimitable del French Touch en \"Discovery\".",
+      "startDate": "2026-09-15",
+      "endDate": "",
+      "status": "published"
+    },
+    {
+      "id": "ingenieria-daft-punk-radiohead-masterclass",
+      "title": "Masterclass Acústica: La Ingeniería Sonora tras Daft Punk y Radiohead",
+      "category": "Crónicas",
+      "date": "12 Septiembre, 2026",
+      "author": "Julián Andrade",
+      "role": "Editor de Cultura Sónica",
+      "readTime": "8 min",
+      "cover": "https://images.unsplash.com/photo-1598488035139-bdbb2231ce04?auto=format&fit=crop&q=80&w=800",
+      "summary": "Comparativa en profundidad de las filosofías de mezcla: la saturación analógica calculada de Thomas Bangalter frente a la espacialidad orgánica de Nigel Godrich.",
+      "content": "¿Qué tienen en común dos de las obras cumbres del siglo XXI grabadas en lados opuestos del canal de la Mancha? Tanto \"Discovery\" como \"In Rainbows\" evitaron la cuantización estricta por ordenador y priorizaron la no linealidad de los transformadores analógicos.\n\nEn esta entrega analizamos las técnicas de microfonía ribbon Royer R-121, los preamplificadores Neve 1073 y el modelado de envolventes que transformaron temas como \"Touch\" y \"Reckoner\" en monumentos tímbricos de la historia discográfica.",
+      "audioNarration": {
+        "id": "news-audio-masterclass-daft-radiohead",
+        "title": "Ingeniería Sonora tras Daft Punk y Radiohead",
+        "artist": "Cátedra Audiófila Sonar",
+        "album": "Grandes Maestros del Sonido",
+        "cover": "https://images.unsplash.com/photo-1598488035139-bdbb2231ce04?auto=format&fit=crop&q=80&w=600",
+        "audioUrl": "/audio/Ingeniería_sonora_tras_Daft_Punk_y_Radiohead.m4a",
+        "preview": "/audio/Ingeniería_sonora_tras_Daft_Punk_y_Radiohead.m4a"
+      },
+      "trackPreview": {
+        "id": 3135556,
+        "title": "15 Step",
+        "artist": "Radiohead",
+        "album": "In Rainbows",
+        "cover": "https://cdn-images.dzcdn.net/images/cover/a175af9b7d329bc678cb4d26fc13d6de/500x500-000000-80-0-0.jpg"
+      },
+      "description": "Comparativa en profundidad de las filosofías de mezcla: la saturación analógica calculada de Thomas Bangalter frente a la espacialidad orgánica de Nigel Godrich.",
+      "startDate": "2026-09-12",
+      "endDate": "",
+      "status": "published"
+    },
+    {
+      "id": "kendrick-to-pimp-a-butterfly-orchestration",
+      "title": "To Pimp a Butterfly: La Orquestación Jazz y la Producción de Referencia",
+      "category": "Lanzamientos",
+      "date": "10 Septiembre, 2026",
+      "author": "Valeria Montero",
+      "role": "Ingeniera Acústica",
+      "readTime": "6 min",
+      "cover": "https://images.unsplash.com/photo-1511192336575-5a79af67a629?auto=format&fit=crop&q=80&w=800",
+      "summary": "Cómo Thundercat, Kamasi Washington y Terrace Martin fusionaron el bebop moderno con el hip hop en un estándar audiófilo absoluto.",
+      "content": "La grabación de \"To Pimp a Butterfly\" representa una de las cimas en arreglos de metales y bajo eléctrico en la música contemporánea. Con más de 30 músicos de sesión tocando en directo en los estudios Chalice Recording de Hollywood, cada pista mantiene una separación estéreo nítida sin sacrificar la pegada de los subgraves.\n\nDescubre los secretos de microfonía para saxofón tenor y las elecciones de compresión valvular Fairchild 670 en la mezcla de Derek Ali.",
+      "audioNarration": {
+        "id": "news-audio-kendrick-tpab",
+        "title": "La Orquestación de To Pimp a Butterfly",
+        "artist": "Crónica Sonora Sonar",
+        "album": "Arquitectura del Hip-Hop",
+        "cover": "https://images.unsplash.com/photo-1511192336575-5a79af67a629?auto=format&fit=crop&q=80&w=600",
+        "audioUrl": "/audio/La_orquestación_de_To_Pimp_a_Butterfly.m4a",
+        "preview": "/audio/La_orquestación_de_To_Pimp_a_Butterfly.m4a"
+      },
+      "trackPreview": null,
+      "description": "Cómo Thundercat, Kamasi Washington y Terrace Martin fusionaron el bebop moderno con el hip hop en un estándar audiófilo absoluto.",
+      "startDate": "2026-09-10",
+      "endDate": "",
+      "status": "published"
+    },
+    {
+      "id": "acustica-por-que-vinilo-suena-mas-calido",
+      "title": "Psicoacústica y Física: ¿Por Qué el Vinilo Suena Más Cálido que el Streaming?",
+      "category": "Hi-Fi & Hardware",
+      "date": "08 Septiembre, 2026",
+      "author": "Elena Rostova",
+      "role": "Corresponsal Internacional",
+      "readTime": "5 min",
+      "cover": "https://images.unsplash.com/photo-1461360370896-922624d12aa1?auto=format&fit=crop&q=80&w=800",
+      "summary": "La verdad científica sobre la distorsión armónica de segundo orden, la diafonía estéreo analógica y la respuesta psicoacústica del oído humano.",
+      "content": "La supuesta \"calidez\" del vinilo no es una ilusión mística, sino el resultado directo de leyes físicas y acústicas. Cuando la aguja de diamante recorre el surco de policloruro de vinilo, introduce una distorsión armónica uniforme (even-order harmonics) que el cerebro humano interpreta intuitivamente como riqueza tonal y cercanía emocional.\n\nEn este artículo analizamos además cómo la ligera mezcla de canales (crosstalk) replica la experiencia de escuchar instrumentos en una sala real en contraposición a la separación clínica digital.",
+      "audioNarration": {
+        "id": "news-audio-vinilo-calido",
+        "title": "Por Qué el Vinilo Suena Más Cálido",
+        "artist": "Física & Psicoacústica Sonar",
+        "album": "Fundamentos del Sonido",
+        "cover": "https://images.unsplash.com/photo-1461360370896-922624d12aa1?auto=format&fit=crop&q=80&w=600",
+        "audioUrl": "/audio/Por_qué_el_vinilo_suena_más_cálido.m4a",
+        "preview": "/audio/Por_qué_el_vinilo_suena_más_cálido.m4a"
+      },
+      "trackPreview": null,
+      "description": "La verdad científica sobre la distorsión armónica de segundo orden, la diafonía estéreo analógica y la respuesta psicoacústica del oído humano.",
+      "startDate": "2026-09-08",
+      "endDate": "",
+      "status": "published"
     }
   ],
   "music": [],
