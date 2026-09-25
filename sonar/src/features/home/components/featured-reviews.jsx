@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '../../../shared/context/auth-context';
+import { useTranslation } from 'react-i18next';
 import { interactionsService } from '../../../shared/services/interactions-service';
 import CommentSection from '../../reviews/components/comment-section';
 import LikeButton from '../../../shared/components/ui/like-button';
@@ -262,6 +263,7 @@ const FeaturedReviewCard = ({ review }) => {
 };
 
 export const FeaturedReviews = () => {
+  const { t } = useTranslation();
   return (
     <section className="w-full px-4 sm:px-6 lg:px-10 py-12 sm:py-16 bg-[#fff7fa] dark:bg-[#231123] transition-colors duration-300">
       <div className="max-w-[1440px] mx-auto flex flex-col gap-6">
@@ -272,7 +274,7 @@ export const FeaturedReviews = () => {
               DISCURSO & ANÁLISIS
             </span>
             <h2 className="text-2xl sm:text-3xl lg:text-4xl text-[#231123] dark:text-[#FAF5F8] font-extrabold mt-1">
-              Reseñas Destacadas
+              {t('reviews.title', 'Reseñas Destacadas')}
             </h2>
             <p className="text-sm sm:text-base text-[#5c435a] dark:text-[#B89CB0] mt-1">
               Voces críticas y oyentes apasionados compartiendo su perspectiva musical en alta resolución.
@@ -282,7 +284,7 @@ export const FeaturedReviews = () => {
             className="inline-flex items-center gap-1.5 text-sm font-bold text-[#5c1d5e] dark:text-pink-300 hover:text-[#B80C09] dark:hover:text-[#B80C09] transition-colors group cursor-pointer"
             href="#community"
           >
-            <span>Ver todas las reseñas</span>
+            <span>{t('nav.explore', 'Ver todas las reseñas')}</span>
             <span className="material-symbols-outlined text-[18px] group-hover:translate-x-1 transition-transform">
               arrow_forward
             </span>

@@ -25,10 +25,6 @@ export function LanguageSelector({ variant = 'navbar', className = '' }) {
   if (variant === 'footer') {
     return (
       <div className={`lang-selector-footer ${className}`} ref={dropdownRef}>
-        <div className="lang-footer-label">
-          <Globe size={16} />
-          <span>{currentLanguageObj.flag} {currentLanguageObj.label}</span>
-        </div>
         <div className="lang-footer-options">
           {languages.map((lang) => (
             <button

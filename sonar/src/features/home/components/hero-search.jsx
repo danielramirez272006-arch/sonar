@@ -503,7 +503,7 @@ export const HeroSearch = ({ onSearch = () => {}, onSubmit = () => {} }) => {
                   type="submit"
                   className="flex items-center gap-1 px-4 py-2 rounded-full bg-[#B80C09] hover:bg-[#9c0a07] text-white text-xs font-bold shadow-md hover:shadow-lg transition-all cursor-pointer"
                 >
-                  <span>Buscar</span>
+                  <span>{t('common.search', 'Buscar')}</span>
                   <span className="material-symbols-outlined text-[15px]">arrow_forward</span>
                 </button>
               </div>
@@ -523,7 +523,7 @@ export const HeroSearch = ({ onSearch = () => {}, onSubmit = () => {} }) => {
                   <div className="flex items-center gap-2">
                     <span className="w-2.5 h-2.5 rounded-full bg-rose-300 animate-ping" />
                     <span className="text-xs font-black uppercase tracking-wider text-white">
-                      🎙️ Escuchando... Di el nombre de un artista o álbum
+                      🎙️ {t('common.listening', 'Escuchando...')}
                     </span>
                   </div>
                   <button
@@ -536,7 +536,7 @@ export const HeroSearch = ({ onSearch = () => {}, onSubmit = () => {} }) => {
                     }}
                     className="text-xs font-bold bg-white/20 hover:bg-white/30 px-2.5 py-0.5 rounded-full cursor-pointer transition-colors"
                   >
-                    ✕ Cerrar
+                    ✕ {t('common.close', 'Cerrar')}
                   </button>
                 </div>
 
@@ -585,14 +585,14 @@ export const HeroSearch = ({ onSearch = () => {}, onSubmit = () => {} }) => {
                         <div className="flex items-center justify-between text-[11px] font-extrabold text-[#5c435a] dark:text-gray-400">
                           <span className="flex items-center gap-1.5">
                             <span className="material-symbols-outlined text-[15px]">history</span>
-                            <span>BÚSQUEDAS RECIENTES</span>
+                            <span>{t('common.recent_searches', 'BÚSQUEDAS RECIENTES')}</span>
                           </span>
                           <button
                             type="button"
                             onClick={clearRecentSearches}
                             className="text-[#B80C09] hover:underline cursor-pointer font-bold text-[11px]"
                           >
-                            Limpiar
+                            {t('common.clear', 'Limpiar')}
                           </button>
                         </div>
                         <div className="flex flex-wrap gap-1.5">
