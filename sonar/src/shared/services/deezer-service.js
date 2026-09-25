@@ -1,4 +1,4 @@
-import { resolveAccurateCoverForTrack, getFallbackCoverForAlbum } from './recommendations-service';
+import { resolveAccurateCoverForTrack } from './recommendations-service';
 
 const DEEZER_CACHE = new Map();
 const CACHE_TTL_MS = 5 * 60 * 1000; // 5 minutos de cache en memoria

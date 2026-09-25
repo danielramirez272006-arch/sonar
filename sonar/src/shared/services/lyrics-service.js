@@ -285,7 +285,7 @@ export function cleanQueryString(str = '') {
 /**
  * Generador inteligente de fallback poético/musical cuando los servicios externos no responden
  */
-function generateFallbackLyrics(title, artist) {
+export function generateFallbackLyrics(title, artist) {
   return {
     plainLyrics: `[Acompañamiento Acústico - ${title}]
 Música e interpretación por ${artist}.
