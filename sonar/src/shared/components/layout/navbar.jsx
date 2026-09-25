@@ -5,6 +5,8 @@ import { AnimatedLogo } from '../ui/AnimatedLogo';
 import { useTheme } from '../../context/theme-context';
 import { useAuth } from '../../context/auth-context';
 import { usePlayer } from '../../context/player-context';
+import { useLanguage } from '../../context/language-context';
+import { LanguageSelector } from '../ui/language-selector';
 import { searchEverything, buildNewsHash, NEWS_KINDS } from '../../services/global-search';
 
 const SEARCH_SCOPES = [
@@ -41,6 +43,7 @@ export const Navbar = ({
   const { isDark, toggleTheme } = useTheme();
   const { user: authUser, isAuthenticated, logout, isJunior, isParentalControlActive } = useAuth();
   const { toggleTrack, currentTrack, isPlaying } = usePlayer();
+  const { t } = useLanguage();
 
   const totalResults = navResults.tracks.length + navResults.news.length;
   const flatResults = useMemo(
@@ -639,6 +642,9 @@ export const Navbar = ({
               {isDark ? 'light_mode' : 'dark_mode'}
             </motion.span>
           </motion.button>
+
+          {/* Selector de Idioma (i18n) */}
+          <LanguageSelector variant="navbar" />
 
           {/* Separador vertical */}
           <div className="w-[1px] h-6 bg-[#e6d5e2] dark:border-white/10 transition-colors hidden xs:block" />

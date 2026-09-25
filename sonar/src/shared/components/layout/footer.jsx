@@ -2,9 +2,12 @@ import React, { useState } from 'react';
 import { AnimatedLogo } from '../ui/AnimatedLogo';
 import EngineStatusModal from '../ui/engine-status-modal';
 import { useAuth } from '../../context/auth-context';
+import { useLanguage } from '../../context/language-context';
+import { LanguageSelector } from '../ui/language-selector';
 
 export const Footer = () => {
   const { user } = useAuth() || {};
+  const { t } = useLanguage();
   const [isEngineOpen, setIsEngineOpen] = useState(false);
 
   return (
@@ -19,7 +22,7 @@ export const Footer = () => {
               <AnimatedLogo size="sm" onClick={() => { window.location.hash = '#explore'; }} />
             </div>
             <p className="text-[#3c253a] dark:text-[#d8c5d3] max-w-sm leading-relaxed text-sm font-medium">
-              Un espacio para escuchar con atención. Y compartir con criterio. Plataforma dedicada a la crítica musical inmersiva y archivos de vinilo de alta fidelidad.
+              {t('footer.tagline')}
             </p>
             <div className="flex items-center gap-2 pt-2">
               <a
@@ -83,24 +86,34 @@ export const Footer = () => {
             </ul>
           </div>
 
-          {/* Links Col 3 */}
+          {/* Links Col 3 + Selector de Idioma Footer */}
           <div className="flex flex-col gap-3 text-left">
             <h4 className="text-xs uppercase tracking-wider text-[#231123] dark:text-white font-black">
-              Legal & Privacidad
+              {t('common.language')}
             </h4>
-            <ul className="flex flex-col gap-2.5 text-sm list-none p-0 m-0">
-              <li><a href="#about" className="text-[#3c253a] dark:text-[#d8c5d3] hover:text-[#B80C09] dark:hover:text-[#ff6b68] font-semibold transition-colors">Acerca de Sonar</a></li>
-              <li><a href="#terms" className="text-[#3c253a] dark:text-[#d8c5d3] hover:text-[#B80C09] dark:hover:text-[#ff6b68] font-semibold transition-colors">Términos de Uso</a></li>
-              <li><a href="#guidelines" className="text-[#3c253a] dark:text-[#d8c5d3] hover:text-[#B80C09] dark:hover:text-[#ff6b68] font-semibold transition-colors">Pautas Editoriales</a></li>
-            </ul>
+            <LanguageSelector variant="footer" />
           </div>
         </div>
 
         {/* Copyright Bar */}
         <div className="mt-10 pt-6 border-t border-[#e8dbe6] dark:border-white/10 flex flex-col sm:flex-row items-center justify-between gap-3 text-center sm:text-left">
           <p className="text-xs text-[#523c50] dark:text-gray-400 font-medium">
-            © 2026 Sonar Audio Media Inc. Todos los derechos reservados.
+            © 2026 Sonar Audio Media Inc. {t('footer.rights')}
           </p>
+          <button
+            type="button"
+            onClick={() => setIsEngineOpen(true)}
+            className="flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#f0e2ee] dark:bg-white/10 border border-[#ddcadb] dark:border-white/10 text-xs text-[#231123] dark:text-white hover:border-[#B80C09] hover:text-[#B80C09] transition-all cursor-pointer font-bold shadow-xs"
+            title="Ver telemetría y estado del sistema"
+          >
+            <span className="w-2 h-2 rounded-full bg-emerald-500 inline-block animate-pulse" />
+            <span>Sonar Engine v2.4 Activo</span>
+          </button>
+        </div>
+      </div>
+    </footer>
+  );
+};
           <button
             type="button"
             onClick={() => setIsEngineOpen(true)}

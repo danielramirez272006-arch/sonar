@@ -30,6 +30,7 @@ import { KeyboardShortcutsModal } from './shared/components/a11y/keyboard-shortc
 import { ReadingGuide } from './shared/components/a11y/reading-guide.jsx'
 import { A11yScreenOverlay } from './shared/components/a11y/a11y-screen-overlay.jsx'
 import { GoogleOAuthProvider } from '@react-oauth/google'
+import { LanguageProvider } from './shared/context/language-context.jsx'
 import "./Styles/App.css";
 import './Styles/admin.css'
 import './Styles/admin-dashboard.css'
@@ -251,30 +252,32 @@ export default function App() {
   return (
     <GoogleOAuthProvider clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID || ''}>
       <ErrorBoundary>
-        <BrowserRouter>
-          <AccessibilityProvider>
-            <AuthProvider>
-              <ThemeProvider>
-                <PlayerProvider>
-                  <SkipToContent />
-                  <ColorBlindnessFilters />
-                  <A11yScreenOverlay />
-                  <AriaLiveAnnouncer />
-                  <ErrorBoundary>
-                    <AppRouter />
-                  </ErrorBoundary>
-                  <ErrorBoundary>
-                    <GlobalAudioPlayer />
-                  </ErrorBoundary>
-                  <ReviewModal />
-                  <AccessibilityWidget />
-                  <KeyboardShortcutsModal />
-                  <ReadingGuide />
-                </PlayerProvider>
-              </ThemeProvider>
-            </AuthProvider>
-          </AccessibilityProvider>
-        </BrowserRouter>
+        <LanguageProvider>
+          <BrowserRouter>
+            <AccessibilityProvider>
+              <AuthProvider>
+                <ThemeProvider>
+                  <PlayerProvider>
+                    <SkipToContent />
+                    <ColorBlindnessFilters />
+                    <A11yScreenOverlay />
+                    <AriaLiveAnnouncer />
+                    <ErrorBoundary>
+                      <AppRouter />
+                    </ErrorBoundary>
+                    <ErrorBoundary>
+                      <GlobalAudioPlayer />
+                    </ErrorBoundary>
+                    <ReviewModal />
+                    <AccessibilityWidget />
+                    <KeyboardShortcutsModal />
+                    <ReadingGuide />
+                  </PlayerProvider>
+                </ThemeProvider>
+              </AuthProvider>
+            </AccessibilityProvider>
+          </BrowserRouter>
+        </LanguageProvider>
       </ErrorBoundary>
     </GoogleOAuthProvider>
   )

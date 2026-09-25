@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { ArrowRight, Eye, EyeOff, Headphones, Music2 } from 'lucide-react';
 import { useAuth } from '../../../shared/context/auth-context';
+import { useLanguage } from '../../../shared/context/language-context';
 import { GoogleIcon } from './social-provider-icon';
 import { RotatingReview } from './rotating-review';
 import { useGoogleLogin } from '@react-oauth/google';
@@ -19,6 +20,7 @@ const EditorialPanel = () => (
 
 export const LoginForm = () => {
   const { login, loginWithGoogle, isLoading, error: authError } = useAuth();
+  const { t } = useLanguage();
   const [formData, setFormData] = useState({ email: '', password: '' });
   const [showPassword, setShowPassword] = useState(false);
   const [message, setMessage] = useState('');
@@ -83,8 +85,8 @@ export const LoginForm = () => {
         <div className="auth-form-wrap">
           <div className="auth-mobile-brand"><Headphones size={19} /> SONAR</div>
           <header className="auth-heading">
-            <h2 id="login-title">Inicia sesión en Sonar</h2>
-            <p>Tu diario sonoro te estaba esperando.</p>
+            <h2 id="login-title">{t('auth.welcome')}</h2>
+            <p>{t('auth.login_subtitle')}</p>
           </header>
 
           {/* Botón de Google OAuth */}
@@ -95,21 +97,21 @@ export const LoginForm = () => {
               onClick={() => handleGoogleLogin()}
               disabled={isAnyLoading}
               className="auth-google-btn"
-              aria-label="Continuar con Google"
+              aria-label={t('auth.google_login')}
             >
               {googleLoading ? (
                 <span className="auth-google-spinner" aria-hidden="true" />
               ) : (
                 <GoogleIcon />
               )}
-              {googleLoading ? 'Conectando con Google…' : 'Continuar con Google'}
+              {googleLoading ? '...' : t('auth.google_login')}
             </button>
           </div>
 
-          <p className="auth-divider"><span />o inicia sesión con tu correo<span /></p>
+          <p className="auth-divider"><span />{t('auth.or_email')}<span /></p>
 
           <form onSubmit={handleSubmit} className="auth-form">
-            <label htmlFor="email">Correo electrónico</label>
+            <label htmlFor="email">{t('auth.email_label')}</label>
             <input
               id="email"
               type="email"
@@ -120,8 +122,8 @@ export const LoginForm = () => {
               onChange={(e) => setFormData({ ...formData, email: e.target.value })}
             />
             <div className="auth-label-row">
-              <label htmlFor="password">Contraseña</label>
-              <a href="#forgot-password">¿Olvidaste tu contraseña?</a>
+              <label htmlFor="password">{t('auth.password_label')}</label>
+              <a href="#forgot-password">{t('auth.forgot_password')}</a>
             </div>
             <div className="auth-password">
               <input
@@ -143,11 +145,17 @@ export const LoginForm = () => {
             </div>
             {activeError && <p className="auth-error" role="alert">{activeError}</p>}
             <button className="auth-submit" type="submit" disabled={isAnyLoading}>
-              {isLoading ? 'Ingresando…' : <>Entrar a Sonar <ArrowRight size={18} /></>}
+              {isLoading ? '...' : <>{t('auth.enter_btn')} <ArrowRight size={18} /></>}
             </button>
           </form>
 
-          <p className="auth-switch">¿Aún no tienes cuenta? <a href="#register">Crea tu cuenta</a></p>
+          <p className="auth-switch">{t('auth.no_account')} <a href="#register">{t('auth.create_account')}</a></p>
+          <p className="auth-legal">Al ingresar aceptas las Condiciones de Servicio y la Política de Privacidad de Sonar.</p>
+        </div>
+      </section>
+    </div>
+  );
+};
           <p className="auth-legal">Al ingresar aceptas las Condiciones de Servicio y la Política de Privacidad de Sonar.</p>
         </div>
       </section>
