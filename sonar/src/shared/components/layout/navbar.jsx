@@ -5,24 +5,28 @@ import { AnimatedLogo } from '../ui/AnimatedLogo';
 import { useTheme } from '../../context/theme-context';
 import { useAuth } from '../../context/auth-context';
 import { usePlayer } from '../../context/player-context';
+import { useTranslation } from 'react-i18next';
+import { useLanguage } from '../../context/language-context';
+import { LanguageSelector } from '../ui/language-selector';
 import { searchEverything, buildNewsHash, NEWS_KINDS } from '../../services/global-search';
 
-const SEARCH_SCOPES = [
-  { id: 'all', label: 'Todo', icon: 'apps' },
-  { id: 'tracks', label: 'Canciones', icon: 'music_note' },
-  { id: 'news', label: 'Noticias', icon: 'newspaper' },
-];
-
 export const Navbar = ({
-  links = [
-    { id: 'explore', label: 'Explorar', path: '#explore' },
-    { id: 'noticias', label: 'Noticias', path: '#noticias' },
-    { id: 'community', label: 'Comunidad', path: '#community' },
-  ],
+  links: customLinks = null,
   onNavigate = () => {},
   onSearch = null,
   showSearch = true,
 }) => {
+  const { t } = useTranslation();
+  const { isDark, toggleTheme } = useTheme();
+  const { user: authUser, isAuthenticated, logout, isJunior, isParentalControlActive } = useAuth();
+  const { toggleTrack, currentTrack, isPlaying } = usePlayer();
+
+  const searchScopes = useMemo(() => [
+    { id: 'all', label: t('nav.all', 'Todo'), icon: 'apps' },
+    { id: 'tracks', label: t('nav.tracks', 'Canciones'), icon: 'music_note' },
+    { id: 'news', label: t('nav.news', 'Noticias'), icon: 'newspaper' },
+  ], [t]);
+
   const [activeTab, setActiveTab] = useState(() => {
     const hash = window.location.hash.replace(/^#/, '');
     return hash || 'explore';
@@ -38,9 +42,13 @@ export const Navbar = ({
   const navDropdownRef = useRef(null);
   const navDebounceRef = useRef(null);
 
-  const { isDark, toggleTheme } = useTheme();
-  const { user: authUser, isAuthenticated, logout, isJunior, isParentalControlActive } = useAuth();
-  const { toggleTrack, currentTrack, isPlaying } = usePlayer();
+  const defaultNavLinks = useMemo(() => [
+    { id: 'explore', label: t('nav.explore', 'Explorar'), path: '#explore' },
+    { id: 'noticias', label: t('nav.news', 'Noticias'), path: '#noticias' },
+    { id: 'community', label: t('nav.community', 'Comunidad'), path: '#community' },
+  ], [t]);
+
+  const links = customLinks || defaultNavLinks;
 
   const totalResults = navResults.tracks.length + navResults.news.length;
   const flatResults = useMemo(
@@ -84,18 +92,21 @@ export const Navbar = ({
   useEffect(() => {
     const handleCustomizationChange = (e) => {
       if (e.detail?.equippedFrame !== undefined) setEquippedFrame(e.detail.equippedFrame);
+      if (e.detail?.sonarPoints !== undefined) setUserPoints(Number(e.detail.sonarPoints));
     };
-    const handlePointsAwarded = () => {
+    const handlePointsAwarded = (e) => {
       try {
-        const p = Number(localStorage.getItem('sonar_user_points') || 1250);
+        const p = e.detail?.points !== undefined ? Number(e.detail.points) : Number(localStorage.getItem('sonar_user_points') || 1250);
         setUserPoints(p);
       } catch {}
     };
     window.addEventListener('sonar:profile-customization-changed', handleCustomizationChange);
     window.addEventListener('sonar:points-awarded', handlePointsAwarded);
+    window.addEventListener('sonar:points-updated', handlePointsAwarded);
     return () => {
       window.removeEventListener('sonar:profile-customization-changed', handleCustomizationChange);
       window.removeEventListener('sonar:points-awarded', handlePointsAwarded);
+      window.removeEventListener('sonar:points-updated', handlePointsAwarded);
     };
   }, []);
 
@@ -293,7 +304,7 @@ export const Navbar = ({
                   aria-controls="sonar-search-results"
                   aria-autocomplete="list"
                   aria-label="Buscar canciones, artistas y noticias"
-                  placeholder="Busca canciones, artistas o noticias…"
+                  placeholder={t('nav.search_hint', 'Busca canciones, artistas o noticias…')}
                   value={navSearch}
                   onChange={handleNavSearchChange}
                   onKeyDown={handleNavKeyDown}
@@ -334,7 +345,7 @@ export const Navbar = ({
                 >
                   {/* Selector de alcance */}
                   <div className="flex items-center gap-1 p-2 border-b border-[var(--border-subtle)]">
-                    {SEARCH_SCOPES.map((scope) => {
+                    {searchScopes.map((scope) => {
                       const isActiveScope = navScope === scope.id;
                       const scopeCount =
                         scope.id === 'tracks'
@@ -640,6 +651,9 @@ export const Navbar = ({
             </motion.span>
           </motion.button>
 
+          {/* Selector de Idioma (i18n) */}
+          <LanguageSelector variant="navbar" />
+
           {/* Separador vertical */}
           <div className="w-[1px] h-6 bg-[#e6d5e2] dark:border-white/10 transition-colors hidden xs:block" />
 
@@ -709,7 +723,7 @@ export const Navbar = ({
                   logout();
                   window.location.hash = '#explore';
                 }}
-                title="Cerrar sesión"
+                title={t('nav.logout')}
                 className="p-2 rounded-xl text-[#5c435a] dark:text-[#B89CB0] hover:text-[#B80C09] hover:bg-gray-100 dark:hover:bg-white/10 transition-colors cursor-pointer"
               >
                 <span className="material-symbols-outlined text-[18px]">logout</span>
@@ -721,13 +735,13 @@ export const Navbar = ({
                 href="#login"
                 className="px-3.5 py-1.5 rounded-xl text-xs sm:text-sm font-bold text-[#231123] dark:text-white hover:text-[#B80C09] dark:hover:text-[#ff6b68] bg-[#f0e2ee] dark:bg-white/10 border border-[#ddcadb] dark:border-white/10 transition-all shadow-2xs cursor-pointer"
               >
-                Ingresar
+                {t('nav.login')}
               </a>
               <a
                 href="#register"
                 className="px-3.5 py-1.5 rounded-xl bg-[#B80C09] hover:bg-[#9c0a07] text-white text-xs sm:text-sm font-bold shadow-xs transition-colors cursor-pointer"
               >
-                Registrarse
+                {t('nav.register')}
               </a>
             </div>
           )}

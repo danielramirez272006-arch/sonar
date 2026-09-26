@@ -1,16 +1,20 @@
 import React, { useState } from 'react';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
+import { useAuth } from '../../../shared/context/auth-context';
 
 const INITIAL_QUESTS = [
   {
     id: 'quest-1',
     title: 'Viaje a la Era Dorada del Jazz',
     description: 'Escucha al menos 3 pistas completas de la época 1955-1965 sin interrupciones.',
-    progress: 2,
+    progress: 3,
     target: 3,
     unit: 'pistas',
     reward: '+120 Puntos & Medalla Bebop',
-    completed: false,
+    rewardPts: 120,
+    rewardXp: 240,
+    completed: true,
+    claimed: false,
     icon: 'music_note',
   },
   {
@@ -20,8 +24,11 @@ const INITIAL_QUESTS = [
     progress: 1,
     target: 1,
     unit: 'reseña',
-    reward: 'Insignia Platinada en Comentarios',
+    reward: '+200 Puntos & Insignia Platinada',
+    rewardPts: 200,
+    rewardXp: 400,
     completed: true,
+    claimed: false,
     icon: 'rate_review',
   },
   {
@@ -32,23 +39,31 @@ const INITIAL_QUESTS = [
     target: 1,
     unit: 'setup',
     reward: '+200 Puntos de Prestigio',
+    rewardPts: 200,
+    rewardXp: 400,
     completed: true,
+    claimed: false,
     icon: 'tune',
   },
   {
     id: 'quest-4',
     title: 'Explorador de Sellos de Culto',
     description: 'Descubre y guarda 2 discos de sellos discográficos independientes.',
-    progress: 1,
+    progress: 2,
     target: 2,
     unit: 'álbumes',
-    reward: 'Acceso Anticipado a Lanzamientos',
-    completed: false,
+    reward: '+150 Puntos & Acceso Anticipado',
+    rewardPts: 150,
+    rewardXp: 300,
+    completed: true,
+    claimed: false,
     icon: 'travel_explore',
   },
 ];
 
 export const AudiophileQuests = () => {
+  const { user, updateUser } = useAuth();
+  const [toastMsg, setToastMsg] = useState(null);
   const [quests, setQuests] = useState(() => {
     try {
       const saved = localStorage.getItem('sonar_audiophile_quests');
@@ -59,15 +74,50 @@ export const AudiophileQuests = () => {
   });
 
   const handleClaim = (questId) => {
-    const updated = quests.map((q) => (q.id === questId ? { ...q, claimed: true } : q));
+    const q = quests.find((item) => item.id === questId);
+    if (!q || q.claimed || q.progress < q.target) return;
+
+    const rewardPoints = q.rewardPts || 150;
+    const rewardXp = q.rewardXp || 300;
+
+    const updated = quests.map((item) => (item.id === questId ? { ...item, claimed: true } : item));
     setQuests(updated);
+
     try {
       localStorage.setItem('sonar_audiophile_quests', JSON.stringify(updated));
+      const currentPts = Number(localStorage.getItem('sonar_user_points') || user?.sonarPoints || 1250);
+      const currentXp = Number(localStorage.getItem('sonar_user_xp') || user?.audiophileXp || 3450);
+      const newPts = currentPts + rewardPoints;
+      const newXp = currentXp + rewardXp;
+      localStorage.setItem('sonar_user_points', String(newPts));
+      localStorage.setItem('sonar_user_xp', String(newXp));
+      updateUser?.({ sonarPoints: newPts, audiophileXp: newXp });
+      window.dispatchEvent(new CustomEvent('sonar:points-updated', { detail: { points: newPts } }));
+      window.dispatchEvent(new CustomEvent('sonar:points-awarded', { detail: { points: newPts } }));
+      window.dispatchEvent(new CustomEvent('sonar:profile-customization-changed', { detail: { sonarPoints: newPts, audiophileXp: newXp } }));
     } catch {}
+
+    setToastMsg(`🎉 ¡Reclamaste: ${q.reward}! (+${rewardPoints} Monedas y +${rewardXp} XP)`);
+    setTimeout(() => setToastMsg(null), 3500);
   };
 
   return (
-    <div className="p-6 sm:p-8 rounded-3xl bg-white dark:bg-[#4B2840] border border-[#e6d5e2] dark:border-white/10 shadow-xs flex flex-col gap-6 text-[#231123] dark:text-white">
+    <div className="p-6 sm:p-8 rounded-3xl bg-white dark:bg-[#4B2840] border border-[#e6d5e2] dark:border-white/10 shadow-xs flex flex-col gap-6 text-[#231123] dark:text-white relative">
+      {/* Toast Notification */}
+      <AnimatePresence>
+        {toastMsg && (
+          <motion.div
+            initial={{ opacity: 0, y: -20, scale: 0.95 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: -20, scale: 0.95 }}
+            className="fixed top-20 right-6 z-50 px-4 py-3 rounded-2xl bg-[#231123]/95 text-white dark:bg-white dark:text-[#231123] font-bold text-xs shadow-2xl border border-amber-400/40 flex items-center gap-2 backdrop-blur-xl"
+          >
+            <span className="material-symbols-outlined text-amber-400 text-[18px]">verified</span>
+            <span>{toastMsg}</span>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div>
           <span className="text-xs font-bold uppercase tracking-wider text-[#B80C09]">
@@ -146,16 +196,18 @@ export const AudiophileQuests = () => {
 
                 {isDone ? (
                   quest.claimed ? (
-                    <span className="text-[11px] font-black uppercase text-emerald-600 dark:text-emerald-400">
-                      ✓ Reclamado
+                    <span className="text-[11px] font-black uppercase text-emerald-600 dark:text-emerald-400 flex items-center gap-1">
+                      <span className="material-symbols-outlined text-[14px]">verified</span>
+                      <span>Reclamado</span>
                     </span>
                   ) : (
                     <button
                       type="button"
                       onClick={() => handleClaim(quest.id)}
-                      className="px-3 py-1 rounded-lg bg-amber-500 hover:bg-amber-600 text-white text-[11px] font-black uppercase transition-all shadow-xs cursor-pointer"
+                      className="px-3.5 py-1.5 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-700 hover:from-emerald-500 hover:to-teal-600 text-white text-xs font-black uppercase transition-all shadow-md cursor-pointer flex items-center gap-1 hover:scale-105"
                     >
-                      Reclamar
+                      <span className="material-symbols-outlined text-[15px]">redeem</span>
+                      <span>Reclamar</span>
                     </button>
                   )
                 ) : (

@@ -1,11 +1,14 @@
 import { useState, useEffect } from 'react';
 import { ArrowRight, Check, Eye, EyeOff, Headphones, Music2, Sparkles, User, Disc3, ShieldCheck, Mail, KeyRound, ArrowLeft, RefreshCw } from 'lucide-react';
 import { useAuth } from '../../../shared/context/auth-context';
-import { GoogleIcon, SpotifyIcon } from './social-provider-icon';
+import { useTranslation } from 'react-i18next';
+import { useLanguage } from '../../../shared/context/language-context';
+import { GoogleIcon } from './social-provider-icon';
 import { RotatingReview } from './rotating-review';
 import { GENRE_OPTIONS } from '../../../shared/services/recommendations-service';
 import { requestRegisterOtpWebhook } from '../../../shared/services/n8n-webhooks';
 import { getUserByEmail } from '../../../shared/services/api-client';
+import { useGoogleLogin } from '@react-oauth/google';
 
 const AVATAR_PALETTES = [
   { color: '#B80C09', label: 'Carmesí Vinilo' },
@@ -61,6 +64,7 @@ const EditorialPanel = () => (
 
 export const RegisterForm = () => {
   const { register, isLoading } = useAuth();
+  const { t } = useTranslation();
   const [step, setStep] = useState('info'); // 'info' | 'otp' | 'password'
   const [formData, setFormData] = useState({
     username: '',
@@ -253,48 +257,92 @@ export const RegisterForm = () => {
     }
   };
 
-  const handleSocialRegister = async (provider) => {
-    setErrorMessage('');
-    const randomSuffix = Math.floor(Math.random() * 1000);
-    const mockSocialData = {
-      username: provider === 'spotify' ? `audiophile_${randomSuffix}` : `google_listener_${randomSuffix}`,
-      email: provider === 'spotify' ? `spotify_user_${randomSuffix}@sonar.local` : `google_user_${randomSuffix}@sonar.local`,
-      password: 'social_mock_login_123',
-      avatarBg: formData.avatarBg,
-      preferences: formData.preferences,
-      accountType: formData.accountType,
-      isJunior: formData.accountType === 'junior',
-      parentalControl: {
-        enabled: formData.accountType === 'junior',
-        blockExplicit: formData.accountType === 'junior',
-        pin: formData.parentalPin || '1234',
-      },
-    };
+  /**
+   * Registro / inicio de sesión con Google.
+   * Si el correo ya existe en la BD, redirige a login (#login).
+   * Si es nuevo, redirige a la página de usuario (#usuario).
+   */
+  let handleGoogleRegister = () => {};
+  try {
+    handleGoogleRegister = useGoogleLogin({
+      onSuccess: async (tokenResponse) => {
+        setErrorMessage('');
+      try {
+        const res = await fetch('https://www.googleapis.com/oauth2/v3/userinfo', {
+          headers: { Authorization: `Bearer ${tokenResponse.access_token}` },
+        });
+        if (!res.ok) throw new Error('No se pudo obtener el perfil de Google.');
+        const googleUser = await res.json();
 
-    try {
-      await register(mockSocialData);
-      window.location.hash = '#usuario';
-    } catch (err) {
-      setErrorMessage(err.message || `No se pudo conectar con ${provider}.`);
-    }
-  };
+        // Verificar si el correo ya está registrado
+        let existing = null;
+        try { existing = await getUserByEmail(googleUser.email.trim().toLowerCase()); } catch { /* fallback */ }
+        if (existing) {
+          window.location.hash = '#login';
+          return;
+        }
+
+        // Registrar nuevo usuario con datos de Google
+        const suffix = Math.floor(Math.random() * 999);
+        await register({
+          username: (googleUser.given_name || 'audiofilo').toLowerCase().replace(/\s+/g, '_') + '_' + suffix,
+          email: googleUser.email,
+          password: `google_oauth_${Date.now()}`,
+          avatarBg: formData.avatarBg,
+          preferences: formData.preferences,
+          accountType: formData.accountType,
+          isJunior: formData.accountType === 'junior',
+          parentalControl: {
+            enabled: formData.accountType === 'junior',
+            blockExplicit: formData.accountType === 'junior',
+            pin: formData.parentalPin || '1234',
+          },
+        });
+        window.location.hash = '#usuario';
+      } catch (err) {
+        setErrorMessage(err.message || 'No se pudo conectar con Google.');
+      }
+    },
+    onError: () => setErrorMessage('No se pudo conectar con Google. Intenta de nuevo.'),
+    flow: 'implicit',
+  });
+  } catch {
+    handleGoogleRegister = () => {};
+  }
 
   return (
     <div className="auth-shell">
       <EditorialPanel />
       <section className="auth-form-area" aria-labelledby="register-title">
         <div className="auth-form-wrap">
+          <button
+            type="button"
+            onClick={() => {
+              if (step === 'password') {
+                setStep('otp');
+              } else if (step === 'otp') {
+                setStep('info');
+              } else {
+                window.location.hash = '#explore';
+              }
+            }}
+            className="auth-back-btn"
+            aria-label={step === 'info' ? 'Volver al catálogo' : 'Regresar al paso anterior'}
+          >
+            <ArrowLeft size={15} />
+            <span>{step === 'info' ? 'Volver al catálogo' : 'Paso anterior'}</span>
+          </button>
           <div className="auth-mobile-brand">
             <Headphones size={19} /> SONAR
           </div>
           <header className="auth-heading">
             <h2 id="register-title">
-              {step === 'info' && 'Crea tu cuenta en Sonar'}
+              {step === 'info' && t('auth.register_title')}
               {step === 'otp' && 'Verifica tu Correo'}
               {step === 'password' && 'Define tu Contraseña'}
             </h2>
             <p>
-              {step === 'info' && 'Personaliza tu identidad y recibe tu código de seguridad.'}
+              {step === 'info' && t('auth.register_subtitle')}
               {step === 'otp' && 'Ingresa el código de 6 dígitos que enviamos a tu bandeja.'}
               {step === 'password' && 'Elige la contraseña que desees para acceder a Sonar.'}
             </p>
@@ -330,20 +378,15 @@ export const RegisterForm = () => {
             <>
               <div className="auth-socials" aria-label="Registro con servicios externos">
                 <button
+                  id="google-register-btn"
                   type="button"
-                  onClick={() => handleSocialRegister('spotify')}
+                  onClick={() => handleGoogleRegister()}
                   disabled={isLoading}
-                >
-                  <SpotifyIcon />
-                  Continuar con Spotify
-                </button>
-                <button
-                  type="button"
-                  onClick={() => handleSocialRegister('google')}
-                  disabled={isLoading}
+                  className="auth-google-btn"
+                  aria-label={t('auth.google_login')}
                 >
                   <GoogleIcon />
-                  Continuar con Google
+                  {t('auth.google_login')}
                 </button>
               </div>
 
