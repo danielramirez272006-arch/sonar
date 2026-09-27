@@ -1,3 +1,4 @@
+import { useUIText } from '../../../shared/i18n/use-ui-text.js';
 import { submitCommunityReport } from '../../../shared/services/report-service.js';
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -40,6 +41,7 @@ export const ReviewFeedCard = ({
     tags: ['Art Rock', 'Hi-Fi'],
   },
 }) => {
+  const ui = useUIText();
   const { user } = useAuth();
   const { playTrack } = usePlayer();
   const currentUserId = user?.id || 'guest';
@@ -213,7 +215,7 @@ export const ReviewFeedCard = ({
                       : 'border border-[#B80C09] text-[#B80C09] hover:bg-[#B80C09] hover:text-white'
                   }`}
                 >
-                  {isFollowingUser ? '✓ Siguiendo' : '+ Seguir'}
+                  {isFollowingUser ? ui("✓ Siguiendo") : ui("+ Seguir")}
                 </button>
               )}
             </div>
@@ -244,7 +246,7 @@ export const ReviewFeedCard = ({
             type="button"
             onClick={handlePlayReviewAlbum}
             className="absolute inset-0 bg-black/50 opacity-0 group-hover/cover:opacity-100 flex items-center justify-center text-white transition-opacity cursor-pointer"
-            title="Escuchar muestra"
+            title={ui("Escuchar muestra")}
           >
             <span className="material-symbols-outlined text-[26px]">play_circle</span>
           </button>
@@ -267,7 +269,7 @@ export const ReviewFeedCard = ({
                   ? 'bg-rose-50 dark:bg-[#B80C09]/20 text-[#B80C09] dark:text-rose-300 border-[#B80C09]/30'
                   : 'bg-purple-50 dark:bg-purple-950/40 text-purple-700 dark:text-purple-300 border-purple-300 dark:border-purple-800/40'
               }`}>
-                {review.type === 'track' || review.trackTitle ? '🎵 Canción' : '💿 Álbum'}
+                {review.type === 'track' || review.trackTitle ? ui("🎵 Canción") : ui("💿 Álbum")}
               </span>
 
               {/* Botón Seguir Artista */}
@@ -279,12 +281,12 @@ export const ReviewFeedCard = ({
                     ? 'bg-rose-50 text-[#B80C09] border-rose-200 dark:bg-[#B80C09]/20 dark:text-rose-300 dark:border-[#B80C09]/40 shadow-xs'
                     : 'bg-gray-100 dark:bg-white/10 text-gray-700 dark:text-gray-300 border-gray-200 dark:border-white/10 hover:bg-[#B80C09] hover:text-white dark:hover:bg-[#B80C09] dark:hover:text-white'
                 }`}
-                title={isFollowingArtist ? `Sigues a ${review.artist}` : `Seguir a ${review.artist}`}
+                title={isFollowingArtist ? ui("Sigues a {{value0}}", { value0: review.artist }) : ui("Seguir a {{value0}}", { value0: review.artist })}
               >
                 <span className="material-symbols-outlined text-[12px]">
                   {isFollowingArtist ? 'done' : 'favorite'}
                 </span>
-                <span>{isFollowingArtist ? 'Siguiendo' : 'Seguir Artista'}</span>
+                <span>{isFollowingArtist ? ui("Siguiendo") : ui("Seguir Artista")}</span>
               </button>
             </div>
 
@@ -292,7 +294,7 @@ export const ReviewFeedCard = ({
             <button
               type="button"
               onClick={handleToggleSave}
-              title={isSavedInCollection ? 'En tu colección' : 'Guardar en tu colección'}
+              title={isSavedInCollection ? ui("En tu colección") : ui("Guardar en tu colección")}
               className={`p-1.5 rounded-lg text-xs font-semibold flex items-center gap-1 cursor-pointer transition-colors ${
                 isSavedInCollection
                   ? 'text-[#B80C09] bg-[#B80C09]/10'
@@ -357,14 +359,14 @@ export const ReviewFeedCard = ({
             >
               <path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z" />
             </svg>
-            <span>{commentsCount} comentarios</span>
+            <span>{commentsCount} {ui("comentarios")}</span>
           </button>
 
           <TTSButton
             text={review.content}
-            title={`Crítica de ${review.userName} sobre ${review.albumTitle}`}
+            title={ui("Crítica de {{value0}} sobre {{value1}}", { value0: review.userName, value1: review.albumTitle })}
             size="sm"
-            label="Escuchar"
+            label={ui("Escuchar")}
           />
         </div>
 
@@ -374,8 +376,8 @@ export const ReviewFeedCard = ({
             type="button"
             onClick={handleOpenReportReview}
             disabled={isReviewReported}
-            title={isReviewReported ? 'Reseña reportada a moderación' : 'Reportar esta reseña a moderación'}
-            aria-label={isReviewReported ? 'Reseña reportada' : 'Reportar reseña'}
+            title={isReviewReported ? ui("Reseña reportada a moderación") : ui("Reportar esta reseña a moderación")}
+            aria-label={isReviewReported ? ui("Reseña reportada") : ui("Reportar reseña")}
             className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl text-xs font-semibold transition-all cursor-pointer shrink-0 ${
               isReviewReported
                 ? 'bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20 cursor-not-allowed'
@@ -383,7 +385,7 @@ export const ReviewFeedCard = ({
             }`}
           >
             <span className="material-symbols-outlined text-[15px] text-[#B80C09] shrink-0">flag</span>
-            <span>{isReviewReported ? 'Reportada' : 'Reportar'}</span>
+            <span>{isReviewReported ? ui("Reportada") : ui("Reportar")}</span>
           </button>
         )}
       </div>

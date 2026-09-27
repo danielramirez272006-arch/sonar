@@ -1,7 +1,9 @@
+import { useUIText } from '../../i18n/use-ui-text.js';
 import { useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
 
 export const Modal = ({ isOpen, onClose, title, children, className = '', hideHeader = false }) => {
+  const ui = useUIText();
   const dialogRef = useRef(null);
 
   useEffect(() => {
@@ -51,7 +53,7 @@ export const Modal = ({ isOpen, onClose, title, children, className = '', hideHe
       {!hideHeader && (
         <header className="sonar-modal__header">
           <h3>{title}</h3>
-          <button type="button" onClick={onClose} aria-label="Cerrar modal">×</button>
+          <button type="button" onClick={onClose} aria-label={ui("Cerrar modal")}>×</button>
         </header>
       )}
       {children}

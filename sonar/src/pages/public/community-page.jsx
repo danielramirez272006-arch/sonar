@@ -1,3 +1,4 @@
+import { useUIText } from '../../shared/i18n/use-ui-text.js';
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Navbar from '../../shared/components/layout/navbar';
@@ -111,6 +112,7 @@ const containerVariants = {
 };
 
 export const CommunityPage = () => {
+  const ui = useUIText();
   const { user } = useAuth();
   const { playTrack } = usePlayer();
   const { t } = useTranslation();
@@ -426,9 +428,7 @@ export const CommunityPage = () => {
           <div className="absolute -right-10 -bottom-10 w-64 h-64 bg-[#B80C09]/20 rounded-full blur-3xl pointer-events-none" />
           <div className="relative z-10 flex flex-col gap-1.5 max-w-xl text-center sm:text-left">
             <span className="text-xs uppercase tracking-widest text-pink-300 font-extrabold flex items-center justify-center sm:justify-start gap-1.5">
-              <span className="w-2 h-2 rounded-full bg-[#B80C09] animate-ping" />
-              ÁGORA SONORA · COMUNIDAD EN VIVO
-            </span>
+              <span className="w-2 h-2 rounded-full bg-[#B80C09] animate-ping" />{ui("ÁGORA SONORA · COMUNIDAD EN VIVO")}</span>
             <h1 className="text-2xl sm:text-4xl font-extrabold tracking-tight">
               {t('community.title', 'Diálogos audiófilos sin algoritmo complaciente.')}
             </h1>
@@ -443,7 +443,7 @@ export const CommunityPage = () => {
             className="relative z-10 px-5 py-3 rounded-2xl bg-[#B80C09] hover:bg-[#9c0a07] text-white text-sm font-bold shadow-[0_4px_16px_rgba(184,12,9,0.5)] transition-all cursor-pointer flex items-center gap-2 shrink-0 select-none active:scale-95"
           >
             <span className="material-symbols-outlined text-[20px]">rate_review</span>
-            <span>{isComposing ? 'Cerrar Publicador' : 'Escribir una Crítica'}</span>
+            <span>{isComposing ? ui("Cerrar Publicador") : ui("Escribir una Crítica")}</span>
           </button>
         </div>
 
@@ -470,31 +470,24 @@ export const CommunityPage = () => {
                 <div className="flex items-center justify-between border-b border-[#e6d5e2] dark:border-white/10 pb-3">
                   <div className="flex items-center gap-2">
                     <span className="material-symbols-outlined text-[#B80C09] text-[20px]">edit_square</span>
-                    <h3 className="text-base sm:text-lg font-extrabold text-[#231123] dark:text-white">
-                      ¿Qué estás escuchando hoy?
-                    </h3>
+                    <h3 className="text-base sm:text-lg font-extrabold text-[#231123] dark:text-white">{ui("¿Qué estás escuchando hoy?")}</h3>
                   </div>
-                  <span className="text-xs text-[#5c435a] dark:text-[#B89CB0]">
-                    Publicando como <b>{user?.username || 'Invitado'}</b>
+                  <span className="text-xs text-[#5c435a] dark:text-[#B89CB0]">{ui("Publicando como")} <b>{user?.username || ui("Invitado")}</b>
                   </span>
                 </div>
 
                 {/* Buscador de Álbumes en Deezer */}
                 <div className="flex flex-col gap-1.5 relative">
-                  <label className="text-xs font-bold uppercase tracking-wider text-[#5c435a] dark:text-[#B89CB0]">
-                    Buscar álbum en Deezer API
-                  </label>
+                  <label className="text-xs font-bold uppercase tracking-wider text-[#5c435a] dark:text-[#B89CB0]">{ui("Buscar álbum en Deezer API")}</label>
                   <input
                     type="text"
                     value={albumSearchQuery}
                     onChange={(e) => setAlbumSearchQuery(e.target.value)}
-                    placeholder="Escribe el nombre del álbum o artista (ej. Kid A, Discovery, Rosalía)..."
+                    placeholder={ui("Escribe el nombre del álbum o artista (ej. Kid A, Discovery, Rosalía)...")}
                     className="px-3.5 py-2.5 rounded-xl border border-[#e6d5e2] dark:border-white/10 bg-gray-50 dark:bg-[#231123] text-sm text-[#231123] dark:text-white placeholder-[#5c435a]/60 dark:placeholder-gray-400 focus:outline-none focus:border-[#B80C09]"
                   />
                   {isSearchingAlbums && (
-                    <span className="absolute right-3 top-9 text-xs text-[#B80C09] font-bold animate-pulse">
-                      Buscando en Deezer...
-                    </span>
+                    <span className="absolute right-3 top-9 text-xs text-[#B80C09] font-bold animate-pulse">{ui("Buscando en Deezer...")}</span>
                   )}
 
                   {/* Resultados flotantes de la búsqueda de Deezer */}
@@ -610,15 +603,13 @@ export const CommunityPage = () => {
                     type="button"
                     onClick={() => setIsComposing(false)}
                     className="px-4 py-2 rounded-xl text-xs font-bold text-[#5c435a] dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-white/10 cursor-pointer"
-                  >
-                    Cancelar
-                  </button>
+                  >{ui("Cancelar")}</button>
                   <button
                     type="submit"
                     disabled={isSubmitting}
                     className="px-6 py-2.5 rounded-xl bg-[#B80C09] hover:bg-[#9c0a07] text-white text-xs font-bold cursor-pointer transition-all shadow-md active:scale-95"
                   >
-                    {isSubmitting ? 'Guardando en la API...' : 'Publicar Crítica en la API'}
+                    {isSubmitting ? ui("Guardando en la API...") : ui("Publicar Crítica en la API")}
                   </button>
                 </div>
               </form>
@@ -632,12 +623,8 @@ export const CommunityPage = () => {
             {/* Header del Feed & Pestañas de Filtro */}
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-[#e6d5e2] dark:border-white/10 pb-4">
               <div>
-                <span className="text-xs uppercase tracking-widest text-[#B80C09] font-extrabold">
-                  FEED EN VIVO · API
-                </span>
-                <h2 className="text-2xl sm:text-3xl font-extrabold text-[#231123] dark:text-white tracking-tight mt-0.5">
-                  Conversación Musical
-                </h2>
+                <span className="text-xs uppercase tracking-widest text-[#B80C09] font-extrabold">{ui("FEED EN VIVO · API")}</span>
+                <h2 className="text-2xl sm:text-3xl font-extrabold text-[#231123] dark:text-white tracking-tight mt-0.5">{ui("Conversación Musical")}</h2>
               </div>
 
               {/* Pestañas de Feed */}
@@ -690,7 +677,7 @@ export const CommunityPage = () => {
                         : 'bg-white dark:bg-[#4B2840] text-[#5c435a] dark:text-gray-300 border border-[#e6d5e2] dark:border-white/10 hover:border-[#B80C09]/40'
                     }`}
                   >
-                    {tag === 'Todos' ? '✦ Todas' : `#${tag.replace(/\s+/g, '')}`}
+                    {tag === 'Todos' ? ui("✦ Todas") : `#${tag.replace(/\s+/g, '')}`}
                   </button>
                 );
               })}
@@ -700,28 +687,21 @@ export const CommunityPage = () => {
             {isLoadingFeed ? (
               <div className="p-12 text-center flex flex-col items-center gap-3">
                 <span className="w-8 h-8 rounded-full border-2 border-[#B80C09] border-t-transparent animate-spin" />
-                <p className="text-xs font-bold text-[#5c435a] dark:text-[#B89CB0]">
-                  Sincronizando reseñas con la API de Sonar...
-                </p>
+                <p className="text-xs font-bold text-[#5c435a] dark:text-[#B89CB0]">{ui("Sincronizando reseñas con la API de Sonar...")}</p>
               </div>
             ) : filteredReviews.length === 0 ? (
               <div className="p-10 rounded-3xl bg-white dark:bg-[#4B2840] border border-[#e6d5e2] dark:border-white/10 text-center flex flex-col items-center gap-3">
                 <span className="material-symbols-outlined text-[48px] text-[#5c435a] dark:text-[#B89CB0]">
                   forum
                 </span>
-                <h3 className="text-lg font-bold text-[#231123] dark:text-white">
-                  No hay críticas con esta etiqueta
-                </h3>
-                <p className="text-xs sm:text-sm text-[#5c435a] dark:text-[#B89CB0] max-w-md">
-                  ¡Sé el primero en abrir el diálogo con la etiqueta #{selectedTag}!
+                <h3 className="text-lg font-bold text-[#231123] dark:text-white">{ui("No hay críticas con esta etiqueta")}</h3>
+                <p className="text-xs sm:text-sm text-[#5c435a] dark:text-[#B89CB0] max-w-md">{ui("¡Sé el primero en abrir el diálogo con la etiqueta #")}{selectedTag}!
                 </p>
                 <button
                   type="button"
                   onClick={() => setIsComposing(true)}
                   className="mt-2 px-5 py-2.5 rounded-xl bg-[#B80C09] text-white text-xs font-bold cursor-pointer"
-                >
-                  Escribir Crítica
-                </button>
+                >{ui("Escribir Crítica")}</button>
               </div>
             ) : (
               <motion.div
@@ -744,13 +724,9 @@ export const CommunityPage = () => {
               <div className="flex items-center justify-between pb-3 border-b border-[#e6d5e2]/80 dark:border-white/10">
                 <div className="flex items-center gap-2">
                   <span className="material-symbols-outlined text-[18px] text-[#B80C09]">stars</span>
-                  <h2 className="text-base sm:text-lg font-extrabold text-[#231123] dark:text-white">
-                    Usuarios Destacados
-                  </h2>
+                  <h2 className="text-base sm:text-lg font-extrabold text-[#231123] dark:text-white">{ui("Usuarios Destacados")}</h2>
                 </div>
-                <span className="text-[11px] font-bold uppercase tracking-wider text-[#5c1d5e] dark:text-pink-300">
-                  En Vivo
-                </span>
+                <span className="text-[11px] font-bold uppercase tracking-wider text-[#5c1d5e] dark:text-pink-300">{ui("En Vivo")}</span>
               </div>
 
               <div className="flex flex-col gap-3.5">
@@ -787,7 +763,7 @@ export const CommunityPage = () => {
                             : 'border border-[#B80C09] text-[#B80C09] hover:bg-[#B80C09] hover:text-white'
                         }`}
                       >
-                        {isFollowing ? '✓ Siguiendo' : '+ Seguir'}
+                        {isFollowing ? ui("✓ Siguiendo") : ui("+ Seguir")}
                       </button>
                     </div>
                   );
@@ -800,13 +776,9 @@ export const CommunityPage = () => {
               <div className="flex items-center justify-between pb-3 border-b border-[#e6d5e2]/80 dark:border-white/10">
                 <div className="flex items-center gap-2">
                   <span className="material-symbols-outlined text-[18px] text-[#B80C09]">person_play</span>
-                  <h2 className="text-base sm:text-lg font-extrabold text-[#231123] dark:text-white">
-                    Artistas de Culto
-                  </h2>
+                  <h2 className="text-base sm:text-lg font-extrabold text-[#231123] dark:text-white">{ui("Artistas de Culto")}</h2>
                 </div>
-                <span className="text-[11px] font-bold uppercase tracking-wider text-[#5c1d5e] dark:text-pink-300">
-                  Comunidad
-                </span>
+                <span className="text-[11px] font-bold uppercase tracking-wider text-[#5c1d5e] dark:text-pink-300">{ui("Comunidad")}</span>
               </div>
 
               <div className="flex flex-col gap-3">
@@ -839,7 +811,7 @@ export const CommunityPage = () => {
                         <span className="material-symbols-outlined text-[12px]">
                           {isFollowingArtist ? 'check' : 'add'}
                         </span>
-                        <span>{isFollowingArtist ? 'Siguiendo' : 'Seguir'}</span>
+                        <span>{isFollowingArtist ? ui("Siguiendo") : ui("Seguir")}</span>
                       </button>
                     </div>
                   );
@@ -852,9 +824,7 @@ export const CommunityPage = () => {
               <div className="absolute top-0 right-0 w-32 h-32 bg-[#B80C09]/20 rounded-full blur-2xl pointer-events-none" />
 
               <div className="flex items-center justify-between">
-                <span className="text-[10px] font-extrabold uppercase tracking-widest text-pink-300">
-                  DEBATE DE LA SEMANA
-                </span>
+                <span className="text-[10px] font-extrabold uppercase tracking-widest text-pink-300">{ui("DEBATE DE LA SEMANA")}</span>
                 <span className="px-2 py-0.5 rounded-full bg-[#B80C09] text-white text-[10px] font-black">
                   DEEZER API
                 </span>
@@ -869,7 +839,7 @@ export const CommunityPage = () => {
                 <div className="flex flex-col min-w-0">
                   <h4 className="text-sm font-bold text-white truncate">In Rainbows</h4>
                   <p className="text-xs text-pink-200 truncate">Radiohead (2007)</p>
-                  <p className="text-[11px] text-white/70 mt-0.5">84 audiófilos debatiendo</p>
+                  <p className="text-[11px] text-white/70 mt-0.5">{ui("84 audiófilos debatiendo")}</p>
                 </div>
               </div>
 
@@ -892,7 +862,7 @@ export const CommunityPage = () => {
                 className="w-full py-2.5 rounded-xl bg-white/10 hover:bg-white/20 border border-white/20 text-white text-xs font-bold cursor-pointer transition-all flex items-center justify-center gap-1.5"
               >
                 <span className="material-symbols-outlined text-[16px]">play_circle</span>
-                <span>Escuchar Álbum del Debate</span>
+                <span>{ui("Escuchar Álbum del Debate")}</span>
               </button>
             </div>
           </aside>

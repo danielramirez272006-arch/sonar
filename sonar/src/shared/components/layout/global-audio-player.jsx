@@ -1,3 +1,4 @@
+import { useUIText } from '../../i18n/use-ui-text.js';
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { usePlayer } from '../../context/player-context';
@@ -9,6 +10,7 @@ import { interactionsService } from '../../services/interactions-service';
 import { getLyricsForTrack } from '../../services/lyrics-service';
 
 export const GlobalAudioPlayer = () => {
+  const ui = useUIText();
   const {
     currentTrack,
     isPlaying,
@@ -364,9 +366,7 @@ export const GlobalAudioPlayer = () => {
                   </span>
                 </div>
                 <span className="text-[9px] font-black uppercase text-amber-400/90 tracking-wider flex items-center gap-1">
-                  <span className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-ping" />
-                  Tornamesa Direct Drive
-                </span>
+                  <span className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-ping" />{ui("Tornamesa Direct Drive")}</span>
               </div>
             )}
 
@@ -381,13 +381,9 @@ export const GlobalAudioPlayer = () => {
                   >
                     💡
                   </motion.span>
-                  <span className="text-[10px] font-bold text-orange-300 uppercase tracking-wider">
-                    Termoiónico 12AX7 · Saturación Clase A
-                  </span>
+                  <span className="text-[10px] font-bold text-orange-300 uppercase tracking-wider">{ui("Termoiónico 12AX7 · Saturación Clase A")}</span>
                 </div>
-                <span className="text-[9px] font-black uppercase text-orange-400 tracking-wider">
-                  Bulbos Valvulares
-                </span>
+                <span className="text-[9px] font-black uppercase text-orange-400 tracking-wider">{ui("Bulbos Valvulares")}</span>
               </div>
             )}
             {/* Barra de progreso interactiva superior con degradado oficial */}
@@ -400,7 +396,7 @@ export const GlobalAudioPlayer = () => {
               }}
               className="relative w-full h-1.5 hover:h-2 rounded-full cursor-pointer overflow-hidden transition-all duration-200 group"
               style={{ backgroundColor: 'rgba(75, 40, 64, 0.55)' }}
-              title="Saltar en la pista de audio"
+              title={ui("Saltar en la pista de audio")}
             >
               <div
                 className="h-full rounded-full transition-all duration-100 relative"
@@ -423,7 +419,7 @@ export const GlobalAudioPlayer = () => {
                     setShowTracklist((prev) => !prev);
                   }
                 }}
-                title={isPodcast ? 'Ver notas del episodio' : 'Ver canciones del álbum'}
+                title={isPodcast ? ui("Ver notas del episodio") : ui("Ver canciones del álbum")}
               >
                 {/* Carátula / Vinilo giratorio */}
                 <div
@@ -459,8 +455,8 @@ export const GlobalAudioPlayer = () => {
                     {isExplicitTrack(currentTrack) && (
                       <span
                         className="px-1 py-0.2 rounded text-[8px] font-black uppercase tracking-wider bg-[#4B2840] text-rose-300 border border-rose-500/30 shrink-0"
-                        title="Contenido Explícito (Explicit Lyrics)"
-                        aria-label="Contenido Explícito"
+                        title={ui("Contenido Explícito (Explicit Lyrics)")}
+                        aria-label={ui("Contenido Explícito")}
                       >
                         E
                       </span>
@@ -493,7 +489,7 @@ export const GlobalAudioPlayer = () => {
                       type="button"
                       onClick={() => skipSeconds?.(-15)}
                       className="w-8 h-8 rounded-xl bg-[#4B2840]/60 hover:bg-[#4B2840] text-[#DCDCDD] border border-white/10 flex items-center justify-center cursor-pointer transition-colors"
-                      title="Retroceder 15 segundos"
+                      title={ui("Retroceder 15 segundos")}
                     >
                       <span className="material-symbols-outlined text-[17px]">replay_10</span>
                     </motion.button>
@@ -505,7 +501,7 @@ export const GlobalAudioPlayer = () => {
                       type="button"
                       onClick={() => toggleTrack(currentTrack)}
                       disabled={isLoading}
-                      aria-label={isPlaying ? 'Pausar Podcast' : 'Reproducir Podcast'}
+                      aria-label={isPlaying ? ui("Pausar Podcast") : ui("Reproducir Podcast")}
                       className="w-10 h-10 sm:w-11 sm:h-11 rounded-full text-white flex items-center justify-center shadow-[0_0_20px_rgba(184,12,9,0.45)] cursor-pointer transition-all disabled:opacity-60 border border-white/20"
                       style={{
                         background: 'linear-gradient(135deg, #B80C09 0%, #850705 100%)',
@@ -527,7 +523,7 @@ export const GlobalAudioPlayer = () => {
                       type="button"
                       onClick={() => skipSeconds?.(15)}
                       className="w-8 h-8 rounded-xl bg-[#4B2840]/60 hover:bg-[#4B2840] text-[#DCDCDD] border border-white/10 flex items-center justify-center cursor-pointer transition-colors"
-                      title="Adelantar 15 segundos"
+                      title={ui("Adelantar 15 segundos")}
                     >
                       <span className="material-symbols-outlined text-[17px]">forward_10</span>
                     </motion.button>
@@ -543,7 +539,7 @@ export const GlobalAudioPlayer = () => {
                         setPlaybackSpeed?.(next);
                       }}
                       className="h-8 px-2 rounded-xl bg-[#4B2840]/60 hover:bg-[#4B2840] text-[#DCDCDD] font-mono text-[10px] sm:text-xs font-black cursor-pointer border border-white/10 transition-colors flex items-center justify-center"
-                      title="Cambiar velocidad de reproducción"
+                      title={ui("Cambiar velocidad de reproducción")}
                     >
                       {playbackSpeed}x
                     </motion.button>
@@ -562,10 +558,10 @@ export const GlobalAudioPlayer = () => {
                           ? 'bg-[#B80C09] text-white border-[#B80C09] shadow-xs'
                           : 'bg-[#4B2840]/60 hover:bg-[#4B2840] border-white/10 text-[#DCDCDD]'
                       }`}
-                      title="Notas del episodio"
+                      title={ui("Notas del episodio")}
                     >
                       <span className="material-symbols-outlined text-[15px]">description</span>
-                      <span className="hidden md:inline">Notas</span>
+                      <span className="hidden md:inline">{ui("Notas")}</span>
                     </motion.button>
 
                     {/* CC / Transcripción (Dark Teal) */}
@@ -582,7 +578,7 @@ export const GlobalAudioPlayer = () => {
                           ? 'bg-[#003844] text-white border-[#005769] shadow-[0_0_12px_rgba(0,56,68,0.5)]'
                           : 'bg-[#4B2840]/60 hover:bg-[#4B2840] border-white/10 text-[#DCDCDD]'
                       }`}
-                      title="Ver Transcripción y Subtítulos Accesibles (CC)"
+                      title={ui("Ver Transcripción y Subtítulos Accesibles (CC)")}
                     >
                       <span className="material-symbols-outlined text-[16px]">closed_caption</span>
                       <span className="hidden sm:inline">CC</span>
@@ -603,7 +599,7 @@ export const GlobalAudioPlayer = () => {
                           ? 'text-[#ff4d4a] bg-[#B80C09]/20 border-rose-500/40 shadow-[0_0_10px_rgba(184,12,9,0.3)]'
                           : 'text-[#DCDCDD]/80 hover:text-[#DCDCDD] bg-[#4B2840]/60 hover:bg-[#4B2840] border-white/10'
                       }`}
-                      title={isCurrentTrackSaved ? 'En tus favoritos' : 'Guardar en favoritos'}
+                      title={isCurrentTrackSaved ? ui("En tus favoritos") : ui("Guardar en favoritos")}
                     >
                       <span
                         className="material-symbols-outlined text-[17px]"
@@ -626,13 +622,13 @@ export const GlobalAudioPlayer = () => {
                           ? 'bg-[#B80C09] text-white border-[#B80C09] shadow-xs'
                           : 'bg-[#4B2840]/60 hover:bg-[#4B2840] border-white/10 text-[#DCDCDD]'
                       }`}
-                      title={showTracklist ? 'Ocultar canciones del álbum' : 'Ver canciones de este álbum'}
+                      title={showTracklist ? ui("Ocultar canciones del álbum") : ui("Ver canciones de este álbum")}
                     >
                       <span className="material-symbols-outlined text-[16px]">
                         {showTracklist ? 'expand_more' : 'queue_music'}
                       </span>
                       <span className="hidden sm:inline font-semibold">
-                        {albumTracks.length > 0 ? `(${albumTracks.length})` : 'Pistas'}
+                        {albumTracks.length > 0 ? `(${albumTracks.length})` : ui("Pistas")}
                       </span>
                     </motion.button>
 
@@ -650,7 +646,7 @@ export const GlobalAudioPlayer = () => {
                           ? 'bg-[#003844] text-white border-[#005769] shadow-[0_0_14px_rgba(0,56,68,0.5)]'
                           : 'bg-[#4B2840]/60 hover:bg-[#4B2840] border-white/10 text-[#DCDCDD]'
                       }`}
-                      title="Ver Letras de la Canción y Transcripción (CC)"
+                      title={ui("Ver Letras de la Canción y Transcripción (CC)")}
                     >
                       <span className="material-symbols-outlined text-[16px]">closed_caption</span>
                       <span className="hidden sm:inline font-bold">CC</span>
@@ -665,7 +661,7 @@ export const GlobalAudioPlayer = () => {
                         toggleTrack(currentTrack);
                       }}
                       disabled={isLoading}
-                      aria-label={isPlaying ? 'Pausar' : 'Reproducir'}
+                      aria-label={isPlaying ? ui("Pausar") : ui("Reproducir")}
                       className="w-10 h-10 sm:w-11 sm:h-11 rounded-full text-white flex items-center justify-center shadow-[0_0_20px_rgba(184,12,9,0.5)] cursor-pointer transition-all disabled:opacity-60 border border-white/20"
                       style={{
                         background: 'linear-gradient(135deg, #B80C09 0%, #850705 100%)',
@@ -686,10 +682,10 @@ export const GlobalAudioPlayer = () => {
                       whileTap={{ scale: 0.95 }}
                       onClick={() => openReviewModal(currentTrack)}
                       className="h-8 px-2.5 rounded-xl bg-[#4B2840]/60 hover:bg-[#4B2840] border border-white/10 text-[#DCDCDD] text-[11px] font-bold flex items-center gap-1 cursor-pointer hover:text-white transition-colors"
-                      title="Escribir una crítica"
+                      title={ui("Escribir una crítica")}
                     >
                       <span className="material-symbols-outlined text-[14px] text-rose-400">rate_review</span>
-                      <span className="hidden md:inline">Criticar</span>
+                      <span className="hidden md:inline">{ui("Criticar")}</span>
                     </motion.button>
                   </>
                 )}
@@ -703,7 +699,7 @@ export const GlobalAudioPlayer = () => {
                   whileTap={{ scale: 0.88 }}
                   onClick={() => closePlayer()}
                   className="w-7 h-7 sm:w-8 sm:h-8 rounded-xl text-[#DCDCDD]/60 hover:text-white hover:bg-white/10 flex items-center justify-center cursor-pointer transition-colors shrink-0"
-                  title="Cerrar reproductor"
+                  title={ui("Cerrar reproductor")}
                 >
                   <span className="material-symbols-outlined text-[17px]">close</span>
                 </motion.button>
@@ -726,13 +722,12 @@ export const GlobalAudioPlayer = () => {
                       <span>{currentTrack.artist || 'Podcast Sonar'}</span>
                     </span>
                     {currentTrack.hosts && (
-                      <span className="text-[11px] text-[#DCDCDD]/80">
-                        Voces: <strong>{currentTrack.hosts}</strong>
+                      <span className="text-[11px] text-[#DCDCDD]/80">{ui("Voces:")} <strong>{currentTrack.hosts}</strong>
                       </span>
                     )}
                   </div>
                   <p className="text-xs text-[#DCDCDD] leading-relaxed max-h-36 overflow-y-auto pr-1">
-                    {currentTrack.description || 'Análisis acústico y disección sonora del episodio.'}
+                    {currentTrack.description || ui("Análisis acústico y disección sonora del episodio.")}
                   </p>
                 </motion.div>
               )}
@@ -748,7 +743,7 @@ export const GlobalAudioPlayer = () => {
                   transition={{ duration: 0.25, ease: 'easeOut' }}
                   className="w-full overflow-hidden flex flex-col pt-3 border-t border-white/10 gap-2.5 text-left"
                   role="region"
-                  aria-label="Letras y transcripción accesible del audio actual"
+                  aria-label={ui("Letras y transcripción accesible del audio actual")}
                 >
                   {/* Pestañas: Letras vs Ficha Técnica */}
                   <div className="flex items-center justify-between pb-1 border-b border-white/10">
@@ -763,7 +758,7 @@ export const GlobalAudioPlayer = () => {
                         }`}
                       >
                         <span className="material-symbols-outlined text-[15px]">lyrics</span>
-                        <span>Letras (Lyrics)</span>
+                        <span>{ui("Letras (Lyrics)")}</span>
                       </button>
 
                       <button
@@ -776,7 +771,7 @@ export const GlobalAudioPlayer = () => {
                         }`}
                       >
                         <span className="material-symbols-outlined text-[15px]">info</span>
-                        <span>Ficha Técnica</span>
+                        <span>{ui("Ficha Técnica")}</span>
                       </button>
                     </div>
 
@@ -797,12 +792,12 @@ export const GlobalAudioPlayer = () => {
                         className={`px-2.5 py-1 rounded-lg text-[10px] font-bold flex items-center gap-1 cursor-pointer transition-colors ${
                           isSpeaking ? 'bg-[#B80C09] text-white animate-pulse' : 'bg-[#4B2840]/80 hover:bg-[#4B2840] text-[#DCDCDD]'
                         }`}
-                        title="Escuchar en voz alta con sintetizador TTS"
+                        title={ui("Escuchar en voz alta con sintetizador TTS")}
                       >
                         <span className="material-symbols-outlined text-[13px]">
                           {isSpeaking ? 'stop' : 'record_voice_over'}
                         </span>
-                        <span>{isSpeaking ? 'Detener Voz' : 'Leer Voz'}</span>
+                        <span>{isSpeaking ? ui("Detener Voz") : ui("Leer Voz")}</span>
                       </button>
 
                       {/* Botón Copiar */}
@@ -818,12 +813,12 @@ export const GlobalAudioPlayer = () => {
                           setTimeout(() => setCopiedTranscript(false), 2500);
                         }}
                         className="px-2 py-1 rounded-lg bg-[#4B2840]/80 hover:bg-[#4B2840] text-[#DCDCDD] text-[10px] font-bold flex items-center gap-1 cursor-pointer transition-colors"
-                        title="Copiar texto al portapapeles"
+                        title={ui("Copiar texto al portapapeles")}
                       >
                         <span className="material-symbols-outlined text-[13px]">
                           {copiedTranscript ? 'check' : 'content_copy'}
                         </span>
-                        <span>{copiedTranscript ? 'Copiado' : 'Copiar'}</span>
+                        <span>{copiedTranscript ? ui("Copiado") : ui("Copiar")}</span>
                       </button>
                     </div>
                   </div>
@@ -834,14 +829,14 @@ export const GlobalAudioPlayer = () => {
                       isLoadingLyrics ? (
                         <div className="py-6 flex items-center justify-center gap-2 text-xs text-[#003844] text-cyan-300">
                           <div className="w-4 h-4 border-2 border-cyan-400 border-t-transparent rounded-full animate-spin" />
-                          <span>Buscando letras oficiales en base de datos Sonar...</span>
+                          <span>{ui("Buscando letras oficiales en base de datos Sonar...")}</span>
                         </div>
                       ) : lyricsData?.instrumental ? (
                         <div className="py-6 flex flex-col items-center justify-center gap-2 text-center text-[#DCDCDD]">
                           <span className="material-symbols-outlined text-[28px] text-rose-400">music_off</span>
-                          <p className="text-sm font-bold text-white">Pieza Instrumental</p>
+                          <p className="text-sm font-bold text-white">{ui("Pieza Instrumental")}</p>
                           <p className="text-xs text-[#DCDCDD]/80 max-w-sm">
-                            {lyricsData.plainLyrics || 'Esta pista es una composición instrumental pura sin letra vocal registrada.'}
+                            {lyricsData.plainLyrics || ui("Esta pista es una composición instrumental pura sin letra vocal registrada.")}
                           </p>
                         </div>
                       ) : lyricsData?.plainLyrics ? (
@@ -860,11 +855,11 @@ export const GlobalAudioPlayer = () => {
                         <div className="py-5 text-center space-y-2.5">
                           <span className="material-symbols-outlined text-[26px] text-cyan-400/80">lyrics</span>
                           <div>
-                            <p className="text-[#DCDCDD] font-bold text-xs">Letra no disponible temporalmente</p>
+                            <p className="text-[#DCDCDD] font-bold text-xs">{ui("Letra no disponible temporalmente")}</p>
                             <p className="text-[11px] text-[#DCDCDD]/60 mt-0.5">
                               {isPodcast
-                                ? 'Para episodios de podcast, consulta la pestaña de Ficha Técnica.'
-                                : 'No se encontró transcripción abierta para esta canción.'}
+                                ? ui("Para episodios de podcast, consulta la pestaña de Ficha Técnica.")
+                                : ui("No se encontró transcripción abierta para esta canción.")}
                             </p>
                           </div>
 
@@ -887,7 +882,7 @@ export const GlobalAudioPlayer = () => {
                               className="px-3 py-1.5 rounded-lg bg-[#003844] hover:bg-[#005769] text-white text-[11px] font-bold flex items-center gap-1 cursor-pointer transition-colors"
                             >
                               <span className="material-symbols-outlined text-[13px]">refresh</span>
-                              <span>Reintentar Búsqueda</span>
+                              <span>{ui("Reintentar Búsqueda")}</span>
                             </button>
 
                             <a
@@ -897,7 +892,7 @@ export const GlobalAudioPlayer = () => {
                               className="px-3 py-1.5 rounded-lg bg-[#4B2840]/80 hover:bg-[#4B2840] text-white text-[11px] font-bold flex items-center gap-1 cursor-pointer transition-colors"
                             >
                               <span className="material-symbols-outlined text-[13px]">open_in_new</span>
-                              <span>Buscar en Google</span>
+                              <span>{ui("Buscar en Google")}</span>
                             </a>
                           </div>
                         </div>
@@ -916,7 +911,7 @@ export const GlobalAudioPlayer = () => {
                         </p>
                         {currentTrack.hosts && (
                           <p className="text-[11px] text-[#DCDCDD]/70">
-                            <strong>Interlocutores / Mesa de análisis:</strong> {currentTrack.hosts}
+                            <strong>{ui("Interlocutores / Mesa de análisis:")}</strong> {currentTrack.hosts}
                           </p>
                         )}
                       </div>
@@ -940,12 +935,11 @@ export const GlobalAudioPlayer = () => {
                   <div className="flex items-center justify-between pb-2 text-xs font-bold text-[#DCDCDD]/80">
                     <div className="flex items-center gap-1.5 truncate">
                       <span className="material-symbols-outlined text-[16px] text-[#B80C09]">album</span>
-                      <span className="truncate">
-                        Álbum: <strong className="text-white">{currentTrack.album || currentTrack.title}</strong>
+                      <span className="truncate">{ui("Álbum:")} <strong className="text-white">{currentTrack.album || currentTrack.title}</strong>
                       </span>
                     </div>
                     <span className="text-[10px] uppercase font-black tracking-wider text-rose-300 bg-[#B80C09]/20 px-2 py-0.5 rounded-md shrink-0 border border-[#B80C09]/30">
-                      {albumTracks.length} {albumTracks.length === 1 ? 'Canción' : 'Canciones'}
+                      {albumTracks.length} {albumTracks.length === 1 ? ui("Canción") : ui("Canciones")}
                     </span>
                   </div>
 
@@ -954,12 +948,10 @@ export const GlobalAudioPlayer = () => {
                     {isLoadingTracks ? (
                       <div className="py-4 flex items-center justify-center gap-2 text-xs text-[#DCDCDD]/70">
                         <div className="w-4 h-4 border-2 border-[#B80C09] border-t-transparent rounded-full animate-spin" />
-                        <span>Cargando canciones del álbum...</span>
+                        <span>{ui("Cargando canciones del álbum...")}</span>
                       </div>
                     ) : albumTracks.length === 0 ? (
-                      <div className="py-3 text-center text-xs text-[#DCDCDD]/60 italic">
-                        No se encontraron más canciones para este álbum.
-                      </div>
+                      <div className="py-3 text-center text-xs text-[#DCDCDD]/60 italic">{ui("No se encontraron más canciones para este álbum.")}</div>
                     ) : (
                       albumTracks.map((track, idx) => {
                         const isCurrentSelected = currentTrack.title === track.title || currentTrack.id === track.id;
@@ -1006,7 +998,7 @@ export const GlobalAudioPlayer = () => {
                                   {isExplicitTrack(track) && (
                                     <span
                                       className="px-1 py-0.1 rounded text-[7px] font-black uppercase bg-[#4B2840] text-[#DCDCDD] border border-gray-500/40 shrink-0"
-                                      title="Contenido Explícito"
+                                      title={ui("Contenido Explícito")}
                                     >
                                       E
                                     </span>
@@ -1032,7 +1024,7 @@ export const GlobalAudioPlayer = () => {
                                     ? 'text-[#ff4d4a] bg-[#B80C09]/20'
                                     : 'text-[#DCDCDD]/60 hover:text-white hover:bg-white/10'
                                 }`}
-                                title={isTrackSaved ? 'Canción en favoritos' : 'Guardar canción en favoritos'}
+                                title={isTrackSaved ? ui("Canción en favoritos") : ui("Guardar canción en favoritos")}
                               >
                                 <span
                                   className="material-symbols-outlined text-[16px]"
@@ -1062,7 +1054,7 @@ export const GlobalAudioPlayer = () => {
                                     ? 'bg-[#B80C09] text-white shadow-xs'
                                     : 'bg-[#4B2840] hover:bg-[#B80C09] text-white'
                                 }`}
-                                title={isTrackPlaying ? 'Pausar' : `Reproducir ${track.title}`}
+                                title={isTrackPlaying ? ui("Pausar") : ui("Reproducir {{value0}}", { value0: track.title })}
                               >
                                 <span className="material-symbols-outlined text-[16px]">
                                   {isTrackPlaying ? 'pause' : 'play_arrow'}
@@ -1084,7 +1076,7 @@ export const GlobalAudioPlayer = () => {
                                   });
                                 }}
                                 className="p-1 rounded-lg text-[#DCDCDD]/60 hover:text-rose-300 hover:bg-white/10 transition-colors cursor-pointer"
-                                title={`Criticar ${track.title}`}
+                                title={ui("Criticar {{value0}}", { value0: track.title })}
                               >
                                 <span className="material-symbols-outlined text-[15px]">rate_review</span>
                               </button>
@@ -1125,13 +1117,13 @@ export const GlobalAudioPlayer = () => {
 
               <div>
                 <h3 id="parental-lock-title" className="text-lg font-black text-white flex items-center justify-center gap-2">
-                  <span>Contenido Explícito Bloqueado</span>
+                  <span>{ui("Contenido Explícito Bloqueado")}</span>
                   <span className="px-1.5 py-0.5 rounded text-[9px] font-black uppercase bg-[#4B2840] text-rose-300 border border-rose-500/40">
                     E
                   </span>
                 </h3>
                 <p className="text-xs text-[#DCDCDD]/80 mt-1">
-                  {explicitLockModal.reason || 'Esta canción está clasificada con lenguaje explícito no apto para menores.'}
+                  {explicitLockModal.reason || ui("Esta canción está clasificada con lenguaje explícito no apto para menores.")}
                 </p>
               </div>
 
@@ -1145,9 +1137,7 @@ export const GlobalAudioPlayer = () => {
                   <div className="min-w-0 flex-1">
                     <h4 className="text-xs font-bold text-white truncate">{explicitLockModal.track.title}</h4>
                     <p className="text-[11px] text-[#DCDCDD]/70 truncate">{explicitLockModal.track.artist}</p>
-                    <span className="inline-block mt-0.5 px-1.5 py-0.5 rounded text-[8px] font-bold bg-[#B80C09]/40 text-rose-300 border border-[#B80C09]/50">
-                      Filtro Parental Sonar
-                    </span>
+                    <span className="inline-block mt-0.5 px-1.5 py-0.5 rounded text-[8px] font-bold bg-[#B80C09]/40 text-rose-300 border border-[#B80C09]/50">{ui("Filtro Parental Sonar")}</span>
                   </div>
                 </div>
               )}
@@ -1165,9 +1155,7 @@ export const GlobalAudioPlayer = () => {
                 }}
                 className="flex flex-col gap-3"
               >
-                <label htmlFor="parental-pin-input" className="text-xs text-[#DCDCDD] font-medium">
-                  Ingresa el PIN de 4 dígitos para autorizar la reproducción:
-                </label>
+                <label htmlFor="parental-pin-input" className="text-xs text-[#DCDCDD] font-medium">{ui("Ingresa el PIN de 4 dígitos para autorizar la reproducción:")}</label>
                 <input
                   id="parental-pin-input"
                   type="password"
@@ -1196,15 +1184,11 @@ export const GlobalAudioPlayer = () => {
                       closeExplicitLockModal();
                     }}
                     className="flex-1 py-2.5 rounded-xl bg-[#4B2840] hover:bg-[#4B2840]/80 text-xs font-bold text-[#DCDCDD] transition-colors cursor-pointer"
-                  >
-                    Cancelar
-                  </button>
+                  >{ui("Cancelar")}</button>
                   <button
                     type="submit"
                     className="flex-1 py-2.5 rounded-xl bg-gradient-to-r from-[#B80C09] to-[#850705] hover:brightness-110 text-xs font-black text-white shadow-md cursor-pointer transition-all"
-                  >
-                    Desbloquear
-                  </button>
+                  >{ui("Desbloquear")}</button>
                 </div>
               </form>
             </motion.div>

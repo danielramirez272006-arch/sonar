@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import Navbar from '../../shared/components/layout/navbar';
 import Footer from '../../shared/components/layout/footer';
 import { usePlayer } from '../../shared/context/player-context';
+import { useTranslation } from '../../shared/context/language-context.jsx';
 
 const RECORD_LABELS = [
   {
@@ -63,6 +64,7 @@ const RECORD_LABELS = [
 ];
 
 export const RecordLabelsPage = () => {
+  const { t } = useTranslation();
   const { playTrack } = usePlayer();
   const [selectedLabel, setSelectedLabel] = useState(null);
 
@@ -75,14 +77,14 @@ export const RecordLabelsPage = () => {
           <div className="flex items-center gap-2 mb-2">
             <span className="w-2.5 h-2.5 rounded-full bg-[#B80C09] animate-pulse" />
             <span className="text-xs uppercase tracking-widest font-black text-[#5c1d5e] dark:text-pink-300">
-              DISCOGRÁFICAS DE CULTO & CASAS EDITORIALES
+              {t('page.labels.eyebrow')}
             </span>
           </div>
           <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-[#231123] dark:text-white">
-            Directorio de Sellos
+            {t('page.labels.title')}
           </h1>
           <p className="text-sm sm:text-base text-[#5c435a] dark:text-[#B89CB0] max-w-2xl mt-2 font-medium">
-            Explora las identidades sonoras, filosofías analógicas y discografías de los sellos independientes que moldearon la historia de la música contemporánea.
+            {t('page.labels.description')}
           </p>
         </header>
 
@@ -107,7 +109,7 @@ export const RecordLabelsPage = () => {
                         {label.name}
                       </h3>
                       <span className="text-xs text-[#5c435a] dark:text-[#B89CB0]">
-                        Fundado en {label.founded} · {label.country}
+                        {t('page.labels.founded', { year: label.founded, country: label.country })}
                       </span>
                     </div>
                   </div>
@@ -135,7 +137,7 @@ export const RecordLabelsPage = () => {
 
               <div className="pt-4 border-t border-[#e6d5e2] dark:border-white/10 flex items-center justify-between">
                 <span className="text-xs text-gray-400 font-medium">
-                  Catálogo disponible en Sonar
+                  {t('page.labels.available')}
                 </span>
                 <button
                   type="button"
@@ -144,7 +146,7 @@ export const RecordLabelsPage = () => {
                   }}
                   className="px-4 py-2 rounded-xl bg-[#B80C09] hover:bg-[#9c0a07] text-white text-xs font-bold uppercase tracking-wider transition-colors cursor-pointer shadow-md"
                 >
-                  Explorar Discos
+                  {t('page.labels.explore')}
                 </button>
               </div>
             </motion.div>

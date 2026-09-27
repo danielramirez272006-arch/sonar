@@ -1,3 +1,4 @@
+import { useUIText } from '../../shared/i18n/use-ui-text.js';
 import { useEffect, useState } from 'react'
 import { Search } from 'lucide-react'
 import { DEFAULT_DEEZER_ALBUMS, searchAlbums } from '../../shared/services/deezer-service.js'
@@ -17,6 +18,7 @@ const shortcuts = [
 ]
 
 export function ConsoleSearch({ users, reviews, query, setQuery, inputRef }) {
+  const ui = useUIText();
   const [open, setOpen] = useState(false)
   const [active, setActive] = useState(0)
   const [remote, setRemote] = useState({ query: '', albums: [] })
@@ -49,21 +51,21 @@ export function ConsoleSearch({ users, reviews, query, setQuery, inputRef }) {
   }
   return <div className="global-search console-search" onBlur={event => { if (!event.currentTarget.contains(event.relatedTarget)) setOpen(false) }}>
     <span className="console-search__icon" aria-hidden="true"><Search size={19} strokeWidth={1.8} /></span>
-    <input ref={inputRef} value={query} placeholder="Usuarios, álbumes, reseñas, filtros…" aria-label="Buscar reseñas por usuario o álbum" role="combobox" aria-autocomplete="list" aria-expanded={open} aria-controls="console-search-results" aria-activedescendant={open && activeIndex >= 0 ? `search-option-${activeIndex}` : undefined}
+    <input ref={inputRef} value={query} placeholder={ui("Usuarios, álbumes, reseñas, filtros…")} aria-label={ui("Buscar reseñas por usuario o álbum")} role="combobox" aria-autocomplete="list" aria-expanded={open} aria-controls="console-search-results" aria-activedescendant={open && activeIndex >= 0 ? `search-option-${activeIndex}` : undefined}
       onFocus={() => setOpen(true)} onChange={event => { setQuery(event.target.value); setActive(0); setOpen(true) }}
       onKeyDown={event => {
         if (event.key === 'Escape') { setOpen(false); return }
         if (event.key === 'ArrowDown' || event.key === 'ArrowUp') { event.preventDefault(); setOpen(true); setActive(index => results.length ? (index + (event.key === 'ArrowDown' ? 1 : -1) + results.length) % results.length : 0) }
         if (event.key === 'Enter' && open) { event.preventDefault(); select(results[activeIndex]) }
       }} />
-    {query && <button className="clear-search" aria-label="Limpiar búsqueda" onClick={() => { setQuery(''); setActive(0); inputRef.current?.focus() }}>×</button>}
+    {query && <button className="clear-search" aria-label={ui("Limpiar búsqueda")} onClick={() => { setQuery(''); setActive(0); inputRef.current?.focus() }}>×</button>}
     {open && <div className="console-search__panel">
-      <p className="console-search__hint">{term ? 'Resultados y accesos directos' : '¿A dónde quieres ir?'} · ↑ ↓ y Enter</p>
-      <div id="console-search-results" role="listbox" aria-label="Resultados de búsqueda">
+      <p className="console-search__hint">{term ? ui("Resultados y accesos directos") : ui("¿A dónde quieres ir?")} {ui("· ↑ ↓ y Enter")}</p>
+      <div id="console-search-results" role="listbox" aria-label={ui("Resultados de búsqueda")}>
         {results.map((result, index) => <a key={result.href} id={`search-option-${index}`} role="option" aria-selected={index === activeIndex} href={result.href} onClick={event => { event.preventDefault(); select(result) }} onMouseEnter={() => setActive(index)}><strong>{result.title}</strong><small>{result.detail}</small></a>)}
       </div>
-      {!results.length && <p role="status">Sin resultados. Prueba un nombre, un álbum o «filtros».</p>}
-      {query.trim().length >= 2 && remote.query !== query && <p role="status">Buscando también en Deezer…</p>}
+      {!results.length && <p role="status">{ui("Sin resultados. Prueba un nombre, un álbum o «filtros».")}</p>}
+      {query.trim().length >= 2 && remote.query !== query && <p role="status">{ui("Buscando también en Deezer…")}</p>}
     </div>}
   </div>
 }

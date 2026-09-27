@@ -1,3 +1,4 @@
+import { useUIText } from '../../../shared/i18n/use-ui-text.js';
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '../../../shared/context/auth-context';
@@ -72,6 +73,7 @@ const initialReviewsData = [
 ];
 
 const FeaturedReviewCard = ({ review }) => {
+  const ui = useUIText();
   const { user } = useAuth();
   const userId = user?.id || null;
 
@@ -199,7 +201,7 @@ const FeaturedReviewCard = ({ review }) => {
           <button
             type="button"
             onClick={handleToggleSave}
-            title={isSavedInCollection ? 'En tu colección' : 'Guardar en tu colección'}
+            title={isSavedInCollection ? ui("En tu colección") : ui("Guardar en tu colección")}
             className={`p-1.5 rounded-lg text-xs font-semibold cursor-pointer transition-colors ${
               isSavedInCollection
                 ? 'text-[#B80C09] bg-[#B80C09]/10'
@@ -239,9 +241,9 @@ const FeaturedReviewCard = ({ review }) => {
 
           <TTSButton
             text={review.text}
-            title={`Crítica de ${review.userName} sobre ${review.album.title}`}
+            title={ui("Crítica de {{value0}} sobre {{value1}}", { value0: review.userName, value1: review.album.title })}
             size="sm"
-            label="Escuchar"
+            label={ui("Escuchar")}
           />
         </div>
         <span className="text-xs text-[#81737e] dark:text-[#B89CB0]/70">
@@ -263,6 +265,7 @@ const FeaturedReviewCard = ({ review }) => {
 };
 
 export const FeaturedReviews = () => {
+  const ui = useUIText();
   const { t } = useTranslation();
   return (
     <section className="w-full px-4 sm:px-6 lg:px-10 py-12 sm:py-16 bg-[#fff7fa] dark:bg-[#231123] transition-colors duration-300">
@@ -270,15 +273,11 @@ export const FeaturedReviews = () => {
         {/* Section Header */}
         <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-3 border-b border-[#e6d5e2] dark:border-white/10 pb-4">
           <div>
-            <span className="text-xs uppercase tracking-widest text-[#B80C09] font-extrabold">
-              DISCURSO & ANÁLISIS
-            </span>
+            <span className="text-xs uppercase tracking-widest text-[#B80C09] font-extrabold">{ui("DISCURSO & ANÁLISIS")}</span>
             <h2 className="text-2xl sm:text-3xl lg:text-4xl text-[#231123] dark:text-[#FAF5F8] font-extrabold mt-1">
               {t('reviews.title', 'Reseñas Destacadas')}
             </h2>
-            <p className="text-sm sm:text-base text-[#5c435a] dark:text-[#B89CB0] mt-1">
-              Voces críticas y oyentes apasionados compartiendo su perspectiva musical en alta resolución.
-            </p>
+            <p className="text-sm sm:text-base text-[#5c435a] dark:text-[#B89CB0] mt-1">{ui("Voces críticas y oyentes apasionados compartiendo su perspectiva musical en alta resolución.")}</p>
           </div>
           <a
             className="inline-flex items-center gap-1.5 text-sm font-bold text-[#5c1d5e] dark:text-pink-300 hover:text-[#B80C09] dark:hover:text-[#B80C09] transition-colors group cursor-pointer"

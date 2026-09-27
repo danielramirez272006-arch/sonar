@@ -1,7 +1,7 @@
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import { I18nextProvider } from 'react-i18next';
-import i18n from './shared/config/i18n';
+import i18n from './shared/i18n';
 import "./Styles/index.css";
 import 'blobatar/motion.css';
 import 'blobatar/gaze.css';

@@ -1,3 +1,4 @@
+import { useUIText } from '../../../shared/i18n/use-ui-text.js';
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '../../../shared/context/auth-context';
@@ -229,6 +230,7 @@ const INITIAL_QUESTS = [
 ];
 
 export const RewardsStoreTab = () => {
+  const ui = useUIText();
   const { user, updateUser } = useAuth();
 
   // Balance de Puntos & Pertenencias
@@ -500,25 +502,19 @@ export const RewardsStoreTab = () => {
           <div className="flex items-center justify-between">
             <span className="text-xs font-black uppercase tracking-wider text-[#DCDCDD] flex items-center gap-1.5">
               <span className="material-symbols-outlined text-[18px] text-[#52a2b0]">toll</span>
-              <span>Saldo Sonar Coins</span>
+              <span>{ui("Saldo Sonar Coins")}</span>
             </span>
-            <span className="px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase bg-[#231123]/60 backdrop-blur-md text-[#DCDCDD] border border-white/20">
-              Boutique Activa
-            </span>
+            <span className="px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase bg-[#231123]/60 backdrop-blur-md text-[#DCDCDD] border border-white/20">{ui("Boutique Activa")}</span>
           </div>
 
           <div className="flex items-baseline gap-3 my-1">
             <span className="text-4xl sm:text-5xl font-black tracking-tight font-mono text-white">
               {points.toLocaleString()}
             </span>
-            <span className="text-xs font-bold text-[#DCDCDD]/80 uppercase tracking-widest">
-              Monedas
-            </span>
+            <span className="text-xs font-bold text-[#DCDCDD]/80 uppercase tracking-widest">{ui("Monedas")}</span>
           </div>
 
-          <p className="text-xs text-[#DCDCDD]/80 leading-relaxed">
-            Acumula monedas escuchando pistas en alta resolución, redactando reseñas y manteniendo tu racha de escucha.
-          </p>
+          <p className="text-xs text-[#DCDCDD]/80 leading-relaxed">{ui("Acumula monedas escuchando pistas en alta resolución, redactando reseñas y manteniendo tu racha de escucha.")}</p>
         </div>
 
         {/* Nivel Audiófilo & Barra de XP */}
@@ -526,7 +522,7 @@ export const RewardsStoreTab = () => {
           <div className="flex items-center justify-between">
             <span className="text-xs font-black uppercase tracking-wider text-[#B80C09] dark:text-[#ff4d4a] flex items-center gap-1.5">
               <span className="material-symbols-outlined text-[18px]">military_tech</span>
-              <span>Rango & Experiencia</span>
+              <span>{ui("Rango & Experiencia")}</span>
             </span>
             <span className="text-xs font-mono font-extrabold text-[#5c435a] dark:text-[#DCDCDD]">
               {userXp.toLocaleString()} XP
@@ -535,8 +531,7 @@ export const RewardsStoreTab = () => {
 
           <div>
             <div className="flex items-baseline justify-between mb-1.5">
-              <h3 className="text-xl sm:text-2xl font-black text-[#231123] dark:text-[#DCDCDD]">
-                Nivel {userLevel} · <span className="text-sm text-[#5c435a] dark:text-[#B89CB0]">{equippedTitle}</span>
+              <h3 className="text-xl sm:text-2xl font-black text-[#231123] dark:text-[#DCDCDD]">{ui("Nivel")} {userLevel} · <span className="text-sm text-[#5c435a] dark:text-[#B89CB0]">{equippedTitle}</span>
               </h3>
               <span className="text-xs font-mono font-bold text-[#B80C09] dark:text-[#ff4d4a]">
                 {percentToNextLevel}%
@@ -552,8 +547,7 @@ export const RewardsStoreTab = () => {
             </div>
           </div>
 
-          <span className="text-[11px] text-[#5c435a] dark:text-[#B89CB0] font-medium">
-            Faltan {300 - currentLevelProgress} XP para alcanzar el <strong>Nivel {userLevel + 1}</strong>
+          <span className="text-[11px] text-[#5c435a] dark:text-[#B89CB0] font-medium">{ui("Faltan")} {300 - currentLevelProgress} {ui("XP para alcanzar el")} <strong>{ui("Nivel")} {userLevel + 1}</strong>
           </span>
         </div>
 
@@ -562,11 +556,9 @@ export const RewardsStoreTab = () => {
           <div className="flex items-center justify-between">
             <span className="text-xs font-black uppercase tracking-wider text-[#DCDCDD] flex items-center gap-1.5">
               <span className="material-symbols-outlined text-[18px] text-[#B80C09]">local_fire_department</span>
-              <span>Racha de Escucha</span>
+              <span>{ui("Racha de Escucha")}</span>
             </span>
-            <span className="px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase bg-[#003844]/60 text-[#DCDCDD] border border-[#003844]/80">
-              🔥 5 Días Seguidos
-            </span>
+            <span className="px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase bg-[#003844]/60 text-[#DCDCDD] border border-[#003844]/80">{ui("🔥 5 Días Seguidos")}</span>
           </div>
 
           {/* Botón de Caja Diaria */}
@@ -579,10 +571,10 @@ export const RewardsStoreTab = () => {
               </div>
               <div>
                 <span className="text-xs font-extrabold block text-white">
-                  {crateOpened ? 'Caja Diaria Reclamada' : 'Caja Sorpresa Diaria'}
+                  {crateOpened ? ui("Caja Diaria Reclamada") : ui("Caja Sorpresa Diaria")}
                 </span>
                 <span className="text-[10px] text-[#B89CB0]">
-                  {crateOpened ? 'Vuelve mañana para más premios' : 'Gira y gana monedas y XP'}
+                  {crateOpened ? ui("Vuelve mañana para más premios") : ui("Gira y gana monedas y XP")}
                 </span>
               </div>
             </div>
@@ -599,13 +591,13 @@ export const RewardsStoreTab = () => {
                   : 'bg-gradient-to-r from-[#003844] to-[#B80C09] hover:from-[#002830] hover:to-[#9c0a07] text-white hover:scale-105'
               }`}
             >
-              {crateOpened ? '✓ Abierta' : isOpeningCrate ? 'Abriendo...' : 'Abrir Gratis'}
+              {crateOpened ? ui("✓ Abierta") : isOpeningCrate ? ui("Abriendo...") : ui("Abrir Gratis")}
             </button>
           </div>
 
           <div className="flex items-center justify-between text-[11px] text-[#B89CB0]">
-            <span>Multiplicador de puntos:</span>
-            <span className="font-mono font-bold text-[#DCDCDD]">1.5x Bonificación Activa</span>
+            <span>{ui("Multiplicador de puntos:")}</span>
+            <span className="font-mono font-bold text-[#DCDCDD]">{ui("1.5x Bonificación Activa")}</span>
           </div>
         </div>
       </div>
@@ -616,14 +608,10 @@ export const RewardsStoreTab = () => {
           <div>
             <span className="text-xs font-extrabold uppercase tracking-wider text-[#B80C09] flex items-center gap-1.5">
               <span className="material-symbols-outlined text-[16px]">storefront</span>
-              <span>Boutique Exclusiva Sonar Hi-Fi</span>
+              <span>{ui("Boutique Exclusiva Sonar Hi-Fi")}</span>
             </span>
-            <h3 className="text-xl sm:text-2xl font-black text-[#231123] dark:text-white mt-1">
-              Catálogo de Canje & Personalización
-            </h3>
-            <p className="text-xs text-[#5c435a] dark:text-[#B89CB0] mt-0.5">
-              Personaliza tu avatar, desbloquea skins visuales para el reproductor y luce títulos de prestigio.
-            </p>
+            <h3 className="text-xl sm:text-2xl font-black text-[#231123] dark:text-white mt-1">{ui("Catálogo de Canje & Personalización")}</h3>
+            <p className="text-xs text-[#5c435a] dark:text-[#B89CB0] mt-0.5">{ui("Personaliza tu avatar, desbloquea skins visuales para el reproductor y luce títulos de prestigio.")}</p>
           </div>
 
           {/* Selector de Categorías */}
@@ -706,9 +694,7 @@ export const RewardsStoreTab = () => {
                     <div className={`w-9 h-9 rounded-full bg-gradient-to-tr ${item.color} flex items-center justify-center text-white ${item.previewBorder}`}>
                       <span className="material-symbols-outlined text-[16px]">person</span>
                     </div>
-                    <span className="text-[11px] font-bold text-[#5c435a] dark:text-[#DCDCDD]">
-                      Vista previa en avatar
-                    </span>
+                    <span className="text-[11px] font-bold text-[#5c435a] dark:text-[#DCDCDD]">{ui("Vista previa en avatar")}</span>
                   </div>
                 )}
 
@@ -716,7 +702,7 @@ export const RewardsStoreTab = () => {
                 <div className="pt-3 border-t border-[#e6d5e2] dark:border-white/10 flex items-center justify-between gap-3">
                   <div className="flex items-center gap-1 font-mono font-extrabold text-sm text-[#231123] dark:text-[#DCDCDD]">
                     <span className="material-symbols-outlined text-[#003844] dark:text-[#52a2b0] text-[18px]">toll</span>
-                    <span>{isOwned ? (item.type === 'perk' ? 'Pase Activo' : 'Adquirido') : `${item.cost} Monedas`}</span>
+                    <span>{isOwned ? (item.type === 'perk' ? ui("Pase Activo") : ui("Adquirido")) : `${item.cost} Monedas`}</span>
                   </div>
 
                   {isOwned ? (
@@ -732,7 +718,7 @@ export const RewardsStoreTab = () => {
                       <span className="material-symbols-outlined text-[15px]">
                         {isEquipped ? 'check_circle' : item.type === 'perk' ? 'vpn_key' : 'tune'}
                       </span>
-                      <span>{isEquipped ? (item.type === 'perk' ? 'Activo' : 'Equipado') : (item.type === 'perk' ? 'Activar' : 'Equipar')}</span>
+                      <span>{isEquipped ? (item.type === 'perk' ? ui("Activo") : ui("Equipado")) : (item.type === 'perk' ? ui("Activar") : ui("Equipar"))}</span>
                     </button>
                   ) : (
                     <button
@@ -746,7 +732,7 @@ export const RewardsStoreTab = () => {
                       }`}
                     >
                       <span className="material-symbols-outlined text-[15px]">shopping_cart</span>
-                      <span>Canjear</span>
+                      <span>{ui("Canjear")}</span>
                     </button>
                   )}
                 </div>
@@ -762,19 +748,13 @@ export const RewardsStoreTab = () => {
           <div>
             <span className="text-xs font-bold uppercase tracking-wider text-[#B80C09] flex items-center gap-1.5">
               <span className="material-symbols-outlined text-[16px]">task_alt</span>
-              <span>Desafíos & Misiones Semanales</span>
+              <span>{ui("Desafíos & Misiones Semanales")}</span>
             </span>
-            <h3 className="text-xl sm:text-2xl font-black text-[#231123] dark:text-white mt-1">
-              Gana Monedas Cumpliendo Metas Musicales
-            </h3>
-            <p className="text-xs text-[#5c435a] dark:text-[#B89CB0] mt-0.5">
-              Completa cada objetivo para reclamar monedas y sumar puntos de experiencia inmediatamente.
-            </p>
+            <h3 className="text-xl sm:text-2xl font-black text-[#231123] dark:text-white mt-1">{ui("Gana Monedas Cumpliendo Metas Musicales")}</h3>
+            <p className="text-xs text-[#5c435a] dark:text-[#B89CB0] mt-0.5">{ui("Completa cada objetivo para reclamar monedas y sumar puntos de experiencia inmediatamente.")}</p>
           </div>
 
-          <span className="text-xs font-mono font-bold text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-950/60 px-3.5 py-1.5 rounded-xl border border-amber-300/40 self-start sm:self-auto shadow-2xs">
-            Renuevan cada lunes
-          </span>
+          <span className="text-xs font-mono font-bold text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-950/60 px-3.5 py-1.5 rounded-xl border border-amber-300/40 self-start sm:self-auto shadow-2xs">{ui("Renuevan cada lunes")}</span>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -819,8 +799,7 @@ export const RewardsStoreTab = () => {
 
                 <div className="flex flex-col gap-1.5">
                   <div className="flex justify-between text-[11px] font-bold">
-                    <span className="text-[#5c435a] dark:text-[#B89CB0]">
-                      Progreso: {quest.progress} / {quest.target}
+                    <span className="text-[#5c435a] dark:text-[#B89CB0]">{ui("Progreso:")} {quest.progress} / {quest.target}
                     </span>
                     <span className="font-mono text-[#B80C09] dark:text-pink-300">{percent}%</span>
                   </div>
@@ -836,13 +815,13 @@ export const RewardsStoreTab = () => {
                 <div className="pt-2 border-t border-[#e6d5e2] dark:border-white/10 flex items-center justify-between">
                   <span className="text-xs font-mono font-bold text-amber-600 dark:text-amber-400 flex items-center gap-1">
                     <span className="material-symbols-outlined text-[16px]">toll</span>
-                    <span>+{quest.rewardPts} Monedas</span>
+                    <span>+{quest.rewardPts} {ui("Monedas")}</span>
                   </span>
 
                   {quest.claimed ? (
                     <span className="text-xs font-black uppercase text-emerald-600 dark:text-emerald-400 flex items-center gap-1">
                       <span className="material-symbols-outlined text-[16px]">verified</span>
-                      <span>Reclamado</span>
+                      <span>{ui("Reclamado")}</span>
                     </span>
                   ) : isDone ? (
                     <button
@@ -851,12 +830,10 @@ export const RewardsStoreTab = () => {
                       className="px-3 py-1.5 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-700 hover:from-emerald-500 hover:to-teal-600 text-white font-extrabold text-xs cursor-pointer shadow-md flex items-center gap-1"
                     >
                       <span className="material-symbols-outlined text-[15px]">redeem</span>
-                      <span>Reclamar Recompensa</span>
+                      <span>{ui("Reclamar Recompensa")}</span>
                     </button>
                   ) : (
-                    <span className="text-xs text-gray-400 dark:text-gray-500 font-semibold">
-                      En curso
-                    </span>
+                    <span className="text-xs text-gray-400 dark:text-gray-500 font-semibold">{ui("En curso")}</span>
                   )}
                 </div>
               </div>

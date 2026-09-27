@@ -1,3 +1,4 @@
+import { useUIText } from '../../i18n/use-ui-text.js';
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 
@@ -9,6 +10,7 @@ export const StarRating = ({
   size = 28,
   className = '',
 }) => {
+  const ui = useUIText();
   const [hoverRating, setHoverRating] = useState(0);
 
   const activeRating = hoverRating || value;
@@ -33,7 +35,7 @@ export const StarRating = ({
             className={`p-1 rounded-lg transition-colors duration-150 ${
               readOnly ? 'cursor-default' : 'cursor-pointer'
             } outline-none focus:ring-2 focus:ring-[#B80C09]/30`}
-            aria-label={`Calificar con ${starNumber} estrellas`}
+            aria-label={ui("Calificar con {{value0}} estrellas", { value0: starNumber })}
           >
             <svg
               width={size}

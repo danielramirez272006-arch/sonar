@@ -1,3 +1,4 @@
+import { useUIText } from '../../../shared/i18n/use-ui-text.js';
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { handleImageFallbackError, getFallbackCoverForAlbum, HIGH_RES_FALLBACK_COVERS } from '../../../shared/services/recommendations-service';
@@ -19,6 +20,7 @@ export const DeezerPlayer = ({
   },
   onPlayToggle = () => {},
 }) => {
+  const ui = useUIText();
   const [isPlaying, setIsPlaying] = useState(true);
 
   const handleToggle = () => {
@@ -101,7 +103,7 @@ export const DeezerPlayer = ({
               whileTap={{ scale: 0.9 }}
               type="button"
               className="text-[#5c435a] dark:text-gray-300 hover:text-[#B80C09] dark:hover:text-[#B80C09] transition-colors cursor-pointer"
-              aria-label="Pista anterior"
+              aria-label={ui("Pista anterior")}
             >
               <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
                 <polygon points="19 20 9 12 19 4 19 20" />
@@ -116,7 +118,7 @@ export const DeezerPlayer = ({
               onClick={handleToggle}
               type="button"
               className="w-8 h-8 rounded-full bg-[#B80C09] text-white flex items-center justify-center shadow-md hover:bg-[#9c0a07] transition-all cursor-pointer"
-              aria-label={isPlaying ? 'Pausar pista' : 'Reproducir pista'}
+              aria-label={isPlaying ? ui("Pausar pista") : ui("Reproducir pista")}
             >
               {isPlaying ? (
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
@@ -136,7 +138,7 @@ export const DeezerPlayer = ({
               whileTap={{ scale: 0.9 }}
               type="button"
               className="text-[#5c435a] dark:text-gray-300 hover:text-[#B80C09] dark:hover:text-[#B80C09] transition-colors cursor-pointer"
-              aria-label="Pista siguiente"
+              aria-label={ui("Pista siguiente")}
             >
               <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
                 <polygon points="5 4 15 12 5 20 5 4" />

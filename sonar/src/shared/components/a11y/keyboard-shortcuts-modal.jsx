@@ -1,9 +1,11 @@
+import { useUIText } from '../../i18n/use-ui-text.js';
 import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAccessibility } from '../../context/accessibility-context';
 import { useLanguage } from '../../context/language-context';
 
 export const KeyboardShortcutsModal = () => {
+  const ui = useUIText();
   const { isShortcutsModalOpen, setIsShortcutsModalOpen } = useAccessibility();
   const { t } = useLanguage();
 
@@ -69,7 +71,7 @@ export const KeyboardShortcutsModal = () => {
               type="button"
               onClick={() => setIsShortcutsModalOpen(false)}
               className="w-9 h-9 rounded-full bg-gray-100 dark:bg-white/10 hover:bg-[#B80C09] hover:text-white flex items-center justify-center transition-colors cursor-pointer"
-              aria-label="Cerrar guía de atajos"
+              aria-label={ui("Cerrar guía de atajos")}
             >
               <span className="material-symbols-outlined text-[18px]">close</span>
             </button>

@@ -1,3 +1,4 @@
+import { useUIText } from '../../shared/i18n/use-ui-text.js';
 import React, { useState, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Navbar from '../../shared/components/layout/navbar';
@@ -90,6 +91,7 @@ const FEATURED_EDITORIAL_REVIEWS = [
 ];
 
 export const ReviewsFeedPage = () => {
+  const ui = useUIText();
   const { playTrack, toggleTrack, currentTrack, isPlaying, openReviewModal } = usePlayer();
   const { user } = useAuth() || {};
   const [selectedGenre, setSelectedGenre] = useState('Todos');
@@ -145,13 +147,9 @@ export const ReviewsFeedPage = () => {
           <div>
             <div className="flex items-center gap-2 mb-2">
               <span className="w-2.5 h-2.5 rounded-full bg-[#B80C09] animate-pulse" />
-              <span className="text-xs uppercase tracking-widest font-black text-[#5c1d5e] dark:text-pink-300">
-                CURADURÍA & ENSAYOS DE FONDO
-              </span>
+              <span className="text-xs uppercase tracking-widest font-black text-[#5c1d5e] dark:text-pink-300">{ui("CURADURÍA & ENSAYOS DE FONDO")}</span>
             </div>
-            <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-[#231123] dark:text-white">
-              Críticas del Mes
-            </h1>
+            <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-[#231123] dark:text-white">{ui("Críticas del Mes")}</h1>
             <p className="text-sm sm:text-base text-[#5c435a] dark:text-[#B89CB0] max-w-2xl mt-2 font-medium">
               Análisis exhaustivos, disección de producción analógica y evaluaciones sonoras elaboradas por el consejo editorial y críticos destacados de Sonar.
             </p>
@@ -174,7 +172,7 @@ export const ReviewsFeedPage = () => {
             className="flex items-center gap-2 px-5 py-3 rounded-xl bg-[#B80C09] hover:bg-[#9c0a07] text-white text-xs sm:text-sm font-bold uppercase tracking-wider shadow-lg hover:scale-105 active:scale-95 transition-all cursor-pointer self-start md:self-auto shrink-0"
           >
             <span className="material-symbols-outlined text-[18px]">rate_review</span>
-            <span>Publicar Mi Crítica</span>
+            <span>{ui("Publicar Mi Crítica")}</span>
           </button>
         </div>
 
@@ -219,7 +217,7 @@ export const ReviewsFeedPage = () => {
                       <button
                         onClick={(e) => handlePlay(rev, e)}
                         className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer"
-                        title="Escuchar muestra"
+                        title={ui("Escuchar muestra")}
                       >
                         <span className="material-symbols-outlined text-white text-[28px]">
                           {isPlayingThis ? 'pause' : 'play_arrow'}
@@ -333,18 +331,16 @@ export const ReviewsFeedPage = () => {
                         })
                       }
                       className="px-3 py-1.5 rounded-full bg-[#f8e9f6] dark:bg-white/10 hover:bg-[#B80C09] hover:text-white text-xs font-bold text-[#B80C09] dark:text-pink-300 transition-colors cursor-pointer flex items-center gap-1"
-                      title={`Escribir crítica para ${rev.albumTitle}`}
+                      title={ui("Escribir crítica para {{value0}}", { value0: rev.albumTitle })}
                     >
                       <span className="material-symbols-outlined text-[14px]">rate_review</span>
-                      <span>Criticar</span>
+                      <span>{ui("Criticar")}</span>
                     </button>
 
                     <button
                       onClick={() => setSelectedReview(rev)}
                       className="px-3 py-1.5 rounded-full bg-white dark:bg-[#231123] border border-[#e6d5e2] dark:border-white/10 text-xs font-bold text-[#5c1d5e] dark:text-pink-300 hover:bg-[#f8e9f6] transition-colors cursor-pointer"
-                    >
-                      Leer Ensayo
-                    </button>
+                    >{ui("Leer Ensayo")}</button>
                   </div>
                 </div>
               </motion.article>
@@ -417,7 +413,7 @@ export const ReviewsFeedPage = () => {
                   className="px-4 py-2 rounded-xl bg-[#B80C09] text-white text-xs font-bold uppercase tracking-wider flex items-center gap-1.5 shadow-md hover:bg-[#9c0a07] transition-all cursor-pointer"
                 >
                   <span className="material-symbols-outlined text-[16px]">play_arrow</span>
-                  <span>Escuchar Muestra</span>
+                  <span>{ui("Escuchar Muestra")}</span>
                 </button>
               </div>
             </motion.div>

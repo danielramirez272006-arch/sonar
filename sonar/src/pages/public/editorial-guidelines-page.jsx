@@ -1,8 +1,10 @@
 import React from 'react';
 import Navbar from '../../shared/components/layout/navbar';
 import Footer from '../../shared/components/layout/footer';
+import { useTranslation } from '../../shared/context/language-context.jsx';
 
 export const EditorialGuidelinesPage = () => {
+  const { t } = useTranslation();
   const ratingScale = [
     { stars: '5.0', label: 'Obra Maestra Incontestable', desc: 'Producción revolucionaria, cohesión conceptual impecable y relevancia histórica que trasciende su época.' },
     { stars: '4.0 - 4.9', label: 'Excelente / Imprescindible', desc: 'Álbum sobresaliente con musicalidad de alto calibre y gran balance estético con mínimas fisuras.' },
@@ -18,13 +20,13 @@ export const EditorialGuidelinesPage = () => {
       <main className="flex-1 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-14">
         <header className="border-b border-[#e6d5e2] dark:border-white/10 pb-8 mb-10 text-left">
           <span className="text-xs uppercase tracking-widest font-extrabold text-[#B80C09] dark:text-[#ff6b68] mb-2 block">
-            CÓDIGO DE CRITERIO & ESTÁNDARES AUDIÓFILOS
+            {t('page.guidelines.eyebrow')}
           </span>
           <h1 className="text-3xl sm:text-4xl lg:text-5xl font-black tracking-tight text-[#231123] dark:text-white mb-3">
-            Pautas Editoriales
+            {t('page.guidelines.title')}
           </h1>
           <p className="text-base sm:text-lg text-[#5c1d5e] dark:text-pink-300 font-bold">
-            La crítica en Sonar no es un desahogo de opinión, sino un ejercicio de apreciación estética fundamentada.
+            {t('page.guidelines.subtitle')}
           </p>
         </header>
 
@@ -32,7 +34,7 @@ export const EditorialGuidelinesPage = () => {
           {/* Escala de Puntuación */}
           <section>
             <h2 className="text-2xl font-black text-[#231123] dark:text-white mb-5">
-              1. Escala Oficial de Puntuación Sonar
+              {t('page.guidelines.ratingScale')}
             </h2>
             <div className="space-y-3">
               {ratingScale.map((item) => (
@@ -59,13 +61,13 @@ export const EditorialGuidelinesPage = () => {
           {/* Principios de Redacción */}
           <section className="space-y-4">
             <h2 className="text-2xl font-black text-[#231123] dark:text-white mb-4">
-              2. Principios Fundamentales para Escribir una Crítica
+              {t('page.guidelines.principles')}
             </h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div className="p-5 rounded-2xl bg-white dark:bg-[#4B2840] border border-[#e6d5e2] dark:border-white/10 shadow-xs">
                 <h3 className="text-base font-bold text-[#231123] dark:text-white mb-2 flex items-center gap-2">
                   <span className="material-symbols-outlined text-[#B80C09] text-[20px]">graphic_eq</span>
-                  <span>Análisis de Producción</span>
+                  <span>{t('page.guidelines.production')}</span>
                 </h3>
                 <p className="text-xs sm:text-sm text-gray-600 dark:text-[#d8c5d3] leading-relaxed">
                   Evalúa la espacialidad estéreo, la dinámica de volumen, la compresión y la fidelidad del timbre analógico o digital.
@@ -75,7 +77,7 @@ export const EditorialGuidelinesPage = () => {
               <div className="p-5 rounded-2xl bg-white dark:bg-[#4B2840] border border-[#e6d5e2] dark:border-white/10 shadow-xs">
                 <h3 className="text-base font-bold text-[#231123] dark:text-white mb-2 flex items-center gap-2">
                   <span className="material-symbols-outlined text-[#B80C09] text-[20px]">history_edu</span>
-                  <span>Contexto Histórico</span>
+                  <span>{t('page.guidelines.context')}</span>
                 </h3>
                 <p className="text-xs sm:text-sm text-gray-600 dark:text-[#d8c5d3] leading-relaxed">
                   Sitúa el disco dentro de la trayectoria del artista y el momento sociocultural en que fue concebido.
@@ -85,7 +87,7 @@ export const EditorialGuidelinesPage = () => {
               <div className="p-5 rounded-2xl bg-white dark:bg-[#4B2840] border border-[#e6d5e2] dark:border-white/10 shadow-xs">
                 <h3 className="text-base font-bold text-[#231123] dark:text-white mb-2 flex items-center gap-2">
                   <span className="material-symbols-outlined text-[#B80C09] text-[20px]">psychology</span>
-                  <span>Rigor Argumentativo</span>
+                  <span>{t('page.guidelines.argument')}</span>
                 </h3>
                 <p className="text-xs sm:text-sm text-gray-600 dark:text-[#d8c5d3] leading-relaxed">
                   Evita frases vacías como "no me gustó". Explica qué elementos armónicos, rítmicos o líricos fallan o destacan.
@@ -95,7 +97,7 @@ export const EditorialGuidelinesPage = () => {
               <div className="p-5 rounded-2xl bg-white dark:bg-[#4B2840] border border-[#e6d5e2] dark:border-white/10 shadow-xs">
                 <h3 className="text-base font-bold text-[#231123] dark:text-white mb-2 flex items-center gap-2">
                   <span className="material-symbols-outlined text-[#B80C09] text-[20px]">verified_user</span>
-                  <span>Tolerancia Cero a la Toxicidad</span>
+                  <span>{t('page.guidelines.respect')}</span>
                 </h3>
                 <p className="text-xs sm:text-sm text-gray-600 dark:text-[#d8c5d3] leading-relaxed">
                   Los ataques personales o discriminatorios hacia artistas o miembros de la comunidad resultan en la suspensión inmediata de la cuenta.

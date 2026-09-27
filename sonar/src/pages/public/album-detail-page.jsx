@@ -1,3 +1,4 @@
+import { useUIText } from '../../shared/i18n/use-ui-text.js';
 import { createReview } from '../../shared/services/api-client.js';
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
@@ -43,6 +44,7 @@ const ALBUM_TRACKS = [
 ];
 
 export const AlbumDetailPage = () => {
+  const ui = useUIText();
   const { user } = useAuth();
   const { playTrack, isPlaying, currentTrack, openReviewModal } = usePlayer();
   const userId = user?.id || null;
@@ -229,7 +231,7 @@ export const AlbumDetailPage = () => {
                   >
                     bookmark
                   </span>
-                  <span>{isSaved ? 'En Tu Colección' : 'Guardar en Colección'}</span>
+                  <span>{isSaved ? ui("En Tu Colección") : ui("Guardar en Colección")}</span>
                 </button>
               </div>
 
@@ -273,21 +275,17 @@ export const AlbumDetailPage = () => {
                     <span className="material-symbols-outlined text-[20px] text-[#B80C09]" style={{ fontVariationSettings: "'FILL' 1" }}>
                       auto_awesome
                     </span>
-                    <h3 className="text-lg sm:text-xl font-extrabold text-[#231123] dark:text-white tracking-tight">
-                      Análisis & Contexto Lírico
-                    </h3>
+                    <h3 className="text-lg sm:text-xl font-extrabold text-[#231123] dark:text-white tracking-tight">{ui("Análisis & Contexto Lírico")}</h3>
                   </div>
 
                   <div className="flex items-center gap-2">
                     <TTSButton
                       text={mockAlbum.lyricContext}
-                      title={`Análisis lírico de ${mockAlbum.title} por IA Sonar`}
+                      title={ui("Análisis lírico de {{value0}} por IA Sonar", { value0: mockAlbum.title })}
                       size="sm"
-                      label="Escuchar Análisis"
+                      label={ui("Escuchar Análisis")}
                     />
-                    <span className="text-[10px] sm:text-xs font-bold uppercase tracking-wider px-2.5 py-0.5 rounded-full bg-[#f8e9f6] dark:bg-[#231123] text-[#5c1d5e] dark:text-pink-200 border border-[#e6d5e2] dark:border-white/10">
-                      Generado por IA
-                    </span>
+                    <span className="text-[10px] sm:text-xs font-bold uppercase tracking-wider px-2.5 py-0.5 rounded-full bg-[#f8e9f6] dark:bg-[#231123] text-[#5c1d5e] dark:text-pink-200 border border-[#e6d5e2] dark:border-white/10">{ui("Generado por IA")}</span>
                   </div>
                 </div>
 
@@ -296,8 +294,8 @@ export const AlbumDetailPage = () => {
                 </p>
 
                 <div className="mt-4 pt-3 flex items-center justify-between text-xs text-[#81737e] dark:text-[#B89CB0] border-t border-[#e6d5e2]/50 dark:border-white/10">
-                  <span>Fuente: Archivo Acústico y Análisis de Letras Sonar</span>
-                  <span className="text-[#B80C09] font-bold">100% Verificado</span>
+                  <span>{ui("Fuente: Archivo Acústico y Análisis de Letras Sonar")}</span>
+                  <span className="text-[#B80C09] font-bold">{ui("100% Verificado")}</span>
                 </div>
               </article>
 
@@ -306,13 +304,10 @@ export const AlbumDetailPage = () => {
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-4 border-b border-[#e6d5e2]/80 dark:border-white/10 mb-4 gap-2">
                   <div className="flex items-center gap-2">
                     <span className="material-symbols-outlined text-[22px] text-[#B80C09]">queue_music</span>
-                    <h3 className="text-lg sm:text-xl font-extrabold text-[#231123] dark:text-white tracking-tight">
-                      Pistas del Álbum ({ALBUM_TRACKS.length})
+                    <h3 className="text-lg sm:text-xl font-extrabold text-[#231123] dark:text-white tracking-tight">{ui("Pistas del Álbum (")}{ALBUM_TRACKS.length})
                     </h3>
                   </div>
-                  <span className="text-xs text-[#5c435a] dark:text-[#B89CB0] font-medium">
-                    Haz clic en <span className="text-[#B80C09] font-bold">Criticar</span> para reseñar una canción
-                  </span>
+                  <span className="text-xs text-[#5c435a] dark:text-[#B89CB0] font-medium">{ui("Haz clic en")} <span className="text-[#B80C09] font-bold">{ui("Criticar")}</span> {ui("para reseñar una canción")}</span>
                 </div>
 
                 <div className="flex flex-col divide-y divide-gray-100 dark:divide-white/5">
@@ -346,8 +341,8 @@ export const AlbumDetailPage = () => {
                           }`}
                           title={
                             interactionsService.isAlbumSaved(userId, { id: track.id, title: track.title, artist: mockAlbum.artist })
-                              ? 'Quitar canción de mi colección'
-                              : 'Guardar canción en mi colección'
+                              ? ui("Quitar canción de mi colección")
+                              : ui("Guardar canción en mi colección")
                           }
                         >
                           <span
@@ -376,7 +371,7 @@ export const AlbumDetailPage = () => {
                             })
                           }
                           className="w-8 h-8 rounded-full bg-gray-100 dark:bg-white/10 hover:bg-[#B80C09] hover:text-white text-[#231123] dark:text-white flex items-center justify-center transition-colors cursor-pointer"
-                          title="Reproducir muestra"
+                          title={ui("Reproducir muestra")}
                         >
                           <span className="material-symbols-outlined text-[18px]">play_arrow</span>
                         </button>
@@ -395,10 +390,10 @@ export const AlbumDetailPage = () => {
                             })
                           }
                           className="px-2.5 py-1.5 rounded-xl bg-rose-50 dark:bg-[#B80C09]/20 hover:bg-[#B80C09] hover:text-white text-[#B80C09] dark:text-rose-300 border border-rose-200 dark:border-[#B80C09]/30 text-xs font-bold transition-all flex items-center gap-1 cursor-pointer"
-                          title={`Escribir crítica de ${track.title}`}
+                          title={ui("Escribir crítica de {{value0}}", { value0: track.title })}
                         >
                           <span className="material-symbols-outlined text-[14px]">rate_review</span>
-                          <span className="hidden sm:inline">Criticar Canción</span>
+                          <span className="hidden sm:inline">{ui("Criticar Canción")}</span>
                         </button>
                       </div>
                     </div>
@@ -415,8 +410,7 @@ export const AlbumDetailPage = () => {
 
               {/* Reseñas de la Comunidad para este Álbum */}
               <div className="flex flex-col gap-4">
-                <h3 className="text-xl font-extrabold text-[#231123] dark:text-white tracking-tight">
-                  Críticas y Apreciaciones de la Comunidad ({albumReviews.length})
+                <h3 className="text-xl font-extrabold text-[#231123] dark:text-white tracking-tight">{ui("Críticas y Apreciaciones de la Comunidad (")}{albumReviews.length})
                 </h3>
                 <div className="flex flex-col gap-5">
                   {albumReviews.map((rev) => (
@@ -461,7 +455,7 @@ export const AlbumDetailPage = () => {
                         cover: mockAlbum.cover,
                       })
                     }
-                    aria-label="Reproducir muestra de Deezer"
+                    aria-label={ui("Reproducir muestra de Deezer")}
                     className="w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-[#B80C09] text-white flex items-center justify-center shadow-[0_10px_30px_rgba(184,12,9,0.5)] cursor-pointer group-hover:bg-[#9c0a07] transition-all"
                   >
                     <svg width="32" height="32" viewBox="0 0 24 24" fill="currentColor" className="translate-x-0.5">
@@ -472,9 +466,7 @@ export const AlbumDetailPage = () => {
                     <span className="text-sm font-bold text-white block">
                       15 Step
                     </span>
-                    <span className="text-xs text-white/60">
-                      Vista previa de 30 segundos
-                    </span>
+                    <span className="text-xs text-white/60">{ui("Vista previa de 30 segundos")}</span>
                   </div>
                 </div>
 

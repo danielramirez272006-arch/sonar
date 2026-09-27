@@ -1,0 +1,2768 @@
+[
+  {
+    "file": "App.jsx",
+    "line": 183,
+    "text": "SONAR •",
+    "kind": "text"
+  },
+  {
+    "file": "App.jsx",
+    "line": 184,
+    "text": "CONSOLE",
+    "kind": "text"
+  },
+  {
+    "file": "App.jsx",
+    "line": 191,
+    "text": "S",
+    "kind": "text"
+  },
+  {
+    "file": "App.jsx",
+    "line": 247,
+    "text": "SONAR",
+    "kind": "text"
+  },
+  {
+    "file": "features/admin/console-search.jsx",
+    "line": 61,
+    "text": "×",
+    "kind": "text"
+  },
+  {
+    "file": "pages/admin/catalog-image.jsx",
+    "line": 32,
+    "text": "https://…",
+    "kind": "attribute"
+  },
+  {
+    "file": "pages/admin/moderation-page.jsx",
+    "line": 39,
+    "text": "MOCK",
+    "kind": "text"
+  },
+  {
+    "file": "pages/admin/users-page.jsx",
+    "line": 45,
+    "text": "×",
+    "kind": "text"
+  },
+  {
+    "file": "pages/public/album-detail-page.jsx",
+    "line": 231,
+    "text": "bookmark",
+    "kind": "text"
+  },
+  {
+    "file": "pages/public/album-detail-page.jsx",
+    "line": 275,
+    "text": "auto_awesome",
+    "kind": "text"
+  },
+  {
+    "file": "pages/public/album-detail-page.jsx",
+    "line": 306,
+    "text": "queue_music",
+    "kind": "text"
+  },
+  {
+    "file": "pages/public/album-detail-page.jsx",
+    "line": 355,
+    "text": "bookmark",
+    "kind": "text"
+  },
+  {
+    "file": "pages/public/album-detail-page.jsx",
+    "line": 376,
+    "text": "play_arrow",
+    "kind": "text"
+  },
+  {
+    "file": "pages/public/album-detail-page.jsx",
+    "line": 395,
+    "text": "rate_review",
+    "kind": "text"
+  },
+  {
+    "file": "pages/public/album-detail-page.jsx",
+    "line": 433,
+    "text": "Deezer Player",
+    "kind": "text"
+  },
+  {
+    "file": "pages/public/album-detail-page.jsx",
+    "line": 437,
+    "text": "FLAC · 24-bit",
+    "kind": "text"
+  },
+  {
+    "file": "pages/public/album-detail-page.jsx",
+    "line": 466,
+    "text": "15 Step",
+    "kind": "text"
+  },
+  {
+    "file": "pages/public/blog-page.jsx",
+    "line": 125,
+    "text": "arrow_forward",
+    "kind": "text"
+  },
+  {
+    "file": "pages/public/blog-page.jsx",
+    "line": 149,
+    "text": "close",
+    "kind": "text"
+  },
+  {
+    "file": "pages/public/community-page.jsx",
+    "line": 445,
+    "text": "rate_review",
+    "kind": "text"
+  },
+  {
+    "file": "pages/public/community-page.jsx",
+    "line": 452,
+    "text": "cloud_sync",
+    "kind": "text"
+  },
+  {
+    "file": "pages/public/community-page.jsx",
+    "line": 472,
+    "text": "edit_square",
+    "kind": "text"
+  },
+  {
+    "file": "pages/public/community-page.jsx",
+    "line": 694,
+    "text": "forum",
+    "kind": "text"
+  },
+  {
+    "file": "pages/public/community-page.jsx",
+    "line": 726,
+    "text": "stars",
+    "kind": "text"
+  },
+  {
+    "file": "pages/public/community-page.jsx",
+    "line": 778,
+    "text": "person_play",
+    "kind": "text"
+  },
+  {
+    "file": "pages/public/community-page.jsx",
+    "line": 828,
+    "text": "DEEZER API",
+    "kind": "text"
+  },
+  {
+    "file": "pages/public/community-page.jsx",
+    "line": 836,
+    "text": "In Rainbows",
+    "kind": "attribute"
+  },
+  {
+    "file": "pages/public/community-page.jsx",
+    "line": 840,
+    "text": "In Rainbows",
+    "kind": "text"
+  },
+  {
+    "file": "pages/public/community-page.jsx",
+    "line": 841,
+    "text": "Radiohead (2007)",
+    "kind": "text"
+  },
+  {
+    "file": "pages/public/community-page.jsx",
+    "line": 846,
+    "text": "“¿Es la masterización de 2007 superior a los lanzamientos contemporáneos en streaming de alta resolución?”",
+    "kind": "text"
+  },
+  {
+    "file": "pages/public/community-page.jsx",
+    "line": 864,
+    "text": "play_circle",
+    "kind": "text"
+  },
+  {
+    "file": "pages/public/curated-lists-page.jsx",
+    "line": 143,
+    "text": "play_arrow",
+    "kind": "text"
+  },
+  {
+    "file": "pages/public/curated-lists-page.jsx",
+    "line": 166,
+    "text": "play_circle",
+    "kind": "text"
+  },
+  {
+    "file": "pages/public/curated-lists-page.jsx",
+    "line": 206,
+    "text": "play_arrow",
+    "kind": "text"
+  },
+  {
+    "file": "pages/public/developer-api-page.jsx",
+    "line": 172,
+    "text": "sonar_live_pk_8f49a2...",
+    "kind": "text"
+  },
+  {
+    "file": "pages/public/developer-api-page.jsx",
+    "line": 179,
+    "text": "content_copy",
+    "kind": "text"
+  },
+  {
+    "file": "pages/public/developer-api-page.jsx",
+    "line": 218,
+    "text": "cURL",
+    "kind": "text"
+  },
+  {
+    "file": "pages/public/developer-api-page.jsx",
+    "line": 226,
+    "text": "JavaScript",
+    "kind": "text"
+  },
+  {
+    "file": "pages/public/developer-api-page.jsx",
+    "line": 246,
+    "text": "content_copy",
+    "kind": "text"
+  },
+  {
+    "file": "pages/public/developer-api-page.jsx",
+    "line": 257,
+    "text": "Status:",
+    "kind": "text"
+  },
+  {
+    "file": "pages/public/developer-api-page.jsx",
+    "line": 257,
+    "text": "200 OK",
+    "kind": "text"
+  },
+  {
+    "file": "pages/public/developer-api-page.jsx",
+    "line": 258,
+    "text": "Content-Type:",
+    "kind": "text"
+  },
+  {
+    "file": "pages/public/developer-api-page.jsx",
+    "line": 258,
+    "text": "application/json; charset=utf-8",
+    "kind": "text"
+  },
+  {
+    "file": "pages/public/editorial-guidelines-page.jsx",
+    "line": 69,
+    "text": "graphic_eq",
+    "kind": "text"
+  },
+  {
+    "file": "pages/public/editorial-guidelines-page.jsx",
+    "line": 72,
+    "text": "Evalúa la espacialidad estéreo, la dinámica de volumen, la compresión y la fidelidad del timbre analógico o digital.",
+    "kind": "text"
+  },
+  {
+    "file": "pages/public/editorial-guidelines-page.jsx",
+    "line": 79,
+    "text": "history_edu",
+    "kind": "text"
+  },
+  {
+    "file": "pages/public/editorial-guidelines-page.jsx",
+    "line": 82,
+    "text": "Sitúa el disco dentro de la trayectoria del artista y el momento sociocultural en que fue concebido.",
+    "kind": "text"
+  },
+  {
+    "file": "pages/public/editorial-guidelines-page.jsx",
+    "line": 89,
+    "text": "psychology",
+    "kind": "text"
+  },
+  {
+    "file": "pages/public/editorial-guidelines-page.jsx",
+    "line": 92,
+    "text": "Evita frases vacías como \"no me gustó\". Explica qué elementos armónicos, rítmicos o líricos fallan o destacan.",
+    "kind": "text"
+  },
+  {
+    "file": "pages/public/editorial-guidelines-page.jsx",
+    "line": 99,
+    "text": "verified_user",
+    "kind": "text"
+  },
+  {
+    "file": "pages/public/editorial-guidelines-page.jsx",
+    "line": 102,
+    "text": "Los ataques personales o discriminatorios hacia artistas o miembros de la comunidad resultan en la suspensión inmediata de la cuenta.",
+    "kind": "text"
+  },
+  {
+    "file": "pages/public/home-page.jsx",
+    "line": 238,
+    "text": "progress_activity",
+    "kind": "text"
+  },
+  {
+    "file": "pages/public/home-page.jsx",
+    "line": 248,
+    "text": "search_off",
+    "kind": "text"
+  },
+  {
+    "file": "pages/public/home-page.jsx",
+    "line": 300,
+    "text": "bookmark",
+    "kind": "text"
+  },
+  {
+    "file": "pages/public/home-page.jsx",
+    "line": 318,
+    "text": "rate_review",
+    "kind": "text"
+  },
+  {
+    "file": "pages/public/news-labels.jsx",
+    "line": 26,
+    "text": "domain",
+    "kind": "text"
+  },
+  {
+    "file": "pages/public/news-labels.jsx",
+    "line": 32,
+    "text": "apartment",
+    "kind": "text"
+  },
+  {
+    "file": "pages/public/news-labels.jsx",
+    "line": 93,
+    "text": "open_in_new",
+    "kind": "text"
+  },
+  {
+    "file": "pages/public/news-labels.jsx",
+    "line": 106,
+    "text": "check",
+    "kind": "text"
+  },
+  {
+    "file": "pages/public/news-labels.jsx",
+    "line": 109,
+    "text": "arrow_forward",
+    "kind": "text"
+  },
+  {
+    "file": "pages/public/news-labels.jsx",
+    "line": 122,
+    "text": "filter_alt_off",
+    "kind": "text"
+  },
+  {
+    "file": "pages/public/news-page.jsx",
+    "line": 521,
+    "text": "search",
+    "kind": "text"
+  },
+  {
+    "file": "pages/public/news-page.jsx",
+    "line": 539,
+    "text": "close",
+    "kind": "text"
+  },
+  {
+    "file": "pages/public/news-page.jsx",
+    "line": 646,
+    "text": "arrow_forward",
+    "kind": "text"
+  },
+  {
+    "file": "pages/public/news-page.jsx",
+    "line": 656,
+    "text": "trending_up",
+    "kind": "text"
+  },
+  {
+    "file": "pages/public/news-page.jsx",
+    "line": 682,
+    "text": "headphones",
+    "kind": "text"
+  },
+  {
+    "file": "pages/public/news-page.jsx",
+    "line": 710,
+    "text": "new_releases",
+    "kind": "text"
+  },
+  {
+    "file": "pages/public/news-page.jsx",
+    "line": 763,
+    "text": "album",
+    "kind": "text"
+  },
+  {
+    "file": "pages/public/news-page.jsx",
+    "line": 775,
+    "text": "visibility",
+    "kind": "text"
+  },
+  {
+    "file": "pages/public/news-page.jsx",
+    "line": 788,
+    "text": "open_in_new",
+    "kind": "text"
+  },
+  {
+    "file": "pages/public/news-page.jsx",
+    "line": 821,
+    "text": "calendar_month",
+    "kind": "text"
+  },
+  {
+    "file": "pages/public/news-page.jsx",
+    "line": 826,
+    "text": "info",
+    "kind": "text"
+  },
+  {
+    "file": "pages/public/news-page.jsx",
+    "line": 898,
+    "text": "headphones",
+    "kind": "text"
+  },
+  {
+    "file": "pages/public/news-page.jsx",
+    "line": 903,
+    "text": "audiotrack",
+    "kind": "text"
+  },
+  {
+    "file": "pages/public/news-page.jsx",
+    "line": 1043,
+    "text": "mail",
+    "kind": "text"
+  },
+  {
+    "file": "pages/public/news-page.jsx",
+    "line": 1080,
+    "text": "check",
+    "kind": "text"
+  },
+  {
+    "file": "pages/public/news-page.jsx",
+    "line": 1120,
+    "text": "send",
+    "kind": "text"
+  },
+  {
+    "file": "pages/public/news-page.jsx",
+    "line": 1133,
+    "text": "verified",
+    "kind": "text"
+  },
+  {
+    "file": "pages/public/news-page.jsx",
+    "line": 1144,
+    "text": "error",
+    "kind": "text"
+  },
+  {
+    "file": "pages/public/news-page.jsx",
+    "line": 1183,
+    "text": "close",
+    "kind": "text"
+  },
+  {
+    "file": "pages/public/news-page.jsx",
+    "line": 1228,
+    "text": "headphones",
+    "kind": "text"
+  },
+  {
+    "file": "pages/public/news-page.jsx",
+    "line": 1362,
+    "text": "album",
+    "kind": "text"
+  },
+  {
+    "file": "pages/public/news-page.jsx",
+    "line": 1374,
+    "text": "close",
+    "kind": "text"
+  },
+  {
+    "file": "pages/public/news-page.jsx",
+    "line": 1402,
+    "text": "calendar_today",
+    "kind": "text"
+  },
+  {
+    "file": "pages/public/news-page.jsx",
+    "line": 1419,
+    "text": "headphones",
+    "kind": "text"
+  },
+  {
+    "file": "pages/public/news-page.jsx",
+    "line": 1432,
+    "text": "open_in_new",
+    "kind": "text"
+  },
+  {
+    "file": "pages/public/news-vinyl.jsx",
+    "line": 22,
+    "text": "album",
+    "kind": "text"
+  },
+  {
+    "file": "pages/public/news-vinyl.jsx",
+    "line": 28,
+    "text": "library_music",
+    "kind": "text"
+  },
+  {
+    "file": "pages/public/news-vinyl.jsx",
+    "line": 57,
+    "text": "album",
+    "kind": "text"
+  },
+  {
+    "file": "pages/public/news-vinyl.jsx",
+    "line": 63,
+    "text": "newspaper",
+    "kind": "text"
+  },
+  {
+    "file": "pages/public/news-vinyl.jsx",
+    "line": 90,
+    "text": "domain",
+    "kind": "text"
+  },
+  {
+    "file": "pages/public/news-vinyl.jsx",
+    "line": 100,
+    "text": "arrow_forward",
+    "kind": "text"
+  },
+  {
+    "file": "pages/public/not-found-page.jsx",
+    "line": 31,
+    "text": "music_off",
+    "kind": "text"
+  },
+  {
+    "file": "pages/public/not-found-page.jsx",
+    "line": 64,
+    "text": "arrow_back",
+    "kind": "text"
+  },
+  {
+    "file": "pages/public/podcasts-page.jsx",
+    "line": 266,
+    "text": "upload_file",
+    "kind": "text"
+  },
+  {
+    "file": "pages/public/podcasts-page.jsx",
+    "line": 275,
+    "text": "search",
+    "kind": "text"
+  },
+  {
+    "file": "pages/public/podcasts-page.jsx",
+    "line": 292,
+    "text": "podcasts",
+    "kind": "text"
+  },
+  {
+    "file": "pages/public/podcasts-page.jsx",
+    "line": 311,
+    "text": "podcasts",
+    "kind": "text"
+  },
+  {
+    "file": "pages/public/podcasts-page.jsx",
+    "line": 374,
+    "text": "close",
+    "kind": "text"
+  },
+  {
+    "file": "pages/public/podcasts-page.jsx",
+    "line": 379,
+    "text": "mic",
+    "kind": "text"
+  },
+  {
+    "file": "pages/public/podcasts-page.jsx",
+    "line": 396,
+    "text": "(.mp3, .wav, .m4a, .ogg)",
+    "kind": "text"
+  },
+  {
+    "file": "pages/public/podcasts-page.jsx",
+    "line": 411,
+    "text": "audiotrack",
+    "kind": "text"
+  },
+  {
+    "file": "pages/public/record-labels-page.jsx",
+    "line": 118,
+    "text": "+ LPs",
+    "kind": "text"
+  },
+  {
+    "file": "pages/public/reviews-feed-page.jsx",
+    "line": 153,
+    "text": "Análisis exhaustivos, disección de producción analógica y evaluaciones sonoras elaboradas por el consejo editorial y críticos destacados de Sonar.",
+    "kind": "text"
+  },
+  {
+    "file": "pages/public/reviews-feed-page.jsx",
+    "line": 174,
+    "text": "rate_review",
+    "kind": "text"
+  },
+  {
+    "file": "pages/public/reviews-feed-page.jsx",
+    "line": 251,
+    "text": "star",
+    "kind": "text"
+  },
+  {
+    "file": "pages/public/reviews-feed-page.jsx",
+    "line": 314,
+    "text": "favorite",
+    "kind": "text"
+  },
+  {
+    "file": "pages/public/reviews-feed-page.jsx",
+    "line": 336,
+    "text": "rate_review",
+    "kind": "text"
+  },
+  {
+    "file": "pages/public/reviews-feed-page.jsx",
+    "line": 366,
+    "text": "close",
+    "kind": "text"
+  },
+  {
+    "file": "pages/public/reviews-feed-page.jsx",
+    "line": 415,
+    "text": "play_arrow",
+    "kind": "text"
+  },
+  {
+    "file": "pages/public/rss-page.jsx",
+    "line": 110,
+    "text": "rss_feed",
+    "kind": "text"
+  },
+  {
+    "file": "pages/public/vinyl-collections-page.jsx",
+    "line": 97,
+    "text": "140g vs 180g",
+    "kind": "text"
+  },
+  {
+    "file": "pages/public/vinyl-collections-page.jsx",
+    "line": 107,
+    "text": "33⅓ vs 45 RPM",
+    "kind": "text"
+  },
+  {
+    "file": "pages/public/vinyl-collections-page.jsx",
+    "line": 126,
+    "text": "¿Por qué 180 gramos?",
+    "kind": "text"
+  },
+  {
+    "file": "pages/public/vinyl-collections-page.jsx",
+    "line": 126,
+    "text": "El gramaje superior no altera directamente la profundidad del surco, pero ofrece mayor estabilidad física contra el alabeo (warping), mejor amortiguación de vibraciones parásitas del plato y una durabilidad prolongada a lo largo de décadas.",
+    "kind": "text"
+  },
+  {
+    "file": "pages/public/vinyl-collections-page.jsx",
+    "line": 131,
+    "text": "La ventaja de los 45 RPM:",
+    "kind": "text"
+  },
+  {
+    "file": "pages/public/vinyl-collections-page.jsx",
+    "line": 131,
+    "text": "Al girar un 35% más rápido, la aguja recorre más distancia de vinilo por segundo. Esto permite grabar transientes agudos más limpios y mayor separación estéreo sin distorsión por compresión de surco.",
+    "kind": "text"
+  },
+  {
+    "file": "pages/public/vinyl-collections-page.jsx",
+    "line": 136,
+    "text": "Preservación Óptima:",
+    "kind": "text"
+  },
+  {
+    "file": "pages/public/vinyl-collections-page.jsx",
+    "line": 136,
+    "text": "Utiliza fundas interiores de polietileno antiestático (tipo MoFi Archival Sleeves), cepillos de fibra de carbono antes de cada escucha y almacena tus discos siempre en posición vertical, nunca apilados en horizontal.",
+    "kind": "text"
+  },
+  {
+    "file": "pages/public/vinyl-collections-page.jsx",
+    "line": 203,
+    "text": "play_arrow",
+    "kind": "text"
+  },
+  {
+    "file": "pages/public/vinyl-mode-page.jsx",
+    "line": 387,
+    "text": "SONAR AUDIO",
+    "kind": "text"
+  },
+  {
+    "file": "pages/public/vinyl-mode-page.jsx",
+    "line": 389,
+    "text": "DIRECT DRIVE SL-2026",
+    "kind": "text"
+  },
+  {
+    "file": "pages/public/vinyl-mode-page.jsx",
+    "line": 499,
+    "text": "1.8g",
+    "kind": "text"
+  },
+  {
+    "file": "pages/public/vinyl-mode-page.jsx",
+    "line": 596,
+    "text": "queue_music",
+    "kind": "text"
+  },
+  {
+    "file": "pages/public/vinyl-mode-page.jsx",
+    "line": 607,
+    "text": "album",
+    "kind": "text"
+  },
+  {
+    "file": "pages/public/vinyl-mode-page.jsx",
+    "line": 616,
+    "text": "VFD TAPE COUNTER",
+    "kind": "text"
+  },
+  {
+    "file": "pages/public/vinyl-mode-page.jsx",
+    "line": 625,
+    "text": "⅓ RPM ·",
+    "kind": "text"
+  },
+  {
+    "file": "pages/public/vinyl-mode-page.jsx",
+    "line": 648,
+    "text": "ANALOG LEVEL",
+    "kind": "text"
+  },
+  {
+    "file": "pages/public/vinyl-mode-page.jsx",
+    "line": 726,
+    "text": "Pitch",
+    "kind": "text"
+  },
+  {
+    "file": "pages/public/vinyl-mode-page.jsx",
+    "line": 768,
+    "text": "graphic_eq",
+    "kind": "text"
+  },
+  {
+    "file": "pages/public/vinyl-mode-page.jsx",
+    "line": 823,
+    "text": "queue_music",
+    "kind": "text"
+  },
+  {
+    "file": "pages/public/vinyl-mode-page.jsx",
+    "line": 906,
+    "text": "bookmark_added",
+    "kind": "text"
+  },
+  {
+    "file": "pages/public/vinyl-mode-page.jsx",
+    "line": 932,
+    "text": "library_music",
+    "kind": "text"
+  },
+  {
+    "file": "pages/public/vinyl-mode-page.jsx",
+    "line": 949,
+    "text": "search",
+    "kind": "text"
+  },
+  {
+    "file": "pages/user/saved-albums-page.jsx",
+    "line": 95,
+    "text": "bookmark_border",
+    "kind": "text"
+  },
+  {
+    "file": "pages/user/saved-albums-page.jsx",
+    "line": 171,
+    "text": "delete",
+    "kind": "text"
+  },
+  {
+    "file": "pages/user/saved-albums-page.jsx",
+    "line": 190,
+    "text": "rate_review",
+    "kind": "text"
+  },
+  {
+    "file": "pages/user/user-dashboard-page.jsx",
+    "line": 334,
+    "text": "badge",
+    "kind": "text"
+  },
+  {
+    "file": "pages/user/user-dashboard-page.jsx",
+    "line": 354,
+    "text": "auto_awesome",
+    "kind": "text"
+  },
+  {
+    "file": "pages/user/user-dashboard-page.jsx",
+    "line": 374,
+    "text": "collections_bookmark",
+    "kind": "text"
+  },
+  {
+    "file": "pages/user/user-dashboard-page.jsx",
+    "line": 394,
+    "text": "rate_review",
+    "kind": "text"
+  },
+  {
+    "file": "pages/user/user-dashboard-page.jsx",
+    "line": 414,
+    "text": "history",
+    "kind": "text"
+  },
+  {
+    "file": "pages/user/user-dashboard-page.jsx",
+    "line": 434,
+    "text": "favorite",
+    "kind": "text"
+  },
+  {
+    "file": "pages/user/user-dashboard-page.jsx",
+    "line": 454,
+    "text": "group",
+    "kind": "text"
+  },
+  {
+    "file": "pages/user/user-dashboard-page.jsx",
+    "line": 474,
+    "text": "headphones",
+    "kind": "text"
+  },
+  {
+    "file": "pages/user/user-dashboard-page.jsx",
+    "line": 494,
+    "text": "redeem",
+    "kind": "text"
+  },
+  {
+    "file": "pages/user/user-dashboard-page.jsx",
+    "line": 514,
+    "text": "toys",
+    "kind": "text"
+  },
+  {
+    "file": "pages/user/user-dashboard-page.jsx",
+    "line": 541,
+    "text": "upload",
+    "kind": "text"
+  },
+  {
+    "file": "pages/user/user-dashboard-page.jsx",
+    "line": 551,
+    "text": "download",
+    "kind": "text"
+  },
+  {
+    "file": "pages/user/user-dashboard-page.jsx",
+    "line": 565,
+    "text": "check_circle",
+    "kind": "text"
+  },
+  {
+    "file": "pages/user/user-dashboard-page.jsx",
+    "line": 596,
+    "text": "auto_awesome",
+    "kind": "text"
+  },
+  {
+    "file": "pages/user/user-dashboard-page.jsx",
+    "line": 609,
+    "text": "tune",
+    "kind": "text"
+  },
+  {
+    "file": "pages/user/user-dashboard-page.jsx",
+    "line": 682,
+    "text": "play_circle",
+    "kind": "text"
+  },
+  {
+    "file": "pages/user/user-dashboard-page.jsx",
+    "line": 730,
+    "text": "bookmark",
+    "kind": "text"
+  },
+  {
+    "file": "pages/user/user-dashboard-page.jsx",
+    "line": 742,
+    "text": "edit_note",
+    "kind": "text"
+  },
+  {
+    "file": "pages/user/user-dashboard-page.jsx",
+    "line": 786,
+    "text": "grid_view",
+    "kind": "text"
+  },
+  {
+    "file": "pages/user/user-dashboard-page.jsx",
+    "line": 798,
+    "text": "album",
+    "kind": "text"
+  },
+  {
+    "file": "pages/user/user-dashboard-page.jsx",
+    "line": 812,
+    "text": "library_music",
+    "kind": "text"
+  },
+  {
+    "file": "pages/user/user-dashboard-page.jsx",
+    "line": 858,
+    "text": "play_circle",
+    "kind": "text"
+  },
+  {
+    "file": "pages/user/user-dashboard-page.jsx",
+    "line": 871,
+    "text": "delete",
+    "kind": "text"
+  },
+  {
+    "file": "pages/user/user-dashboard-page.jsx",
+    "line": 892,
+    "text": "rate_review",
+    "kind": "text"
+  },
+  {
+    "file": "pages/user/user-dashboard-page.jsx",
+    "line": 901,
+    "text": "edit_note",
+    "kind": "text"
+  },
+  {
+    "file": "pages/user/user-dashboard-page.jsx",
+    "line": 920,
+    "text": "search",
+    "kind": "text"
+  },
+  {
+    "file": "pages/user/user-dashboard-page.jsx",
+    "line": 936,
+    "text": "close",
+    "kind": "text"
+  },
+  {
+    "file": "pages/user/user-dashboard-page.jsx",
+    "line": 1020,
+    "text": "restart_alt",
+    "kind": "text"
+  },
+  {
+    "file": "pages/user/user-dashboard-page.jsx",
+    "line": 1030,
+    "text": "rate_review",
+    "kind": "text"
+  },
+  {
+    "file": "pages/user/user-dashboard-page.jsx",
+    "line": 1043,
+    "text": "search_off",
+    "kind": "text"
+  },
+  {
+    "file": "pages/user/user-dashboard-page.jsx",
+    "line": 1062,
+    "text": "history",
+    "kind": "text"
+  },
+  {
+    "file": "pages/user/user-dashboard-page.jsx",
+    "line": 1076,
+    "text": "delete_sweep",
+    "kind": "text"
+  },
+  {
+    "file": "pages/user/user-dashboard-page.jsx",
+    "line": 1084,
+    "text": "headphones",
+    "kind": "text"
+  },
+  {
+    "file": "pages/user/user-dashboard-page.jsx",
+    "line": 1118,
+    "text": "schedule",
+    "kind": "text"
+  },
+  {
+    "file": "pages/user/user-dashboard-page.jsx",
+    "line": 1130,
+    "text": "play_arrow",
+    "kind": "text"
+  },
+  {
+    "file": "pages/user/user-dashboard-page.jsx",
+    "line": 1144,
+    "text": "person_play",
+    "kind": "text"
+  },
+  {
+    "file": "pages/user/user-dashboard-page.jsx",
+    "line": 1194,
+    "text": "group",
+    "kind": "text"
+  },
+  {
+    "file": "pages/user/user-dashboard-page.jsx",
+    "line": 1259,
+    "text": "favorite",
+    "kind": "text"
+  },
+  {
+    "file": "pages/user/user-dashboard-page.jsx",
+    "line": 1303,
+    "text": "headphones",
+    "kind": "text"
+  },
+  {
+    "file": "pages/user/user-dashboard-page.jsx",
+    "line": 1324,
+    "text": "album",
+    "kind": "text"
+  },
+  {
+    "file": "pages/user/user-dashboard-page.jsx",
+    "line": 1336,
+    "text": "headphones",
+    "kind": "text"
+  },
+  {
+    "file": "pages/user/user-dashboard-page.jsx",
+    "line": 1348,
+    "text": "speaker",
+    "kind": "text"
+  },
+  {
+    "file": "pages/user/user-dashboard-page.jsx",
+    "line": 1360,
+    "text": "graphic_eq",
+    "kind": "text"
+  },
+  {
+    "file": "pages/user/user-dashboard-page.jsx",
+    "line": 1376,
+    "text": "album",
+    "kind": "text"
+  },
+  {
+    "file": "pages/user/user-dashboard-page.jsx",
+    "line": 1383,
+    "text": "Ej. Technics SL-1200MK7, Audio-Technica LP120X...",
+    "kind": "attribute"
+  },
+  {
+    "file": "pages/user/user-dashboard-page.jsx",
+    "line": 1403,
+    "text": "headphones",
+    "kind": "text"
+  },
+  {
+    "file": "pages/user/user-dashboard-page.jsx",
+    "line": 1410,
+    "text": "Ej. Sennheiser HD 660S, Sony WH-1000XM5...",
+    "kind": "attribute"
+  },
+  {
+    "file": "pages/user/user-dashboard-page.jsx",
+    "line": 1430,
+    "text": "speaker",
+    "kind": "text"
+  },
+  {
+    "file": "pages/user/user-dashboard-page.jsx",
+    "line": 1437,
+    "text": "Ej. Cambridge Audio DacMagic, Schiit Magni, iFi Zen DAC...",
+    "kind": "attribute"
+  },
+  {
+    "file": "pages/user/user-dashboard-page.jsx",
+    "line": 1457,
+    "text": "graphic_eq",
+    "kind": "text"
+  },
+  {
+    "file": "pages/user/user-dashboard-page.jsx",
+    "line": 1464,
+    "text": "Ej. Vinilo 180g Prensado Japonés, FLAC 24-bit/192kHz...",
+    "kind": "attribute"
+  },
+  {
+    "file": "pages/user/user-dashboard-page.jsx",
+    "line": 1487,
+    "text": "save",
+    "kind": "text"
+  },
+  {
+    "file": "features/albums/components/deezer-player.jsx",
+    "line": 37,
+    "text": "Deezer Preview",
+    "kind": "text"
+  },
+  {
+    "file": "features/auth/components/forgot-password-form.jsx",
+    "line": 270,
+    "text": "123456",
+    "kind": "attribute"
+  },
+  {
+    "file": "features/auth/components/forgot-password-form.jsx",
+    "line": 404,
+    "text": "SHA-256",
+    "kind": "text"
+  },
+  {
+    "file": "features/auth/components/login-form.jsx",
+    "line": 99,
+    "text": "SONAR",
+    "kind": "text"
+  },
+  {
+    "file": "features/auth/components/register-form.jsx",
+    "line": 324,
+    "text": "SONAR",
+    "kind": "text"
+  },
+  {
+    "file": "features/auth/components/register-form.jsx",
+    "line": 481,
+    "text": "(Kids / Kiks)",
+    "kind": "text"
+  },
+  {
+    "file": "features/auth/components/register-form.jsx",
+    "line": 498,
+    "text": "1234",
+    "kind": "attribute"
+  },
+  {
+    "file": "features/auth/components/register-form.jsx",
+    "line": 523,
+    "text": "sonar.fm/@",
+    "kind": "text"
+  },
+  {
+    "file": "features/auth/components/register-form.jsx",
+    "line": 662,
+    "text": "• • • • • •",
+    "kind": "attribute"
+  },
+  {
+    "file": "features/home/components/album-of-the-week.jsx",
+    "line": 290,
+    "text": "SIDE A · 33⅓ RPM",
+    "kind": "text"
+  },
+  {
+    "file": "features/home/components/album-of-the-week.jsx",
+    "line": 312,
+    "text": "33 RPM LP",
+    "kind": "text"
+  },
+  {
+    "file": "features/home/components/album-of-the-week.jsx",
+    "line": 334,
+    "text": "star",
+    "kind": "text"
+  },
+  {
+    "file": "features/home/components/album-of-the-week.jsx",
+    "line": 361,
+    "text": "star",
+    "kind": "text"
+  },
+  {
+    "file": "features/home/components/album-of-the-week.jsx",
+    "line": 362,
+    "text": "star",
+    "kind": "text"
+  },
+  {
+    "file": "features/home/components/album-of-the-week.jsx",
+    "line": 363,
+    "text": "star",
+    "kind": "text"
+  },
+  {
+    "file": "features/home/components/album-of-the-week.jsx",
+    "line": 364,
+    "text": "star",
+    "kind": "text"
+  },
+  {
+    "file": "features/home/components/album-of-the-week.jsx",
+    "line": 365,
+    "text": "star_half",
+    "kind": "text"
+  },
+  {
+    "file": "features/home/components/album-of-the-week.jsx",
+    "line": 422,
+    "text": "rate_review",
+    "kind": "text"
+  },
+  {
+    "file": "features/home/components/featured-reviews.jsx",
+    "line": 214,
+    "text": "bookmark",
+    "kind": "text"
+  },
+  {
+    "file": "features/home/components/featured-reviews.jsx",
+    "line": 238,
+    "text": "chat_bubble",
+    "kind": "text"
+  },
+  {
+    "file": "features/home/components/featured-reviews.jsx",
+    "line": 287,
+    "text": "arrow_forward",
+    "kind": "text"
+  },
+  {
+    "file": "features/home/components/hero-search.jsx",
+    "line": 453,
+    "text": "search",
+    "kind": "text"
+  },
+  {
+    "file": "features/home/components/hero-search.jsx",
+    "line": 504,
+    "text": "Ctrl K",
+    "kind": "text"
+  },
+  {
+    "file": "features/home/components/hero-search.jsx",
+    "line": 517,
+    "text": "arrow_forward",
+    "kind": "text"
+  },
+  {
+    "file": "features/home/components/hero-search.jsx",
+    "line": 597,
+    "text": "history",
+    "kind": "text"
+  },
+  {
+    "file": "features/home/components/hero-search.jsx",
+    "line": 616,
+    "text": "search",
+    "kind": "text"
+  },
+  {
+    "file": "features/home/components/hero-search.jsx",
+    "line": 628,
+    "text": "trending_up",
+    "kind": "text"
+  },
+  {
+    "file": "features/home/components/hero-search.jsx",
+    "line": 766,
+    "text": "play_circle",
+    "kind": "text"
+  },
+  {
+    "file": "features/home/components/hero-search.jsx",
+    "line": 798,
+    "text": "star",
+    "kind": "text"
+  },
+  {
+    "file": "features/home/components/hero-search.jsx",
+    "line": 832,
+    "text": "headphones",
+    "kind": "text"
+  },
+  {
+    "file": "features/home/components/hero-search.jsx",
+    "line": 833,
+    "text": "Moods",
+    "kind": "text"
+  },
+  {
+    "file": "features/home/components/hero-search.jsx",
+    "line": 849,
+    "text": "category",
+    "kind": "text"
+  },
+  {
+    "file": "features/home/components/hero-search.jsx",
+    "line": 866,
+    "text": "sell",
+    "kind": "text"
+  },
+  {
+    "file": "features/home/components/hero-search.jsx",
+    "line": 883,
+    "text": "schedule",
+    "kind": "text"
+  },
+  {
+    "file": "features/home/components/hero-search.jsx",
+    "line": 900,
+    "text": "tune",
+    "kind": "text"
+  },
+  {
+    "file": "features/home/components/hero-search.jsx",
+    "line": 913,
+    "text": "star",
+    "kind": "text"
+  },
+  {
+    "file": "features/home/components/trending-grid.jsx",
+    "line": 325,
+    "text": "grid_view",
+    "kind": "text"
+  },
+  {
+    "file": "features/home/components/trending-grid.jsx",
+    "line": 335,
+    "text": "view_list",
+    "kind": "text"
+  },
+  {
+    "file": "features/home/components/trending-grid.jsx",
+    "line": 367,
+    "text": "lock",
+    "kind": "text"
+  },
+  {
+    "file": "features/home/components/trending-grid.jsx",
+    "line": 368,
+    "text": "18+ EXPLICIT",
+    "kind": "text"
+  },
+  {
+    "file": "features/home/components/trending-grid.jsx",
+    "line": 373,
+    "text": "toys",
+    "kind": "text"
+  },
+  {
+    "file": "features/home/components/trending-grid.jsx",
+    "line": 374,
+    "text": "KIDS SAFE",
+    "kind": "text"
+  },
+  {
+    "file": "features/home/components/trending-grid.jsx",
+    "line": 406,
+    "text": "rate_review",
+    "kind": "text"
+  },
+  {
+    "file": "features/home/components/trending-grid.jsx",
+    "line": 434,
+    "text": "star",
+    "kind": "text"
+  },
+  {
+    "file": "features/home/components/trending-grid.jsx",
+    "line": 486,
+    "text": "Junior Safe",
+    "kind": "text"
+  },
+  {
+    "file": "features/home/components/trending-grid.jsx",
+    "line": 502,
+    "text": "star",
+    "kind": "text"
+  },
+  {
+    "file": "features/home/components/trending-grid.jsx",
+    "line": 527,
+    "text": "rate_review",
+    "kind": "text"
+  },
+  {
+    "file": "features/home/components/trending-grid.jsx",
+    "line": 561,
+    "text": "album",
+    "kind": "text"
+  },
+  {
+    "file": "features/profile/components/audiophile-monthly-wrapped.jsx",
+    "line": 213,
+    "text": "verified",
+    "kind": "text"
+  },
+  {
+    "file": "features/profile/components/audiophile-monthly-wrapped.jsx",
+    "line": 226,
+    "text": "equalizer",
+    "kind": "text"
+  },
+  {
+    "file": "features/profile/components/audiophile-monthly-wrapped.jsx",
+    "line": 265,
+    "text": "h",
+    "kind": "text"
+  },
+  {
+    "file": "features/profile/components/audiophile-monthly-wrapped.jsx",
+    "line": 266,
+    "text": "Audio 24-bit / 96kHz",
+    "kind": "text"
+  },
+  {
+    "file": "features/profile/components/audiophile-monthly-wrapped.jsx",
+    "line": 303,
+    "text": "bar_chart",
+    "kind": "text"
+  },
+  {
+    "file": "features/profile/components/audiophile-monthly-wrapped.jsx",
+    "line": 313,
+    "text": "m",
+    "kind": "text"
+  },
+  {
+    "file": "features/profile/components/audiophile-monthly-wrapped.jsx",
+    "line": 332,
+    "text": "pie_chart",
+    "kind": "text"
+  },
+  {
+    "file": "features/profile/components/audiophile-monthly-wrapped.jsx",
+    "line": 371,
+    "text": "verified",
+    "kind": "text"
+  },
+  {
+    "file": "features/profile/components/audiophile-monthly-wrapped.jsx",
+    "line": 382,
+    "text": "download",
+    "kind": "text"
+  },
+  {
+    "file": "features/profile/components/audiophile-monthly-wrapped.jsx",
+    "line": 404,
+    "text": "Verificado",
+    "kind": "text"
+  },
+  {
+    "file": "features/profile/components/audiophile-monthly-wrapped.jsx",
+    "line": 412,
+    "text": "military_tech",
+    "kind": "text"
+  },
+  {
+    "file": "features/profile/components/audiophile-passport-tab.jsx",
+    "line": 204,
+    "text": "HI-FI PRO",
+    "kind": "text"
+  },
+  {
+    "file": "features/profile/components/audiophile-passport-tab.jsx",
+    "line": 231,
+    "text": "album",
+    "kind": "text"
+  },
+  {
+    "file": "features/profile/components/audiophile-passport-tab.jsx",
+    "line": 235,
+    "text": "headphones",
+    "kind": "text"
+  },
+  {
+    "file": "features/profile/components/audiophile-passport-tab.jsx",
+    "line": 263,
+    "text": "download",
+    "kind": "text"
+  },
+  {
+    "file": "features/profile/components/audiophile-passport-tab.jsx",
+    "line": 272,
+    "text": "192 kHz / 24-bit Hi-Res FLAC",
+    "kind": "text"
+  },
+  {
+    "file": "features/profile/components/audiophile-passport-tab.jsx",
+    "line": 294,
+    "text": "collections_bookmark",
+    "kind": "text"
+  },
+  {
+    "file": "features/profile/components/audiophile-passport-tab.jsx",
+    "line": 319,
+    "text": "star",
+    "kind": "text"
+  },
+  {
+    "file": "features/profile/components/audiophile-passport-tab.jsx",
+    "line": 347,
+    "text": "graphic_eq",
+    "kind": "text"
+  },
+  {
+    "file": "features/profile/components/audiophile-passport-tab.jsx",
+    "line": 372,
+    "text": "hub",
+    "kind": "text"
+  },
+  {
+    "file": "features/profile/components/audiophile-passport-tab.jsx",
+    "line": 392,
+    "text": "tune",
+    "kind": "text"
+  },
+  {
+    "file": "features/profile/components/audiophile-passport-tab.jsx",
+    "line": 443,
+    "text": "speed",
+    "kind": "text"
+  },
+  {
+    "file": "features/profile/components/audiophile-passport-tab.jsx",
+    "line": 481,
+    "text": "arrow_forward",
+    "kind": "text"
+  },
+  {
+    "file": "features/profile/components/audiophile-passport-tab.jsx",
+    "line": 501,
+    "text": "workspace_premium",
+    "kind": "text"
+  },
+  {
+    "file": "features/profile/components/audiophile-passport-tab.jsx",
+    "line": 564,
+    "text": "info",
+    "kind": "text"
+  },
+  {
+    "file": "features/profile/components/audiophile-passport-tab.jsx",
+    "line": 586,
+    "text": "close",
+    "kind": "text"
+  },
+  {
+    "file": "features/profile/components/audiophile-quests.jsx",
+    "line": 117,
+    "text": "verified",
+    "kind": "text"
+  },
+  {
+    "file": "features/profile/components/audiophile-quests.jsx",
+    "line": 193,
+    "text": "verified",
+    "kind": "text"
+  },
+  {
+    "file": "features/profile/components/audiophile-quests.jsx",
+    "line": 202,
+    "text": "redeem",
+    "kind": "text"
+  },
+  {
+    "file": "features/profile/components/audiophile-signal-chain.jsx",
+    "line": 90,
+    "text": "% SNR",
+    "kind": "text"
+  },
+  {
+    "file": "features/profile/components/edit-profile-form.jsx",
+    "line": 380,
+    "text": "ej. Mateo Rivaes",
+    "kind": "attribute"
+  },
+  {
+    "file": "features/profile/components/edit-profile-form.jsx",
+    "line": 411,
+    "text": "Avatar Studio",
+    "kind": "text"
+  },
+  {
+    "file": "features/profile/components/edit-profile-form.jsx",
+    "line": 776,
+    "text": "ej. Sennheiser HD 600, Beyerdynamic DT 990 Pro, Focal Clear",
+    "kind": "attribute"
+  },
+  {
+    "file": "features/profile/components/edit-profile-form.jsx",
+    "line": 783,
+    "text": "ej. Technics SL-1200GR, Audio-Technica LP120X, Rega Planar 3",
+    "kind": "attribute"
+  },
+  {
+    "file": "features/profile/components/edit-profile-form.jsx",
+    "line": 790,
+    "text": "ej. Schiit Magni/Modi Stack, Marantz PM6007, Cambridge Audio",
+    "kind": "attribute"
+  },
+  {
+    "file": "features/profile/components/edit-profile-form.jsx",
+    "line": 801,
+    "text": "FLAC 24-bit / 96kHz (Lossless Hi-Res)",
+    "kind": "text"
+  },
+  {
+    "file": "features/profile/components/edit-profile-form.jsx",
+    "line": 802,
+    "text": "Streaming Hi-Fi (Deezer FLAC / Tidal Master)",
+    "kind": "text"
+  },
+  {
+    "file": "features/profile/components/edit-profile-form.jsx",
+    "line": 804,
+    "text": "CD Audio Red Book (16-bit/44.1kHz)",
+    "kind": "text"
+  },
+  {
+    "file": "features/profile/components/edit-profile-form.jsx",
+    "line": 910,
+    "text": "download",
+    "kind": "text"
+  },
+  {
+    "file": "features/profile/components/edit-profile-form.jsx",
+    "line": 936,
+    "text": "file_download",
+    "kind": "text"
+  },
+  {
+    "file": "features/profile/components/edit-profile-form.jsx",
+    "line": 958,
+    "text": "ELIMINAR MI CUENTA",
+    "kind": "text"
+  },
+  {
+    "file": "features/profile/components/edit-profile-form.jsx",
+    "line": 964,
+    "text": "ELIMINAR MI CUENTA",
+    "kind": "attribute"
+  },
+  {
+    "file": "features/profile/components/enhanced-parental-control.jsx",
+    "line": 444,
+    "text": "child_care",
+    "kind": "text"
+  },
+  {
+    "file": "features/profile/components/enhanced-parental-control.jsx",
+    "line": 469,
+    "text": "pin",
+    "kind": "text"
+  },
+  {
+    "file": "features/profile/components/enhanced-parental-control.jsx",
+    "line": 494,
+    "text": "lock_open",
+    "kind": "text"
+  },
+  {
+    "file": "features/profile/components/enhanced-parental-control.jsx",
+    "line": 513,
+    "text": "timer",
+    "kind": "text"
+  },
+  {
+    "file": "features/profile/components/enhanced-parental-control.jsx",
+    "line": 552,
+    "text": "restart_alt",
+    "kind": "text"
+  },
+  {
+    "file": "features/profile/components/enhanced-parental-control.jsx",
+    "line": 561,
+    "text": "spa",
+    "kind": "text"
+  },
+  {
+    "file": "features/profile/components/enhanced-parental-control.jsx",
+    "line": 612,
+    "text": "quiz",
+    "kind": "text"
+  },
+  {
+    "file": "features/profile/components/enhanced-parental-control.jsx",
+    "line": 676,
+    "text": "explore",
+    "kind": "text"
+  },
+  {
+    "file": "features/profile/components/enhanced-parental-control.jsx",
+    "line": 713,
+    "text": "play_arrow",
+    "kind": "text"
+  },
+  {
+    "file": "features/profile/components/enhanced-parental-control.jsx",
+    "line": 724,
+    "text": "music_note",
+    "kind": "text"
+  },
+  {
+    "file": "features/profile/components/enhanced-parental-control.jsx",
+    "line": 752,
+    "text": "play_arrow",
+    "kind": "text"
+  },
+  {
+    "file": "features/profile/components/enhanced-parental-control.jsx",
+    "line": 767,
+    "text": "hourglass_top",
+    "kind": "text"
+  },
+  {
+    "file": "features/profile/components/enhanced-parental-control.jsx",
+    "line": 777,
+    "text": "min",
+    "kind": "text"
+  },
+  {
+    "file": "features/profile/components/enhanced-parental-control.jsx",
+    "line": 779,
+    "text": "min (",
+    "kind": "text"
+  },
+  {
+    "file": "features/profile/components/enhanced-parental-control.jsx",
+    "line": 811,
+    "text": "min",
+    "kind": "text"
+  },
+  {
+    "file": "features/profile/components/enhanced-parental-control.jsx",
+    "line": 821,
+    "text": "hearing",
+    "kind": "text"
+  },
+  {
+    "file": "features/profile/components/enhanced-parental-control.jsx",
+    "line": 832,
+    "text": "dB)",
+    "kind": "text"
+  },
+  {
+    "file": "features/profile/components/enhanced-parental-control.jsx",
+    "line": 864,
+    "text": "dB",
+    "kind": "text"
+  },
+  {
+    "file": "features/profile/components/enhanced-parental-control.jsx",
+    "line": 871,
+    "text": "verified",
+    "kind": "text"
+  },
+  {
+    "file": "features/profile/components/enhanced-parental-control.jsx",
+    "line": 883,
+    "text": "key",
+    "kind": "text"
+  },
+  {
+    "file": "features/profile/components/enhanced-parental-control.jsx",
+    "line": 895,
+    "text": "1234",
+    "kind": "attribute"
+  },
+  {
+    "file": "features/profile/components/enhanced-parental-control.jsx",
+    "line": 921,
+    "text": "lock",
+    "kind": "text"
+  },
+  {
+    "file": "features/profile/components/enhanced-parental-control.jsx",
+    "line": 931,
+    "text": "block",
+    "kind": "text"
+  },
+  {
+    "file": "features/profile/components/enhanced-parental-control.jsx",
+    "line": 963,
+    "text": "×",
+    "kind": "text"
+  },
+  {
+    "file": "features/profile/components/enhanced-parental-control.jsx",
+    "line": 976,
+    "text": "history_toggle_off",
+    "kind": "text"
+  },
+  {
+    "file": "features/profile/components/listening-journal-modal.jsx",
+    "line": 70,
+    "text": "close",
+    "kind": "text"
+  },
+  {
+    "file": "features/profile/components/listening-journal-modal.jsx",
+    "line": 75,
+    "text": "edit_note",
+    "kind": "text"
+  },
+  {
+    "file": "features/profile/components/listening-journal-modal.jsx",
+    "line": 112,
+    "text": "03:45 (Solo de sintetizador / Entrada de batería)",
+    "kind": "attribute"
+  },
+  {
+    "file": "features/profile/components/listening-journal-modal.jsx",
+    "line": 124,
+    "text": "¿Qué sensaciones te provocó la textura sonora, el rango dinámico o la mezcla espacial de este álbum?",
+    "kind": "attribute"
+  },
+  {
+    "file": "features/profile/components/profile-header.jsx",
+    "line": 134,
+    "text": "photo_camera",
+    "kind": "text"
+  },
+  {
+    "file": "features/profile/components/profile-header.jsx",
+    "line": 173,
+    "text": "military_tech",
+    "kind": "text"
+  },
+  {
+    "file": "features/profile/components/profile-header.jsx",
+    "line": 179,
+    "text": "toll",
+    "kind": "text"
+  },
+  {
+    "file": "features/profile/components/profile-header.jsx",
+    "line": 221,
+    "text": "album",
+    "kind": "text"
+  },
+  {
+    "file": "features/profile/components/profile-header.jsx",
+    "line": 227,
+    "text": "headphones",
+    "kind": "text"
+  },
+  {
+    "file": "features/profile/components/profile-header.jsx",
+    "line": 233,
+    "text": "speaker",
+    "kind": "text"
+  },
+  {
+    "file": "features/profile/components/profile-header.jsx",
+    "line": 239,
+    "text": "graphic_eq",
+    "kind": "text"
+  },
+  {
+    "file": "features/profile/components/profile-header.jsx",
+    "line": 290,
+    "text": "tune",
+    "kind": "text"
+  },
+  {
+    "file": "features/profile/components/rewards-store-tab.jsx",
+    "line": 491,
+    "text": "verified",
+    "kind": "text"
+  },
+  {
+    "file": "features/profile/components/rewards-store-tab.jsx",
+    "line": 504,
+    "text": "toll",
+    "kind": "text"
+  },
+  {
+    "file": "features/profile/components/rewards-store-tab.jsx",
+    "line": 524,
+    "text": "military_tech",
+    "kind": "text"
+  },
+  {
+    "file": "features/profile/components/rewards-store-tab.jsx",
+    "line": 528,
+    "text": "XP",
+    "kind": "text"
+  },
+  {
+    "file": "features/profile/components/rewards-store-tab.jsx",
+    "line": 558,
+    "text": "local_fire_department",
+    "kind": "text"
+  },
+  {
+    "file": "features/profile/components/rewards-store-tab.jsx",
+    "line": 610,
+    "text": "storefront",
+    "kind": "text"
+  },
+  {
+    "file": "features/profile/components/rewards-store-tab.jsx",
+    "line": 695,
+    "text": "person",
+    "kind": "text"
+  },
+  {
+    "file": "features/profile/components/rewards-store-tab.jsx",
+    "line": 704,
+    "text": "toll",
+    "kind": "text"
+  },
+  {
+    "file": "features/profile/components/rewards-store-tab.jsx",
+    "line": 734,
+    "text": "shopping_cart",
+    "kind": "text"
+  },
+  {
+    "file": "features/profile/components/rewards-store-tab.jsx",
+    "line": 750,
+    "text": "task_alt",
+    "kind": "text"
+  },
+  {
+    "file": "features/profile/components/rewards-store-tab.jsx",
+    "line": 817,
+    "text": "toll",
+    "kind": "text"
+  },
+  {
+    "file": "features/profile/components/rewards-store-tab.jsx",
+    "line": 823,
+    "text": "verified",
+    "kind": "text"
+  },
+  {
+    "file": "features/profile/components/rewards-store-tab.jsx",
+    "line": 832,
+    "text": "redeem",
+    "kind": "text"
+  },
+  {
+    "file": "features/profile/components/sound-signature-selector.jsx",
+    "line": 142,
+    "text": "tune",
+    "kind": "text"
+  },
+  {
+    "file": "features/profile/components/sound-signature-selector.jsx",
+    "line": 152,
+    "text": "dB",
+    "kind": "text"
+  },
+  {
+    "file": "features/profile/components/vinyl-crate-flip.jsx",
+    "line": 41,
+    "text": "album",
+    "kind": "text"
+  },
+  {
+    "file": "features/profile/components/vinyl-crate-flip.jsx",
+    "line": 55,
+    "text": "3d_rotation",
+    "kind": "text"
+  },
+  {
+    "file": "features/profile/components/vinyl-crate-flip.jsx",
+    "line": 108,
+    "text": "180g HI-RES",
+    "kind": "text"
+  },
+  {
+    "file": "features/profile/components/vinyl-crate-flip.jsx",
+    "line": 135,
+    "text": "Very Good Plus (VG+)",
+    "kind": "text"
+  },
+  {
+    "file": "features/profile/components/vinyl-crate-flip.jsx",
+    "line": 150,
+    "text": "arrow_back",
+    "kind": "text"
+  },
+  {
+    "file": "features/profile/components/vinyl-crate-flip.jsx",
+    "line": 158,
+    "text": "play_arrow",
+    "kind": "text"
+  },
+  {
+    "file": "features/profile/components/vinyl-crate-flip.jsx",
+    "line": 168,
+    "text": "arrow_forward",
+    "kind": "text"
+  },
+  {
+    "file": "features/reviews/components/comment-section.jsx",
+    "line": 260,
+    "text": "verified",
+    "kind": "text"
+  },
+  {
+    "file": "features/reviews/components/comment-section.jsx",
+    "line": 267,
+    "text": "close",
+    "kind": "text"
+  },
+  {
+    "file": "features/reviews/components/comment-section.jsx",
+    "line": 296,
+    "text": "send",
+    "kind": "text"
+  },
+  {
+    "file": "features/reviews/components/comment-section.jsx",
+    "line": 375,
+    "text": "favorite",
+    "kind": "text"
+  },
+  {
+    "file": "features/reviews/components/comment-section.jsx",
+    "line": 400,
+    "text": "heart_broken",
+    "kind": "text"
+  },
+  {
+    "file": "features/reviews/components/comment-section.jsx",
+    "line": 423,
+    "text": "reply",
+    "kind": "text"
+  },
+  {
+    "file": "features/reviews/components/comment-section.jsx",
+    "line": 441,
+    "text": "flag",
+    "kind": "text"
+  },
+  {
+    "file": "features/reviews/components/comment-section.jsx",
+    "line": 514,
+    "text": "favorite",
+    "kind": "text"
+  },
+  {
+    "file": "features/reviews/components/comment-section.jsx",
+    "line": 539,
+    "text": "heart_broken",
+    "kind": "text"
+  },
+  {
+    "file": "features/reviews/components/comment-section.jsx",
+    "line": 552,
+    "text": "reply",
+    "kind": "text"
+  },
+  {
+    "file": "features/reviews/components/comment-section.jsx",
+    "line": 570,
+    "text": "flag",
+    "kind": "text"
+  },
+  {
+    "file": "features/reviews/components/comment-section.jsx",
+    "line": 592,
+    "text": "reply",
+    "kind": "text"
+  },
+  {
+    "file": "features/reviews/components/comment-section.jsx",
+    "line": 600,
+    "text": "close",
+    "kind": "text"
+  },
+  {
+    "file": "features/reviews/components/review-feed-card.jsx",
+    "line": 251,
+    "text": "play_circle",
+    "kind": "text"
+  },
+  {
+    "file": "features/reviews/components/review-feed-card.jsx",
+    "line": 307,
+    "text": "bookmark",
+    "kind": "text"
+  },
+  {
+    "file": "features/reviews/components/review-feed-card.jsx",
+    "line": 387,
+    "text": "flag",
+    "kind": "text"
+  },
+  {
+    "file": "features/reviews/components/review-form.jsx",
+    "line": 64,
+    "text": "close",
+    "kind": "text"
+  },
+  {
+    "file": "features/reviews/components/review-form.jsx",
+    "line": 91,
+    "text": "music_note",
+    "kind": "text"
+  },
+  {
+    "file": "features/reviews/components/review-form.jsx",
+    "line": 104,
+    "text": "album",
+    "kind": "text"
+  },
+  {
+    "file": "features/reviews/components/review-form.jsx",
+    "line": 118,
+    "text": "music_note",
+    "kind": "text"
+  },
+  {
+    "file": "features/reviews/components/review-form.jsx",
+    "line": 127,
+    "text": "Ej: 15 Step, Reckoner, Nude...",
+    "kind": "attribute"
+  },
+  {
+    "file": "features/reviews/components/review-form.jsx",
+    "line": 172,
+    "text": "visibility_off",
+    "kind": "text"
+  },
+  {
+    "file": "shared/components/a11y/accessibility-widget.jsx",
+    "line": 40,
+    "text": "accessibility_new",
+    "kind": "text"
+  },
+  {
+    "file": "shared/components/a11y/accessibility-widget.jsx",
+    "line": 63,
+    "text": "accessibility_new",
+    "kind": "text"
+  },
+  {
+    "file": "shared/components/a11y/accessibility-widget.jsx",
+    "line": 66,
+    "text": "WCAG 2.1",
+    "kind": "text"
+  },
+  {
+    "file": "shared/components/a11y/accessibility-widget.jsx",
+    "line": 80,
+    "text": "close",
+    "kind": "text"
+  },
+  {
+    "file": "shared/components/a11y/accessibility-widget.jsx",
+    "line": 90,
+    "text": "menu_book",
+    "kind": "text"
+  },
+  {
+    "file": "shared/components/a11y/accessibility-widget.jsx",
+    "line": 96,
+    "text": "format_size",
+    "kind": "text"
+  },
+  {
+    "file": "shared/components/a11y/accessibility-widget.jsx",
+    "line": 127,
+    "text": "format_line_spacing",
+    "kind": "text"
+  },
+  {
+    "file": "shared/components/a11y/accessibility-widget.jsx",
+    "line": 157,
+    "text": "chrome_reader_mode",
+    "kind": "text"
+  },
+  {
+    "file": "shared/components/a11y/accessibility-widget.jsx",
+    "line": 174,
+    "text": "font_download",
+    "kind": "text"
+  },
+  {
+    "file": "shared/components/a11y/accessibility-widget.jsx",
+    "line": 192,
+    "text": "visibility",
+    "kind": "text"
+  },
+  {
+    "file": "shared/components/a11y/accessibility-widget.jsx",
+    "line": 197,
+    "text": "contrast",
+    "kind": "text"
+  },
+  {
+    "file": "shared/components/a11y/accessibility-widget.jsx",
+    "line": 214,
+    "text": "wb_sunny",
+    "kind": "text"
+  },
+  {
+    "file": "shared/components/a11y/accessibility-widget.jsx",
+    "line": 231,
+    "text": "filter_b_and_w",
+    "kind": "text"
+  },
+  {
+    "file": "shared/components/a11y/accessibility-widget.jsx",
+    "line": 248,
+    "text": "link",
+    "kind": "text"
+  },
+  {
+    "file": "shared/components/a11y/accessibility-widget.jsx",
+    "line": 265,
+    "text": "near_me",
+    "kind": "text"
+  },
+  {
+    "file": "shared/components/a11y/accessibility-widget.jsx",
+    "line": 282,
+    "text": "palette",
+    "kind": "text"
+  },
+  {
+    "file": "shared/components/a11y/accessibility-widget.jsx",
+    "line": 297,
+    "text": "check",
+    "kind": "text"
+  },
+  {
+    "file": "shared/components/a11y/accessibility-widget.jsx",
+    "line": 308,
+    "text": "volume_up",
+    "kind": "text"
+  },
+  {
+    "file": "shared/components/a11y/accessibility-widget.jsx",
+    "line": 313,
+    "text": "graphic_eq",
+    "kind": "text"
+  },
+  {
+    "file": "shared/components/a11y/accessibility-widget.jsx",
+    "line": 330,
+    "text": "motion_photos_off",
+    "kind": "text"
+  },
+  {
+    "file": "shared/components/a11y/accessibility-widget.jsx",
+    "line": 348,
+    "text": "record_voice_over",
+    "kind": "text"
+  },
+  {
+    "file": "shared/components/a11y/accessibility-widget.jsx",
+    "line": 381,
+    "text": "x",
+    "kind": "text"
+  },
+  {
+    "file": "shared/components/a11y/accessibility-widget.jsx",
+    "line": 391,
+    "text": "translate",
+    "kind": "text"
+  },
+  {
+    "file": "shared/components/a11y/accessibility-widget.jsx",
+    "line": 407,
+    "text": "keyboard",
+    "kind": "text"
+  },
+  {
+    "file": "shared/components/a11y/keyboard-shortcuts-modal.jsx",
+    "line": 58,
+    "text": "keyboard",
+    "kind": "text"
+  },
+  {
+    "file": "shared/components/a11y/keyboard-shortcuts-modal.jsx",
+    "line": 76,
+    "text": "close",
+    "kind": "text"
+  },
+  {
+    "file": "shared/components/layout/footer.jsx",
+    "line": 37,
+    "text": "podcasts",
+    "kind": "text"
+  },
+  {
+    "file": "shared/components/layout/footer.jsx",
+    "line": 45,
+    "text": "album",
+    "kind": "text"
+  },
+  {
+    "file": "shared/components/layout/footer.jsx",
+    "line": 53,
+    "text": "rss_feed",
+    "kind": "text"
+  },
+  {
+    "file": "shared/components/layout/footer.jsx",
+    "line": 82,
+    "text": "Admin",
+    "kind": "text"
+  },
+  {
+    "file": "shared/components/layout/footer.jsx",
+    "line": 100,
+    "text": "© 2026 Sonar Audio Media Inc.",
+    "kind": "text"
+  },
+  {
+    "file": "shared/components/layout/global-audio-player.jsx",
+    "line": 298,
+    "text": "speed",
+    "kind": "text"
+  },
+  {
+    "file": "shared/components/layout/global-audio-player.jsx",
+    "line": 299,
+    "text": "VU L",
+    "kind": "text"
+  },
+  {
+    "file": "shared/components/layout/global-audio-player.jsx",
+    "line": 309,
+    "text": "VU R",
+    "kind": "text"
+  },
+  {
+    "file": "shared/components/layout/global-audio-player.jsx",
+    "line": 318,
+    "text": "Skin VU Meter",
+    "kind": "text"
+  },
+  {
+    "file": "shared/components/layout/global-audio-player.jsx",
+    "line": 344,
+    "text": "TAPE COUNTER #",
+    "kind": "text"
+  },
+  {
+    "file": "shared/components/layout/global-audio-player.jsx",
+    "line": 347,
+    "text": "Cassette 1984",
+    "kind": "text"
+  },
+  {
+    "file": "shared/components/layout/global-audio-player.jsx",
+    "line": 364,
+    "text": "33 ⅓ RPM · Strobe Lock",
+    "kind": "text"
+  },
+  {
+    "file": "shared/components/layout/global-audio-player.jsx",
+    "line": 460,
+    "text": "E",
+    "kind": "text"
+  },
+  {
+    "file": "shared/components/layout/global-audio-player.jsx",
+    "line": 467,
+    "text": "Podcast",
+    "kind": "text"
+  },
+  {
+    "file": "shared/components/layout/global-audio-player.jsx",
+    "line": 494,
+    "text": "replay_10",
+    "kind": "text"
+  },
+  {
+    "file": "shared/components/layout/global-audio-player.jsx",
+    "line": 528,
+    "text": "forward_10",
+    "kind": "text"
+  },
+  {
+    "file": "shared/components/layout/global-audio-player.jsx",
+    "line": 544,
+    "text": "x",
+    "kind": "text"
+  },
+  {
+    "file": "shared/components/layout/global-audio-player.jsx",
+    "line": 563,
+    "text": "description",
+    "kind": "text"
+  },
+  {
+    "file": "shared/components/layout/global-audio-player.jsx",
+    "line": 583,
+    "text": "closed_caption",
+    "kind": "text"
+  },
+  {
+    "file": "shared/components/layout/global-audio-player.jsx",
+    "line": 584,
+    "text": "CC",
+    "kind": "text"
+  },
+  {
+    "file": "shared/components/layout/global-audio-player.jsx",
+    "line": 607,
+    "text": "bookmark",
+    "kind": "text"
+  },
+  {
+    "file": "shared/components/layout/global-audio-player.jsx",
+    "line": 651,
+    "text": "closed_caption",
+    "kind": "text"
+  },
+  {
+    "file": "shared/components/layout/global-audio-player.jsx",
+    "line": 652,
+    "text": "CC",
+    "kind": "text"
+  },
+  {
+    "file": "shared/components/layout/global-audio-player.jsx",
+    "line": 687,
+    "text": "rate_review",
+    "kind": "text"
+  },
+  {
+    "file": "shared/components/layout/global-audio-player.jsx",
+    "line": 704,
+    "text": "close",
+    "kind": "text"
+  },
+  {
+    "file": "shared/components/layout/global-audio-player.jsx",
+    "line": 721,
+    "text": "podcasts",
+    "kind": "text"
+  },
+  {
+    "file": "shared/components/layout/global-audio-player.jsx",
+    "line": 760,
+    "text": "lyrics",
+    "kind": "text"
+  },
+  {
+    "file": "shared/components/layout/global-audio-player.jsx",
+    "line": 773,
+    "text": "info",
+    "kind": "text"
+  },
+  {
+    "file": "shared/components/layout/global-audio-player.jsx",
+    "line": 836,
+    "text": "music_off",
+    "kind": "text"
+  },
+  {
+    "file": "shared/components/layout/global-audio-player.jsx",
+    "line": 856,
+    "text": "lyrics",
+    "kind": "text"
+  },
+  {
+    "file": "shared/components/layout/global-audio-player.jsx",
+    "line": 884,
+    "text": "refresh",
+    "kind": "text"
+  },
+  {
+    "file": "shared/components/layout/global-audio-player.jsx",
+    "line": 894,
+    "text": "open_in_new",
+    "kind": "text"
+  },
+  {
+    "file": "shared/components/layout/global-audio-player.jsx",
+    "line": 937,
+    "text": "album",
+    "kind": "text"
+  },
+  {
+    "file": "shared/components/layout/global-audio-player.jsx",
+    "line": 985,
+    "text": "graphic_eq",
+    "kind": "text"
+  },
+  {
+    "file": "shared/components/layout/global-audio-player.jsx",
+    "line": 1002,
+    "text": "E",
+    "kind": "text"
+  },
+  {
+    "file": "shared/components/layout/global-audio-player.jsx",
+    "line": 1032,
+    "text": "bookmark",
+    "kind": "text"
+  },
+  {
+    "file": "shared/components/layout/global-audio-player.jsx",
+    "line": 1081,
+    "text": "rate_review",
+    "kind": "text"
+  },
+  {
+    "file": "shared/components/layout/global-audio-player.jsx",
+    "line": 1115,
+    "text": "lock",
+    "kind": "text"
+  },
+  {
+    "file": "shared/components/layout/global-audio-player.jsx",
+    "line": 1121,
+    "text": "E",
+    "kind": "text"
+  },
+  {
+    "file": "shared/components/layout/global-audio-player.jsx",
+    "line": 1164,
+    "text": "••••",
+    "kind": "attribute"
+  },
+  {
+    "file": "shared/components/layout/mobile-menu.jsx",
+    "line": 86,
+    "text": "chevron_right",
+    "kind": "text"
+  },
+  {
+    "file": "shared/components/layout/navbar.jsx",
+    "line": 299,
+    "text": "search",
+    "kind": "text"
+  },
+  {
+    "file": "shared/components/layout/navbar.jsx",
+    "line": 329,
+    "text": "close",
+    "kind": "text"
+  },
+  {
+    "file": "shared/components/layout/navbar.jsx",
+    "line": 408,
+    "text": "search_off",
+    "kind": "text"
+  },
+  {
+    "file": "shared/components/layout/navbar.jsx",
+    "line": 424,
+    "text": "music_note",
+    "kind": "text"
+  },
+  {
+    "file": "shared/components/layout/navbar.jsx",
+    "line": 453,
+    "text": "",
+    "kind": "attribute"
+  },
+  {
+    "file": "shared/components/layout/navbar.jsx",
+    "line": 458,
+    "text": "music_note",
+    "kind": "text"
+  },
+  {
+    "file": "shared/components/layout/navbar.jsx",
+    "line": 504,
+    "text": "newspaper",
+    "kind": "text"
+  },
+  {
+    "file": "shared/components/layout/navbar.jsx",
+    "line": 530,
+    "text": "",
+    "kind": "attribute"
+  },
+  {
+    "file": "shared/components/layout/navbar.jsx",
+    "line": 551,
+    "text": "arrow_forward",
+    "kind": "text"
+  },
+  {
+    "file": "shared/components/layout/navbar.jsx",
+    "line": 572,
+    "text": "newspaper",
+    "kind": "text"
+  },
+  {
+    "file": "shared/components/layout/navbar.jsx",
+    "line": 582,
+    "text": "music_note",
+    "kind": "text"
+  },
+  {
+    "file": "shared/components/layout/navbar.jsx",
+    "line": 672,
+    "text": "child_care",
+    "kind": "text"
+  },
+  {
+    "file": "shared/components/layout/navbar.jsx",
+    "line": 689,
+    "text": "toll",
+    "kind": "text"
+  },
+  {
+    "file": "shared/components/layout/navbar.jsx",
+    "line": 725,
+    "text": "logout",
+    "kind": "text"
+  },
+  {
+    "file": "shared/components/layout/review-modal.jsx",
+    "line": 57,
+    "text": "close",
+    "kind": "text"
+  },
+  {
+    "file": "shared/components/layout/review-modal.jsx",
+    "line": 61,
+    "text": "lock",
+    "kind": "text"
+  },
+  {
+    "file": "shared/components/layout/review-modal.jsx",
+    "line": 79,
+    "text": "login",
+    "kind": "text"
+  },
+  {
+    "file": "shared/components/layout/review-modal.jsx",
+    "line": 91,
+    "text": "person_add",
+    "kind": "text"
+  },
+  {
+    "file": "shared/components/ui/AnimatedLogo.jsx",
+    "line": 31,
+    "text": "Sonar Logo",
+    "kind": "attribute"
+  },
+  {
+    "file": "shared/components/ui/AnimatedLogo.jsx",
+    "line": 43,
+    "text": "SONAR",
+    "kind": "text"
+  },
+  {
+    "file": "shared/components/ui/engine-status-modal.jsx",
+    "line": 22,
+    "text": "close",
+    "kind": "text"
+  },
+  {
+    "file": "shared/components/ui/engine-status-modal.jsx",
+    "line": 28,
+    "text": "Sonar Engine v2.4",
+    "kind": "text"
+  },
+  {
+    "file": "shared/components/ui/engine-status-modal.jsx",
+    "line": 54,
+    "text": "Gemini Sound Protocol 3.7",
+    "kind": "text"
+  },
+  {
+    "file": "shared/components/ui/error-boundary.jsx",
+    "line": 60,
+    "text": "signal_disconnected",
+    "kind": "text"
+  },
+  {
+    "file": "shared/components/ui/error-boundary.jsx",
+    "line": 65,
+    "text": "Interferencia acústica momentánea",
+    "kind": "text"
+  },
+  {
+    "file": "shared/components/ui/error-boundary.jsx",
+    "line": 69,
+    "text": "Esta sección experimentó una anomalía imprevista. La señal se ha aislado para proteger tu experiencia de escucha.",
+    "kind": "text"
+  },
+  {
+    "file": "shared/components/ui/error-boundary.jsx",
+    "line": 78,
+    "text": "refresh",
+    "kind": "text"
+  },
+  {
+    "file": "shared/components/ui/error-boundary.jsx",
+    "line": 78,
+    "text": "Reconectar señal",
+    "kind": "text"
+  },
+  {
+    "file": "shared/components/ui/error-boundary.jsx",
+    "line": 86,
+    "text": "home",
+    "kind": "text"
+  },
+  {
+    "file": "shared/components/ui/error-boundary.jsx",
+    "line": 86,
+    "text": "Ir al Inicio",
+    "kind": "text"
+  },
+  {
+    "file": "shared/components/ui/error-boundary.jsx",
+    "line": 93,
+    "text": "Detalles técnicos para desarrolladores",
+    "kind": "text"
+  },
+  {
+    "file": "shared/components/ui/modal.jsx",
+    "line": 56,
+    "text": "×",
+    "kind": "text"
+  },
+  {
+    "file": "features/admin/dashboard/components/growth-panel.jsx",
+    "line": 37,
+    "text": "U:",
+    "kind": "text"
+  },
+  {
+    "file": "features/admin/dashboard/components/growth-panel.jsx",
+    "line": 37,
+    "text": "M:",
+    "kind": "text"
+  }
+]

@@ -1,9 +1,11 @@
+import { useUIText } from '../../../shared/i18n/use-ui-text.js';
 import { ReportReview } from './report-review.jsx';
 
 import StarRating from '../../../shared/components/ui/star-rating';
 import Avatar from '../../../shared/components/ui/avatar';
 
 export const ReviewCard = ({ review = {} }) => {
+  const ui = useUIText();
   return (
     <article className="p-6 rounded-3xl bg-white dark:bg-[#4B2840] border border-[#e6d5e2] dark:border-white/10 shadow-sm flex flex-col gap-4">
       <div className="flex items-center justify-between gap-4">
@@ -14,7 +16,7 @@ export const ReviewCard = ({ review = {} }) => {
               {review.username || `Usuario #${review.userId}`}
             </h4>
             <span className="text-xs text-[#5c435a] dark:text-[#B89CB0]">
-              {review.albumId ? `Álbum: ${review.albumId}` : 'Reseña de la comunidad'}
+              {review.albumId ? `Álbum: ${review.albumId}` : ui("Reseña de la comunidad")}
             </span>
           </div>
         </div>

@@ -1,3 +1,4 @@
+import { useUIText } from '../../i18n/use-ui-text.js';
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { usePlayer } from '../../context/player-context';
@@ -8,6 +9,7 @@ import { interactionsService } from '../../services/interactions-service';
 import { createReview } from '../../services/api-client';
 
 export const ReviewModal = () => {
+  const ui = useUIText();
   const { user } = useAuth();
   const { reviewModalAlbum, closeReviewModal } = usePlayer();
   const [toastMessage, setToastMessage] = useState(null);
@@ -49,8 +51,8 @@ export const ReviewModal = () => {
               type="button"
               onClick={closeReviewModal}
               className="absolute top-4 right-4 w-9 h-9 rounded-full bg-gray-100 hover:bg-[#B80C09] text-gray-700 hover:text-white dark:bg-white/10 dark:hover:bg-[#B80C09] dark:text-white flex items-center justify-center transition-colors cursor-pointer border border-gray-200 dark:border-white/10 shadow-xs"
-              title="Cerrar (Esc)"
-              aria-label="Cerrar ventana"
+              title={ui("Cerrar (Esc)")}
+              aria-label={ui("Cerrar ventana")}
             >
               <span className="material-symbols-outlined text-[18px]">close</span>
             </button>
@@ -60,15 +62,9 @@ export const ReviewModal = () => {
             </div>
 
             <div className="flex flex-col gap-1.5">
-              <span className="text-xs uppercase tracking-widest font-black text-[#B80C09]">
-                Acceso para Miembros
-              </span>
-              <h3 className="text-2xl font-black tracking-tight">
-                Inicia Sesión para Criticar
-              </h3>
-              <p className="text-sm text-[#5c435a] dark:text-[#B89CB0] leading-relaxed">
-                Debes tener una cuenta activa en Sonar para calificar música y publicar tus análisis en la comunidad.
-              </p>
+              <span className="text-xs uppercase tracking-widest font-black text-[#B80C09]">{ui("Acceso para Miembros")}</span>
+              <h3 className="text-2xl font-black tracking-tight">{ui("Inicia Sesión para Criticar")}</h3>
+              <p className="text-sm text-[#5c435a] dark:text-[#B89CB0] leading-relaxed">{ui("Debes tener una cuenta activa en Sonar para calificar música y publicar tus análisis en la comunidad.")}</p>
             </div>
 
             <div className="w-full flex flex-col gap-2.5 pt-2">
@@ -81,7 +77,7 @@ export const ReviewModal = () => {
                 className="w-full py-3.5 rounded-2xl bg-[#B80C09] hover:bg-[#9c0a07] text-white text-xs font-black uppercase tracking-wider shadow-md transition-all cursor-pointer flex items-center justify-center gap-2"
               >
                 <span className="material-symbols-outlined text-[18px]">login</span>
-                <span>Iniciar Sesión</span>
+                <span>{ui("Iniciar Sesión")}</span>
               </button>
 
               <button
@@ -93,7 +89,7 @@ export const ReviewModal = () => {
                 className="w-full py-3.5 rounded-2xl bg-gray-100 dark:bg-white/10 hover:bg-gray-200 dark:hover:bg-white/15 text-[#231123] dark:text-white text-xs font-bold uppercase tracking-wider transition-colors cursor-pointer flex items-center justify-center gap-2"
               >
                 <span className="material-symbols-outlined text-[18px]">person_add</span>
-                <span>Crear una Cuenta</span>
+                <span>{ui("Crear una Cuenta")}</span>
               </button>
             </div>
           </motion.div>

@@ -1,8 +1,10 @@
+import { useUIText } from '../../shared/i18n/use-ui-text.js';
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import Navbar from '../../shared/components/layout/navbar';
 import Footer from '../../shared/components/layout/footer';
 import { usePlayer } from '../../shared/context/player-context';
+import { useTranslation } from '../../shared/context/language-context.jsx';
 
 const VINYL_VAULT_ITEMS = [
   {
@@ -53,6 +55,8 @@ const VINYL_VAULT_ITEMS = [
 ];
 
 export const VinylCollectionsPage = () => {
+  const ui = useUIText();
+  const { t } = useTranslation();
   const { playTrack } = usePlayer();
   const [selectedGuide, setSelectedGuide] = useState('gramaje');
 
@@ -65,14 +69,14 @@ export const VinylCollectionsPage = () => {
           <div className="flex items-center gap-2 mb-2">
             <span className="w-2.5 h-2.5 rounded-full bg-[#B80C09] animate-pulse" />
             <span className="text-xs uppercase tracking-widest font-black text-[#5c1d5e] dark:text-pink-300">
-              ARCHIVOS DE ALTA FIDELIDAD & PRENSAJES 180G
+              {t('page.vinyl.eyebrow')}
             </span>
           </div>
           <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-[#231123] dark:text-white">
-            Colecciones de Vinilo
+            {t('page.vinyl.title')}
           </h1>
           <p className="text-sm sm:text-base text-[#5c435a] dark:text-[#B89CB0] max-w-2xl mt-2 font-medium">
-            Catálogo técnico de prensajes de vinilo de referencia, matrices de corte históricas y manuales de calibración analógica para melómanos exigentes.
+            {t('page.vinyl.description')}
           </p>
         </header>
 
@@ -80,7 +84,7 @@ export const VinylCollectionsPage = () => {
         <section className="mb-12 p-6 sm:p-8 rounded-3xl bg-white dark:bg-[#4B2840] border border-[#e6d5e2] dark:border-white/10 shadow-md">
           <div className="flex flex-wrap items-center justify-between gap-4 mb-6">
             <h2 className="text-xl sm:text-2xl font-black text-[#231123] dark:text-white">
-              Guía Técnica del Coleccionista
+              {t('page.vinyl.collectorGuide')}
             </h2>
             <div className="flex gap-2">
               <button
@@ -111,7 +115,7 @@ export const VinylCollectionsPage = () => {
                     : 'bg-gray-100 dark:bg-white/10 text-gray-700 dark:text-gray-300'
                 }`}
               >
-                Cuidado & Limpieza
+                {t('page.vinyl.care')}
               </button>
             </div>
           </div>
@@ -165,15 +169,15 @@ export const VinylCollectionsPage = () => {
                 {/* Ficha Técnica */}
                 <div className="grid grid-cols-2 gap-2 p-3.5 rounded-xl bg-gray-50 dark:bg-[#231123] text-[11px] mb-4 border border-gray-100 dark:border-white/5">
                   <div>
-                    <span className="text-gray-400 block">Velocidad:</span>
+                    <span className="text-gray-400 block">{t('page.vinyl.speed')}</span>
                     <strong className="text-[#231123] dark:text-white">{item.speed}</strong>
                   </div>
                   <div>
-                    <span className="text-gray-400 block">Peso:</span>
+                    <span className="text-gray-400 block">{t('page.vinyl.weight')}</span>
                     <strong className="text-[#231123] dark:text-white">{item.weight}</strong>
                   </div>
                   <div className="col-span-2 pt-1 border-t border-gray-200 dark:border-white/5">
-                    <span className="text-gray-400 block">Planta de Prensado:</span>
+                    <span className="text-gray-400 block">{t('page.vinyl.plant')}</span>
                     <strong className="text-[#231123] dark:text-white">{item.pressingPlant}</strong>
                   </div>
                 </div>
@@ -197,7 +201,7 @@ export const VinylCollectionsPage = () => {
                 className="w-full py-2.5 rounded-xl bg-[#B80C09] text-white text-xs font-bold uppercase tracking-wider flex items-center justify-center gap-2 hover:bg-[#9c0a07] transition-all cursor-pointer shadow-md"
               >
                 <span className="material-symbols-outlined text-[16px]">play_arrow</span>
-                <span>Muestra de Audio</span>
+                <span>{ui("Muestra de Audio")}</span>
               </button>
             </motion.div>
           ))}

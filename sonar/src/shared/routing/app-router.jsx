@@ -1,4 +1,5 @@
 import React, { useState, useEffect, createContext, useContext } from 'react';
+import { usePageScroll } from './use-page-scroll.js';
 import { AnimatePresence } from 'framer-motion';
 import PageTransition from '../components/ui/page-transition';
 import { ErrorBoundary } from '../components/ui/error-boundary';
@@ -45,6 +46,7 @@ export const AppRouter = () => {
     const hash = window.location.hash.replace(/^#/, '');
     return hash || window.location.pathname || '/';
   });
+  usePageScroll(currentPath);
 
   useEffect(() => {
     const handleLocationChange = () => {
@@ -68,7 +70,6 @@ export const AppRouter = () => {
       window.location.hash = `#${path.replace(/^\//, '')}`;
     }
     setCurrentPath(path.replace(/^[#/]/, ''));
-    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   // Selector dinámico de componentes por ruta

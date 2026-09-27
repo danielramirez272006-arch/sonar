@@ -1,3 +1,4 @@
+import { useUIText } from '../../i18n/use-ui-text.js';
 import React, { useState } from 'react';
 import { AnimatedLogo } from '../ui/AnimatedLogo';
 import EngineStatusModal from '../ui/engine-status-modal';
@@ -7,6 +8,7 @@ import { useLanguage } from '../../context/language-context';
 import { LanguageSelector } from '../ui/language-selector';
 
 export const Footer = () => {
+  const ui = useUIText();
   const { user } = useAuth() || {};
   const { t } = useTranslation();
   const [isEngineOpen, setIsEngineOpen] = useState(false);
@@ -27,24 +29,24 @@ export const Footer = () => {
             </p>
             <div className="flex items-center gap-2 pt-2">
               <a
-                aria-label="Podcasts Sonar"
-                title="Sesiones y Podcasts Sonar"
+                aria-label={ui("Podcasts Sonar")}
+                title={ui("Sesiones y Podcasts Sonar")}
                 className="w-9 h-9 rounded-xl bg-[#f0e2ee] dark:bg-white/10 border border-[#ddcadb] dark:border-white/10 flex items-center justify-center text-[#231123] dark:text-white hover:text-white hover:bg-[#B80C09] dark:hover:bg-[#B80C09] transition-all shadow-xs"
                 href="#podcasts"
               >
                 <span className="material-symbols-outlined text-[18px]">podcasts</span>
               </a>
               <a
-                aria-label="Modo Tocadiscos Vinilo"
-                title="Modo Tocadiscos Inmersivo 33⅓ RPM"
+                aria-label={ui("Modo Tocadiscos Vinilo")}
+                title={ui("Modo Tocadiscos Inmersivo 33⅓ RPM")}
                 className="w-9 h-9 rounded-xl bg-[#f0e2ee] dark:bg-white/10 border border-[#ddcadb] dark:border-white/10 flex items-center justify-center text-[#231123] dark:text-white hover:text-white hover:bg-[#B80C09] dark:hover:bg-[#B80C09] transition-all shadow-xs"
                 href="#album"
               >
                 <span className="material-symbols-outlined text-[18px]">album</span>
               </a>
               <a
-                aria-label="Boletín y Feed RSS"
-                title="Boletín y Feed RSS Audiófilo"
+                aria-label={ui("Boletín y Feed RSS")}
+                title={ui("Boletín y Feed RSS Audiófilo")}
                 className="w-9 h-9 rounded-xl bg-[#f0e2ee] dark:bg-white/10 border border-[#ddcadb] dark:border-white/10 flex items-center justify-center text-[#231123] dark:text-white hover:text-white hover:bg-[#B80C09] dark:hover:bg-[#B80C09] transition-all shadow-xs"
                 href="#rss_feed"
               >
@@ -102,10 +104,10 @@ export const Footer = () => {
             type="button"
             onClick={() => setIsEngineOpen(true)}
             className="flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#f0e2ee] dark:bg-white/10 border border-[#ddcadb] dark:border-white/10 text-xs text-[#231123] dark:text-white hover:border-[#B80C09] hover:text-[#B80C09] transition-all cursor-pointer font-bold shadow-xs"
-            title="Ver telemetría y estado del sistema"
+            title={ui("Ver telemetría y estado del sistema")}
           >
             <span className="w-2 h-2 rounded-full bg-emerald-500 inline-block animate-pulse" />
-            <span>Sonar Engine v2.4 Activo</span>
+            <span>{ui("Sonar Engine v2.4 Activo")}</span>
           </button>
         </div>
       </div>

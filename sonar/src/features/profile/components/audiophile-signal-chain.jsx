@@ -1,3 +1,4 @@
+import { useUIText } from '../../../shared/i18n/use-ui-text.js';
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 
@@ -30,6 +31,7 @@ const GEAR_OPTIONS = {
 };
 
 export const AudiophileSignalChain = ({ currentGear = {}, onUpdateGear }) => {
+  const ui = useUIText();
   const [selectedCartridge, setSelectedCartridge] = useState(GEAR_OPTIONS.cartridge[0]);
   const [selectedPhono, setSelectedPhono] = useState(GEAR_OPTIONS.phono[0]);
   const [selectedDac, setSelectedDac] = useState(GEAR_OPTIONS.dac[0]);
@@ -75,22 +77,14 @@ export const AudiophileSignalChain = ({ currentGear = {}, onUpdateGear }) => {
 
       <div className="relative z-10 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <span className="text-xs font-mono font-bold tracking-widest uppercase text-pink-300">
-            ARQUITECTURA DE AUDIO ANALÓGICO & DIGITAL
-          </span>
-          <h3 className="text-2xl font-black tracking-tight mt-0.5">
-            Cadena de Señal Audiófila Visual
-          </h3>
-          <p className="text-xs text-[#DCDCDD]/80 mt-1">
-            Configura el flujo de audio desde la aguja del vinilo hasta tus audífonos.
-          </p>
+          <span className="text-xs font-mono font-bold tracking-widest uppercase text-pink-300">{ui("ARQUITECTURA DE AUDIO ANALÓGICO & DIGITAL")}</span>
+          <h3 className="text-2xl font-black tracking-tight mt-0.5">{ui("Cadena de Señal Audiófila Visual")}</h3>
+          <p className="text-xs text-[#DCDCDD]/80 mt-1">{ui("Configura el flujo de audio desde la aguja del vinilo hasta tus audífonos.")}</p>
         </div>
 
         <div className="flex items-center gap-3">
           <div className="p-3 rounded-2xl bg-black/40 border border-white/10 text-right">
-            <span className="text-[10px] uppercase font-mono tracking-wider text-pink-300/80 block">
-              Pureza Acústica Total
-            </span>
+            <span className="text-[10px] uppercase font-mono tracking-wider text-pink-300/80 block">{ui("Pureza Acústica Total")}</span>
             <div className="flex items-center gap-2 justify-end">
               <span className="text-xl font-mono font-black text-emerald-300">
                 {overallPurity}% SNR
@@ -104,7 +98,7 @@ export const AudiophileSignalChain = ({ currentGear = {}, onUpdateGear }) => {
             onClick={handleApplyChain}
             className="px-4 py-3 rounded-2xl bg-[#B80C09] hover:bg-[#960a07] text-white text-xs font-black uppercase tracking-wider transition-all shadow-lg cursor-pointer"
           >
-            {savedNotice ? '¡Cadena Guardada!' : 'Guardar Setup'}
+            {savedNotice ? ui("¡Cadena Guardada!") : ui("Guardar Setup")}
           </button>
         </div>
       </div>
@@ -143,7 +137,7 @@ export const AudiophileSignalChain = ({ currentGear = {}, onUpdateGear }) => {
                 <span className="material-symbols-outlined text-[14px] text-[#B80C09]">{stage.current.icon}</span>
                 <span className="truncate max-w-[90px]">{stage.current.name.split(' ')[0]}</span>
               </span>
-              <span className="font-mono">Paso {idx + 1}/5</span>
+              <span className="font-mono">{ui("Paso")} {idx + 1}/5</span>
             </div>
           </div>
         ))}

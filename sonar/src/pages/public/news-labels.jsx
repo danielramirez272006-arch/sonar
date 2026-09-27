@@ -1,3 +1,4 @@
+import { useUIText } from '../../shared/i18n/use-ui-text.js';
 const initialsOf = name =>
   String(name || '?')
     .split(/\s+/)
@@ -8,6 +9,7 @@ const initialsOf = name =>
     .toLocaleUpperCase()
 
 export function NewsLabels({ labels, articles, editions, releases, selected, onSelect, onClear }) {
+  const ui = useUIText();
   if (!labels.length) return null
 
   const countFor = labelId =>
@@ -21,19 +23,14 @@ export function NewsLabels({ labels, articles, editions, releases, selected, onS
       <header className="sonar-showcase__head">
         <div className="sonar-showcase__intro">
           <span className="sonar-showcase__eyebrow">
-            <span className="material-symbols-outlined">domain</span>
-            Catálogo editorial
-          </span>
-          <h2 id="sonar-labels-title" className="sonar-showcase__title">
-            Discográficas <span className="sonar-showcase__title-accent">y sus novedades</span>
+            <span className="material-symbols-outlined">domain</span>{ui("Catálogo editorial")}</span>
+          <h2 id="sonar-labels-title" className="sonar-showcase__title">{ui("Discográficas")} <span className="sonar-showcase__title-accent">{ui("y sus novedades")}</span>
           </h2>
-          <p className="sonar-showcase__lead">
-            Selecciona un sello para ver sus lanzamientos, reediciones y anuncios publicados.
-          </p>
+          <p className="sonar-showcase__lead">{ui("Selecciona un sello para ver sus lanzamientos, reediciones y anuncios publicados.")}</p>
         </div>
         <span className="sonar-showcase__count">
           <span className="material-symbols-outlined">apartment</span>
-          {labels.length} {labels.length === 1 ? 'sello' : 'sellos'}
+          {labels.length} {labels.length === 1 ? ui("sello") : ui("sellos")}
         </span>
       </header>
 
@@ -60,7 +57,7 @@ export function NewsLabels({ labels, articles, editions, releases, selected, onS
               </div>
 
               <div className="sonar-label-card__body">
-                <span className="sonar-label-card__kicker">Sello discográfico</span>
+                <span className="sonar-label-card__kicker">{ui("Sello discográfico")}</span>
                 <h3 className="sonar-label-card__name">{label.name}</h3>
 
                 <p className="sonar-label-card__meta">
@@ -73,15 +70,15 @@ export function NewsLabels({ labels, articles, editions, releases, selected, onS
                 <ul className="sonar-label-card__stats">
                   <li>
                     <strong>{newsCount}</strong>
-                    <span>Noticias</span>
+                    <span>{ui("Noticias")}</span>
                   </li>
                   <li>
                     <strong>{vinylCountFor(label.id)}</strong>
-                    <span>Vinilos</span>
+                    <span>{ui("Vinilos")}</span>
                   </li>
                   <li>
                     <strong>{releaseCountFor(label.id)}</strong>
-                    <span>Lanzamientos</span>
+                    <span>{ui("Lanzamientos")}</span>
                   </li>
                 </ul>
 
@@ -93,11 +90,9 @@ export function NewsLabels({ labels, articles, editions, releases, selected, onS
                       target="_blank"
                       rel="noopener noreferrer"
                     >
-                      <span className="material-symbols-outlined">open_in_new</span>
-                      Sitio oficial
-                    </a>
+                      <span className="material-symbols-outlined">open_in_new</span>{ui("Sitio oficial")}</a>
                   ) : (
-                    <span className="sonar-label-card__site is-empty">Sin sitio web</span>
+                    <span className="sonar-label-card__site is-empty">{ui("Sin sitio web")}</span>
                   )}
 
                   <button
@@ -108,12 +103,9 @@ export function NewsLabels({ labels, articles, editions, releases, selected, onS
                   >
                     {isActive ? (
                       <>
-                        <span className="material-symbols-outlined">check</span>
-                        Filtrando
-                      </>
+                        <span className="material-symbols-outlined">check</span>{ui("Filtrando")}</>
                     ) : (
-                      <>
-                        Ver novedades ({totalCount})
+                      <>{ui("Ver novedades (")}{totalCount})
                         <span className="material-symbols-outlined">arrow_forward</span>
                       </>
                     )}
@@ -127,11 +119,7 @@ export function NewsLabels({ labels, articles, editions, releases, selected, onS
 
       {selected && (
         <div className="sonar-labels-section__reset">
-          <span className="material-symbols-outlined">filter_alt_off</span>
-          Estás viendo solo las novedades de un sello.
-          <button type="button" onClick={onClear}>
-            Mostrar noticias de todos los sellos
-          </button>
+          <span className="material-symbols-outlined">filter_alt_off</span>{ui("Estás viendo solo las novedades de un sello.")}<button type="button" onClick={onClear}>{ui("Mostrar noticias de todos los sellos")}</button>
         </div>
       )}
     </section>

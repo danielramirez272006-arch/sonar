@@ -1,3 +1,4 @@
+import { useUIText } from '../../../shared/i18n/use-ui-text.js';
 import React, { useState, useRef, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Avatar } from '../../../shared/components/ui/avatar';
@@ -14,6 +15,7 @@ export const AudiophileMonthlyWrapped = ({
   reviewsCount = 0,
   gearSetup = {},
 }) => {
+  const ui = useUIText();
   const [copiedNotice, setCopiedNotice] = useState(false);
   const [isDownloadingBadge, setIsDownloadingBadge] = useState(false);
   const credentialRef = useRef(null);
@@ -209,7 +211,7 @@ export const AudiophileMonthlyWrapped = ({
             className="fixed top-20 right-6 z-50 px-4 py-3 rounded-2xl bg-[#003844] text-[#DCDCDD] font-bold text-xs shadow-2xl border border-[#52a2b0]/40 flex items-center gap-2 backdrop-blur-xl"
           >
             <span className="material-symbols-outlined text-[#52a2b0] text-[18px]">verified</span>
-            <span>¡Resumen y credencial listos para compartir!</span>
+            <span>{ui("¡Resumen y credencial listos para compartir!")}</span>
           </motion.div>
         )}
       </AnimatePresence>
@@ -222,14 +224,10 @@ export const AudiophileMonthlyWrapped = ({
           <div>
             <span className="text-xs font-mono font-bold uppercase tracking-widest text-[#DCDCDD]/80 flex items-center gap-1.5">
               <span className="material-symbols-outlined text-[16px] text-[#B80C09]">equalizer</span>
-              <span>SONAR WRAPPED • REPORTE ACÚSTICO</span>
+              <span>{ui("SONAR WRAPPED • REPORTE ACÚSTICO")}</span>
             </span>
-            <h3 className="text-2xl sm:text-3xl font-black text-white tracking-tight mt-0.5">
-              Tu Espectro Musical y Hábitos de Escucha
-            </h3>
-            <p className="text-xs text-[#DCDCDD]/80 mt-1 max-w-xl">
-              Métricas calculadas a partir de tus sesiones Lossless, álbumes coleccionados y valoraciones críticas.
-            </p>
+            <h3 className="text-2xl sm:text-3xl font-black text-white tracking-tight mt-0.5">{ui("Tu Espectro Musical y Hábitos de Escucha")}</h3>
+            <p className="text-xs text-[#DCDCDD]/80 mt-1 max-w-xl">{ui("Métricas calculadas a partir de tus sesiones Lossless, álbumes coleccionados y valoraciones críticas.")}</p>
           </div>
 
           <div className="flex items-center gap-2.5 self-start sm:self-auto flex-wrap">
@@ -238,12 +236,12 @@ export const AudiophileMonthlyWrapped = ({
               onClick={handleDownloadCredential}
               disabled={isDownloadingBadge}
               className="px-4 py-2.5 rounded-2xl bg-[#003844] hover:bg-[#002830] text-[#DCDCDD] border border-[#52a2b0]/40 font-bold text-xs transition-all shadow-md flex items-center gap-2 cursor-pointer"
-              title="Descargar imagen HD de tu credencial oficial de melómano"
+              title={ui("Descargar imagen HD de tu credencial oficial de melómano")}
             >
               <span className="material-symbols-outlined text-[16px] text-[#52a2b0]">
                 {isDownloadingBadge ? 'hourglass_top' : 'badge'}
               </span>
-              <span>{isDownloadingBadge ? 'Generando PNG...' : 'Descargar Credencial HD'}</span>
+              <span>{isDownloadingBadge ? ui("Generando PNG...") : ui("Descargar Credencial HD")}</span>
             </button>
 
             <button
@@ -254,7 +252,7 @@ export const AudiophileMonthlyWrapped = ({
               <span className="material-symbols-outlined text-[16px]">
                 {copiedNotice ? 'check' : 'ios_share'}
               </span>
-              <span>{copiedNotice ? '¡Copiado!' : 'Compartir Resumen'}</span>
+              <span>{copiedNotice ? ui("¡Copiado!") : ui("Compartir Resumen")}</span>
             </button>
           </div>
         </div>
@@ -262,7 +260,7 @@ export const AudiophileMonthlyWrapped = ({
         {/* 4 Métricas de Alto Impacto */}
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 relative z-10">
           <div className="p-4 rounded-2xl bg-black/40 border border-white/10 flex flex-col justify-between gap-2">
-            <span className="text-[11px] font-mono text-[#DCDCDD]/70 uppercase">Tiempo Hi-Fi Acumulado</span>
+            <span className="text-[11px] font-mono text-[#DCDCDD]/70 uppercase">{ui("Tiempo Hi-Fi Acumulado")}</span>
             <div>
               <span className="text-2xl sm:text-3xl font-black text-white font-mono">{listeningHours}h</span>
               <span className="text-[10px] text-[#DCDCDD]/70 block mt-0.5">Audio 24-bit / 96kHz</span>
@@ -270,28 +268,28 @@ export const AudiophileMonthlyWrapped = ({
           </div>
 
           <div className="p-4 rounded-2xl bg-black/40 border border-white/10 flex flex-col justify-between gap-2">
-            <span className="text-[11px] font-mono text-[#DCDCDD]/70 uppercase">Álbumes Archivados</span>
+            <span className="text-[11px] font-mono text-[#DCDCDD]/70 uppercase">{ui("Álbumes Archivados")}</span>
             <div>
               <span className="text-2xl sm:text-3xl font-black text-white font-mono">{savedCount}</span>
-              <span className="text-[10px] text-[#DCDCDD]/70 block mt-0.5">Vinilteca de 180g</span>
+              <span className="text-[10px] text-[#DCDCDD]/70 block mt-0.5">{ui("Vinilteca de 180g")}</span>
             </div>
           </div>
 
           <div className="p-4 rounded-2xl bg-black/40 border border-white/10 flex flex-col justify-between gap-2">
-            <span className="text-[11px] font-mono text-[#DCDCDD]/70 uppercase">Reseñas de Autor</span>
+            <span className="text-[11px] font-mono text-[#DCDCDD]/70 uppercase">{ui("Reseñas de Autor")}</span>
             <div>
               <span className="text-2xl sm:text-3xl font-black text-white font-mono">{reviewsCount}</span>
-              <span className="text-[10px] text-[#DCDCDD]/70 block mt-0.5">Críticas comunitarias</span>
+              <span className="text-[10px] text-[#DCDCDD]/70 block mt-0.5">{ui("Críticas comunitarias")}</span>
             </div>
           </div>
 
           <div className="p-4 rounded-2xl bg-black/40 border border-white/10 flex flex-col justify-between gap-2">
-            <span className="text-[11px] font-mono text-[#DCDCDD]/70 uppercase">Hora Pico de Audición</span>
+            <span className="text-[11px] font-mono text-[#DCDCDD]/70 uppercase">{ui("Hora Pico de Audición")}</span>
             <div>
               <span className="text-base sm:text-lg font-black text-[#52a2b0] truncate block">
                 22:00 - 00:00
               </span>
-              <span className="text-[10px] text-[#DCDCDD]/70 block mt-0.5">Sesión Nocturna en Tubos</span>
+              <span className="text-[10px] text-[#DCDCDD]/70 block mt-0.5">{ui("Sesión Nocturna en Tubos")}</span>
             </div>
           </div>
         </div>
@@ -303,9 +301,9 @@ export const AudiophileMonthlyWrapped = ({
             <div className="flex items-center justify-between">
               <span className="text-xs font-bold text-white flex items-center gap-1.5">
                 <span className="material-symbols-outlined text-[16px] text-[#52a2b0]">bar_chart</span>
-                <span>Distribución Semanal de Minutos de Escucha</span>
+                <span>{ui("Distribución Semanal de Minutos de Escucha")}</span>
               </span>
-              <span className="text-[11px] font-mono text-[#DCDCDD]/70">Promedio: 40 min/día</span>
+              <span className="text-[11px] font-mono text-[#DCDCDD]/70">{ui("Promedio: 40 min/día")}</span>
             </div>
 
             <div className="flex items-end justify-between gap-2 h-36 pt-4 pb-1 px-2">
@@ -332,7 +330,7 @@ export const AudiophileMonthlyWrapped = ({
           <div className="lg:col-span-5 p-5 rounded-2xl bg-black/40 border border-white/10 flex flex-col justify-between gap-4">
             <span className="text-xs font-bold text-white flex items-center gap-1.5">
               <span className="material-symbols-outlined text-[16px] text-[#B80C09]">pie_chart</span>
-              <span>Afinidad por Formato de Audio</span>
+              <span>{ui("Afinidad por Formato de Audio")}</span>
             </span>
 
             <div className="flex flex-col gap-3">
@@ -357,9 +355,7 @@ export const AudiophileMonthlyWrapped = ({
               ))}
             </div>
 
-            <span className="text-[10px] text-[#DCDCDD]/60 italic">
-              * Basado en la respuesta armónica de tu ecualización y catálogo guardado.
-            </span>
+            <span className="text-[10px] text-[#DCDCDD]/60 italic">{ui("* Basado en la respuesta armónica de tu ecualización y catálogo guardado.")}</span>
           </div>
         </div>
       </div>
@@ -373,11 +369,9 @@ export const AudiophileMonthlyWrapped = ({
           <div>
             <span className="text-xs font-extrabold uppercase tracking-wider text-[#B80C09] flex items-center gap-1.5">
               <span className="material-symbols-outlined text-[16px]">verified</span>
-              <span>Credencial Oficial de Melómano</span>
+              <span>{ui("Credencial Oficial de Melómano")}</span>
             </span>
-            <h3 className="text-xl sm:text-2xl font-black text-[#231123] dark:text-[#DCDCDD] mt-0.5">
-              Pasaporte & Identidad de Audio Hi-Fi
-            </h3>
+            <h3 className="text-xl sm:text-2xl font-black text-[#231123] dark:text-[#DCDCDD] mt-0.5">{ui("Pasaporte & Identidad de Audio Hi-Fi")}</h3>
           </div>
 
           <button
@@ -386,7 +380,7 @@ export const AudiophileMonthlyWrapped = ({
             className="px-4 py-2 rounded-xl bg-[#003844] hover:bg-[#002830] text-[#DCDCDD] text-xs font-bold transition-all shadow-xs flex items-center gap-1.5 self-start sm:self-auto cursor-pointer"
           >
             <span className="material-symbols-outlined text-[16px] text-[#52a2b0]">download</span>
-            <span>Exportar Tarjeta PNG</span>
+            <span>{ui("Exportar Tarjeta PNG")}</span>
           </button>
         </div>
 
@@ -405,7 +399,7 @@ export const AudiophileMonthlyWrapped = ({
             <div className="flex flex-col gap-1">
               <div className="flex items-center gap-2">
                 <h4 className="text-xl sm:text-2xl font-black text-white">
-                  {user?.name || user?.username || 'Melómano Sonar'}
+                  {user?.name || user?.username || ui("Melómano Sonar")}
                 </h4>
                 <span className="px-2 py-0.5 rounded-full text-[10px] font-black uppercase bg-[#B80C09] text-white">
                   Verificado
@@ -423,13 +417,13 @@ export const AudiophileMonthlyWrapped = ({
 
           <div className="flex flex-col sm:flex-row items-center gap-4 z-10 w-full md:w-auto justify-end">
             <div className="p-3.5 rounded-xl bg-black/50 border border-white/15 flex flex-col gap-1 min-w-[200px]">
-              <span className="text-[10px] font-mono text-[#DCDCDD]/70 uppercase">Pasaporte ID</span>
+              <span className="text-[10px] font-mono text-[#DCDCDD]/70 uppercase">{ui("Pasaporte ID")}</span>
               <span className="text-base font-mono font-black text-white">{passportId}</span>
-              <span className="text-[10px] text-[#52a2b0] font-medium">Cadena Acústica Certificada</span>
+              <span className="text-[10px] text-[#52a2b0] font-medium">{ui("Cadena Acústica Certificada")}</span>
             </div>
 
             <div className="p-3.5 rounded-xl bg-black/50 border border-white/15 flex flex-col gap-1 min-w-[180px]">
-              <span className="text-[10px] font-mono text-[#DCDCDD]/70 uppercase">Setup Principal</span>
+              <span className="text-[10px] font-mono text-[#DCDCDD]/70 uppercase">{ui("Setup Principal")}</span>
               <span className="text-xs font-bold text-white truncate">
                 {gearSetup?.turntable || 'Technics SL-1200'}
               </span>

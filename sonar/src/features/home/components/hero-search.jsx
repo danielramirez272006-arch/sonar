@@ -1,3 +1,4 @@
+import { useUIText } from '../../../shared/i18n/use-ui-text.js';
 import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useTheme } from '../../../shared/context/theme-context';
@@ -80,6 +81,7 @@ const KIDS_TRENDING_SEARCHES = [
 ];
 
 export const HeroSearch = ({ onSearch = () => {}, onSubmit = () => {} }) => {
+  const ui = useUIText();
   const [searchValue, setSearchValue] = useState('');
   const [activeTab, setActiveTab] = useState('all');
   const [filterPanel, setFilterPanel] = useState('none'); // 'none' | 'scenarios' | 'labels' | 'decades' | 'genres' | 'energy'
@@ -459,12 +461,12 @@ export const HeroSearch = ({ onSearch = () => {}, onSubmit = () => {} }) => {
                 autoComplete="off"
                 placeholder={
                   activeTab === 'lyrics'
-                    ? 'Escribe un verso o letra...'
+                    ? ui("Escribe un verso o letra...")
                     : activeTab === 'track'
-                    ? 'Buscar por canción o pista...'
+                    ? ui("Buscar por canción o pista...")
                     : activeTab === 'artist'
-                    ? 'Buscar artista (ej: Radiohead, Björk)...'
-                    : placeholderText || 'Buscar álbum, artista o melodía...'
+                    ? ui("Buscar artista (ej: Radiohead, Björk)...")
+                    : placeholderText || ui("Buscar álbum, artista o melodía...")
                 }
                 value={searchValue}
                 onChange={handleInputChange}
@@ -491,7 +493,7 @@ export const HeroSearch = ({ onSearch = () => {}, onSubmit = () => {} }) => {
                       ? 'bg-rose-600 text-white animate-pulse shadow-md scale-110'
                       : 'text-gray-400 hover:text-[#B80C09] hover:bg-gray-100 dark:hover:bg-white/10'
                   }`}
-                  title={isListening ? 'Escuchando... Di el nombre del álbum o artista' : 'Buscar por voz'}
+                  title={isListening ? ui("Escuchando... Di el nombre del álbum o artista") : ui("Buscar por voz")}
                 >
                   <span className="material-symbols-outlined text-[19px]">
                     {isListening ? 'mic' : 'mic_none'}
@@ -559,7 +561,7 @@ export const HeroSearch = ({ onSearch = () => {}, onSubmit = () => {} }) => {
 
                 {/* Comandos Rápidos de Voz */}
                 <div className="flex flex-wrap items-center justify-center gap-1.5 pt-1.5 border-t border-white/10">
-                  <span className="text-[10px] font-bold text-rose-200">O prueba con:</span>
+                  <span className="text-[10px] font-bold text-rose-200">{ui("O prueba con:")}</span>
                   {['Radiohead', 'Rosalía', 'Daft Punk', 'Tame Impala', 'Kind of Blue'].map((sample) => (
                     <button
                       key={sample}
@@ -624,12 +626,10 @@ export const HeroSearch = ({ onSearch = () => {}, onSubmit = () => {} }) => {
                       <div className="text-[11px] font-extrabold text-[#5c435a] dark:text-gray-400 flex items-center justify-between">
                         <span className="flex items-center gap-1.5">
                           <span className="material-symbols-outlined text-[15px] text-[#B80C09]">trending_up</span>
-                          <span>{isKidsActive ? 'TENDENCIAS FAMILIARES (MODO KIDS)' : 'TENDENCIAS GLOBALES'}</span>
+                          <span>{isKidsActive ? ui("TENDENCIAS FAMILIARES (MODO KIDS)") : ui("TENDENCIAS GLOBALES")}</span>
                         </span>
                         {isKidsActive && (
-                          <span className="text-[9px] font-extrabold text-amber-600 dark:text-amber-300 bg-amber-500/10 px-2 py-0.5 rounded-full border border-amber-500/30">
-                            🛡️ Seguro
-                          </span>
+                          <span className="text-[9px] font-extrabold text-amber-600 dark:text-amber-300 bg-amber-500/10 px-2 py-0.5 rounded-full border border-amber-500/30">{ui("🛡️ Seguro")}</span>
                         )}
                       </div>
                       <div className="flex flex-wrap gap-1.5">
@@ -652,8 +652,8 @@ export const HeroSearch = ({ onSearch = () => {}, onSubmit = () => {} }) => {
                     {/* Lista Principal de Autocompletado */}
                     <div className={`${hoveredAlbum ? 'md:col-span-7' : 'md:col-span-12'} flex flex-col p-2 overflow-y-auto max-h-[380px]`}>
                       <div className="px-3 py-1.5 border-b border-gray-100 dark:border-white/5 flex items-center justify-between text-[10px] font-extrabold text-[#5c435a] dark:text-gray-400">
-                        <span>RESULTADOS (Usa ↑ ↓ Enter Espacio)</span>
-                        <span>Enter para ver todo</span>
+                        <span>{ui("RESULTADOS (Usa ↑ ↓ Enter Espacio)")}</span>
+                        <span>{ui("Enter para ver todo")}</span>
                       </div>
 
                       <div className="flex flex-col divide-y divide-gray-100 dark:divide-white/5">
@@ -696,7 +696,7 @@ export const HeroSearch = ({ onSearch = () => {}, onSubmit = () => {} }) => {
                                     type="button"
                                     onClick={(e) => handleInspectTracklist(album, e)}
                                     className="p-1.5 rounded-lg bg-gray-100 dark:bg-white/10 hover:bg-[#B80C09] hover:text-white text-xs font-bold text-[#231123] dark:text-white transition-colors cursor-pointer"
-                                    title="Ver lista de canciones"
+                                    title={ui("Ver lista de canciones")}
                                   >
                                     <span className="material-symbols-outlined text-[16px]">
                                       {loadingTracklistId === album.id ? 'progress_activity' : 'queue_music'}
@@ -707,9 +707,9 @@ export const HeroSearch = ({ onSearch = () => {}, onSubmit = () => {} }) => {
                                     type="button"
                                     onClick={(e) => handleSearchSimilar(album, e)}
                                     className="px-2 py-1 rounded-lg bg-gray-100 dark:bg-white/10 hover:bg-[#B80C09] hover:text-white text-[11px] font-bold text-[#231123] dark:text-white transition-colors cursor-pointer"
-                                    title="Buscar similares"
+                                    title={ui("Buscar similares")}
                                   >
-                                    <span>✦ Similares</span>
+                                    <span>{ui("✦ Similares")}</span>
                                   </button>
 
                                   <button
@@ -726,7 +726,7 @@ export const HeroSearch = ({ onSearch = () => {}, onSubmit = () => {} }) => {
                                       });
                                     }}
                                     className="w-8 h-8 rounded-full bg-[#B80C09] text-white flex items-center justify-center shadow-xs hover:scale-110 transition-transform cursor-pointer"
-                                    title="Reproducir muestra"
+                                    title={ui("Reproducir muestra")}
                                   >
                                     <span className="material-symbols-outlined text-[18px]">
                                       {isItemPlaying ? 'pause' : 'play_arrow'}
@@ -741,9 +741,7 @@ export const HeroSearch = ({ onSearch = () => {}, onSubmit = () => {} }) => {
                                   animate={{ opacity: 1, height: 'auto' }}
                                   className="mt-2 p-2 rounded-xl bg-gray-50 dark:bg-[#1a0c1a] border border-gray-200 dark:border-white/5 flex flex-col gap-1"
                                 >
-                                  <span className="text-[10px] font-black uppercase tracking-wider text-[#5c1d5e] dark:text-pink-300">
-                                    PISTAS DESTACADAS EN DEEZER:
-                                  </span>
+                                  <span className="text-[10px] font-black uppercase tracking-wider text-[#5c1d5e] dark:text-pink-300">{ui("PISTAS DESTACADAS EN DEEZER:")}</span>
                                   {previewTracklist.tracks.map((t, idx) => (
                                     <div
                                       key={t.id}
@@ -808,9 +806,7 @@ export const HeroSearch = ({ onSearch = () => {}, onSubmit = () => {} }) => {
                           type="button"
                           onClick={() => executeSearch(hoveredAlbum.title)}
                           className="w-full py-1.5 rounded-xl bg-[#B80C09] hover:bg-[#9c0a07] text-white text-xs font-bold shadow-xs transition-colors cursor-pointer"
-                        >
-                          Ver Catálogo Completo
-                        </button>
+                        >{ui("Ver Catálogo Completo")}</button>
                       </motion.div>
                     )}
                   </div>
@@ -851,7 +847,7 @@ export const HeroSearch = ({ onSearch = () => {}, onSubmit = () => {} }) => {
               }`}
             >
               <span className="material-symbols-outlined text-[14px]">category</span>
-              <span>Géneros</span>
+              <span>{ui("Géneros")}</span>
               <span className="material-symbols-outlined text-[14px] opacity-60">
                 {filterPanel === 'genres' ? 'expand_less' : 'expand_more'}
               </span>
@@ -868,7 +864,7 @@ export const HeroSearch = ({ onSearch = () => {}, onSubmit = () => {} }) => {
               }`}
             >
               <span className="material-symbols-outlined text-[14px]">sell</span>
-              <span>Sellos</span>
+              <span>{ui("Sellos")}</span>
               <span className="material-symbols-outlined text-[14px] opacity-60">
                 {filterPanel === 'labels' ? 'expand_less' : 'expand_more'}
               </span>
@@ -885,7 +881,7 @@ export const HeroSearch = ({ onSearch = () => {}, onSubmit = () => {} }) => {
               }`}
             >
               <span className="material-symbols-outlined text-[14px]">schedule</span>
-              <span>Épocas</span>
+              <span>{ui("Épocas")}</span>
               <span className="material-symbols-outlined text-[14px] opacity-60">
                 {filterPanel === 'decades' ? 'expand_less' : 'expand_more'}
               </span>
@@ -902,7 +898,7 @@ export const HeroSearch = ({ onSearch = () => {}, onSubmit = () => {} }) => {
               }`}
             >
               <span className="material-symbols-outlined text-[14px]">tune</span>
-              <span>Intensidad</span>
+              <span>{ui("Intensidad")}</span>
               <span className="material-symbols-outlined text-[14px] opacity-60">
                 {filterPanel === 'energy' ? 'expand_less' : 'expand_more'}
               </span>
@@ -915,7 +911,7 @@ export const HeroSearch = ({ onSearch = () => {}, onSubmit = () => {} }) => {
               className="px-3 py-1 rounded-full text-xs font-bold bg-[#fbf0f8] dark:bg-[#341b34]/90 text-[#5c1d5e] dark:text-pink-300 border border-[#e6d5e2] dark:border-white/10 hover:border-[#B80C09] transition-all cursor-pointer shrink-0 flex items-center gap-1.5 select-none"
             >
               <span className="material-symbols-outlined text-[14px] text-amber-500">star</span>
-              <span>Obras Maestras</span>
+              <span>{ui("Obras Maestras")}</span>
             </button>
           </div>
 
@@ -999,11 +995,11 @@ export const HeroSearch = ({ onSearch = () => {}, onSubmit = () => {} }) => {
                 {filterPanel === 'energy' && (
                   <div className="w-full flex flex-col items-center gap-2 py-1 px-3">
                     <div className="flex items-center justify-between w-full text-xs font-bold text-[#5c435a] dark:text-gray-300">
-                      <span>🧘 Calmo / Ambient</span>
+                      <span>{ui("🧘 Calmo / Ambient")}</span>
                       <span className="text-[#B80C09] font-black">
-                        {energyLevel < 35 ? 'Nivel Relajante' : energyLevel > 68 ? 'Máxima Euforia' : 'Groove Equilibrado'}
+                        {energyLevel < 35 ? ui("Nivel Relajante") : energyLevel > 68 ? ui("Máxima Euforia") : ui("Groove Equilibrado")}
                       </span>
-                      <span>🔥 Fiesta / Rave</span>
+                      <span>{ui("🔥 Fiesta / Rave")}</span>
                     </div>
                     <input
                       type="range"

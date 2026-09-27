@@ -1,9 +1,11 @@
+import { useUIText } from './shared/i18n/use-ui-text.js';
 import { CatalogPage } from './pages/admin/catalog-page.jsx'
 import { catalogTypes } from './shared/services/catalog-service.js'
 import './Styles/admin-catalog.css'
 import { ReportsPage } from './pages/admin/reports-page.jsx'
 import { dashboardMetrics } from './shared/services/admin-data.js'
 import { useCallback, useEffect, useRef, useState } from 'react'
+import { useTranslation } from './shared/context/language-context.jsx'
 import { ConsoleSearch } from './features/admin/console-search.jsx'
 import { ModerationTable } from './features/admin/moderation/components/moderation-table.jsx'
 import { BrowserRouter } from 'react-router-dom'
@@ -29,7 +31,6 @@ import { AccessibilityWidget } from './shared/components/a11y/accessibility-widg
 import { KeyboardShortcutsModal } from './shared/components/a11y/keyboard-shortcuts-modal.jsx'
 import { ReadingGuide } from './shared/components/a11y/reading-guide.jsx'
 import { A11yScreenOverlay } from './shared/components/a11y/a11y-screen-overlay.jsx'
-import { GoogleOAuthProvider } from '@react-oauth/google'
 import { LanguageProvider } from './shared/context/language-context.jsx'
 import "./Styles/App.css";
 import './Styles/admin.css'
@@ -39,6 +40,8 @@ import './Styles/admin-users.css'
 import './Styles/accessibility.css'
 
 export function AdminConsole() {
+  const ui = useUIText();
+  const { t } = useTranslation()
   const { isDark, toggleTheme } = useTheme()
   const dashboard = useAdminDashboard()
   const moderation = useModeration()
@@ -106,7 +109,7 @@ export function AdminConsole() {
     setNotice('')
     try {
       await Promise.all([loadData(), dashboard.refresh(), moderation.refresh()])
-      setNotice('Información actualizada.')
+      setNotice(t('admin.console.noticeUpdated'))
     } catch (cause) {
       setError(cause.message || 'No se pudo actualizar la información.')
     } finally {
@@ -118,7 +121,7 @@ export function AdminConsole() {
   async function handleUserUpdate(userId, changes) {
     const updatedUser = await updateUser(userId, changes)
     setData(previous => ({ ...previous, users: previous.users.map(user => user.id === userId ? updatedUser : user) }))
-    setNotice('Perfil de usuario actualizado.')
+    setNotice(t('admin.console.profileUpdated'))
     return updatedUser
   }
 
@@ -133,16 +136,16 @@ export function AdminConsole() {
         const analysis = await analyzeReview(review)
         setAnalyses(previous => ({ ...previous, [review.id]: analysis }))
         if (analysis.aiFlagged) await moderation.flagReview(review.id)
-        setNotice(analysis.aiFlagged ? 'Reseña marcada para revisión humana.' : 'Análisis de prueba completado: no se detectaron palabras de la lista ofensiva.')
+        setNotice(analysis.aiFlagged ? t('admin.console.reviewFlagged') : t('admin.console.aiClear'))
       } else {
         await moderation[action === 'approve' ? 'approveReview' : 'rejectReview'](review.id)
-        setNotice(`Reseña ${action === 'approve' ? 'aprobada' : 'rechazada'}.`)
+        setNotice(action === 'approve' ? t('admin.console.reviewApproved') : t('admin.console.reviewRejected'))
       }
       await Promise.all([loadData(), dashboard.refresh()])
       return true
     } catch (cause) {
       setNotice('')
-      setError(cause.message || 'No se pudo completar la acción.')
+      setError(cause.message || t('admin.console.actionError'))
       return false
     } finally {
       actionLock.current = false
@@ -171,26 +174,26 @@ export function AdminConsole() {
   const shared = { users: data.users, query, busy: loading, onAction: handleAction, analyses, onUserUpdate: handleUserUpdate }
   return (
     <div className="sonar-app transition-colors duration-300 dark:bg-sonar-base dark:text-sonar-text min-h-screen">
-      <a className="skip-link" href="#contenido">Saltar al contenido</a>
+      <a className="skip-link" href="#contenido">{t('admin.console.skipContent')}</a>
       <header className="console-header dark:bg-sonar-surface dark:border-white/10">
         <div className="topbar shell dark:bg-sonar-surface dark:border-white/10">
-          <a href="#explore" className="brand flex items-center gap-3" aria-label="Sonar, ir al portal">
+          <a href="#explore" className="brand flex items-center gap-3" aria-label={t('admin.console.portal')}>
             <AnimatedLogo size="sm" showText={false} />
             <span>
               <strong className="text-gray-900 dark:text-sonar-text">
                 SONAR • <span className="text-[#B80C09] dark:text-[#ff4d4a] font-light tracking-widest text-lg transition-colors">CONSOLE</span>
               </strong>
-              <small className="dark:text-[#DCDCDD]/70">AUDIOPHILE CURATION HUB</small>
+              <small className="dark:text-[#DCDCDD]/70">{t('admin.dashboard.live')}</small>
             </span>
           </a>
           <ConsoleSearch users={data.users} reviews={data.reviews} query={query} setQuery={setQuery} inputRef={searchRef} />
           <div className="console-mode flex items-center gap-3">
-            <span className="status-dot" /> <span className="dark:text-sonar-text">Entorno de prueba</span> <span className="avatar small dark:bg-sonar-base dark:text-sonar-text border dark:border-white/10">S</span>
+            <span className="status-dot" /> <span className="dark:text-sonar-text">{t('admin.console.testEnvironment')}</span> <span className="avatar small dark:bg-sonar-base dark:text-sonar-text border dark:border-white/10">S</span>
             <button
               onClick={toggleTheme}
               className="p-2 rounded-md bg-gray-100 dark:bg-sonar-base text-gray-800 dark:text-sonar-text border border-transparent dark:border-white/10 hover:bg-gray-200 dark:hover:bg-white/10 transition-colors flex-shrink-0 cursor-pointer"
-              aria-label="Alternar modo oscuro"
-              title={isDark ? "Cambiar a Modo Blanco" : "Cambiar a Modo Oscuro"}
+              aria-label={t('admin.console.themeDark')}
+              title={isDark ? t('admin.console.themeLight') : t('admin.console.themeDark')}
             >
               <span className="material-symbols-outlined text-[18px]">
                 {isDark ? 'light_mode' : 'dark_mode'}
@@ -199,49 +202,49 @@ export function AdminConsole() {
           </div>
         </div>
         <div className="nav-row shell dark:bg-sonar-base dark:border-sonar-surface">
-          <nav aria-label="Administración">
-            <a href="#admin-catalog-releases" aria-current={page === 'catalog' ? 'page' : undefined}>Catálogos</a>
-            <a href="#admin-reports" aria-current={page === 'reports' ? 'page' : undefined}>Reportes</a>
-            <a href="#usuarios" aria-current={page === 'usuarios' ? 'page' : undefined}>Usuarios</a>
+          <nav aria-label={t('admin.console.navigation')}>
+            <a href="#admin-catalog-releases" aria-current={page === 'catalog' ? 'page' : undefined}>{t('admin.console.catalogs')}</a>
+            <a href="#admin-reports" aria-current={page === 'reports' ? 'page' : undefined}>{t('admin.console.reports')}</a>
+            <a href="#usuarios" aria-current={page === 'usuarios' ? 'page' : undefined}>{t('admin.console.users')}</a>
             <a
               className={`${page === 'dashboard' ? 'active dark:bg-sonar-surface dark:text-sonar-text dark:border dark:border-[#B80C09]/40 font-bold' : 'dark:text-sonar-text dark:hover:bg-sonar-surface/60'}`}
               aria-current={page === 'dashboard' ? 'page' : undefined}
               href="#dashboard"
             >
-              ◫ <span>Dashboard</span>
+              ◫ <span>{t('admin.console.dashboard')}</span>
             </a>
             <a
               className={`${page === 'moderacion' ? 'active dark:bg-sonar-surface dark:text-sonar-text dark:border dark:border-[#B80C09]/40 font-bold' : 'dark:text-sonar-text dark:hover:bg-sonar-surface/60'}`}
               aria-current={page === 'moderacion' ? 'page' : undefined}
               href="#moderacion"
             >
-              ≋ <span>Moderación</span>
+              ≋ <span>{t('admin.console.moderation')}</span>
               <span className="ml-2 px-2 py-0.5 rounded-full text-xs font-semibold bg-gray-200 dark:bg-sonar-surface text-gray-700 dark:text-sonar-text border border-transparent dark:border-white/10">
                 {dashboard.metrics.pendingReviews}
               </span>
             </a>
-            <a href="#explore" className="dark:text-sonar-text dark:hover:bg-sonar-surface/60">← <span>Ir al Portal Público</span></a>
+            <a href="#explore" className="dark:text-sonar-text dark:hover:bg-sonar-surface/60">← <span>{t('admin.console.publicPortal')}</span></a>
           </nav>
-          <span className="nav-caption dark:text-sonar-text/70">BUEN CRITERIO. MEJOR MÚSICA.</span>
+          <span className="nav-caption dark:text-sonar-text/70">{t('admin.console.slogan')}</span>
         </div>
       </header>
       <main id="contenido" tabIndex={-1} className="shell main-content transition-colors duration-300 dark:bg-sonar-base dark:text-sonar-text">
-        {currentError && <div className="error-banner" role="alert"><div><strong>No pudimos completar la consulta.</strong><p>{currentError} Comprueba que la API local esté disponible.</p></div><button onClick={refresh} disabled={loading}>Reintentar</button></div>}
+        {currentError && <div className="error-banner" role="alert"><div><strong>{t('admin.console.queryError')}</strong><p>{currentError} {t('admin.console.checkApi')}</p></div><button onClick={refresh} disabled={loading}>{t('admin.console.retry')}</button></div>}
         <div className="live-notice" role="status">{notice}</div>
         {page === 'catalog' ? <CatalogPage key={catalogType} type={catalogType} /> : page === 'reports' ? <ReportsPage users={data.users} reviews={data.reviews} onUserUpdate={handleUserUpdate} onSendToModeration={sendToModeration} /> : page === 'reviews' ? <ModerationTable key={window.location.hash} {...shared} compact={!routeParams.has('review')} userFilterId={routeParams.get('user')} query={routeParams.has('user') ? '' : query} reviews={routeParams.get('review') ? data.reviews.filter(review => String(review.id) === routeParams.get('review')) : data.reviews} initialFilter={routeParams.get('filter') || 'all'} /> : page === 'dashboard' ? <AdminDashboardPage {...shared} reviews={data.reviews} metrics={dashboardMetrics(data.users, data.reviews)} onRefresh={refresh} onExport={exportCsv} error={currentError} /> : page === 'usuarios' ? <UsersPage reviews={data.reviews} initialUserId={routeParams.get('user')} users={data.users} onUserUpdate={handleUserUpdate} /> : <ModerationPage {...shared} allReviews={data.reviews} reviews={moderation.reviews} onRefresh={refresh} error={currentError} />}
       </main>
       <footer className="console-footer">
         <div className="console-footer__inner shell">
           <div className="console-footer__brand">
-            <a href="#explore" className="console-footer__logo" aria-label="Sonar · Ir al portal público"><AnimatedLogo /></a>
-            <p>Un espacio para escuchar con atención.<br />Y compartir con criterio.</p>
+            <a href="#explore" className="console-footer__logo" aria-label={t('admin.console.portal')}><AnimatedLogo /></a>
+            <p>{t('admin.console.footerText')}</p>
           </div>
-          <nav className="console-footer__links" aria-label="Enlaces del pie de página">
-            <a href="#dashboard">Centro de control</a>
-            <a href="#moderacion">Moderación de reseñas</a>
-            <a href="#explore">Portal Público</a>
+          <nav className="console-footer__links" aria-label={ui("Enlaces del pie de página")}>
+            <a href="#dashboard">{t('admin.console.controlCenter')}</a>
+            <a href="#moderacion">{t('admin.console.reviewModeration')}</a>
+            <a href="#explore">{t('admin.console.portal')}</a>
           </nav>
-          <div className="edition">CURADO CON CRITERIO<br /><b>EDICIÓN AUDIÓFILA</b><small>© {new Date().getFullYear()} SONAR</small></div>
+          <div className="edition">{ui("CURADO CON CRITERIO")}<br /><b>{ui("EDICIÓN AUDIÓFILA")}</b><small>© {new Date().getFullYear()} SONAR</small></div>
         </div>
       </footer>
     </div>
@@ -250,7 +253,6 @@ export function AdminConsole() {
 
 export default function App() {
   return (
-    <GoogleOAuthProvider clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID || ''}>
       <ErrorBoundary>
         <LanguageProvider>
           <BrowserRouter>
@@ -279,6 +281,5 @@ export default function App() {
           </BrowserRouter>
         </LanguageProvider>
       </ErrorBoundary>
-    </GoogleOAuthProvider>
   )
 }

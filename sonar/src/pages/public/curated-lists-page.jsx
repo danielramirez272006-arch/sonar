@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import Navbar from '../../shared/components/layout/navbar';
 import Footer from '../../shared/components/layout/footer';
 import { usePlayer } from '../../shared/context/player-context';
+import { useTranslation } from '../../shared/context/language-context.jsx';
 
 const CURATED_LISTS = [
   {
@@ -53,6 +54,7 @@ const CURATED_LISTS = [
 ];
 
 export const CuratedListsPage = () => {
+  const { t } = useTranslation();
   const { playTrack } = usePlayer();
   const [activeListId, setActiveListId] = useState(CURATED_LISTS[0].id);
 
@@ -81,14 +83,14 @@ export const CuratedListsPage = () => {
           <div className="flex items-center gap-2 mb-2">
             <span className="w-2.5 h-2.5 rounded-full bg-[#B80C09] animate-pulse" />
             <span className="text-xs uppercase tracking-widest font-black text-[#5c1d5e] dark:text-pink-300">
-              GUÍAS DEFINITIVAS & ANTOLOGÍAS
+              {t('page.lists.eyebrow')}
             </span>
           </div>
           <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-[#231123] dark:text-white">
-            Listas Esenciales
+            {t('page.lists.title')}
           </h1>
           <p className="text-sm sm:text-base text-[#5c435a] dark:text-[#B89CB0] max-w-2xl mt-2 font-medium">
-            Selecciones temáticas exhaustivas curadas con rigor analítico por el consejo editorial de Sonar para explorar la historia musical disco a disco.
+            {t('page.lists.description')}
           </p>
         </header>
 
@@ -129,14 +131,14 @@ export const CuratedListsPage = () => {
                 </div>
 
                 <div className="pt-4 border-t border-[#e6d5e2] dark:border-white/10 flex items-center justify-between text-xs font-bold text-[#5c1d5e] dark:text-pink-200">
-                  <span>{list.albumsCount} Álbumes · {list.duration}</span>
+                  <span>{t('page.lists.albumCount', { count: list.albumsCount, duration: list.duration })}</span>
                   <button
                     onClick={(e) => {
                       e.stopPropagation();
                       handlePlayFirstAlbum(list);
                     }}
                     className="p-2 rounded-full bg-[#B80C09] text-white flex items-center justify-center hover:scale-105 transition-transform"
-                    title="Reproducir lista"
+                    title={t('page.lists.play')}
                   >
                     <span className="material-symbols-outlined text-[18px]">play_arrow</span>
                   </button>
@@ -151,7 +153,7 @@ export const CuratedListsPage = () => {
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6 border-b border-[#e6d5e2] dark:border-white/10 pb-4">
             <div>
               <span className="text-xs uppercase tracking-widest font-black text-[#5c1d5e] dark:text-pink-300">
-                DISCOS INCLUIDOS EN LA SELECCIÓN
+                {t('page.lists.included')}
               </span>
               <h2 className="text-2xl sm:text-3xl font-extrabold text-[#231123] dark:text-white mt-1">
                 {activeList.title}
@@ -162,7 +164,7 @@ export const CuratedListsPage = () => {
               className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-[#B80C09] text-white text-xs font-bold uppercase tracking-wider shadow-md hover:bg-[#9c0a07] transition-all cursor-pointer"
             >
               <span className="material-symbols-outlined text-[18px]">play_circle</span>
-              <span>Comenzar Reproducción</span>
+              <span>{t('page.lists.startPlayback')}</span>
             </button>
           </div>
 

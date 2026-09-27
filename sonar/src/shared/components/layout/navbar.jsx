@@ -1,3 +1,4 @@
+import { useUIText } from '../../i18n/use-ui-text.js';
 import React, { useState, useEffect, useRef, useMemo, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Avatar } from '../ui/avatar';
@@ -16,6 +17,7 @@ export const Navbar = ({
   onSearch = null,
   showSearch = true,
 }) => {
+  const ui = useUIText();
   const { t } = useTranslation();
   const { isDark, toggleTheme } = useTheme();
   const { user: authUser, isAuthenticated, logout, isJunior, isParentalControlActive } = useAuth();
@@ -303,7 +305,7 @@ export const Navbar = ({
                   aria-expanded={isNavDropdownOpen}
                   aria-controls="sonar-search-results"
                   aria-autocomplete="list"
-                  aria-label="Buscar canciones, artistas y noticias"
+                  aria-label={ui("Buscar canciones, artistas y noticias")}
                   placeholder={t('nav.search_hint', 'Busca canciones, artistas o noticias…')}
                   value={navSearch}
                   onChange={handleNavSearchChange}
@@ -322,7 +324,7 @@ export const Navbar = ({
                       type="button"
                       onClick={resetNavSearch}
                       className="w-6 h-6 rounded-full grid place-items-center text-[var(--text-muted)] hover:text-[var(--color-accent)] hover:bg-[var(--bg-surface-secondary)] transition-colors cursor-pointer"
-                      aria-label="Limpiar búsqueda"
+                      aria-label={ui("Limpiar búsqueda")}
                     >
                       <span className="material-symbols-outlined text-[15px]">close</span>
                     </button>
@@ -395,9 +397,7 @@ export const Navbar = ({
                             </div>
                           </div>
                         ))}
-                        <p className="text-[10px] text-center text-[var(--text-secondary)] pt-1 font-semibold">
-                          Buscando en Deezer y en el contenido editorial de Sonar…
-                        </p>
+                        <p className="text-[10px] text-center text-[var(--text-secondary)] pt-1 font-semibold">{ui("Buscando en Deezer y en el contenido editorial de Sonar…")}</p>
                       </div>
                     )}
 
@@ -409,13 +409,9 @@ export const Navbar = ({
                             search_off
                           </span>
                         </span>
-                        <p className="text-sm font-black text-[var(--text-main)]">
-                          No existe &ldquo;{navSearch.trim()}&rdquo;
+                        <p className="text-sm font-black text-[var(--text-main)]">{ui("No existe “")}{navSearch.trim()}&rdquo;
                         </p>
-                        <p className="text-[11px] leading-relaxed text-[var(--text-secondary)] max-w-[270px]">
-                          No encontramos canciones, noticias, sellos ni vinilos con ese término. Prueba con
-                          &ldquo;Radiohead&rdquo;, &ldquo;vinilo&rdquo; o &ldquo;festivales&rdquo;.
-                        </p>
+                        <p className="text-[11px] leading-relaxed text-[var(--text-secondary)] max-w-[270px]">{ui("No encontramos canciones, noticias, sellos ni vinilos con ese término. Prueba con “Radiohead”, “vinilo” o “festivales”.")}</p>
                       </div>
                     )}
 
@@ -428,7 +424,7 @@ export const Navbar = ({
                               <span className="material-symbols-outlined text-[12px] text-[var(--color-accent)]">
                                 music_note
                               </span>
-                              <span>Canciones</span>
+                              <span>{ui("Canciones")}</span>
                               <span className="opacity-60">({navResults.tracks.length})</span>
                             </div>
                             {navResults.tracks.map((song, index) => {
@@ -489,8 +485,8 @@ export const Navbar = ({
                                       })
                                     }
                                     className="w-7 h-7 rounded-full bg-[var(--color-accent)] text-white grid place-items-center shrink-0 shadow-sm hover:scale-110 active:scale-95 transition-transform cursor-pointer"
-                                    title="Reproducir muestra (30s)"
-                                    aria-label={`Reproducir ${song.title}`}
+                                    title={ui("Reproducir muestra (30s)")}
+                                    aria-label={ui("Reproducir {{value0}}", { value0: song.title })}
                                   >
                                     <span className="material-symbols-outlined text-[15px]">
                                       {isItemPlaying ? 'pause' : 'play_arrow'}
@@ -508,7 +504,7 @@ export const Navbar = ({
                               <span className="material-symbols-outlined text-[12px] text-[var(--color-accent)]">
                                 newspaper
                               </span>
-                              <span>Noticias</span>
+                              <span>{ui("Noticias")}</span>
                               <span className="opacity-60">({navResults.news.length})</span>
                             </div>
                             {navResults.news.map((item, index) => {
@@ -574,7 +570,7 @@ export const Navbar = ({
                           className="flex-1 flex items-center justify-center gap-1.5 px-3 py-2 rounded-xl bg-[var(--color-accent)] hover:bg-[var(--color-accent-hover)] text-white text-[11px] font-black transition-colors cursor-pointer shadow-sm"
                         >
                           <span className="material-symbols-outlined text-[14px]">newspaper</span>
-                          <span className="truncate">Ver noticias de &ldquo;{navSearch.trim()}&rdquo;</span>
+                          <span className="truncate">{ui("Ver noticias de “")}{navSearch.trim()}&rdquo;</span>
                         </button>
                       )}
                       {navResults.tracks.length > 0 && navScope !== 'news' && (
@@ -584,7 +580,7 @@ export const Navbar = ({
                           className="flex-1 flex items-center justify-center gap-1.5 px-3 py-2 rounded-xl bg-[var(--bg-card)] border border-[var(--border-subtle)] hover:border-[var(--color-accent)] text-[11px] font-black text-[var(--text-main)] transition-colors cursor-pointer"
                         >
                           <span className="material-symbols-outlined text-[14px]">music_note</span>
-                          <span className="truncate">Ver canciones de &ldquo;{navSearch.trim()}&rdquo;</span>
+                          <span className="truncate">{ui("Ver canciones de “")}{navSearch.trim()}&rdquo;</span>
                         </button>
                       )}
                     </div>
@@ -635,8 +631,8 @@ export const Navbar = ({
             whileTap={{ scale: 0.92 }}
             onClick={toggleTheme}
             type="button"
-            aria-label="Cambiar tema"
-            title={isDark ? 'Cambiar a Modo Blanco' : 'Cambiar a Modo Negro'}
+            aria-label={ui("Cambiar tema")}
+            title={isDark ? ui("Cambiar a Modo Blanco") : ui("Cambiar a Modo Negro")}
             className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl flex items-center justify-center bg-[#f8e9f6] dark:bg-white/5 text-[#231123] dark:text-gray-200 border border-[#e6d5e2] dark:border-white/10 hover:border-[#B80C09] dark:hover:border-white/20 hover:text-[#B80C09] dark:hover:text-[#ff6b68] dark:hover:bg-white/10 transition-all cursor-pointer shadow-xs"
           >
             <motion.span
@@ -670,11 +666,11 @@ export const Navbar = ({
                     sessionStorage.setItem('sonar_active_profile_tab', 'parental_control');
                     window.dispatchEvent(new CustomEvent('sonar:navigate-tab', { detail: 'parental_control' }));
                   }}
-                  title="Modo Kids y Control Parental activo. Clic para administrar."
+                  title={ui("Modo Kids y Control Parental activo. Clic para administrar.")}
                   className="hidden sm:flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-[#4B2840]/15 dark:bg-[#4B2840]/40 text-[#4B2840] dark:text-[#DCDCDD] border border-[#4B2840]/30 text-[11px] font-black tracking-wide cursor-pointer shadow-xs hover:bg-[#4B2840]/25 transition-all"
                 >
                   <span className="material-symbols-outlined text-[14px]">child_care</span>
-                  <span>Modo Kids</span>
+                  <span>{ui("Modo Kids")}</span>
                 </motion.button>
               )}
 
@@ -687,7 +683,7 @@ export const Navbar = ({
                   sessionStorage.setItem('sonar_active_profile_tab', 'recompensas');
                   window.dispatchEvent(new CustomEvent('sonar:navigate-tab', { detail: 'recompensas' }));
                 }}
-                title="Tus Sonar Coins acumuladas. Clic para canjear en la Boutique."
+                title={ui("Tus Sonar Coins acumuladas. Clic para canjear en la Boutique.")}
                 className="hidden md:flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-[#003844]/10 dark:bg-[#003844]/40 text-[#003844] dark:text-[#DCDCDD] border border-[#003844]/30 text-[11px] font-mono font-black tracking-wide cursor-pointer shadow-xs hover:bg-[#003844]/20 transition-all"
               >
                 <span className="material-symbols-outlined text-[14px] text-[#003844] dark:text-[#52a2b0]">toll</span>

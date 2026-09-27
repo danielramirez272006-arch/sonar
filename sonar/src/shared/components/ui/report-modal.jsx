@@ -1,3 +1,4 @@
+import { useUIText } from '../../i18n/use-ui-text.js';
 import React, { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -73,6 +74,7 @@ export const ReportModal = ({
   target,
   onSubmitReport,
 }) => {
+  const ui = useUIText();
   const [selectedReasonId, setSelectedReasonId] = useState('hate_speech');
   const [selectedTags, setSelectedTags] = useState([]);
   const [details, setDetails] = useState('');
@@ -192,24 +194,18 @@ export const ReportModal = ({
                 <CheckCircle2 className="w-9 h-9" />
               </div>
               <div className="flex flex-col gap-1.5">
-                <h3 className="text-xl font-black text-white tracking-tight">
-                  ¡Reporte Enviado con Éxito!
-                </h3>
-                <p className="text-xs sm:text-sm text-gray-300 max-w-sm mx-auto leading-relaxed">
-                  Gracias por tu colaboración. Nuestro equipo de moderación evaluará este contenido para garantizar una comunidad segura y respetuosa en Sonar.
-                </p>
+                <h3 className="text-xl font-black text-white tracking-tight">{ui("¡Reporte Enviado con Éxito!")}</h3>
+                <p className="text-xs sm:text-sm text-gray-300 max-w-sm mx-auto leading-relaxed">{ui("Gracias por tu colaboración. Nuestro equipo de moderación evaluará este contenido para garantizar una comunidad segura y respetuosa en Sonar.")}</p>
               </div>
               <div className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-300 text-xs font-semibold mt-2">
                 <ShieldCheck className="w-4 h-4" />
-                <span>Estado: En cola de moderación prioritaria</span>
+                <span>{ui("Estado: En cola de moderación prioritaria")}</span>
               </div>
               <button
                 type="button"
                 onClick={onClose}
                 className="mt-4 px-6 py-2.5 rounded-xl bg-white/10 hover:bg-white/20 text-white text-xs font-bold transition-colors cursor-pointer"
-              >
-                Cerrar Ventana
-              </button>
+              >{ui("Cerrar Ventana")}</button>
             </motion.div>
           ) : (
             <>
@@ -221,16 +217,12 @@ export const ReportModal = ({
                   </div>
                   <div className="flex flex-col">
                     <div className="flex items-center gap-2">
-                      <h3 className="text-base sm:text-lg font-black text-white tracking-tight">
-                        Reportar Contenido
-                      </h3>
+                      <h3 className="text-base sm:text-lg font-black text-white tracking-tight">{ui("Reportar Contenido")}</h3>
                       <span className="text-[10px] uppercase font-bold tracking-wider px-2 py-0.5 rounded-md bg-[#B80C09]/20 text-rose-300 border border-[#B80C09]/30">
-                        {target.isReply ? 'Respuesta' : target.targetType === 'review' ? 'Reseña' : 'Comentario'}
+                        {target.isReply ? ui("Respuesta") : target.targetType === 'review' ? ui("Reseña") : ui("Comentario")}
                       </span>
                     </div>
-                    <p className="text-xs text-[#B89CB0]">
-                      Selecciona el motivo que mejor describe el problema
-                    </p>
+                    <p className="text-xs text-[#B89CB0]">{ui("Selecciona el motivo que mejor describe el problema")}</p>
                   </div>
                 </div>
 
@@ -239,7 +231,7 @@ export const ReportModal = ({
                   type="button"
                   onClick={onClose}
                   disabled={isSubmitting}
-                  title="Cerrar modal"
+                  title={ui("Cerrar modal")}
                   className="w-8 h-8 rounded-full bg-white/5 hover:bg-white/15 text-gray-300 hover:text-white flex items-center justify-center transition-all cursor-pointer shrink-0"
                 >
                   <X className="w-4 h-4" />
@@ -259,14 +251,14 @@ export const ReportModal = ({
                         {target.avatarLetter || target.userName?.charAt(0) || 'U'}
                       </div>
                       <span className="text-xs font-bold text-white truncate">
-                        {target.userName || 'Usuario'}
+                        {target.userName || ui("Usuario")}
                       </span>
                       <span className="text-[11px] text-[#B89CB0] truncate">
                         {target.userHandle || ''}
                       </span>
                     </div>
                     <span className="text-[10px] text-gray-400 shrink-0">
-                      {target.timestamp || 'Comentario'}
+                      {target.timestamp || ui("Comentario")}
                     </span>
                   </div>
 
@@ -280,8 +272,8 @@ export const ReportModal = ({
                 {/* Reason Selection Cards */}
                 <div className="flex flex-col gap-2">
                   <label className="text-xs font-bold text-gray-200 flex items-center justify-between">
-                    <span>Motivo principal del reporte</span>
-                    <span className="text-[10px] font-normal text-rose-300/80">* Requerido</span>
+                    <span>{ui("Motivo principal del reporte")}</span>
+                    <span className="text-[10px] font-normal text-rose-300/80">{ui("* Requerido")}</span>
                   </label>
 
                   <div className="flex flex-col gap-2">
@@ -350,7 +342,7 @@ export const ReportModal = ({
                 <div className="flex flex-col gap-1.5">
                   <label className="text-xs font-bold text-gray-300 flex items-center gap-1.5">
                     <Tag className="w-3.5 h-3.5 text-[#B89CB0]" />
-                    <span>Etiquetas de contexto rápido (opcional)</span>
+                    <span>{ui("Etiquetas de contexto rápido (opcional)")}</span>
                   </label>
                   <div className="flex flex-wrap gap-1.5">
                     {QUICK_TAGS.map((tag) => {
@@ -379,7 +371,7 @@ export const ReportModal = ({
                   <div className="flex items-center justify-between">
                     <label className="text-xs font-bold text-gray-300 flex items-center gap-1.5">
                       <FileText className="w-3.5 h-3.5 text-[#B89CB0]" />
-                      <span>Detalles adicionales (opcional)</span>
+                      <span>{ui("Detalles adicionales (opcional)")}</span>
                     </label>
                     <span className="text-[10px] text-gray-400">
                       {details.length}/300
@@ -390,7 +382,7 @@ export const ReportModal = ({
                     maxLength={300}
                     value={details}
                     onChange={(e) => setDetails(e.target.value)}
-                    placeholder="Describe brevemente por qué consideras que este contenido viola las normas..."
+                    placeholder={ui("Describe brevemente por qué consideras que este contenido viola las normas...")}
                     className="w-full p-3 rounded-2xl bg-white/5 border border-white/10 text-xs text-white placeholder:text-gray-500 outline-hidden focus:border-[#B80C09] focus:ring-1 focus:ring-[#B80C09]/40 transition-all resize-none"
                   />
                 </div>
@@ -398,9 +390,7 @@ export const ReportModal = ({
                 {/* Disclaimer / Guidelines Info */}
                 <div className="p-2.5 rounded-xl bg-purple-950/20 border border-purple-800/30 flex items-start gap-2 text-[11px] text-[#B89CB0]">
                   <ShieldCheck className="w-4 h-4 text-rose-400 shrink-0 mt-0.5" />
-                  <p className="leading-snug">
-                    Los reportes son <span className="text-white font-semibold">100% anónimos</span>. Sonar sanciona el contenido que incite al odio, violencia o infracción a las guías editoriales.
-                  </p>
+                  <p className="leading-snug">{ui("Los reportes son")} <span className="text-white font-semibold">{ui("100% anónimos")}</span>{ui(". Sonar sanciona el contenido que incite al odio, violencia o infracción a las guías editoriales.")}</p>
                 </div>
 
                 {/* Footer Actions */}
@@ -411,9 +401,7 @@ export const ReportModal = ({
                     onClick={onClose}
                     disabled={isSubmitting}
                     className="px-4 py-2.5 rounded-xl text-xs font-bold text-gray-300 hover:text-white hover:bg-white/10 transition-colors cursor-pointer"
-                  >
-                    Cancelar
-                  </button>
+                  >{ui("Cancelar")}</button>
 
                   <button
                     type="submit"
@@ -423,12 +411,12 @@ export const ReportModal = ({
                     {isSubmitting ? (
                       <>
                         <div className="w-3.5 h-3.5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                        <span>Enviando...</span>
+                        <span>{ui("Enviando...")}</span>
                       </>
                     ) : (
                       <>
                         <Send className="w-3.5 h-3.5" />
-                        <span>Enviar Reporte</span>
+                        <span>{ui("Enviar Reporte")}</span>
                       </>
                     )}
                   </button>

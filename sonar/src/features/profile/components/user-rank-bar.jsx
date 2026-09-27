@@ -1,3 +1,4 @@
+import { useUIText } from '../../../shared/i18n/use-ui-text.js';
 import React from 'react';
 import { motion } from 'framer-motion';
 
@@ -22,6 +23,7 @@ export const UserRankBar = ({
   nextRank = 'Experto Sonoro',
   className = '',
 }) => {
+  const ui = useUIText();
   const percentage = Math.min(
     100,
     Math.max(0, Math.round((currentReviews / targetReviews) * 100))
@@ -35,9 +37,7 @@ export const UserRankBar = ({
       {/* Cabecera del componente */}
       <div className="flex justify-between items-end mb-3">
         <div>
-          <span className="text-xs text-gray-500 dark:text-gray-400 block mb-0.5 font-medium">
-            Rango actual
-          </span>
+          <span className="text-xs text-gray-500 dark:text-gray-400 block mb-0.5 font-medium">{ui("Rango actual")}</span>
           <div className="flex items-center gap-2">
             {/* Ícono sutil de trofeo / medalla */}
             <svg
@@ -63,8 +63,7 @@ export const UserRankBar = ({
           </div>
         </div>
         <span className="text-xs sm:text-sm font-semibold text-gray-600 dark:text-gray-300">
-          {currentReviews} / {targetReviews} Reseñas
-        </span>
+          {currentReviews} / {targetReviews} {ui("Reseñas")}</span>
       </div>
 
       {/* Barra de progreso con brillo Neón */}
@@ -78,8 +77,7 @@ export const UserRankBar = ({
       </div>
 
       {/* Pie del componente */}
-      <p className="mt-3 text-[11px] sm:text-xs text-gray-500 dark:text-gray-400 font-medium">
-        Faltan {remainingReviews} reseñas para alcanzar el rango:{' '}
+      <p className="mt-3 text-[11px] sm:text-xs text-gray-500 dark:text-gray-400 font-medium">{ui("Faltan")} {remainingReviews} {ui("reseñas para alcanzar el rango:")}{' '}
         <span className="font-semibold text-gray-700 dark:text-gray-200">
           {nextRank}
         </span>

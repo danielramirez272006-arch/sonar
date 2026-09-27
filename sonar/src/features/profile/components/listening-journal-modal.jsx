@@ -1,3 +1,4 @@
+import { useUIText } from '../../../shared/i18n/use-ui-text.js';
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -10,6 +11,7 @@ const MOOD_TAGS = [
 ];
 
 export const ListeningJournalModal = ({ album, isOpen, onClose }) => {
+  const ui = useUIText();
   const [entries, setEntries] = useState(() => {
     try {
       return JSON.parse(localStorage.getItem('sonar_listening_journal') || '{}');
@@ -73,19 +75,15 @@ export const ListeningJournalModal = ({ album, isOpen, onClose }) => {
             <span className="material-symbols-outlined text-[24px]">edit_note</span>
           </div>
           <div>
-            <span className="text-[11px] font-bold uppercase tracking-wider text-[#B80C09]">
-              Diario Acústico & Sleeve Notes
-            </span>
-            <h3 className="text-lg font-black tracking-tight">{album?.title || 'Reflexión Musical'}</h3>
+            <span className="text-[11px] font-bold uppercase tracking-wider text-[#B80C09]">{ui("Diario Acústico & Sleeve Notes")}</span>
+            <h3 className="text-lg font-black tracking-tight">{album?.title || ui("Reflexión Musical")}</h3>
           </div>
         </div>
 
         <form onSubmit={handleSave} className="flex flex-col gap-4">
           {/* Selector de Ambiente / Estado de Ánimo */}
           <div className="flex flex-col gap-1.5">
-            <label className="text-xs font-bold text-[#5c435a] dark:text-pink-200">
-              Atmósfera de Audición:
-            </label>
+            <label className="text-xs font-bold text-[#5c435a] dark:text-pink-200">{ui("Atmósfera de Audición:")}</label>
             <div className="flex flex-wrap gap-2">
               {MOOD_TAGS.map((tag) => (
                 <button
@@ -106,9 +104,7 @@ export const ListeningJournalModal = ({ album, isOpen, onClose }) => {
 
           {/* Marcador de Timestamp */}
           <div className="flex flex-col gap-1.5">
-            <label className="text-xs font-bold text-[#5c435a] dark:text-pink-200">
-              Momento o Pasaje Destacado (mm:ss):
-            </label>
+            <label className="text-xs font-bold text-[#5c435a] dark:text-pink-200">{ui("Momento o Pasaje Destacado (mm:ss):")}</label>
             <input
               type="text"
               value={timestampMark}
@@ -120,9 +116,7 @@ export const ListeningJournalModal = ({ album, isOpen, onClose }) => {
 
           {/* Área de Texto / Notas Íntimas */}
           <div className="flex flex-col gap-1.5">
-            <label className="text-xs font-bold text-[#5c435a] dark:text-pink-200">
-              Tus Notas de Escucha Privadas:
-            </label>
+            <label className="text-xs font-bold text-[#5c435a] dark:text-pink-200">{ui("Tus Notas de Escucha Privadas:")}</label>
             <textarea
               rows={4}
               value={noteText}
@@ -136,7 +130,7 @@ export const ListeningJournalModal = ({ album, isOpen, onClose }) => {
             type="submit"
             className="w-full py-3 rounded-xl bg-[#B80C09] hover:bg-[#960a07] text-white text-xs font-black tracking-wider uppercase transition-all shadow-md cursor-pointer mt-1"
           >
-            {isSaved ? '¡Nota Guardada en tu Diario!' : 'Guardar en Diario de Escucha'}
+            {isSaved ? ui("¡Nota Guardada en tu Diario!") : ui("Guardar en Diario de Escucha")}
           </button>
         </form>
       </motion.div>

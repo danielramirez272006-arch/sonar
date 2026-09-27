@@ -1,3 +1,4 @@
+import { useUIText } from '../../../shared/i18n/use-ui-text.js';
 import { useState } from 'react';
 import { motion } from 'framer-motion';
 import StarRating from '../../../shared/components/ui/star-rating';
@@ -10,6 +11,7 @@ export const ReviewForm = ({
   onSubmit = () => {},
   onClose = null,
 }) => {
+  const ui = useUIText();
   const [reviewType, setReviewType] = useState(initialType || (trackTitle ? 'track' : 'album'));
   const [currentTrackTitle, setCurrentTrackTitle] = useState(trackTitle || (initialType === 'track' ? albumTitle : ''));
   const [rating, setRating] = useState(0);
@@ -56,8 +58,8 @@ export const ReviewForm = ({
           type="button"
           onClick={onClose}
           className="absolute top-4 right-4 w-9 h-9 rounded-full bg-gray-100 hover:bg-gray-200 dark:bg-white/10 dark:hover:bg-white/20 text-[#231123] dark:text-white flex items-center justify-center transition-colors cursor-pointer shadow-xs z-10"
-          aria-label="Cerrar formulario"
-          title="Cerrar"
+          aria-label={ui("Cerrar formulario")}
+          title={ui("Cerrar")}
         >
           <span className="material-symbols-outlined text-[18px]">close</span>
         </button>
@@ -65,22 +67,17 @@ export const ReviewForm = ({
 
       {/* Cabecera Informativa con Contexto de Álbum/Artista */}
       <div className="flex flex-col gap-1 pb-4 border-b border-[#e6d5e2] dark:border-white/10 text-left pr-10">
-        <span className="text-xs uppercase tracking-widest text-[#B80C09] font-extrabold">
-          Publicar Crítica Musical
-        </span>
+        <span className="text-xs uppercase tracking-widest text-[#B80C09] font-extrabold">{ui("Publicar Crítica Musical")}</span>
         <h3 className="text-xl sm:text-2xl font-black text-[#231123] dark:text-white tracking-tight">
           {albumTitle}
         </h3>
-        <span className="text-xs sm:text-sm font-semibold text-[#5c435a] dark:text-[#B89CB0]">
-          por {artistName}
+        <span className="text-xs sm:text-sm font-semibold text-[#5c435a] dark:text-[#B89CB0]">{ui("por")} {artistName}
         </span>
       </div>
 
       {/* Selector de Modo: Reseñar Canción Específica vs Álbum Completo */}
       <div className="flex flex-col gap-2 pt-4 text-left">
-        <label className="text-xs font-bold uppercase tracking-wider text-[#5c435a] dark:text-[#B89CB0]">
-          ¿Qué deseas calificar y analizar?
-        </label>
+        <label className="text-xs font-bold uppercase tracking-wider text-[#5c435a] dark:text-[#B89CB0]">{ui("¿Qué deseas calificar y analizar?")}</label>
         <div className="grid grid-cols-2 gap-2 p-1 rounded-2xl bg-gray-100 dark:bg-[#231123]/80 border border-[#e6d5e2] dark:border-white/10">
           <button
             type="button"
@@ -92,7 +89,7 @@ export const ReviewForm = ({
             }`}
           >
             <span className="material-symbols-outlined text-[16px]">music_note</span>
-            <span>Canción Específica</span>
+            <span>{ui("Canción Específica")}</span>
           </button>
 
           <button
@@ -105,7 +102,7 @@ export const ReviewForm = ({
             }`}
           >
             <span className="material-symbols-outlined text-[16px]">album</span>
-            <span>Álbum Completo</span>
+            <span>{ui("Álbum Completo")}</span>
           </button>
         </div>
       </div>
@@ -119,7 +116,7 @@ export const ReviewForm = ({
               className="text-xs font-bold uppercase tracking-wider text-[#231123] dark:text-gray-200 flex items-center gap-1"
             >
               <span className="material-symbols-outlined text-[14px] text-[#B80C09]">music_note</span>
-              <span>Nombre de la Canción</span>
+              <span>{ui("Nombre de la Canción")}</span>
             </label>
             <input
               id="track-title-input"
@@ -136,11 +133,9 @@ export const ReviewForm = ({
         {/* Selector de Calificación con Estrellas */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 p-3.5 rounded-2xl bg-gray-50 dark:bg-[#231123]/70 border border-[#e6d5e2] dark:border-white/10">
           <div className="flex flex-col text-left">
-            <span className="text-xs font-bold uppercase tracking-wider text-[#231123] dark:text-gray-200">
-              Calificación
-            </span>
+            <span className="text-xs font-bold uppercase tracking-wider text-[#231123] dark:text-gray-200">{ui("Calificación")}</span>
             <span className="text-xs text-[#5c435a] dark:text-[#B89CB0]">
-              {rating > 0 ? `${rating} de 5 estrellas` : 'Selecciona una puntuación'}
+              {rating > 0 ? `${rating} de 5 estrellas` : ui("Selecciona una puntuación")}
             </span>
           </div>
           <StarRating value={rating} onChange={setRating} size={28} />
@@ -151,9 +146,7 @@ export const ReviewForm = ({
           <label
             htmlFor="review-text"
             className="text-xs font-bold uppercase tracking-wider text-[#231123] dark:text-gray-200"
-          >
-            Tu Crítica y Análisis
-          </label>
+          >{ui("Tu Crítica y Análisis")}</label>
           <textarea
             id="review-text"
             rows={3}
@@ -162,8 +155,8 @@ export const ReviewForm = ({
             onChange={(e) => setReviewText(e.target.value)}
             placeholder={
               isTrackMode
-                ? 'Describe la letra, producción sonora, instrumentación, interpretación vocal, mezcla o momento cumbre de la canción...'
-                : 'Describe la cohesión temática del disco, la producción general, masterización, prensado en vinilo o impacto global...'
+                ? ui("Describe la letra, producción sonora, instrumentación, interpretación vocal, mezcla o momento cumbre de la canción...")
+                : ui("Describe la cohesión temática del disco, la producción general, masterización, prensado en vinilo o impacto global...")
             }
             className="w-full p-3.5 rounded-2xl bg-gray-50 dark:bg-[#231123] border border-[#e6d5e2] dark:border-white/10 text-sm sm:text-base text-[#231123] dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500 transition-all duration-200 outline-none focus:border-[#B80C09] focus:ring-2 focus:ring-[#B80C09]/20 resize-y min-h-[100px]"
           />
@@ -179,12 +172,8 @@ export const ReviewForm = ({
               <span className="material-symbols-outlined text-[16px]">visibility_off</span>
             </div>
             <div className="flex flex-col">
-              <span className="text-xs sm:text-sm font-bold text-[#231123] dark:text-white">
-                Contiene spoilers o detalles de la trama / concepto
-              </span>
-              <span className="text-[10px] sm:text-xs text-[#5c435a] dark:text-[#B89CB0]">
-                Ocultará el texto detrás de un aviso de moderación
-              </span>
+              <span className="text-xs sm:text-sm font-bold text-[#231123] dark:text-white">{ui("Contiene spoilers o detalles de la trama / concepto")}</span>
+              <span className="text-[10px] sm:text-xs text-[#5c435a] dark:text-[#B89CB0]">{ui("Ocultará el texto detrás de un aviso de moderación")}</span>
             </div>
           </div>
 
@@ -214,9 +203,7 @@ export const ReviewForm = ({
               type="button"
               onClick={onClose}
               className="py-3 px-5 rounded-2xl bg-gray-100 hover:bg-gray-200 dark:bg-white/10 dark:hover:bg-white/15 text-[#231123] dark:text-white text-xs font-bold uppercase tracking-wider transition-colors cursor-pointer"
-            >
-              Cancelar
-            </button>
+            >{ui("Cancelar")}</button>
           )}
 
           <motion.button
@@ -230,7 +217,7 @@ export const ReviewForm = ({
               {isTrackMode ? 'music_note' : 'album'}
             </span>
             <span>
-              {isTrackMode ? 'Publicar Crítica de Canción' : 'Publicar Crítica de Álbum'}
+              {isTrackMode ? ui("Publicar Crítica de Canción") : ui("Publicar Crítica de Álbum")}
             </span>
           </motion.button>
         </div>

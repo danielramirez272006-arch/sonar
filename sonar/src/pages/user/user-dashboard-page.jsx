@@ -1,3 +1,4 @@
+import { useUIText } from '../../shared/i18n/use-ui-text.js';
 import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { motion } from 'framer-motion';
 import Navbar from '../../shared/components/layout/navbar';
@@ -26,6 +27,7 @@ import EnhancedParentalControl from '../../features/profile/components/enhanced-
 import RewardsStoreTab from '../../features/profile/components/rewards-store-tab';
 
 export const UserDashboardPage = () => {
+  const ui = useUIText();
   const { user, updateUser } = useAuth();
   const { playTrack, openReviewModal } = usePlayer();
   const { t } = useLanguage();
@@ -410,7 +412,7 @@ export const UserDashboardPage = () => {
               }`}
             >
               <span className="material-symbols-outlined text-[18px]">history</span>
-              <span>Historial ({recentlyPlayed.length})</span>
+              <span>{ui("Historial (")}{recentlyPlayed.length})</span>
               {activeTab === 'history' && (
                 <motion.div
                   layoutId="dashboard-tab-indicator"
@@ -430,7 +432,7 @@ export const UserDashboardPage = () => {
               }`}
             >
               <span className="material-symbols-outlined text-[18px]">favorite</span>
-              <span>Artistas ({followedArtists.length})</span>
+              <span>{ui("Artistas (")}{followedArtists.length})</span>
               {activeTab === 'following_artists' && (
                 <motion.div
                   layoutId="dashboard-tab-indicator"
@@ -450,7 +452,7 @@ export const UserDashboardPage = () => {
               }`}
             >
               <span className="material-symbols-outlined text-[18px]">group</span>
-              <span>Siguiendo ({followedUsers.length})</span>
+              <span>{ui("Siguiendo (")}{followedUsers.length})</span>
               {activeTab === 'following_users' && (
                 <motion.div
                   layoutId="dashboard-tab-indicator"
@@ -470,7 +472,7 @@ export const UserDashboardPage = () => {
               }`}
             >
               <span className="material-symbols-outlined text-[18px]">headphones</span>
-              <span>Equipamiento Hi-Fi</span>
+              <span>{ui("Equipamiento Hi-Fi")}</span>
               {activeTab === 'audiophile_gear' && (
                 <motion.div
                   layoutId="dashboard-tab-indicator"
@@ -490,7 +492,7 @@ export const UserDashboardPage = () => {
               }`}
             >
               <span className="material-symbols-outlined text-[18px] text-amber-500">redeem</span>
-              <span>Recompensas & Boutique</span>
+              <span>{ui("Recompensas & Boutique")}</span>
               {activeTab === 'recompensas' && (
                 <motion.div
                   layoutId="dashboard-tab-indicator"
@@ -510,8 +512,7 @@ export const UserDashboardPage = () => {
               }`}
             >
               <span className="material-symbols-outlined text-[18px]">toys</span>
-              <span>
-                Modo Kids & Control {user?.accountType === 'junior' && user?.parentalControl?.enabled && user?.parentalControl?.blockExplicit ? '(Kids Activo)' : ''}
+              <span>{ui("Modo Kids & Control")} {user?.accountType === 'junior' && user?.parentalControl?.enabled && user?.parentalControl?.blockExplicit ? ui("(Kids Activo)") : ''}
               </span>
               {activeTab === 'parental_control' && (
                 <motion.div
@@ -535,21 +536,21 @@ export const UserDashboardPage = () => {
                 type="button"
                 onClick={() => backupFileInputRef.current?.click()}
                 className="px-3 py-1.5 rounded-xl bg-gray-100 hover:bg-gray-200 dark:bg-white/10 dark:hover:bg-white/20 text-[#231123] dark:text-white text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer shadow-xs"
-                title="Restaurar tus colecciones, reseñas y preferencias desde un archivo JSON"
+                title={ui("Restaurar tus colecciones, reseñas y preferencias desde un archivo JSON")}
               >
                 <span className="material-symbols-outlined text-[15px] text-amber-600 dark:text-amber-400">upload</span>
-                <span className="hidden sm:inline">Importar</span>
+                <span className="hidden sm:inline">{ui("Importar")}</span>
               </button>
 
               <button
                 type="button"
                 onClick={handleExportBackup}
                 className="px-3 py-1.5 rounded-xl bg-gray-100 hover:bg-gray-200 dark:bg-white/10 dark:hover:bg-white/20 text-[#231123] dark:text-white text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer shadow-xs"
-                title="Descargar respaldo JSON de tus álbumes, reseñas y configuración"
+                title={ui("Descargar respaldo JSON de tus álbumes, reseñas y configuración")}
               >
                 <span className="material-symbols-outlined text-[15px] text-[#B80C09]">download</span>
-                <span className="hidden sm:inline">Exportar</span>
-                <span className="sm:hidden">Backup</span>
+                <span className="hidden sm:inline">{ui("Exportar")}</span>
+                <span className="sm:hidden">{ui("Backup")}</span>
               </button>
             </div>
           </div>
@@ -568,9 +569,7 @@ export const UserDashboardPage = () => {
                 type="button"
                 onClick={() => setBackupNotice(null)}
                 className="text-xs text-emerald-700 dark:text-emerald-400 hover:underline font-bold"
-              >
-                Cerrar
-              </button>
+              >{ui("Cerrar")}</button>
             </motion.div>
           )}
 
@@ -596,8 +595,7 @@ export const UserDashboardPage = () => {
                 <div className="flex items-center gap-2.5">
                   <span className="material-symbols-outlined text-[22px] text-[#B80C09]">auto_awesome</span>
                   <div>
-                    <p className="text-xs sm:text-sm text-[#5c435a] dark:text-pink-200">
-                      Algoritmo acústico ajustado a tus gustos:{' '}
+                    <p className="text-xs sm:text-sm text-[#5c435a] dark:text-pink-200">{ui("Algoritmo acústico ajustado a tus gustos:")}{' '}
                       <strong className="text-[#231123] dark:text-white">
                         {(user?.preferences || ['Art Rock', 'Electrónica']).join(', ')}
                       </strong>.
@@ -609,7 +607,7 @@ export const UserDashboardPage = () => {
                   className="text-xs font-bold text-[#B80C09] hover:underline self-start sm:self-auto flex items-center gap-1"
                 >
                   <span className="material-symbols-outlined text-[15px]">tune</span>
-                  <span>Modificar géneros en perfil</span>
+                  <span>{ui("Modificar géneros en perfil")}</span>
                 </a>
               </div>
 
@@ -646,7 +644,7 @@ export const UserDashboardPage = () => {
                               ? 'bg-[#B80C09] text-white hover:bg-rose-700'
                               : 'bg-gray-200 dark:bg-white/20 text-gray-600 dark:text-gray-300 hover:bg-[#B80C09] hover:text-white'
                           }`}
-                          title={isPref ? `Quitar ${genre} de favoritos` : `Añadir ${genre} a favoritos`}
+                          title={isPref ? `Quitar ${genre} de favoritos` : ui("Añadir {{value0}} a favoritos", { value0: genre })}
                         >
                           {isPref ? '★' : '+'}
                         </button>
@@ -679,7 +677,7 @@ export const UserDashboardPage = () => {
                             type="button"
                             onClick={() => handlePlayAlbum(album)}
                             className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 flex items-center justify-center text-white transition-opacity cursor-pointer"
-                            title="Reproducir muestra"
+                            title={ui("Reproducir muestra")}
                           >
                             <span className="material-symbols-outlined text-[28px]">play_circle</span>
                           </button>
@@ -706,8 +704,7 @@ export const UserDashboardPage = () => {
 
                           <div className="mt-1 flex items-center gap-1.5">
                             <span className="text-[10px] font-extrabold px-1.5 py-0.5 rounded-md bg-[#B80C09]/10 text-[#B80C09] dark:bg-[#B80C09]/20 dark:text-pink-300">
-                              {album.matchPercentage || 95}% Afinidad
-                            </span>
+                              {album.matchPercentage || 95}{ui("% Afinidad")}</span>
                           </div>
 
                           <p className="text-[11px] text-[#5c435a] dark:text-gray-300 italic line-clamp-2 mt-1">
@@ -733,14 +730,14 @@ export const UserDashboardPage = () => {
                           >
                             bookmark
                           </span>
-                          <span>{isSaved ? 'En Colección' : 'Guardar'}</span>
+                          <span>{isSaved ? ui("En Colección") : ui("Guardar")}</span>
                         </button>
 
                         <button
                           type="button"
                           onClick={() => openReviewModal(album)}
                           className="py-1.5 px-3 rounded-xl text-xs font-bold bg-gray-100 dark:bg-[#231123] text-[#231123] dark:text-gray-200 hover:bg-gray-200 dark:hover:bg-white/10 flex items-center gap-1 cursor-pointer"
-                          title="Escribir reseña"
+                          title={ui("Escribir reseña")}
                         >
                           <span className="material-symbols-outlined text-[16px]">edit_note</span>
                         </button>
@@ -787,7 +784,7 @@ export const UserDashboardPage = () => {
                     }`}
                   >
                     <span className="material-symbols-outlined text-[15px]">grid_view</span>
-                    <span>Cuadrícula</span>
+                    <span>{ui("Cuadrícula")}</span>
                   </button>
                   <button
                     type="button"
@@ -799,7 +796,7 @@ export const UserDashboardPage = () => {
                     }`}
                   >
                     <span className="material-symbols-outlined text-[15px]">album</span>
-                    <span>Caja 3D</span>
+                    <span>{ui("Caja 3D")}</span>
                   </button>
                 </div>
               </div>
@@ -815,12 +812,8 @@ export const UserDashboardPage = () => {
                   <span className="material-symbols-outlined text-[48px] text-[#5c435a] dark:text-[#B89CB0]">
                     library_music
                   </span>
-                  <h3 className="text-lg font-bold text-[#231123] dark:text-white">
-                    No tienes discos guardados en esta categoría
-                  </h3>
-                  <p className="text-xs sm:text-sm text-[#5c435a] dark:text-[#B89CB0] max-w-md">
-                    Explora las recomendaciones personalizadas o busca álbumes para añadirlos a tus colecciones personales.
-                  </p>
+                  <h3 className="text-lg font-bold text-[#231123] dark:text-white">{ui("No tienes discos guardados en esta categoría")}</h3>
+                  <p className="text-xs sm:text-sm text-[#5c435a] dark:text-[#B89CB0] max-w-md">{ui("Explora las recomendaciones personalizadas o busca álbumes para añadirlos a tus colecciones personales.")}</p>
                 </div>
               ) : (
                 <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 sm:gap-6">
@@ -846,7 +839,7 @@ export const UserDashboardPage = () => {
                               ? 'bg-[#B80C09] text-white'
                               : 'bg-purple-900/90 text-purple-200 border border-purple-400/30'
                           }`}>
-                            {album.type === 'track' || album.trackId ? '🎵 Canción' : '💿 Álbum'}
+                            {album.type === 'track' || album.trackId ? ui("🎵 Canción") : ui("💿 Álbum")}
                           </span>
                           {album.collectionTag && album.collectionTag !== 'Favoritos' && (
                             <span className="px-1.5 py-0.5 rounded-md bg-black/80 text-white text-[9px] font-bold shadow-xs">
@@ -860,7 +853,7 @@ export const UserDashboardPage = () => {
                           type="button"
                           onClick={() => handlePlayAlbum(album)}
                           className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 flex items-center justify-center text-white transition-opacity cursor-pointer"
-                          title="Reproducir muestra"
+                          title={ui("Reproducir muestra")}
                         >
                           <span className="material-symbols-outlined text-[32px]">play_circle</span>
                         </button>
@@ -872,7 +865,7 @@ export const UserDashboardPage = () => {
                             e.stopPropagation();
                             handleToggleSaveAlbum(album);
                           }}
-                          title="Quitar de mi colección"
+                          title={ui("Quitar de mi colección")}
                           className="absolute top-2 right-2 z-10 w-7 h-7 rounded-full bg-black/70 hover:bg-[#B80C09] text-white flex items-center justify-center transition-colors cursor-pointer"
                         >
                           <span className="material-symbols-outlined text-[16px]">delete</span>
@@ -897,16 +890,16 @@ export const UserDashboardPage = () => {
                           className="flex-1 py-1 px-2 rounded-lg text-xs font-bold bg-gray-100 dark:bg-[#231123] text-[#231123] dark:text-gray-200 hover:bg-[#B80C09] hover:text-white dark:hover:bg-[#B80C09] dark:hover:text-white transition-colors flex items-center justify-center gap-1 cursor-pointer"
                         >
                           <span className="material-symbols-outlined text-[14px]">rate_review</span>
-                          <span>Criticar</span>
+                          <span>{ui("Criticar")}</span>
                         </button>
                         <button
                           type="button"
                           onClick={() => setJournalAlbum(album)}
                           className="py-1 px-2.5 rounded-lg text-xs font-bold bg-gray-100 dark:bg-[#231123] text-[#231123] dark:text-gray-200 hover:bg-amber-600 hover:text-white transition-colors flex items-center justify-center gap-1 cursor-pointer"
-                          title="Escribir notas íntimas en tu Diario Acústico"
+                          title={ui("Escribir notas íntimas en tu Diario Acústico")}
                         >
                           <span className="material-symbols-outlined text-[14px]">edit_note</span>
-                          <span className="hidden sm:inline">Diario</span>
+                          <span className="hidden sm:inline">{ui("Diario")}</span>
                         </button>
                       </div>
                     </motion.article>
@@ -931,7 +924,7 @@ export const UserDashboardPage = () => {
                       type="text"
                       value={reviewSearch}
                       onChange={(e) => setReviewSearch(e.target.value)}
-                      placeholder="Buscar por álbum, artista o texto de tu crítica..."
+                      placeholder={ui("Buscar por álbum, artista o texto de tu crítica...")}
                       className="w-full pl-10 pr-4 py-2 rounded-xl bg-gray-50 dark:bg-black/30 border border-[#e6d5e2] dark:border-white/10 text-xs text-[#231123] dark:text-[#DCDCDD] focus:outline-hidden focus:border-[#B80C09] transition-all"
                     />
                     {reviewSearch && (
@@ -947,18 +940,16 @@ export const UserDashboardPage = () => {
 
                   {/* Selector de Orden */}
                   <div className="flex items-center gap-2">
-                    <span className="text-[11px] font-bold text-[#5c435a] dark:text-[#B89CB0] whitespace-nowrap">
-                      Ordenar:
-                    </span>
+                    <span className="text-[11px] font-bold text-[#5c435a] dark:text-[#B89CB0] whitespace-nowrap">{ui("Ordenar:")}</span>
                     <select
                       value={reviewSort}
                       onChange={(e) => setReviewSort(e.target.value)}
                       className="px-3 py-2 rounded-xl bg-gray-50 dark:bg-black/30 border border-[#e6d5e2] dark:border-white/10 text-xs font-semibold text-[#231123] dark:text-[#DCDCDD] focus:outline-hidden focus:border-[#B80C09] cursor-pointer"
                     >
-                      <option value="newest">Más recientes</option>
-                      <option value="oldest">Más antiguas</option>
-                      <option value="highest">Mayor puntuación ⭐</option>
-                      <option value="lowest">Menor puntuación</option>
+                      <option value="newest">{ui("Más recientes")}</option>
+                      <option value="oldest">{ui("Más antiguas")}</option>
+                      <option value="highest">{ui("Mayor puntuación ⭐")}</option>
+                      <option value="lowest">{ui("Menor puntuación")}</option>
                     </select>
                   </div>
                 </div>
@@ -966,9 +957,7 @@ export const UserDashboardPage = () => {
                 {/* Filtro por Calificación (Estrellas) y Tipo */}
                 <div className="flex flex-wrap items-center justify-between gap-3 pt-3 border-t border-gray-100 dark:border-white/10">
                   <div className="flex items-center gap-1.5 flex-wrap">
-                    <span className="text-[11px] font-bold text-[#5c435a] dark:text-[#B89CB0] mr-1">
-                      Calificación:
-                    </span>
+                    <span className="text-[11px] font-bold text-[#5c435a] dark:text-[#B89CB0] mr-1">{ui("Calificación:")}</span>
                     {[
                       { val: 'all', label: 'Todas' },
                       { val: '5', label: '⭐⭐⭐⭐⭐ 5' },
@@ -993,7 +982,7 @@ export const UserDashboardPage = () => {
                   </div>
 
                   <div className="flex items-center gap-1.5">
-                    <span className="text-[11px] font-bold text-[#5c435a] dark:text-[#B89CB0]">Tipo:</span>
+                    <span className="text-[11px] font-bold text-[#5c435a] dark:text-[#B89CB0]">{ui("Tipo:")}</span>
                     {[
                       { val: 'all', label: 'Todos' },
                       { val: 'album', label: '💿 Álbumes' },
@@ -1017,9 +1006,7 @@ export const UserDashboardPage = () => {
 
                 {/* Resumen de resultados */}
                 <div className="flex items-center justify-between text-[11px] text-[#5c435a] dark:text-[#B89CB0]">
-                  <span>
-                    Mostrando <strong>{filteredUserReviews.length}</strong> de {userReviews.length} reseñas
-                  </span>
+                  <span>{ui("Mostrando")} <strong>{filteredUserReviews.length}</strong> {ui("de")} {userReviews.length} {ui("reseñas")}</span>
                   {(reviewSearch || reviewRatingFilter !== 'all' || reviewTypeFilter !== 'all') && (
                     <button
                       type="button"
@@ -1031,7 +1018,7 @@ export const UserDashboardPage = () => {
                       className="text-[#B80C09] hover:underline font-bold cursor-pointer flex items-center gap-1"
                     >
                       <span className="material-symbols-outlined text-[13px]">restart_alt</span>
-                      <span>Limpiar filtros</span>
+                      <span>{ui("Limpiar filtros")}</span>
                     </button>
                   )}
                 </div>
@@ -1043,29 +1030,19 @@ export const UserDashboardPage = () => {
                   <span className="material-symbols-outlined text-5xl text-[#5c435a]/50 dark:text-[#B89CB0]/50 mb-3">
                     rate_review
                   </span>
-                  <h3 className="text-lg font-bold text-[#231123] dark:text-white">
-                    Aún no has escrito ninguna reseña
-                  </h3>
-                  <p className="text-xs sm:text-sm text-[#5c435a] dark:text-[#B89CB0] max-w-md mt-1 mb-5">
-                    Comparte tus análisis acústicos y reflexiones sonoras con la comunidad de Sonar.
-                  </p>
+                  <h3 className="text-lg font-bold text-[#231123] dark:text-white">{ui("Aún no has escrito ninguna reseña")}</h3>
+                  <p className="text-xs sm:text-sm text-[#5c435a] dark:text-[#B89CB0] max-w-md mt-1 mb-5">{ui("Comparte tus análisis acústicos y reflexiones sonoras con la comunidad de Sonar.")}</p>
                   <button
                     type="button"
                     onClick={() => setActiveTab('recommendations')}
                     className="px-5 py-2.5 rounded-full bg-[#B80C09] hover:bg-[#960a07] text-white text-xs sm:text-sm font-bold transition-all shadow-sm cursor-pointer"
-                  >
-                    Explorar álbumes recomendados
-                  </button>
+                  >{ui("Explorar álbumes recomendados")}</button>
                 </div>
               ) : filteredUserReviews.length === 0 ? (
                 <div className="flex flex-col items-center justify-center py-12 px-4 text-center rounded-2xl bg-white dark:bg-[#4B2840] border border-[#e6d5e2] dark:border-white/10 shadow-xs">
                   <span className="material-symbols-outlined text-4xl text-gray-400 mb-2">search_off</span>
-                  <h4 className="text-base font-bold text-[#231123] dark:text-white">
-                    No se encontraron reseñas con los filtros seleccionados
-                  </h4>
-                  <p className="text-xs text-[#5c435a] dark:text-[#B89CB0] mt-1">
-                    Prueba cambiando el término de búsqueda o seleccionando otra calificación.
-                  </p>
+                  <h4 className="text-base font-bold text-[#231123] dark:text-white">{ui("No se encontraron reseñas con los filtros seleccionados")}</h4>
+                  <p className="text-xs text-[#5c435a] dark:text-[#B89CB0] mt-1">{ui("Prueba cambiando el término de búsqueda o seleccionando otra calificación.")}</p>
                 </div>
               ) : (
                 <div className="flex flex-col gap-4">
@@ -1084,9 +1061,7 @@ export const UserDashboardPage = () => {
                 <div className="flex items-center gap-2.5">
                   <span className="material-symbols-outlined text-[22px] text-[#B80C09]">history</span>
                   <div>
-                    <p className="text-xs sm:text-sm text-[#5c435a] dark:text-pink-200">
-                      Registro de canciones, pistas y podcasts reproducidos recientemente en esta sesión.
-                    </p>
+                    <p className="text-xs sm:text-sm text-[#5c435a] dark:text-pink-200">{ui("Registro de canciones, pistas y podcasts reproducidos recientemente en esta sesión.")}</p>
                   </div>
                 </div>
                 {recentlyPlayed.length > 0 && (
@@ -1099,7 +1074,7 @@ export const UserDashboardPage = () => {
                     className="text-xs font-bold text-rose-500 hover:text-rose-700 dark:hover:text-rose-400 self-start sm:self-auto flex items-center gap-1 cursor-pointer transition-colors"
                   >
                     <span className="material-symbols-outlined text-[15px]">delete_sweep</span>
-                    <span>Limpiar Historial</span>
+                    <span>{ui("Limpiar Historial")}</span>
                   </button>
                 )}
               </div>
@@ -1109,19 +1084,13 @@ export const UserDashboardPage = () => {
                   <span className="material-symbols-outlined text-5xl text-[#5c435a]/50 dark:text-[#B89CB0]/50 mb-3">
                     headphones
                   </span>
-                  <h3 className="text-lg font-bold text-[#231123] dark:text-white">
-                    Aún no has reproducido ninguna pista
-                  </h3>
-                  <p className="text-xs sm:text-sm text-[#5c435a] dark:text-[#B89CB0] max-w-md mt-1 mb-5">
-                    Explora el catálogo o las recomendaciones para iniciar una sesión sonora en alta fidelidad.
-                  </p>
+                  <h3 className="text-lg font-bold text-[#231123] dark:text-white">{ui("Aún no has reproducido ninguna pista")}</h3>
+                  <p className="text-xs sm:text-sm text-[#5c435a] dark:text-[#B89CB0] max-w-md mt-1 mb-5">{ui("Explora el catálogo o las recomendaciones para iniciar una sesión sonora en alta fidelidad.")}</p>
                   <button
                     type="button"
                     onClick={() => setActiveTab('recommendations')}
                     className="px-5 py-2.5 rounded-full bg-[#B80C09] hover:bg-[#960a07] text-white text-xs sm:text-sm font-bold transition-all shadow-sm cursor-pointer"
-                  >
-                    Explorar Recomendaciones
-                  </button>
+                  >{ui("Explorar Recomendaciones")}</button>
                 </div>
               ) : (
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -1147,7 +1116,7 @@ export const UserDashboardPage = () => {
                           </span>
                           <span className="text-[10px] text-gray-400 mt-0.5 flex items-center gap-1">
                             <span className="material-symbols-outlined text-[12px]">schedule</span>
-                            {item.playedAt ? new Date(item.playedAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : 'Reciente'}
+                            {item.playedAt ? new Date(item.playedAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : ui("Reciente")}
                           </span>
                         </div>
                       </div>
@@ -1156,7 +1125,7 @@ export const UserDashboardPage = () => {
                         type="button"
                         onClick={() => handlePlayAlbum(item)}
                         className="w-10 h-10 rounded-full bg-[#B80C09] hover:bg-[#960a07] text-white flex items-center justify-center shrink-0 shadow-sm cursor-pointer transition-transform hover:scale-105"
-                        title="Reproducir de nuevo"
+                        title={ui("Reproducir de nuevo")}
                       >
                         <span className="material-symbols-outlined text-[20px]">play_arrow</span>
                       </button>
@@ -1175,18 +1144,12 @@ export const UserDashboardPage = () => {
                   <span className="material-symbols-outlined text-5xl text-[#5c435a]/50 dark:text-[#B89CB0]/50 mb-3">
                     person_play
                   </span>
-                  <h3 className="text-lg font-bold text-[#231123] dark:text-white">
-                    Aún no sigues a ningún artista
-                  </h3>
-                  <p className="text-xs sm:text-sm text-[#5c435a] dark:text-[#B89CB0] max-w-md mt-1 mb-5">
-                    Explora la comunidad o las reseñas para seguir a tus creadores y productores favoritos.
-                  </p>
+                  <h3 className="text-lg font-bold text-[#231123] dark:text-white">{ui("Aún no sigues a ningún artista")}</h3>
+                  <p className="text-xs sm:text-sm text-[#5c435a] dark:text-[#B89CB0] max-w-md mt-1 mb-5">{ui("Explora la comunidad o las reseñas para seguir a tus creadores y productores favoritos.")}</p>
                   <a
                     href="#community"
                     className="px-5 py-2.5 rounded-full bg-[#B80C09] hover:bg-[#960a07] text-white text-xs sm:text-sm font-bold transition-all shadow-sm"
-                  >
-                    Descubrir Artistas en la Comunidad
-                  </a>
+                  >{ui("Descubrir Artistas en la Comunidad")}</a>
                 </div>
               ) : (
                 <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
@@ -1214,9 +1177,7 @@ export const UserDashboardPage = () => {
                           type="button"
                           onClick={() => handleToggleUnfollowArtist(name)}
                           className="w-full py-1.5 rounded-xl border border-gray-300 dark:border-white/15 hover:border-rose-600 text-xs font-bold text-gray-700 dark:text-gray-300 hover:text-rose-600 transition-colors cursor-pointer"
-                        >
-                          Dejar de seguir
-                        </button>
+                        >{ui("Dejar de seguir")}</button>
                       </motion.div>
                     );
                   })}
@@ -1233,24 +1194,18 @@ export const UserDashboardPage = () => {
                   <span className="material-symbols-outlined text-5xl text-[#5c435a]/50 dark:text-[#B89CB0]/50 mb-3">
                     group
                   </span>
-                  <h3 className="text-lg font-bold text-[#231123] dark:text-white">
-                    Aún no sigues a ningún melómano
-                  </h3>
-                  <p className="text-xs sm:text-sm text-[#5c435a] dark:text-[#B89CB0] max-w-md mt-1 mb-5">
-                    Conecta con críticos y audiófilos destacados en la sección de Comunidad.
-                  </p>
+                  <h3 className="text-lg font-bold text-[#231123] dark:text-white">{ui("Aún no sigues a ningún melómano")}</h3>
+                  <p className="text-xs sm:text-sm text-[#5c435a] dark:text-[#B89CB0] max-w-md mt-1 mb-5">{ui("Conecta con críticos y audiófilos destacados en la sección de Comunidad.")}</p>
                   <a
                     href="#community"
                     className="px-5 py-2.5 rounded-full bg-[#B80C09] hover:bg-[#960a07] text-white text-xs sm:text-sm font-bold transition-all shadow-sm"
-                  >
-                    Ver Melómanos Destacados
-                  </a>
+                  >{ui("Ver Melómanos Destacados")}</a>
                 </div>
               ) : (
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                   {followedUsers.map((uid, idx) => {
                     const profile = socialService.getUserProfile(uid);
-                    const displayName = profile?.name || `Audiófilo #${uid}`;
+                    const displayName = profile?.name || ui("Audiófilo #{{value0}}", { value0: uid });
                     const handle = profile?.handle || `@${String(uid).toLowerCase()}`;
                     const role = profile?.role || 'Melómano';
                     const bio = profile?.bio || 'Crítico de vinilos y texturas acústicas.';
@@ -1299,10 +1254,10 @@ export const UserDashboardPage = () => {
                             return (
                               <span
                                 className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-emerald-500/15 text-emerald-700 dark:text-emerald-300 border border-emerald-500/30 text-[10px] font-bold"
-                                title="Porcentaje de afinidad y compatibilidad en géneros musicales"
+                                title={ui("Porcentaje de afinidad y compatibilidad en géneros musicales")}
                               >
                                 <span className="material-symbols-outlined text-[12px] text-emerald-500">favorite</span>
-                                <span>{affinity}% Afinidad Sonora</span>
+                                <span>{affinity}{ui("% Afinidad Sonora")}</span>
                               </span>
                             );
                           })()}
@@ -1311,9 +1266,7 @@ export const UserDashboardPage = () => {
                             type="button"
                             onClick={() => handleToggleUnfollowUser(uid)}
                             className="px-3 py-1 rounded-xl border border-gray-300 dark:border-white/15 hover:border-rose-600 text-xs font-bold text-gray-700 dark:text-gray-300 hover:text-rose-600 transition-colors cursor-pointer"
-                          >
-                            Siguiendo ✓
-                          </button>
+                          >{ui("Siguiendo ✓")}</button>
                         </div>
                       </motion.div>
                     );
@@ -1351,21 +1304,15 @@ export const UserDashboardPage = () => {
                     </div>
                     <div>
                       <h3 className="text-base sm:text-xl font-black text-[#231123] dark:text-white flex items-center gap-2">
-                        <span>Equipamiento Hi-Fi & Calibración</span>
-                        <span className="px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase bg-[#B80C09]/15 text-[#B80C09] dark:text-pink-300 border border-[#B80C09]/30">
-                          Calidad de Estudio
-                        </span>
+                        <span>{ui("Equipamiento Hi-Fi & Calibración")}</span>
+                        <span className="px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase bg-[#B80C09]/15 text-[#B80C09] dark:text-pink-300 border border-[#B80C09]/30">{ui("Calidad de Estudio")}</span>
                       </h3>
-                      <p className="text-xs sm:text-sm text-[#5c435a] dark:text-[#B89CB0] mt-0.5">
-                        Registra tus tornamesas, DACs y audífonos para exhibirlos en tu perfil y personalizar la respuesta acústica.
-                      </p>
+                      <p className="text-xs sm:text-sm text-[#5c435a] dark:text-[#B89CB0] mt-0.5">{ui("Registra tus tornamesas, DACs y audífonos para exhibirlos en tu perfil y personalizar la respuesta acústica.")}</p>
                     </div>
                   </div>
 
                   {gearSavedNotice && (
-                    <span className="text-xs font-bold text-emerald-600 bg-emerald-50 dark:bg-emerald-950/40 dark:text-emerald-300 px-3 py-1.5 rounded-xl border border-emerald-200 dark:border-emerald-800 self-start sm:self-auto animate-fade-in">
-                      ✓ Equipamiento actualizado con éxito
-                    </span>
+                    <span className="text-xs font-bold text-emerald-600 bg-emerald-50 dark:bg-emerald-950/40 dark:text-emerald-300 px-3 py-1.5 rounded-xl border border-emerald-200 dark:border-emerald-800 self-start sm:self-auto animate-fade-in">{ui("✓ Equipamiento actualizado con éxito")}</span>
                   )}
                 </div>
 
@@ -1375,11 +1322,11 @@ export const UserDashboardPage = () => {
                     <div className="flex items-center justify-between text-xs text-pink-300 font-bold">
                       <span className="flex items-center gap-1.5">
                         <span className="material-symbols-outlined text-[16px]">album</span>
-                        <span>Tornamesa</span>
+                        <span>{ui("Tornamesa")}</span>
                       </span>
                     </div>
                     <span className="text-sm font-black text-white truncate">
-                      {gearSetup.turntable || 'Sin asignar'}
+                      {gearSetup.turntable || ui("Sin asignar")}
                     </span>
                   </div>
 
@@ -1387,11 +1334,11 @@ export const UserDashboardPage = () => {
                     <div className="flex items-center justify-between text-xs text-blue-300 font-bold">
                       <span className="flex items-center gap-1.5">
                         <span className="material-symbols-outlined text-[16px]">headphones</span>
-                        <span>Audífonos</span>
+                        <span>{ui("Audífonos")}</span>
                       </span>
                     </div>
                     <span className="text-sm font-black text-white truncate">
-                      {gearSetup.headphones || 'Sin asignar'}
+                      {gearSetup.headphones || ui("Sin asignar")}
                     </span>
                   </div>
 
@@ -1399,11 +1346,11 @@ export const UserDashboardPage = () => {
                     <div className="flex items-center justify-between text-xs text-emerald-300 font-bold">
                       <span className="flex items-center gap-1.5">
                         <span className="material-symbols-outlined text-[16px]">speaker</span>
-                        <span>DAC / Amplificador</span>
+                        <span>{ui("DAC / Amplificador")}</span>
                       </span>
                     </div>
                     <span className="text-sm font-black text-white truncate">
-                      {gearSetup.dac || 'Sin asignar'}
+                      {gearSetup.dac || ui("Sin asignar")}
                     </span>
                   </div>
 
@@ -1411,11 +1358,11 @@ export const UserDashboardPage = () => {
                     <div className="flex items-center justify-between text-xs text-amber-300 font-bold">
                       <span className="flex items-center gap-1.5">
                         <span className="material-symbols-outlined text-[16px]">graphic_eq</span>
-                        <span>Formato Clave</span>
+                        <span>{ui("Formato Clave")}</span>
                       </span>
                     </div>
                     <span className="text-sm font-black text-white truncate">
-                      {gearSetup.favoriteFormat || 'Sin asignar'}
+                      {gearSetup.favoriteFormat || ui("Sin asignar")}
                     </span>
                   </div>
                 </div>
@@ -1427,7 +1374,7 @@ export const UserDashboardPage = () => {
                     <div className="flex flex-col gap-2 p-4 rounded-2xl bg-gray-50 dark:bg-black/20 border border-gray-200/70 dark:border-white/10">
                       <label className="text-xs font-black uppercase text-[#231123] dark:text-white flex items-center gap-2">
                         <span className="material-symbols-outlined text-[18px] text-[#B80C09]">album</span>
-                        <span>Tornamesa / Reproductor</span>
+                        <span>{ui("Tornamesa / Reproductor")}</span>
                       </label>
                       <input
                         type="text"
@@ -1454,7 +1401,7 @@ export const UserDashboardPage = () => {
                     <div className="flex flex-col gap-2 p-4 rounded-2xl bg-gray-50 dark:bg-black/20 border border-gray-200/70 dark:border-white/10">
                       <label className="text-xs font-black uppercase text-[#231123] dark:text-white flex items-center gap-2">
                         <span className="material-symbols-outlined text-[18px] text-blue-500">headphones</span>
-                        <span>Audífonos / Monitores</span>
+                        <span>{ui("Audífonos / Monitores")}</span>
                       </label>
                       <input
                         type="text"
@@ -1481,7 +1428,7 @@ export const UserDashboardPage = () => {
                     <div className="flex flex-col gap-2 p-4 rounded-2xl bg-gray-50 dark:bg-black/20 border border-gray-200/70 dark:border-white/10">
                       <label className="text-xs font-black uppercase text-[#231123] dark:text-white flex items-center gap-2">
                         <span className="material-symbols-outlined text-[18px] text-emerald-500">speaker</span>
-                        <span>DAC & Amplificación</span>
+                        <span>{ui("DAC & Amplificación")}</span>
                       </label>
                       <input
                         type="text"
@@ -1508,7 +1455,7 @@ export const UserDashboardPage = () => {
                     <div className="flex flex-col gap-2 p-4 rounded-2xl bg-gray-50 dark:bg-black/20 border border-gray-200/70 dark:border-white/10">
                       <label className="text-xs font-black uppercase text-[#231123] dark:text-white flex items-center gap-2">
                         <span className="material-symbols-outlined text-[18px] text-amber-500">graphic_eq</span>
-                        <span>Formato Preferido de Audición</span>
+                        <span>{ui("Formato Preferido de Audición")}</span>
                       </label>
                       <input
                         type="text"
@@ -1538,7 +1485,7 @@ export const UserDashboardPage = () => {
                       className="px-6 py-2.5 rounded-xl bg-[#B80C09] hover:bg-[#960a07] text-white text-xs sm:text-sm font-bold transition-all cursor-pointer shadow-xs flex items-center gap-2"
                     >
                       <span className="material-symbols-outlined text-[18px]">save</span>
-                      <span>Guardar Equipamiento en Perfil</span>
+                      <span>{ui("Guardar Equipamiento en Perfil")}</span>
                     </button>
                   </div>
                 </form>

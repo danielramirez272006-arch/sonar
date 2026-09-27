@@ -1,3 +1,4 @@
+import { useUIText } from '../../shared/i18n/use-ui-text.js';
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import Navbar from '../../shared/components/layout/navbar';
@@ -6,8 +7,11 @@ import { useAuth } from '../../shared/context/auth-context';
 import { usePlayer } from '../../shared/context/player-context';
 import { interactionsService } from '../../shared/services/interactions-service';
 import { handleImageFallbackError, getFallbackCoverForAlbum } from '../../shared/services/recommendations-service';
+import { useTranslation } from '../../shared/context/language-context.jsx';
 
 export const SavedAlbumsPage = () => {
+  const ui = useUIText();
+  const { t } = useTranslation();
   const { user } = useAuth();
   const { playTrack, openReviewModal, currentTrack, isPlaying } = usePlayer();
   const userId = user?.id || null;
@@ -34,7 +38,14 @@ export const SavedAlbumsPage = () => {
     setSavedAlbums(res.savedAlbums);
   };
 
-  const tags = ['Todos', '🎵 Canciones', '💿 Álbumes', 'Favoritos', 'Colección Vinilo', 'Por Escuchar'];
+  const tags = [
+    { value: 'Todos', label: t('page.saved.all') },
+    { value: '🎵 Canciones', label: t('page.saved.tracks') },
+    { value: '💿 Álbumes', label: t('page.saved.albums') },
+    { value: 'Favoritos', label: t('page.saved.favorites') },
+    { value: 'Colección Vinilo', label: t('page.saved.vinyl') },
+    { value: 'Por Escuchar', label: t('page.saved.toListen') },
+  ];
 
   const filtered = savedAlbums.filter((a) => {
     if (activeTag === 'Todos') return true;
@@ -50,13 +61,13 @@ export const SavedAlbumsPage = () => {
         <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 border-b border-[#e6d5e2] dark:border-white/10 pb-5">
           <div>
             <span className="text-xs uppercase tracking-widest text-[#B80C09] font-extrabold">
-              BIBLIOTECA PERSONAL
+              {t('page.saved.eyebrow')}
             </span>
             <h1 className="text-3xl sm:text-4xl font-black text-[#231123] dark:text-white tracking-tight mt-1">
-              Mis Canciones & Álbumes Guardados
+              {t('page.saved.title')}
             </h1>
             <p className="text-sm text-[#5c435a] dark:text-[#B89CB0] mt-1">
-              Colección exclusiva de {user?.username || 'tu perfil'} con todas tus canciones y discos favoritos.
+              {t('page.saved.description', { username: user?.username || t('nav.profile') })}
             </p>
           </div>
 
@@ -64,16 +75,16 @@ export const SavedAlbumsPage = () => {
           <div className="flex flex-wrap items-center gap-2">
             {tags.map((tag) => (
               <button
-                key={tag}
+                key={tag.value}
                 type="button"
-                onClick={() => setActiveTag(tag)}
+                onClick={() => setActiveTag(tag.value)}
                 className={`px-4 py-1.5 rounded-full text-xs font-bold transition-all cursor-pointer ${
-                  activeTag === tag
+                  activeTag === tag.value
                     ? 'bg-[#B80C09] text-white shadow-xs'
                     : 'bg-white dark:bg-[#4B2840] border border-[#e6d5e2] dark:border-white/10 text-[#5c435a] dark:text-gray-200 hover:border-[#B80C09]/40'
                 }`}
               >
-                {tag}
+                {tag.label}
               </button>
             ))}
           </div>
@@ -85,10 +96,10 @@ export const SavedAlbumsPage = () => {
               bookmark_border
             </span>
             <h3 className="text-lg font-bold text-[#231123] dark:text-white">
-              No tienes elementos en la categoría &ldquo;{activeTag}&rdquo;
+              {t('page.saved.emptyTitle', { tag: tags.find(tag => tag.value === activeTag)?.label || activeTag })}
             </h3>
             <p className="text-xs sm:text-sm text-[#5c435a] dark:text-[#B89CB0] max-w-md">
-              Explora canciones o álbumes en el buscador o el reproductor y presiona el botón de marcador para guardarlos aquí.
+              {t('page.saved.emptyDescription')}
             </p>
           </div>
         ) : (
@@ -116,7 +127,7 @@ export const SavedAlbumsPage = () => {
                     {/* Badge tipo */}
                     <div className="absolute top-2 left-2 flex flex-col gap-1">
                       <span className="px-2 py-0.5 rounded-md bg-black/80 backdrop-blur-xs text-white text-[10px] font-extrabold shadow-xs">
-                        {isItemTrack ? '🎵 Canción' : '💿 Álbum'}
+                        {isItemTrack ? t('page.saved.track') : t('page.saved.albums')}
                       </span>
                       {item.collectionTag && item.collectionTag !== 'Favoritos' && (
                         <span className="px-1.5 py-0.5 rounded-md bg-[#B80C09]/90 text-white text-[9px] font-bold">
@@ -143,7 +154,7 @@ export const SavedAlbumsPage = () => {
                       className={`absolute inset-0 bg-black/40 flex items-center justify-center text-white transition-opacity cursor-pointer ${
                         isCurrentlyPlaying ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'
                       }`}
-                      title={isCurrentlyPlaying ? 'Pausar' : 'Reproducir'}
+                      title={isCurrentlyPlaying ? t('player.pause') : t('player.play')}
                     >
                       <span className="material-symbols-outlined text-[36px] bg-[#B80C09] p-2 rounded-full shadow-lg">
                         {isCurrentlyPlaying ? 'pause' : 'play_arrow'}
@@ -154,7 +165,7 @@ export const SavedAlbumsPage = () => {
                     <button
                       type="button"
                       onClick={() => handleRemove(item)}
-                      title="Quitar de mi colección"
+                      title={t('page.saved.remove')}
                       className="absolute top-2 right-2 w-7 h-7 rounded-full bg-black/70 hover:bg-[#B80C09] text-white flex items-center justify-center transition-colors cursor-pointer z-10"
                     >
                       <span className="material-symbols-outlined text-[16px]">delete</span>
@@ -176,11 +187,9 @@ export const SavedAlbumsPage = () => {
                         onClick={() => openReviewModal(item)}
                         className="text-[11px] font-bold text-[#B80C09] hover:underline flex items-center gap-1 cursor-pointer"
                       >
-                        <span className="material-symbols-outlined text-[14px]">rate_review</span>
-                        Criticar
-                      </button>
+                        <span className="material-symbols-outlined text-[14px]">rate_review</span>{ui("Criticar")}</button>
                       <span className="text-[10px] text-gray-400">
-                        {item.addedAt || 'Reciente'}
+                        {item.addedAt || ui("Reciente")}
                       </span>
                     </div>
                   </div>

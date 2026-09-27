@@ -1,3 +1,4 @@
+import { useUIText } from '../../i18n/use-ui-text.js';
 import React from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
@@ -9,6 +10,7 @@ export const MobileMenu = ({
   onClose = () => {},
   links: customLinks = null,
 }) => {
+  const ui = useUIText();
   const { t } = useTranslation();
 
   const defaultLinks = [
@@ -31,7 +33,7 @@ export const MobileMenu = ({
             exit={{ opacity: 0 }}
             transition={{ duration: 0.25 }}
             onClick={onClose}
-            aria-label="Cerrar menú móvil"
+            aria-label={ui("Cerrar menú móvil")}
             className="fixed inset-0 bg-black/50 backdrop-blur-xs z-40 cursor-pointer"
           />
 
@@ -46,13 +48,11 @@ export const MobileMenu = ({
             <div>
               {/* Cabecera con título y botón de cerrar (X) */}
               <div className="flex items-center justify-between mb-8 pb-3 border-b border-gray-100 dark:border-white/10">
-                <span className="font-extrabold text-sm tracking-wider uppercase text-[#B80C09]">
-                  Navegación
-                </span>
+                <span className="font-extrabold text-sm tracking-wider uppercase text-[#B80C09]">{ui("Navegación")}</span>
                 <button
                   type="button"
                   onClick={onClose}
-                  aria-label="Cerrar menú"
+                  aria-label={ui("Cerrar menú")}
                   className="p-2 rounded-xl text-black dark:text-white hover:text-[#B80C09] dark:hover:text-[#B80C09] transition-colors cursor-pointer"
                 >
                   <svg

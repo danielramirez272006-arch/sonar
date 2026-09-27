@@ -1,3 +1,4 @@
+import { useUIText } from '../../../shared/i18n/use-ui-text.js';
 import { useState, useEffect } from 'react';
 import { ArrowRight, Check, Eye, EyeOff, Headphones, Music2, Sparkles, User, Disc3, ShieldCheck, Mail, KeyRound, ArrowLeft, RefreshCw } from 'lucide-react';
 import { useAuth } from '../../../shared/context/auth-context';
@@ -8,7 +9,7 @@ import { RotatingReview } from './rotating-review';
 import { GENRE_OPTIONS } from '../../../shared/services/recommendations-service';
 import { requestRegisterOtpWebhook } from '../../../shared/services/n8n-webhooks';
 import { getUserByEmail } from '../../../shared/services/api-client';
-import { useGoogleLogin } from '@react-oauth/google';
+import { GoogleOAuthProvider, useGoogleLogin } from '@react-oauth/google';
 
 const AVATAR_PALETTES = [
   { color: '#B80C09', label: 'Carmesí Vinilo' },
@@ -21,28 +22,21 @@ const AVATAR_PALETTES = [
   { color: '#0f172a', label: 'Obsidiana' },
 ];
 
-const EditorialPanel = () => (
-  <aside className="auth-editorial" aria-label="Comunidad editorial de audio">
+const EditorialPanel = () => { const ui = useUIText(); return (<aside className="auth-editorial" aria-label={ui("Comunidad editorial de audio")}>
     <div className="auth-editorial__copy">
       <p className="auth-eyebrow">
-        <span /> Comunidad editorial de audio
-      </p>
-      <h1>Únete a la conversación musical.</h1>
-      <p>
-        Califica vinilos, analiza letras con inteligencia artificial y sincroniza tus hallazgos con una comunidad audiófila global.
-      </p>
+        <span /> {ui("Comunidad editorial de audio")}</p>
+      <h1>{ui("Únete a la conversación musical.")}</h1>
+      <p>{ui("Califica vinilos, analiza letras con inteligencia artificial y sincroniza tus hallazgos con una comunidad audiófila global.")}</p>
 
       {/* Badges de características audiófilas */}
       <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.45rem', marginTop: '1.1rem' }}>
         <span style={{ display: 'inline-flex', alignItems: 'center', gap: '0.35rem', padding: '0.32rem 0.7rem', borderRadius: '999px', backgroundColor: 'rgba(255,255,255,0.75)', fontSize: '0.68rem', fontWeight: '800', color: '#5c1d5e', border: '1px solid rgba(92,29,94,0.12)', boxShadow: '0 2px 6px rgba(92,29,94,0.05)' }}>
-          <Headphones size={13} style={{ color: '#B80C09' }} /> Muestras de Audio HD
-        </span>
+          <Headphones size={13} style={{ color: '#B80C09' }} /> {ui("Muestras de Audio HD")}</span>
         <span style={{ display: 'inline-flex', alignItems: 'center', gap: '0.35rem', padding: '0.32rem 0.7rem', borderRadius: '999px', backgroundColor: 'rgba(255,255,255,0.75)', fontSize: '0.68rem', fontWeight: '800', color: '#5c1d5e', border: '1px solid rgba(92,29,94,0.12)', boxShadow: '0 2px 6px rgba(92,29,94,0.05)' }}>
-          <Sparkles size={13} style={{ color: '#d97706' }} /> Análisis de Letras IA
-        </span>
+          <Sparkles size={13} style={{ color: '#d97706' }} /> {ui("Análisis de Letras IA")}</span>
         <span style={{ display: 'inline-flex', alignItems: 'center', gap: '0.35rem', padding: '0.32rem 0.7rem', borderRadius: '999px', backgroundColor: 'rgba(255,255,255,0.75)', fontSize: '0.68rem', fontWeight: '800', color: '#5c1d5e', border: '1px solid rgba(92,29,94,0.12)', boxShadow: '0 2px 6px rgba(92,29,94,0.05)' }}>
-          <Disc3 size={13} style={{ color: '#B80C09' }} /> Reseñas de Vinilos
-        </span>
+          <Disc3 size={13} style={{ color: '#B80C09' }} /> {ui("Reseñas de Vinilos")}</span>
       </div>
     </div>
 
@@ -54,15 +48,13 @@ const EditorialPanel = () => (
     {/* Estadísticas de la Comunidad */}
     <div className="auth-editorial__stats">
       <span>
-        <Music2 size={14} />
-        64,280 críticas registradas este mes
-      </span>
-      <span>28,400 álbumes catalogados</span>
+        <Music2 size={14} />{ui("64,280 críticas registradas este mes")}</span>
+      <span>{ui("28,400 álbumes catalogados")}</span>
     </div>
-  </aside>
-);
+  </aside>); };
 
-export const RegisterForm = () => {
+const RegisterFormContent = () => {
+  const ui = useUIText();
   const { register, isLoading } = useAuth();
   const { t } = useTranslation();
   const [step, setStep] = useState('info'); // 'info' | 'otp' | 'password'
@@ -262,9 +254,7 @@ export const RegisterForm = () => {
    * Si el correo ya existe en la BD, redirige a login (#login).
    * Si es nuevo, redirige a la página de usuario (#usuario).
    */
-  let handleGoogleRegister = () => {};
-  try {
-    handleGoogleRegister = useGoogleLogin({
+  const handleGoogleRegister = useGoogleLogin({
       onSuccess: async (tokenResponse) => {
         setErrorMessage('');
       try {
@@ -306,9 +296,7 @@ export const RegisterForm = () => {
     onError: () => setErrorMessage('No se pudo conectar con Google. Intenta de nuevo.'),
     flow: 'implicit',
   });
-  } catch {
-    handleGoogleRegister = () => {};
-  }
+
 
   return (
     <div className="auth-shell">
@@ -327,10 +315,10 @@ export const RegisterForm = () => {
               }
             }}
             className="auth-back-btn"
-            aria-label={step === 'info' ? 'Volver al catálogo' : 'Regresar al paso anterior'}
+            aria-label={step === 'info' ? ui("Volver al catálogo") : ui("Regresar al paso anterior")}
           >
             <ArrowLeft size={15} />
-            <span>{step === 'info' ? 'Volver al catálogo' : 'Paso anterior'}</span>
+            <span>{step === 'info' ? ui("Volver al catálogo") : ui("Paso anterior")}</span>
           </button>
           <div className="auth-mobile-brand">
             <Headphones size={19} /> SONAR
@@ -338,13 +326,13 @@ export const RegisterForm = () => {
           <header className="auth-heading">
             <h2 id="register-title">
               {step === 'info' && t('auth.register_title')}
-              {step === 'otp' && 'Verifica tu Correo'}
-              {step === 'password' && 'Define tu Contraseña'}
+              {step === 'otp' && ui("Verifica tu Correo")}
+              {step === 'password' && ui("Define tu Contraseña")}
             </h2>
             <p>
               {step === 'info' && t('auth.register_subtitle')}
-              {step === 'otp' && 'Ingresa el código de 6 dígitos que enviamos a tu bandeja.'}
-              {step === 'password' && 'Elige la contraseña que desees para acceder a Sonar.'}
+              {step === 'otp' && ui("Ingresa el código de 6 dígitos que enviamos a tu bandeja.")}
+              {step === 'password' && ui("Elige la contraseña que desees para acceder a Sonar.")}
             </p>
           </header>
 
@@ -362,21 +350,17 @@ export const RegisterForm = () => {
             fontWeight: '800',
           }}>
             <span style={{ color: step === 'info' ? '#B80C09' : '#10b981', display: 'flex', alignItems: 'center', gap: '3px' }}>
-              {step !== 'info' ? <Check size={12} /> : '1.'} Datos
-            </span>
+              {step !== 'info' ? <Check size={12} /> : '1.'} {ui("Datos")}</span>
             <span style={{ color: '#d1c5cf' }}>➔</span>
             <span style={{ color: step === 'otp' ? '#B80C09' : step === 'password' ? '#10b981' : '#856f80', display: 'flex', alignItems: 'center', gap: '3px' }}>
-              {step === 'password' ? <Check size={12} /> : '2.'} Código OTP
-            </span>
+              {step === 'password' ? <Check size={12} /> : '2.'} {ui("Código OTP")}</span>
             <span style={{ color: '#d1c5cf' }}>➔</span>
-            <span style={{ color: step === 'password' ? '#B80C09' : '#856f80' }}>
-              3. Contraseña
-            </span>
+            <span style={{ color: step === 'password' ? '#B80C09' : '#856f80' }}>{ui("3. Contraseña")}</span>
           </div>
 
           {step === 'info' && (
             <>
-              <div className="auth-socials" aria-label="Registro con servicios externos">
+              <div className="auth-socials" aria-label={ui("Registro con servicios externos")}>
                 <button
                   id="google-register-btn"
                   type="button"
@@ -391,7 +375,7 @@ export const RegisterForm = () => {
               </div>
 
               <p className="auth-divider">
-                <span />o regístrate con tu correo<span />
+                <span />{ui("o regístrate con tu correo")}<span />
               </p>
 
               <form className="auth-form" onSubmit={handleRequestOtp}>
@@ -426,12 +410,8 @@ export const RegisterForm = () => {
                   </div>
                   <div style={{ flex: 1, minWidth: 0 }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
-                      <span style={{ fontSize: '0.72rem', fontWeight: '800', color: '#342632' }}>
-                        Identidad Sonora
-                      </span>
-                      <span style={{ fontSize: '0.62rem', background: '#dcfce7', color: '#15803d', padding: '1px 6px', borderRadius: '4px', fontWeight: '700' }}>
-                        Personalizable
-                      </span>
+                      <span style={{ fontSize: '0.72rem', fontWeight: '800', color: '#342632' }}>{ui("Identidad Sonora")}</span>
+                      <span style={{ fontSize: '0.62rem', background: '#dcfce7', color: '#15803d', padding: '1px 6px', borderRadius: '4px', fontWeight: '700' }}>{ui("Personalizable")}</span>
                     </div>
                     <div style={{ display: 'flex', gap: '0.3rem', marginTop: '0.35rem', flexWrap: 'wrap' }}>
                       {AVATAR_PALETTES.map((palette) => (
@@ -460,9 +440,7 @@ export const RegisterForm = () => {
                 {/* Selector de Tipo de Cuenta & Control Parental */}
                 <div style={{ marginBottom: '0.6rem' }}>
                   <label style={{ fontSize: '0.72rem', fontWeight: '800', textTransform: 'uppercase', letterSpacing: '0.05em', color: '#5c435a', display: 'flex', alignItems: 'center', gap: '4px', marginBottom: '0.35rem' }}>
-                    <ShieldCheck size={14} color="#B80C09" />
-                    Modalidad de Cuenta & Control Parental
-                  </label>
+                    <ShieldCheck size={14} color="#B80C09" />{ui("Modalidad de Cuenta & Control Parental")}</label>
                   <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.45rem' }}>
                     <button
                       type="button"
@@ -479,13 +457,9 @@ export const RegisterForm = () => {
                     >
                       <div style={{ display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
                         <Headphones size={13} color={formData.accountType === 'standard' ? '#B80C09' : '#5c435a'} />
-                        <span style={{ fontSize: '0.74rem', fontWeight: '800', color: formData.accountType === 'standard' ? '#B80C09' : '#231123' }}>
-                          Estándar
-                        </span>
+                        <span style={{ fontSize: '0.74rem', fontWeight: '800', color: formData.accountType === 'standard' ? '#B80C09' : '#231123' }}>{ui("Estándar")}</span>
                       </div>
-                      <p style={{ fontSize: '0.6rem', color: '#665163', margin: '2px 0 0 0', lineHeight: 1.2 }}>
-                        Catálogo libre completo
-                      </p>
+                      <p style={{ fontSize: '0.6rem', color: '#665163', margin: '2px 0 0 0', lineHeight: 1.2 }}>{ui("Catálogo libre completo")}</p>
                     </button>
 
                     <button
@@ -504,19 +478,17 @@ export const RegisterForm = () => {
                       <div style={{ display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
                         <ShieldCheck size={13} color={formData.accountType === 'junior' ? '#B80C09' : '#5c435a'} />
                         <span style={{ fontSize: '0.74rem', fontWeight: '800', color: formData.accountType === 'junior' ? '#B80C09' : '#231123' }}>
-                          <span>Junior (Segura)</span> <span style={{ fontSize: '0.65rem', opacity: 0.8 }}>(Kids / Kiks)</span>
+                          <span>{ui("Junior (Segura)")}</span> <span style={{ fontSize: '0.65rem', opacity: 0.8 }}>(Kids / Kiks)</span>
                         </span>
                       </div>
-                      <p style={{ fontSize: '0.6rem', color: '#665163', margin: '2px 0 0 0', lineHeight: 1.2 }}>
-                        Filtro explícito [E] y PIN
-                      </p>
+                      <p style={{ fontSize: '0.6rem', color: '#665163', margin: '2px 0 0 0', lineHeight: 1.2 }}>{ui("Filtro explícito [E] y PIN")}</p>
                     </button>
                   </div>
 
                   {formData.accountType === 'junior' && (
                     <div style={{ marginTop: '0.4rem', padding: '0.45rem 0.65rem', borderRadius: '0.5rem', backgroundColor: '#fff', border: '1px solid #fecdd3', fontSize: '0.65rem', color: '#881337', display: 'flex', flexDirection: 'column', gap: '0.3rem' }}>
                       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                        <span>🔒 PIN Parental (4 dígitos):</span>
+                        <span>{ui("🔒 PIN Parental (4 dígitos):")}</span>
                         <input
                           type="text"
                           maxLength={4}
@@ -527,20 +499,18 @@ export const RegisterForm = () => {
                           style={{ width: '60px', padding: '2px 6px', fontSize: '0.75rem', fontFamily: 'monospace', textAlign: 'center', border: '1px solid #e11d48', borderRadius: '4px' }}
                         />
                       </div>
-                      <span style={{ opacity: 0.85, fontSize: '0.59rem' }}>
-                        Las pistas con contenido explícito requerirán este PIN para desbloquear su reproducción.
-                      </span>
+                      <span style={{ opacity: 0.85, fontSize: '0.59rem' }}>{ui("Las pistas con contenido explícito requerirán este PIN para desbloquear su reproducción.")}</span>
                     </div>
                   )}
                 </div>
 
-                <label htmlFor="username">Nombre de usuario</label>
+                <label htmlFor="username">{ui("Nombre de usuario")}</label>
                 <div style={{ position: 'relative' }}>
                   <input
                     id="username"
                     required
                     autoComplete="username"
-                    placeholder="tu_usuario"
+                    placeholder={ui("tu_usuario")}
                     value={formData.username}
                     onChange={setValue('username')}
                     style={{ paddingLeft: '2.2rem' }}
@@ -550,21 +520,20 @@ export const RegisterForm = () => {
                   </span>
                 </div>
                 <small style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                  <span>Tu enlace público: <b>sonar.fm/@{formData.username || 'tu_usuario'}</b></span>
+                  <span>{ui("Tu enlace público:")} <b>sonar.fm/@{formData.username || ui("tu_usuario")}</b></span>
                   {formData.username.length >= 3 && (
                     <span style={{ color: '#10b981', fontWeight: 'bold', fontSize: '0.62rem', display: 'flex', alignItems: 'center', gap: '2px' }}>
-                      <Check size={11} /> Válido
-                    </span>
+                      <Check size={11} /> {ui("Válido")}</span>
                   )}
                 </small>
 
-                <label htmlFor="register-email" style={{ marginTop: '0.2rem' }}>Correo electrónico</label>
+                <label htmlFor="register-email" style={{ marginTop: '0.2rem' }}>{ui("Correo electrónico")}</label>
                 <input
                   id="register-email"
                   type="email"
                   required
                   autoComplete="email"
-                  placeholder="tu@ejemplo.com"
+                  placeholder={ui("tu@ejemplo.com")}
                   value={formData.email}
                   onChange={setValue('email')}
                 />
@@ -573,12 +542,9 @@ export const RegisterForm = () => {
                 <div className="auth-genres-selection" style={{ marginTop: '0.75rem', marginBottom: '0.4rem' }}>
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.35rem' }}>
                     <label style={{ fontSize: '0.72rem', fontWeight: '800', textTransform: 'uppercase', letterSpacing: '0.05em', color: '#5c435a', display: 'flex', alignItems: 'center', gap: '4px' }}>
-                      <Sparkles size={13} color="#B80C09" />
-                      Calibra tus Gustos
-                    </label>
+                      <Sparkles size={13} color="#B80C09" />{ui("Calibra tus Gustos")}</label>
                     <span style={{ fontSize: '0.68rem', color: '#B80C09', fontWeight: 'bold' }}>
-                      {formData.preferences.length} seleccionados
-                    </span>
+                      {formData.preferences.length} {ui("seleccionados")}</span>
                   </div>
                   <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.35rem', maxHeight: '6.5rem', overflowY: 'auto', padding: '2px' }}>
                     {GENRE_OPTIONS.map((genre) => {
@@ -609,7 +575,7 @@ export const RegisterForm = () => {
 
                 {errorMessage && (
                   <div className="auth-error" role="alert" style={{ display: 'flex', flexDirection: 'column', gap: '0.45rem', padding: '0.65rem 0.8rem', borderRadius: '10px' }}>
-                    <span style={{ fontSize: '0.78rem', lineHeight: '1.4' }}>{errorMessage}</span>
+                    <span style={{ fontSize: '0.78rem', lineHeight: '1.4' }}>{ui(errorMessage)}</span>
                     {errorMessage.includes('ya está registrado') && (
                       <div style={{ display: 'flex', gap: '0.5rem', marginTop: '0.2rem', flexWrap: 'wrap' }}>
                         <a
@@ -627,9 +593,7 @@ export const RegisterForm = () => {
                             gap: '4px',
                             boxShadow: '0 2px 5px rgba(184,12,9,0.3)',
                           }}
-                        >
-                          Iniciar Sesión ➔
-                        </a>
+                        >{ui("Iniciar Sesión ➔")}</a>
                         <a
                           href="#forgot-password"
                           style={{
@@ -642,9 +606,7 @@ export const RegisterForm = () => {
                             textDecoration: 'none',
                             border: '1px solid rgba(92,29,94,0.25)',
                           }}
-                        >
-                          Recuperar Contraseña
-                        </a>
+                        >{ui("Recuperar Contraseña")}</a>
                       </div>
                     )}
                   </div>
@@ -652,10 +614,9 @@ export const RegisterForm = () => {
 
                 <button className="auth-submit" type="submit" disabled={isSendingOtp} style={{ marginTop: '0.6rem' }}>
                   {isSendingOtp ? (
-                    'Enviando código de verificación…'
+                    ui("Enviando código de verificación…")
                   ) : (
-                    <>
-                      Continuar y Verificar Correo <ArrowRight size={18} />
+                    <>{ui("Continuar y Verificar Correo")} <ArrowRight size={18} />
                     </>
                   )}
                 </button>
@@ -686,17 +647,11 @@ export const RegisterForm = () => {
                 }}>
                   <Mail size={24} />
                 </div>
-                <h3 style={{ fontSize: '0.98rem', fontWeight: '800', color: '#231123', margin: 0 }}>
-                  Código de Verificación
-                </h3>
-                <p style={{ fontSize: '0.74rem', color: '#665163', marginTop: '0.4rem', lineHeight: '1.45' }}>
-                  Hemos enviado un código de 6 dígitos a <b>{formData.email}</b>. Ingrésalo para activar tu cuenta:
-                </p>
+                <h3 style={{ fontSize: '0.98rem', fontWeight: '800', color: '#231123', margin: 0 }}>{ui("Código de Verificación")}</h3>
+                <p style={{ fontSize: '0.74rem', color: '#665163', marginTop: '0.4rem', lineHeight: '1.45' }}>{ui("Hemos enviado un código de 6 dígitos a")} <b>{formData.email}</b>{ui(". Ingrésalo para activar tu cuenta:")}</p>
               </div>
 
-              <label htmlFor="otp-input" style={{ textAlign: 'center', display: 'block', fontSize: '0.75rem', fontWeight: '700', marginBottom: '0.4rem' }}>
-                Ingresa los 6 dígitos recibidos
-              </label>
+              <label htmlFor="otp-input" style={{ textAlign: 'center', display: 'block', fontSize: '0.75rem', fontWeight: '700', marginBottom: '0.4rem' }}>{ui("Ingresa los 6 dígitos recibidos")}</label>
               <input
                 id="otp-input"
                 type="text"
@@ -720,18 +675,15 @@ export const RegisterForm = () => {
                 }}
               />
 
-              <p style={{ fontSize: '0.68rem', color: '#856f80', textAlign: 'center', margin: '0.4rem 0 0.2rem 0' }}>
-                🔒 Ingresa los 6 dígitos y presiona Verificar Código
-              </p>
+              <p style={{ fontSize: '0.68rem', color: '#856f80', textAlign: 'center', margin: '0.4rem 0 0.2rem 0' }}>{ui("🔒 Ingresa los 6 dígitos y presiona Verificar Código")}</p>
 
               {errorMessage && (
                 <p className="auth-error" role="alert" style={{ marginTop: '0.5rem' }}>
-                  {errorMessage}
+                  {ui(errorMessage)}
                 </p>
               )}
 
-              <button className="auth-submit" type="submit" style={{ marginTop: '0.7rem' }}>
-                Verificar Código <ArrowRight size={18} />
+              <button className="auth-submit" type="submit" style={{ marginTop: '0.7rem' }}>{ui("Verificar Código")} <ArrowRight size={18} />
               </button>
 
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '0.8rem', fontSize: '0.72rem' }}>
@@ -740,8 +692,7 @@ export const RegisterForm = () => {
                   onClick={() => setStep('info')}
                   style={{ background: 'none', border: 'none', color: '#665163', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '3px' }}
                 >
-                  <ArrowLeft size={13} /> Cambiar correo
-                </button>
+                  <ArrowLeft size={13} /> {ui("Cambiar correo")}</button>
                 <button
                   type="button"
                   onClick={handleRequestOtp}
@@ -759,7 +710,7 @@ export const RegisterForm = () => {
                   }}
                 >
                   <RefreshCw size={13} className={isSendingOtp ? 'animate-spin' : ''} />
-                  {resendTimer > 0 ? `Reenviar código (${resendTimer}s)` : 'Reenviar código'}
+                  {resendTimer > 0 ? ui("Reenviar código ({{value0}}s)", { value0: resendTimer }) : ui("Reenviar código")}
                 </button>
               </div>
             </form>
@@ -780,10 +731,9 @@ export const RegisterForm = () => {
                 fontWeight: '700',
                 marginBottom: '0.5rem',
               }}>
-                <Check size={16} /> Correo <b>{formData.email}</b> verificado con éxito
-              </div>
+                <Check size={16} /> {ui("Correo")} <b>{formData.email}</b> {ui("verificado con éxito")}</div>
 
-              <label htmlFor="register-password" style={{ marginTop: '0.2rem' }}>Elige tu contraseña</label>
+              <label htmlFor="register-password" style={{ marginTop: '0.2rem' }}>{ui("Elige tu contraseña")}</label>
               <div className="auth-password">
                 <input
                   id="register-password"
@@ -792,14 +742,14 @@ export const RegisterForm = () => {
                   autoFocus
                   minLength={6}
                   autoComplete="new-password"
-                  placeholder="Mínimo 6 caracteres"
+                  placeholder={ui("Mínimo 6 caracteres")}
                   value={formData.password}
                   onChange={setValue('password')}
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  aria-label={showPassword ? 'Ocultar contraseña' : 'Mostrar contraseña'}
+                  aria-label={showPassword ? ui("Ocultar contraseña") : ui("Mostrar contraseña")}
                 >
                   {showPassword ? <EyeOff size={17} /> : <Eye size={17} />}
                 </button>
@@ -807,8 +757,8 @@ export const RegisterForm = () => {
 
               {formData.password && (
                 <div className="auth-strength">
-                  <span>Nivel de seguridad</span>
-                  <b style={{ color: strength.color }}>{strength.label}</b>
+                  <span>{ui("Nivel de seguridad")}</span>
+                  <b style={{ color: strength.color }}>{ui(strength.label)}</b>
                   <i>
                     <em style={{ width: strength.pct, backgroundColor: strength.color }} />
                   </i>
@@ -816,7 +766,7 @@ export const RegisterForm = () => {
               )}
 
               {/* Confirm Password Field */}
-              <label htmlFor="register-confirm-password" style={{ marginTop: '0.2rem' }}>Confirmar contraseña</label>
+              <label htmlFor="register-confirm-password" style={{ marginTop: '0.2rem' }}>{ui("Confirmar contraseña")}</label>
               <div className="auth-password">
                 <input
                   id="register-confirm-password"
@@ -824,14 +774,14 @@ export const RegisterForm = () => {
                   required
                   minLength={6}
                   autoComplete="new-password"
-                  placeholder="Repite tu contraseña"
+                  placeholder={ui("Repite tu contraseña")}
                   value={formData.confirmPassword}
                   onChange={setValue('confirmPassword')}
                 />
                 <button
                   type="button"
                   onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                  aria-label={showConfirmPassword ? 'Ocultar contraseña' : 'Mostrar contraseña'}
+                  aria-label={showConfirmPassword ? ui("Ocultar contraseña") : ui("Mostrar contraseña")}
                 >
                   {showConfirmPassword ? <EyeOff size={17} /> : <Eye size={17} />}
                 </button>
@@ -841,10 +791,9 @@ export const RegisterForm = () => {
                 <div style={{ fontSize: '0.66rem', fontWeight: 'bold', color: passwordsMatch ? '#10b981' : '#ef4444', display: 'flex', alignItems: 'center', gap: '3px' }}>
                   {passwordsMatch ? (
                     <>
-                      <Check size={13} /> Las contraseñas coinciden perfectamente
-                    </>
+                      <Check size={13} /> {ui("Las contraseñas coinciden perfectamente")}</>
                   ) : (
-                    '✕ Las contraseñas no coinciden'
+                    ui("✕ Las contraseñas no coinciden")
                   )}
                 </div>
               )}
@@ -862,16 +811,14 @@ export const RegisterForm = () => {
                 marginTop: '0.2rem',
               }}>
                 <span style={{ color: hasMinLength ? '#10b981' : '#856f80', display: 'flex', alignItems: 'center', gap: '4px' }}>
-                  {hasMinLength ? '✓' : '○'} Mínimo 6 letras
-                </span>
+                  {hasMinLength ? '✓' : '○'} {ui("Mínimo 6 letras")}</span>
                 <span style={{ color: hasNumberOrSpecial ? '#10b981' : '#856f80', display: 'flex', alignItems: 'center', gap: '4px' }}>
-                  {hasNumberOrSpecial ? '✓' : '○'} Números o símbolos
-                </span>
+                  {hasNumberOrSpecial ? '✓' : '○'} {ui("Números o símbolos")}</span>
               </div>
 
               {errorMessage && (
                 <p className="auth-error" role="alert">
-                  {errorMessage}
+                  {ui(errorMessage)}
                 </p>
               )}
 
@@ -881,7 +828,7 @@ export const RegisterForm = () => {
                   checked={newsletter}
                   onChange={(e) => setNewsletter(e.target.checked)}
                 />
-                <span>Deseo recibir la selección curatorial semanal y análisis de letras vía IA.</span>
+                <span>{ui("Deseo recibir la selección curatorial semanal y análisis de letras vía IA.")}</span>
               </label>
 
               <label className="auth-check" style={{ marginTop: '0.25rem', cursor: 'pointer' }}>
@@ -895,8 +842,7 @@ export const RegisterForm = () => {
                     if (errorMessage) setErrorMessage('');
                   }}
                 />
-                <span style={{ fontSize: '0.72rem', lineHeight: '1.4' }}>
-                  He leído y acepto los{' '}
+                <span style={{ fontSize: '0.72rem', lineHeight: '1.4' }}>{ui("He leído y acepto los")}{' '}
                   <a
                     href="#terms"
                     target="_blank"
@@ -909,20 +855,15 @@ export const RegisterForm = () => {
                       fontWeight: '700',
                       textDecoration: 'underline',
                     }}
-                    title="Abrir y leer Términos y Condiciones"
-                  >
-                    Términos y Condiciones
-                  </a>{' '}
-                  de Sonar.
-                </span>
+                    title={ui("Abrir y leer Términos y Condiciones")}
+                  >{ui("Términos y Condiciones")}</a>{' '}{ui("de Sonar.")}</span>
               </label>
 
               <button className="auth-submit" type="submit" disabled={isLoading} style={{ marginTop: '0.6rem' }}>
                 {isLoading ? (
-                  'Creando y Cifrando cuenta…'
+                  ui("Creando y Cifrando cuenta…")
                 ) : (
-                  <>
-                    Crear mi Radar Sonoro <ArrowRight size={18} />
+                  <>{ui("Crear mi Radar Sonoro")} <ArrowRight size={18} />
                   </>
                 )}
               </button>
@@ -932,21 +873,23 @@ export const RegisterForm = () => {
                 onClick={() => setStep('otp')}
                 style={{ background: 'none', border: 'none', color: '#665163', cursor: 'pointer', fontSize: '0.72rem', display: 'flex', alignItems: 'center', gap: '3px', marginTop: '0.5rem' }}
               >
-                <ArrowLeft size={13} /> Volver a verificación de código
-              </button>
+                <ArrowLeft size={13} /> {ui("Volver a verificación de código")}</button>
             </form>
           )}
 
-          <p className="auth-switch">
-            ¿Ya tienes cuenta? <a href="#login">Inicia sesión aquí</a>
+          <p className="auth-switch">{ui("¿Ya tienes cuenta?")} <a href="#login">{ui("Inicia sesión aquí")}</a>
           </p>
-          <p className="auth-legal">
-            Al registrarte tus contraseñas se almacenan con cifrado unidireccional SHA-256 según la Política de Privacidad de Sonar.
-          </p>
+          <p className="auth-legal">{ui("Al registrarte tus contraseñas se almacenan con cifrado unidireccional SHA-256 según la Política de Privacidad de Sonar.")}</p>
         </div>
       </section>
     </div>
   );
 };
+
+export const RegisterForm = () => (
+  <GoogleOAuthProvider clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID || ''}>
+    <RegisterFormContent />
+  </GoogleOAuthProvider>
+);
 
 export default RegisterForm;

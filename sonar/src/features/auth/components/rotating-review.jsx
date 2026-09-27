@@ -1,3 +1,4 @@
+import { useUIText } from '../../../shared/i18n/use-ui-text.js';
 import { useEffect, useState } from 'react';
 import { motion, useReducedMotion } from 'framer-motion';
 import { BlobatarAvatar } from '../../../shared/components/ui/blobatar-avatar';
@@ -36,6 +37,7 @@ const positionInStack = (index, activeIndex) => (index - activeIndex + reviews.l
 const starsForRating = (rating) => '★'.repeat(rating) + '☆'.repeat(5 - rating);
 
 export const RotatingReview = () => {
+  const ui = useUIText();
   const [activeIndex, setActiveIndex] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
   const reduceMotion = useReducedMotion();
@@ -49,7 +51,7 @@ export const RotatingReview = () => {
   return (
     <section
       className="auth-review relative w-full max-w-[430px]"
-      aria-label="Comentarios destacados de la comunidad"
+      aria-label={ui("Comentarios destacados de la comunidad")}
       onMouseEnter={() => setIsPaused(true)}
       onMouseLeave={() => setIsPaused(false)}
       style={{ height: 'auto', minHeight: '190px' }}
@@ -162,7 +164,7 @@ export const RotatingReview = () => {
             className={`transition-all duration-300 rounded-full cursor-pointer border-none p-0 ${
               index === activeIndex ? 'w-5 h-1.5 bg-[#B80C09]' : 'w-1.5 h-1.5 bg-[#d9c4d7] hover:bg-[#b885b3]'
             }`}
-            aria-label={`Ver reseña de ${review.username}`}
+            aria-label={ui("Ver reseña de {{value0}}", { value0: review.username })}
           />
         ))}
       </div>

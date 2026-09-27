@@ -1,3 +1,4 @@
+import { useUIText } from '../../../shared/i18n/use-ui-text.js';
 import { useState, useEffect } from 'react';
 import { ArrowRight, ArrowLeft, CheckCircle2, KeyRound, Mail, ShieldCheck, Eye, EyeOff, Sparkles, RefreshCw, Send } from 'lucide-react';
 import { requestPasswordResetWebhook } from '../../../shared/services/n8n-webhooks';
@@ -5,32 +6,26 @@ import { getUserByEmail, updateUser, getUsers } from '../../../shared/services/a
 import { hashPassword } from '../../../shared/services/crypto-service';
 import { RotatingReview } from './rotating-review';
 
-const EditorialPanel = () => (
-  <aside className="auth-editorial" aria-label="Comunidad editorial de audio">
+const EditorialPanel = () => { const ui = useUIText(); return (<aside className="auth-editorial" aria-label={ui("Comunidad editorial de audio")}>
     <div className="auth-editorial__copy">
       <p className="auth-eyebrow">
-        <span /> Seguridad & Protección Sonar
-      </p>
+        <span /> {ui("Seguridad & Protección Sonar")}</p>
       <h1>
-        <span>Recupera tu</span>
-        <span>acceso musical.</span>
+        <span>{ui("Recupera tu")}</span>
+        <span>{ui("acceso musical.")}</span>
       </h1>
-      <p>
-        Te enviaremos un código de seguridad de 6 dígitos a tu correo electrónico para verificar tu identidad y restablecer tu contraseña con cifrado SHA-256.
-      </p>
+      <p>{ui("Te enviaremos un código de seguridad de 6 dígitos a tu correo electrónico para verificar tu identidad y restablecer tu contraseña con cifrado SHA-256.")}</p>
     </div>
     <RotatingReview />
     <div className="auth-editorial__stats">
       <span>
-        <ShieldCheck size={14} />
-        Cifrado seguro de extremo a extremo
-      </span>
-      <span>Código temporal de 15 minutos</span>
+        <ShieldCheck size={14} />{ui("Cifrado seguro de extremo a extremo")}</span>
+      <span>{ui("Código temporal de 15 minutos")}</span>
     </div>
-  </aside>
-);
+  </aside>); };
 
 export const ForgotPasswordForm = () => {
+  const ui = useUIText();
   // Pasos: 1 = Email, 2 = Escribir Código OTP del Correo, 3 = Nueva Contraseña, 4 = Éxito
   const [step, setStep] = useState(1);
   const [email, setEmail] = useState('');
@@ -178,21 +173,19 @@ export const ForgotPasswordForm = () => {
               }
             }}
             className="auth-back-btn"
-            aria-label="Regresar"
+            aria-label={ui("Regresar")}
           >
             <ArrowLeft size={15} />
-            <span>{step > 1 && step < 4 ? 'Paso anterior' : 'Volver a iniciar sesión'}</span>
+            <span>{step > 1 && step < 4 ? ui("Paso anterior") : ui("Volver a iniciar sesión")}</span>
           </button>
           <header className="auth-heading">
             <h2 id="forgot-title" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-              <KeyRound size={26} color="#B80C09" />
-              Recuperar Contraseña
-            </h2>
+              <KeyRound size={26} color="#B80C09" />{ui("Recuperar Contraseña")}</h2>
             <p>
-              {step === 1 && 'Ingresa tu correo para recibir un código de seguridad de 6 dígitos.'}
-              {step === 2 && `Ingresa el código que acabamos de enviar a ${email}.`}
-              {step === 3 && 'Crea tu nueva contraseña segura para volver a entrar a Sonar.'}
-              {step === 4 && '¡Tu contraseña ha sido actualizada y cifrada con éxito!'}
+              {step === 1 && ui("Ingresa tu correo para recibir un código de seguridad de 6 dígitos.")}
+              {step === 2 && ui("Ingresa el código que acabamos de enviar a {{value0}}.", { value0: email })}
+              {step === 3 && ui("Crea tu nueva contraseña segura para volver a entrar a Sonar.")}
+              {step === 4 && ui("¡Tu contraseña ha sido actualizada y cifrada con éxito!")}
             </p>
           </header>
 
@@ -214,21 +207,21 @@ export const ForgotPasswordForm = () => {
 
           {errorMessage && (
             <p className="auth-error" role="alert" style={{ marginBottom: '1rem', padding: '0.5rem 0.75rem', background: '#fee2e2', borderRadius: '6px' }}>
-              {errorMessage}
+              {ui(errorMessage)}
             </p>
           )}
 
           {/* PASO 1: Ingreso de correo */}
           {step === 1 && (
             <form onSubmit={handleRequestCode} className="auth-form">
-              <label htmlFor="recovery-email">Correo electrónico</label>
+              <label htmlFor="recovery-email">{ui("Correo electrónico")}</label>
               <div style={{ position: 'relative' }}>
                 <input
                   id="recovery-email"
                   type="email"
                   required
                   autoComplete="email"
-                  placeholder="tu@ejemplo.com"
+                  placeholder={ui("tu@ejemplo.com")}
                   value={email}
                   onChange={(e) => {
                     setEmail(e.target.value);
@@ -241,10 +234,9 @@ export const ForgotPasswordForm = () => {
 
               <button className="auth-submit" type="submit" disabled={isLoading} style={{ marginTop: '1.1rem' }}>
                 {isLoading ? (
-                  'Enviando código al correo…'
+                  ui("Enviando código al correo…")
                 ) : (
-                  <>
-                    Enviar Código de Recuperación <Send size={16} />
+                  <>{ui("Enviar Código de Recuperación")} <Send size={16} />
                   </>
                 )}
               </button>
@@ -265,12 +257,10 @@ export const ForgotPasswordForm = () => {
                 lineHeight: '1.45',
               }}>
                 <div style={{ fontWeight: 'bold', color: '#5c1d5e', marginBottom: '2px', display: 'flex', alignItems: 'center', gap: '4px' }}>
-                  <Mail size={14} /> Correo enviado a {email}
-                </div>
-                Revisa tu bandeja de entrada o spam. Copia el código de 6 dígitos que te enviamos y escríbelo aquí:
-              </div>
+                  <Mail size={14} /> {ui("Correo enviado a")} {email}
+                </div>{ui("Revisa tu bandeja de entrada o spam. Copia el código de 6 dígitos que te enviamos y escríbelo aquí:")}</div>
 
-              <label htmlFor="otp-input">Código de 6 dígitos</label>
+              <label htmlFor="otp-input">{ui("Código de 6 dígitos")}</label>
               <input
                 id="otp-input"
                 type="text"
@@ -312,19 +302,16 @@ export const ForgotPasswordForm = () => {
                   }}
                 >
                   <RefreshCw size={13} />
-                  {resendTimer > 0 ? `Reenviar código en ${resendTimer}s` : 'Reenviar código'}
+                  {resendTimer > 0 ? ui("Reenviar código en {{value0}}s", { value0: resendTimer }) : ui("Reenviar código")}
                 </button>
                 <button
                   type="button"
                   onClick={() => setStep(1)}
                   style={{ background: 'none', border: 'none', color: '#6b7280', cursor: 'pointer', padding: 0 }}
-                >
-                  Cambiar correo
-                </button>
+                >{ui("Cambiar correo")}</button>
               </div>
 
-              <button className="auth-submit" type="submit" style={{ marginTop: '1rem' }}>
-                Verificar Código <ArrowRight size={17} />
+              <button className="auth-submit" type="submit" style={{ marginTop: '1rem' }}>{ui("Verificar Código")} <ArrowRight size={17} />
               </button>
             </form>
           )}
@@ -332,7 +319,7 @@ export const ForgotPasswordForm = () => {
           {/* PASO 3: Nueva Contraseña */}
           {step === 3 && (
             <form onSubmit={handleResetPassword} className="auth-form">
-              <label htmlFor="new-password">Nueva contraseña</label>
+              <label htmlFor="new-password">{ui("Nueva contraseña")}</label>
               <div className="auth-password">
                 <input
                   id="new-password"
@@ -340,14 +327,14 @@ export const ForgotPasswordForm = () => {
                   required
                   minLength={6}
                   autoComplete="new-password"
-                  placeholder="Mínimo 6 caracteres"
+                  placeholder={ui("Mínimo 6 caracteres")}
                   value={newPassword}
                   onChange={(e) => setNewPassword(e.target.value)}
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  aria-label={showPassword ? 'Ocultar contraseña' : 'Mostrar contraseña'}
+                  aria-label={showPassword ? ui("Ocultar contraseña") : ui("Mostrar contraseña")}
                 >
                   {showPassword ? <EyeOff size={17} /> : <Eye size={17} />}
                 </button>
@@ -355,29 +342,29 @@ export const ForgotPasswordForm = () => {
 
               {newPassword && (
                 <div className="auth-strength">
-                  <span>Fortaleza de contraseña</span>
-                  <b style={{ color: strength.color }}>{strength.label}</b>
+                  <span>{ui("Fortaleza de contraseña")}</span>
+                  <b style={{ color: strength.color }}>{ui(strength.label)}</b>
                   <i>
                     <em style={{ width: strength.pct, backgroundColor: strength.color }} />
                   </i>
                 </div>
               )}
 
-              <label htmlFor="confirm-password" style={{ marginTop: '0.4rem' }}>Confirmar nueva contraseña</label>
+              <label htmlFor="confirm-password" style={{ marginTop: '0.4rem' }}>{ui("Confirmar nueva contraseña")}</label>
               <div className="auth-password">
                 <input
                   id="confirm-password"
                   type={showConfirmPassword ? 'text' : 'password'}
                   required
                   minLength={6}
-                  placeholder="Repite la nueva contraseña"
+                  placeholder={ui("Repite la nueva contraseña")}
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
                 />
                 <button
                   type="button"
                   onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                  aria-label={showConfirmPassword ? 'Ocultar contraseña' : 'Mostrar contraseña'}
+                  aria-label={showConfirmPassword ? ui("Ocultar contraseña") : ui("Mostrar contraseña")}
                 >
                   {showConfirmPassword ? <EyeOff size={17} /> : <Eye size={17} />}
                 </button>
@@ -385,16 +372,15 @@ export const ForgotPasswordForm = () => {
 
               {confirmPassword && (
                 <div style={{ fontSize: '0.68rem', fontWeight: 'bold', color: newPassword === confirmPassword ? '#10b981' : '#ef4444' }}>
-                  {newPassword === confirmPassword ? '✓ Las contraseñas coinciden' : '✕ Las contraseñas no coinciden'}
+                  {newPassword === confirmPassword ? ui("✓ Las contraseñas coinciden") : ui("✕ Las contraseñas no coinciden")}
                 </div>
               )}
 
               <button className="auth-submit" type="submit" disabled={isLoading} style={{ marginTop: '1rem' }}>
                 {isLoading ? (
-                  'Cifrando con SHA-256 y guardando…'
+                  ui("Cifrando con SHA-256 y guardando…")
                 ) : (
-                  <>
-                    Guardar Nueva Contraseña <ShieldCheck size={18} />
+                  <>{ui("Guardar Nueva Contraseña")} <ShieldCheck size={18} />
                   </>
                 )}
               </button>
@@ -414,26 +400,20 @@ export const ForgotPasswordForm = () => {
               }}>
                 <CheckCircle2 size={48} />
               </div>
-              <h3 style={{ margin: '0 0 0.5rem', fontSize: '1.25rem', color: '#166534' }}>
-                ¡Contraseña Restablecida con Éxito!
-              </h3>
-              <p style={{ fontSize: '0.82rem', color: '#4b5563', lineHeight: '1.5', marginBottom: '1.5rem' }}>
-                Tu nueva contraseña ha sido cifrada con <b>SHA-256</b> y guardada en tu cuenta. Ya puedes iniciar sesión con tus nuevas credenciales.
-              </p>
+              <h3 style={{ margin: '0 0 0.5rem', fontSize: '1.25rem', color: '#166534' }}>{ui("¡Contraseña Restablecida con Éxito!")}</h3>
+              <p style={{ fontSize: '0.82rem', color: '#4b5563', lineHeight: '1.5', marginBottom: '1.5rem' }}>{ui("Tu nueva contraseña ha sido cifrada con")} <b>SHA-256</b> {ui("y guardada en tu cuenta. Ya puedes iniciar sesión con tus nuevas credenciales.")}</p>
               <a
                 href="#login"
                 className="auth-submit"
                 style={{ textDecoration: 'none', display: 'inline-flex', width: '100%', boxSizing: 'border-box' }}
-              >
-                Iniciar Sesión Ahora <ArrowRight size={18} />
+              >{ui("Iniciar Sesión Ahora")} <ArrowRight size={18} />
               </a>
             </div>
           )}
 
           <p className="auth-switch" style={{ marginTop: '1.5rem' }}>
             <a href="#login" style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
-              <ArrowLeft size={14} /> Volver a Iniciar Sesión
-            </a>
+              <ArrowLeft size={14} /> {ui("Volver a Iniciar Sesión")}</a>
           </p>
         </div>
       </section>

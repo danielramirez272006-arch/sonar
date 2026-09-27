@@ -1,3 +1,4 @@
+import { useUIText } from '../../../shared/i18n/use-ui-text.js';
 import { useState } from 'react';
 import { ArrowRight, ArrowLeft, Eye, EyeOff, Headphones, Music2 } from 'lucide-react';
 import { useAuth } from '../../../shared/context/auth-context';
@@ -5,21 +6,20 @@ import { useTranslation } from 'react-i18next';
 import { useLanguage } from '../../../shared/context/language-context';
 import { GoogleIcon } from './social-provider-icon';
 import { RotatingReview } from './rotating-review';
-import { useGoogleLogin } from '@react-oauth/google';
+import { GoogleOAuthProvider, useGoogleLogin } from '@react-oauth/google';
 
-const EditorialPanel = () => (
-  <aside className="auth-editorial" aria-label="Comunidad editorial de audio">
+const EditorialPanel = () => { const ui = useUIText(); return (<aside className="auth-editorial" aria-label={ui("Comunidad editorial de audio")}>
     <div className="auth-editorial__copy">
-      <p className="auth-eyebrow"><span /> Comunidad editorial de audio</p>
-      <h1><span>Vuelve a la</span><span>conversación musical.</span></h1>
-      <p>Califica vinilos, analiza letras con inteligencia artificial y sincroniza tus hallazgos con una comunidad audiófila global.</p>
+      <p className="auth-eyebrow"><span /> {ui("Comunidad editorial de audio")}</p>
+      <h1><span>{ui("Vuelve a la")}</span><span>{ui("conversación musical.")}</span></h1>
+      <p>{ui("Califica vinilos, analiza letras con inteligencia artificial y sincroniza tus hallazgos con una comunidad audiófila global.")}</p>
     </div>
     <RotatingReview />
-    <div className="auth-editorial__stats"><span><Music2 size={14} />64,280 críticas registradas este mes</span><span>28,400 álbumes catalogados</span></div>
-  </aside>
-);
+    <div className="auth-editorial__stats"><span><Music2 size={14} />{ui("64,280 críticas registradas este mes")}</span><span>{ui("28,400 álbumes catalogados")}</span></div>
+  </aside>); };
 
-export const LoginForm = () => {
+const LoginFormContent = () => {
+  const ui = useUIText();
   const { login, loginWithGoogle, isLoading, error: authError } = useAuth();
   const { t } = useTranslation();
   const [formData, setFormData] = useState({ email: '', password: '' });
@@ -42,9 +42,7 @@ export const LoginForm = () => {
     }
   };
 
-  let handleGoogleLogin = () => {};
-  try {
-    handleGoogleLogin = useGoogleLogin({
+  const handleGoogleLogin = useGoogleLogin({
       onSuccess: async (tokenResponse) => {
         setGoogleLoading(true);
         setMessage('');
@@ -77,9 +75,7 @@ export const LoginForm = () => {
       },
       flow: 'implicit',
     });
-  } catch {
-    handleGoogleLogin = () => {};
-  }
+
 
   const activeError = message || authError;
   const isAnyLoading = isLoading || googleLoading;
@@ -95,10 +91,10 @@ export const LoginForm = () => {
               window.location.hash = '#explore';
             }}
             className="auth-back-btn"
-            aria-label="Volver al catálogo"
+            aria-label={ui("Volver al catálogo")}
           >
             <ArrowLeft size={15} />
-            <span>Volver al catálogo</span>
+            <span>{ui("Volver al catálogo")}</span>
           </button>
           <div className="auth-mobile-brand"><Headphones size={19} /> SONAR</div>
           <header className="auth-heading">
@@ -107,7 +103,7 @@ export const LoginForm = () => {
           </header>
 
           {/* Botón de Google OAuth */}
-          <div className="auth-socials" aria-label="Acceso con servicios externos">
+          <div className="auth-socials" aria-label={ui("Acceso con servicios externos")}>
             <button
               id="google-login-btn"
               type="button"
@@ -134,7 +130,7 @@ export const LoginForm = () => {
               type="email"
               autoComplete="email"
               required
-              placeholder="tu@ejemplo.com"
+              placeholder={ui("tu@ejemplo.com")}
               value={formData.email}
               onChange={(e) => setFormData({ ...formData, email: e.target.value })}
             />
@@ -148,31 +144,37 @@ export const LoginForm = () => {
                 type={showPassword ? 'text' : 'password'}
                 autoComplete="current-password"
                 required
-                placeholder="Mínimo 8 caracteres"
+                placeholder={ui("Mínimo 8 caracteres")}
                 value={formData.password}
                 onChange={(e) => setFormData({ ...formData, password: e.target.value })}
               />
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
-                aria-label={showPassword ? 'Ocultar contraseña' : 'Mostrar contraseña'}
+                aria-label={showPassword ? ui("Ocultar contraseña") : ui("Mostrar contraseña")}
               >
                 {showPassword ? <EyeOff size={17} /> : <Eye size={17} />}
               </button>
             </div>
-            {activeError && <p className="auth-error" role="alert">{activeError}</p>}
+            {activeError && <p className="auth-error" role="alert">{ui(activeError)}</p>}
             <button className="auth-submit" type="submit" disabled={isAnyLoading}>
               {isLoading ? '...' : <>{t('auth.enter_btn')} <ArrowRight size={18} /></>}
             </button>
           </form>
 
           <p className="auth-switch">{t('auth.no_account')} <a href="#register">{t('auth.create_account')}</a></p>
-          <p className="auth-legal">Al ingresar aceptas las Condiciones de Servicio y la Política de Privacidad de Sonar.</p>
+          <p className="auth-legal">{ui("Al ingresar aceptas las Condiciones de Servicio y la Política de Privacidad de Sonar.")}</p>
         </div>
       </section>
     </div>
   );
 };
+
+export const LoginForm = () => (
+  <GoogleOAuthProvider clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID || ''}>
+    <LoginFormContent />
+  </GoogleOAuthProvider>
+);
 
 export default LoginForm;
 

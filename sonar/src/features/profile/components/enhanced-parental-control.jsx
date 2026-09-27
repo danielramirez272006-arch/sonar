@@ -1,3 +1,4 @@
+import { useUIText } from '../../../shared/i18n/use-ui-text.js';
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '../../../shared/context/auth-context';
@@ -156,6 +157,7 @@ const KIDS_QUIZZES = [
 ];
 
 export const EnhancedParentalControl = () => {
+  const ui = useUIText();
   const { user, updateUser, updateParentalControl, isParentalControlActive } = useAuth();
   const { playTrack } = usePlayer();
 
@@ -395,7 +397,7 @@ export const EnhancedParentalControl = () => {
             </div>
             <div>
               <h3 className="text-xl sm:text-2xl font-black text-[#231123] dark:text-[#DCDCDD] flex items-center gap-2">
-                <span>Modo Kids & Control Parental</span>
+                <span>{ui("Modo Kids & Control Parental")}</span>
                 <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase border ${
                   isKidsMode
                     ? 'bg-[#4B2840]/15 text-[#4B2840] dark:bg-[#231123] dark:text-[#DCDCDD] border-[#4B2840]/30'
@@ -403,15 +405,15 @@ export const EnhancedParentalControl = () => {
                     ? 'bg-[#B80C09]/15 text-[#B80C09] dark:bg-[#B80C09]/30 dark:text-[#DCDCDD] border-[#B80C09]/30'
                     : 'bg-[#003844]/15 text-[#003844] dark:bg-[#003844]/60 dark:text-[#DCDCDD] border-[#003844]/30'
                 }`}>
-                  {isKidsMode ? '🛡️ Modo Kids Activo' : isSupervisedMode ? '🔑 Modo Supervisado' : '🔓 Modo Libre (Adultos)'}
+                  {isKidsMode ? ui("🛡️ Modo Kids Activo") : isSupervisedMode ? ui("🔑 Modo Supervisado") : ui("🔓 Modo Libre (Adultos)")}
                 </span>
               </h3>
               <p className="text-xs sm:text-sm text-[#5c435a] dark:text-[#B89CB0] mt-0.5">
                 {isKidsMode
-                  ? 'Experiencia musical 100% segura, educativa y adaptada para niños con temporizador de tareas y cuidado auditivo.'
+                  ? ui("Experiencia musical 100% segura, educativa y adaptada para niños con temporizador de tareas y cuidado auditivo.")
                   : isSupervisedMode
-                  ? 'Catálogo con filtro parental y desbloqueo temporal mediante PIN de 4 dígitos.'
-                  : 'Catálogo completo sin restricciones para adultos, audiófilos y melómanos.'}
+                  ? ui("Catálogo con filtro parental y desbloqueo temporal mediante PIN de 4 dígitos.")
+                  : ui("Catálogo completo sin restricciones para adultos, audiófilos y melómanos.")}
               </p>
             </div>
           </div>
@@ -441,16 +443,12 @@ export const EnhancedParentalControl = () => {
             <div className="flex items-center justify-between">
               <span className="material-symbols-outlined text-[#4B2840] dark:text-[#DCDCDD] text-[26px]">child_care</span>
               {isKidsMode && (
-                <span className="text-[10px] font-black uppercase text-[#4B2840] dark:text-[#DCDCDD] bg-[#4B2840]/15 dark:bg-[#231123] px-2 py-0.5 rounded-full border border-[#4B2840]/20 dark:border-white/10">
-                  Activo
-                </span>
+                <span className="text-[10px] font-black uppercase text-[#4B2840] dark:text-[#DCDCDD] bg-[#4B2840]/15 dark:bg-[#231123] px-2 py-0.5 rounded-full border border-[#4B2840]/20 dark:border-white/10">{ui("Activo")}</span>
               )}
             </div>
             <div>
-              <h4 className="text-sm font-bold text-[#231123] dark:text-[#DCDCDD]">Modo Kids (Recomendado)</h4>
-              <p className="text-xs text-[#5c435a] dark:text-[#B89CB0] mt-1">
-                Bloquea todo contenido explícito, limita búsquedas a contenido familiar y activa el protector auditivo.
-              </p>
+              <h4 className="text-sm font-bold text-[#231123] dark:text-[#DCDCDD]">{ui("Modo Kids (Recomendado)")}</h4>
+              <p className="text-xs text-[#5c435a] dark:text-[#B89CB0] mt-1">{ui("Bloquea todo contenido explícito, limita búsquedas a contenido familiar y activa el protector auditivo.")}</p>
             </div>
           </div>
 
@@ -470,16 +468,12 @@ export const EnhancedParentalControl = () => {
             <div className="flex items-center justify-between">
               <span className="material-symbols-outlined text-[#B80C09] dark:text-[#ff4d4a] text-[26px]">pin</span>
               {isSupervisedMode && (
-                <span className="text-[10px] font-black uppercase text-[#B80C09] dark:text-[#DCDCDD] bg-[#B80C09]/15 dark:bg-[#B80C09]/30 px-2 py-0.5 rounded-full border border-[#B80C09]/30">
-                  Activo
-                </span>
+                <span className="text-[10px] font-black uppercase text-[#B80C09] dark:text-[#DCDCDD] bg-[#B80C09]/15 dark:bg-[#B80C09]/30 px-2 py-0.5 rounded-full border border-[#B80C09]/30">{ui("Activo")}</span>
               )}
             </div>
             <div>
-              <h4 className="text-sm font-bold text-[#231123] dark:text-[#DCDCDD]">Supervisado Familiar</h4>
-              <p className="text-xs text-[#5c435a] dark:text-[#B89CB0] mt-1">
-                Permite a los padres o tutores autorizar temporalmente canciones mediante su PIN secreto.
-              </p>
+              <h4 className="text-sm font-bold text-[#231123] dark:text-[#DCDCDD]">{ui("Supervisado Familiar")}</h4>
+              <p className="text-xs text-[#5c435a] dark:text-[#B89CB0] mt-1">{ui("Permite a los padres o tutores autorizar temporalmente canciones mediante su PIN secreto.")}</p>
             </div>
           </div>
 
@@ -499,16 +493,12 @@ export const EnhancedParentalControl = () => {
             <div className="flex items-center justify-between">
               <span className="material-symbols-outlined text-[#003844] dark:text-[#52a2b0] text-[26px]">lock_open</span>
               {isFreeAdultMode && (
-                <span className="text-[10px] font-black uppercase text-[#003844] dark:text-[#DCDCDD] bg-[#003844]/15 dark:bg-[#003844]/50 px-2 py-0.5 rounded-full border border-[#003844]/30">
-                  Activo
-                </span>
+                <span className="text-[10px] font-black uppercase text-[#003844] dark:text-[#DCDCDD] bg-[#003844]/15 dark:bg-[#003844]/50 px-2 py-0.5 rounded-full border border-[#003844]/30">{ui("Activo")}</span>
               )}
             </div>
             <div>
-              <h4 className="text-sm font-bold text-[#231123] dark:text-[#DCDCDD]">Modo Libre (Adultos)</h4>
-              <p className="text-xs text-[#5c435a] dark:text-[#B89CB0] mt-1">
-                Acceso sin restricciones a todo el catálogo discográfico, letras y podcasts de la plataforma.
-              </p>
+              <h4 className="text-sm font-bold text-[#231123] dark:text-[#DCDCDD]">{ui("Modo Libre (Adultos)")}</h4>
+              <p className="text-xs text-[#5c435a] dark:text-[#B89CB0] mt-1">{ui("Acceso sin restricciones a todo el catálogo discográfico, letras y podcasts de la plataforma.")}</p>
             </div>
           </div>
         </div>
@@ -522,8 +512,8 @@ export const EnhancedParentalControl = () => {
             <div className="flex items-center gap-2.5">
               <span className="material-symbols-outlined text-[24px] text-amber-400">timer</span>
               <div>
-                <h4 className="text-base font-bold text-white">Temporizador de Estudio Kids (Pomodoro)</h4>
-                <p className="text-xs text-pink-200/70">Sesión enfocada de 25 min para hacer tareas sin pantallas.</p>
+                <h4 className="text-base font-bold text-white">{ui("Temporizador de Estudio Kids (Pomodoro)")}</h4>
+                <p className="text-xs text-pink-200/70">{ui("Sesión enfocada de 25 min para hacer tareas sin pantallas.")}</p>
               </div>
             </div>
           </div>
@@ -533,7 +523,7 @@ export const EnhancedParentalControl = () => {
               {formatTime(pomodoroSeconds)}
             </span>
             <span className="text-xs text-white/70 mt-1">
-              {isPomodoroRunning ? '🎧 Sesión en curso con música suave' : 'Listo para iniciar'}
+              {isPomodoroRunning ? ui("🎧 Sesión en curso con música suave") : ui("Listo para iniciar")}
             </span>
           </div>
 
@@ -548,7 +538,7 @@ export const EnhancedParentalControl = () => {
               <span className="material-symbols-outlined text-[18px]">
                 {isPomodoroRunning ? 'pause' : 'play_arrow'}
               </span>
-              <span>{isPomodoroRunning ? 'Pausar Estudio' : 'Iniciar Tiempo de Tareas (25 min)'}</span>
+              <span>{isPomodoroRunning ? ui("Pausar Estudio") : ui("Iniciar Tiempo de Tareas (25 min)")}</span>
             </button>
             <button
               type="button"
@@ -557,7 +547,7 @@ export const EnhancedParentalControl = () => {
                 setPomodoroSeconds(25 * 60);
               }}
               className="px-3.5 py-2.5 rounded-xl bg-white/10 hover:bg-white/20 text-white font-bold text-xs cursor-pointer"
-              title="Reiniciar a 25 min"
+              title={ui("Reiniciar a 25 min")}
             >
               <span className="material-symbols-outlined text-[16px]">restart_alt</span>
             </button>
@@ -570,8 +560,8 @@ export const EnhancedParentalControl = () => {
             <div className="flex items-center gap-2.5">
               <span className="material-symbols-outlined text-[24px] text-teal-500">spa</span>
               <div>
-                <h4 className="text-base font-bold text-[#231123] dark:text-white">Sonidos Calmantes & Naturaleza</h4>
-                <p className="text-xs text-[#5c435a] dark:text-[#B89CB0]">Ambientes sonoros para relajar y dormir.</p>
+                <h4 className="text-base font-bold text-[#231123] dark:text-white">{ui("Sonidos Calmantes & Naturaleza")}</h4>
+                <p className="text-xs text-[#5c435a] dark:text-[#B89CB0]">{ui("Ambientes sonoros para relajar y dormir.")}</p>
               </div>
             </div>
           </div>
@@ -603,15 +593,13 @@ export const EnhancedParentalControl = () => {
           </div>
 
           <div className="flex items-center justify-between text-xs text-teal-600 dark:text-teal-400 font-semibold pt-1">
-            <span>{activeAmbient ? '🔊 Reproducción ambiental activa' : 'Toca para activar ambiente'}</span>
+            <span>{activeAmbient ? ui("🔊 Reproducción ambiental activa") : ui("Toca para activar ambiente")}</span>
             {activeAmbient && (
               <button
                 type="button"
                 onClick={() => setActiveAmbient(null)}
                 className="text-[11px] underline text-gray-500 hover:text-red-500 cursor-pointer"
-              >
-                Detener todo
-              </button>
+              >{ui("Detener todo")}</button>
             )}
           </div>
         </div>
@@ -623,16 +611,11 @@ export const EnhancedParentalControl = () => {
           <div className="flex items-center gap-2.5">
             <span className="material-symbols-outlined text-[24px] text-amber-500">quiz</span>
             <div>
-              <h4 className="text-base font-bold text-[#231123] dark:text-white">
-                Trivia Musical Kids & Juegos de Oído
-              </h4>
-              <p className="text-xs text-[#5c435a] dark:text-[#B89CB0]">
-                Aprende sobre instrumentos e historia musical mientras escuchas.
-              </p>
+              <h4 className="text-base font-bold text-[#231123] dark:text-white">{ui("Trivia Musical Kids & Juegos de Oído")}</h4>
+              <p className="text-xs text-[#5c435a] dark:text-[#B89CB0]">{ui("Aprende sobre instrumentos e historia musical mientras escuchas.")}</p>
             </div>
           </div>
-          <span className="text-xs font-bold text-amber-600 dark:text-amber-400 bg-amber-100 dark:bg-amber-950/60 px-3 py-1 rounded-full border border-amber-300/30">
-            Puntos: {quizScore}
+          <span className="text-xs font-bold text-amber-600 dark:text-amber-400 bg-amber-100 dark:bg-amber-950/60 px-3 py-1 rounded-full border border-amber-300/30">{ui("Puntos:")} {quizScore}
           </span>
         </div>
 
@@ -679,9 +662,7 @@ export const EnhancedParentalControl = () => {
                 type="button"
                 onClick={handleNextQuiz}
                 className="px-4 py-1.5 rounded-xl bg-amber-500 hover:bg-amber-600 text-white font-bold text-xs self-start sm:self-auto cursor-pointer"
-              >
-                Siguiente Pregunta ➔
-              </button>
+              >{ui("Siguiente Pregunta ➔")}</button>
             </div>
           )}
         </div>
@@ -695,17 +676,11 @@ export const EnhancedParentalControl = () => {
               <span className="material-symbols-outlined text-[24px]">explore</span>
             </div>
             <div>
-              <h3 className="text-lg font-black tracking-tight">
-                Canales de Música Segura & Educativa "Sonar Kids"
-              </h3>
-              <p className="text-xs text-pink-200/80">
-                Selecciones curadas para fomentar la creatividad, el estudio y el descanso.
-              </p>
+              <h3 className="text-lg font-black tracking-tight">{ui("Canales de Música Segura & Educativa \"Sonar Kids\"")}</h3>
+              <p className="text-xs text-pink-200/80">{ui("Selecciones curadas para fomentar la creatividad, el estudio y el descanso.")}</p>
             </div>
           </div>
-          <span className="text-[11px] font-bold text-emerald-300 bg-emerald-950/60 px-3 py-1 rounded-xl border border-emerald-500/30 self-start sm:self-auto">
-            100% Sin Contenido Explícito
-          </span>
+          <span className="text-[11px] font-bold text-emerald-300 bg-emerald-950/60 px-3 py-1 rounded-xl border border-emerald-500/30 self-start sm:self-auto">{ui("100% Sin Contenido Explícito")}</span>
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -736,7 +711,7 @@ export const EnhancedParentalControl = () => {
                 className="w-full py-2 px-3 rounded-xl bg-white/10 hover:bg-white text-white hover:text-[#231123] text-xs font-bold transition-all flex items-center justify-center gap-1.5 cursor-pointer shadow-xs"
               >
                 <span className="material-symbols-outlined text-[16px]">play_arrow</span>
-                <span>Reproducir Canal</span>
+                <span>{ui("Reproducir Canal")}</span>
               </button>
             </motion.div>
           ))}
@@ -747,7 +722,7 @@ export const EnhancedParentalControl = () => {
           <div className="flex items-center justify-between">
             <span className="text-xs font-extrabold uppercase tracking-wider text-amber-400 flex items-center gap-1.5">
               <span className="material-symbols-outlined text-[16px]">music_note</span>
-              <span>Jukebox Sonar Kids · Éxitos 100% Seguros (1-Tap Play)</span>
+              <span>{ui("Jukebox Sonar Kids · Éxitos 100% Seguros (1-Tap Play)")}</span>
             </span>
           </div>
 
@@ -791,23 +766,17 @@ export const EnhancedParentalControl = () => {
             <div className="flex items-center gap-2.5">
               <span className="material-symbols-outlined text-[24px] text-amber-500">hourglass_top</span>
               <div>
-                <h4 className="text-base font-bold text-[#231123] dark:text-white">
-                  Límite de Tiempo Diario
-                </h4>
-                <p className="text-xs text-[#5c435a] dark:text-[#B89CB0]">
-                  Evita la fatiga auditiva limitando las horas de reproducción al día.
-                </p>
+                <h4 className="text-base font-bold text-[#231123] dark:text-white">{ui("Límite de Tiempo Diario")}</h4>
+                <p className="text-xs text-[#5c435a] dark:text-[#B89CB0]">{ui("Evita la fatiga auditiva limitando las horas de reproducción al día.")}</p>
               </div>
             </div>
           </div>
 
           <div className="p-4 rounded-2xl bg-gray-50 dark:bg-black/30 border border-[#e6d5e2] dark:border-white/10 flex flex-col gap-2">
             <div className="flex justify-between items-baseline text-xs font-bold">
-              <span className="text-[#5c435a] dark:text-pink-200">
-                Uso hoy: {parentalSettings.listenedTodayMinutes} min
+              <span className="text-[#5c435a] dark:text-pink-200">{ui("Uso hoy:")} {parentalSettings.listenedTodayMinutes} min
               </span>
-              <span className="text-[#B80C09] dark:text-pink-300 font-mono">
-                Límite: {parentalSettings.dailyLimitMinutes} min ({usagePercent}%)
+              <span className="text-[#B80C09] dark:text-pink-300 font-mono">{ui("Límite:")} {parentalSettings.dailyLimitMinutes} min ({usagePercent}%)
               </span>
             </div>
 
@@ -827,7 +796,7 @@ export const EnhancedParentalControl = () => {
           </div>
 
           <div className="flex flex-wrap items-center gap-2">
-            <span className="text-xs font-bold text-gray-500">Ajustar a:</span>
+            <span className="text-xs font-bold text-gray-500">{ui("Ajustar a:")}</span>
             {[30, 45, 60, 90, 120].map((mins) => (
               <button
                 key={mins}
@@ -851,12 +820,8 @@ export const EnhancedParentalControl = () => {
             <div className="flex items-center gap-2.5">
               <span className="material-symbols-outlined text-[24px] text-teal-500">hearing</span>
               <div>
-                <h4 className="text-base font-bold text-[#231123] dark:text-white">
-                  Protección de Oído & Volumen Seguro
-                </h4>
-                <p className="text-xs text-[#5c435a] dark:text-[#B89CB0]">
-                  Cumple con el estándar de seguridad auditiva de la OMS para niños.
-                </p>
+                <h4 className="text-base font-bold text-[#231123] dark:text-white">{ui("Protección de Oído & Volumen Seguro")}</h4>
+                <p className="text-xs text-[#5c435a] dark:text-[#B89CB0]">{ui("Cumple con el estándar de seguridad auditiva de la OMS para niños.")}</p>
               </div>
             </div>
           </div>
@@ -864,12 +829,9 @@ export const EnhancedParentalControl = () => {
           <div className="p-4 rounded-2xl bg-gray-50 dark:bg-black/30 border border-[#e6d5e2] dark:border-white/10 flex flex-col gap-3">
             <div className="flex items-center justify-between">
               <div>
-                <span className="text-xs font-bold text-[#231123] dark:text-white block">
-                  Tope Máximo de Volumen ({parentalSettings.maxDecibels} dB)
+                <span className="text-xs font-bold text-[#231123] dark:text-white block">{ui("Tope Máximo de Volumen (")}{parentalSettings.maxDecibels} dB)
                 </span>
-                <span className="text-[11px] text-gray-500 dark:text-gray-400">
-                  Previene aumentos repentinos o picos de volumen peligrosos.
-                </span>
+                <span className="text-[11px] text-gray-500 dark:text-gray-400">{ui("Previene aumentos repentinos o picos de volumen peligrosos.")}</span>
               </div>
               <button
                 type="button"
@@ -887,7 +849,7 @@ export const EnhancedParentalControl = () => {
             </div>
 
             <div className="flex items-center gap-2 pt-2 border-t border-gray-200 dark:border-white/10">
-              <span className="text-xs font-bold text-gray-500">Nivel Máximo:</span>
+              <span className="text-xs font-bold text-gray-500">{ui("Nivel Máximo:")}</span>
               {[70, 75, 80, 85].map((db) => (
                 <button
                   key={db}
@@ -907,7 +869,7 @@ export const EnhancedParentalControl = () => {
 
           <div className="flex items-center gap-2 text-xs text-emerald-600 dark:text-emerald-400 font-semibold">
             <span className="material-symbols-outlined text-[16px]">verified</span>
-            <span>Estándar de audición segura activo en todos los reproductores</span>
+            <span>{ui("Estándar de audición segura activo en todos los reproductores")}</span>
           </div>
         </div>
       </div>
@@ -919,11 +881,9 @@ export const EnhancedParentalControl = () => {
           <div>
             <h4 className="text-base font-bold text-[#231123] dark:text-white flex items-center gap-2">
               <span className="material-symbols-outlined text-[20px] text-[#B80C09]">key</span>
-              <span>PIN de Autorización Parental</span>
+              <span>{ui("PIN de Autorización Parental")}</span>
             </h4>
-            <p className="text-xs text-[#5c435a] dark:text-[#B89CB0] mt-1">
-              Código de 4 dígitos que los padres usan para autorizar música o cambiar ajustes de seguridad.
-            </p>
+            <p className="text-xs text-[#5c435a] dark:text-[#B89CB0] mt-1">{ui("Código de 4 dígitos que los padres usan para autorizar música o cambiar ajustes de seguridad.")}</p>
           </div>
 
           <form onSubmit={handleSavePin} className="flex items-center gap-3">
@@ -939,13 +899,11 @@ export const EnhancedParentalControl = () => {
               type="submit"
               disabled={pinInput.trim().length !== 4}
               className="px-5 py-2.5 rounded-xl bg-[#B80C09] hover:bg-[#960a07] text-white text-xs font-bold transition-all disabled:opacity-50 cursor-pointer shadow-xs"
-            >
-              Guardar PIN
-            </button>
+            >{ui("Guardar PIN")}</button>
           </form>
 
           <div className="pt-3 border-t border-gray-100 dark:border-white/10 flex items-center justify-between">
-            <span className="text-xs text-[#5c435a] dark:text-[#B89CB0]">Simulación de Bloqueo:</span>
+            <span className="text-xs text-[#5c435a] dark:text-[#B89CB0]">{ui("Simulación de Bloqueo:")}</span>
             <button
               type="button"
               onClick={() => {
@@ -961,7 +919,7 @@ export const EnhancedParentalControl = () => {
               className="px-3 py-1.5 rounded-xl bg-gray-100 hover:bg-gray-200 dark:bg-white/10 dark:hover:bg-white/20 text-xs font-bold text-[#231123] dark:text-white transition-all flex items-center gap-1 cursor-pointer"
             >
               <span className="material-symbols-outlined text-[15px] text-[#B80C09]">lock</span>
-              <span>Probar PIN en Reproductor</span>
+              <span>{ui("Probar PIN en Reproductor")}</span>
             </button>
           </div>
         </div>
@@ -971,11 +929,9 @@ export const EnhancedParentalControl = () => {
           <div>
             <h4 className="text-base font-bold text-[#231123] dark:text-white flex items-center gap-2">
               <span className="material-symbols-outlined text-[20px] text-[#B80C09]">block</span>
-              <span>Palabras & Artistas Restringidos</span>
+              <span>{ui("Palabras & Artistas Restringidos")}</span>
             </h4>
-            <p className="text-xs text-[#5c435a] dark:text-[#B89CB0] mt-1">
-              Agrega términos que se filtrarán automáticamente del buscador y recomendaciones para niños.
-            </p>
+            <p className="text-xs text-[#5c435a] dark:text-[#B89CB0] mt-1">{ui("Agrega términos que se filtrarán automáticamente del buscador y recomendaciones para niños.")}</p>
           </div>
 
           <form onSubmit={handleAddBlockedKeyword} className="flex items-center gap-2">
@@ -983,16 +939,14 @@ export const EnhancedParentalControl = () => {
               type="text"
               value={newKeyword}
               onChange={(e) => setNewKeyword(e.target.value)}
-              placeholder="Ej. Artista, palabra o tema..."
+              placeholder={ui("Ej. Artista, palabra o tema...")}
               className="flex-1 text-xs py-2 px-3 rounded-xl bg-gray-50 dark:bg-black/30 border border-gray-300 dark:border-white/20 text-[#231123] dark:text-white focus:outline-hidden focus:border-[#B80C09]"
             />
             <button
               type="submit"
               disabled={!newKeyword.trim()}
               className="px-4 py-2 rounded-xl bg-[#231123] dark:bg-white text-white dark:text-[#231123] text-xs font-bold transition-all disabled:opacity-50 cursor-pointer"
-            >
-              + Bloquear
-            </button>
+            >{ui("+ Bloquear")}</button>
           </form>
 
           <div className="flex flex-wrap gap-1.5 max-h-24 overflow-y-auto">
@@ -1022,11 +976,9 @@ export const EnhancedParentalControl = () => {
             <span className="material-symbols-outlined text-[22px] text-[#5c435a] dark:text-[#B89CB0]">
               history_toggle_off
             </span>
-            <h4 className="text-base font-bold text-[#231123] dark:text-white">
-              Historial de Actividad & Auditoría de Seguridad Kids
-            </h4>
+            <h4 className="text-base font-bold text-[#231123] dark:text-white">{ui("Historial de Actividad & Auditoría de Seguridad Kids")}</h4>
           </div>
-          <span className="text-xs text-gray-500 font-mono">Últimas 24 horas</span>
+          <span className="text-xs text-gray-500 font-mono">{ui("Últimas 24 horas")}</span>
         </div>
 
         <div className="flex flex-col divide-y divide-gray-100 dark:divide-white/10 text-xs">

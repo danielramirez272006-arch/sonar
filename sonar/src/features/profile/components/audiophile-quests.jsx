@@ -1,3 +1,4 @@
+import { useUIText } from '../../../shared/i18n/use-ui-text.js';
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '../../../shared/context/auth-context';
@@ -62,6 +63,7 @@ const INITIAL_QUESTS = [
 ];
 
 export const AudiophileQuests = () => {
+  const ui = useUIText();
   const { user, updateUser } = useAuth();
   const [toastMsg, setToastMsg] = useState(null);
   const [quests, setQuests] = useState(() => {
@@ -120,20 +122,12 @@ export const AudiophileQuests = () => {
 
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div>
-          <span className="text-xs font-bold uppercase tracking-wider text-[#B80C09]">
-            Gamificación & Misiones Semanales
-          </span>
-          <h3 className="text-xl font-black tracking-tight mt-0.5">
-            Desafíos Acústicos
-          </h3>
-          <p className="text-xs text-[#5c435a] dark:text-[#B89CB0] mt-1">
-            Completa misiones de escucha y curaduría para elevar tu rango y desbloquear recompensas exclusivas.
-          </p>
+          <span className="text-xs font-bold uppercase tracking-wider text-[#B80C09]">{ui("Gamificación & Misiones Semanales")}</span>
+          <h3 className="text-xl font-black tracking-tight mt-0.5">{ui("Desafíos Acústicos")}</h3>
+          <p className="text-xs text-[#5c435a] dark:text-[#B89CB0] mt-1">{ui("Completa misiones de escucha y curaduría para elevar tu rango y desbloquear recompensas exclusivas.")}</p>
         </div>
 
-        <span className="text-xs font-mono font-bold text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-500/10 px-3 py-1.5 rounded-xl border border-amber-200 dark:border-amber-500/20 self-start sm:self-auto">
-          Renuevan en 4 días
-        </span>
+        <span className="text-xs font-mono font-bold text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-500/10 px-3 py-1.5 rounded-xl border border-amber-200 dark:border-amber-500/20 self-start sm:self-auto">{ui("Renuevan en 4 días")}</span>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -175,8 +169,7 @@ export const AudiophileQuests = () => {
               {/* Barra de Progreso */}
               <div className="flex flex-col gap-1.5">
                 <div className="flex justify-between text-[11px] font-bold">
-                  <span className="text-[#5c435a] dark:text-[#B89CB0]">
-                    Progreso: {quest.progress} / {quest.target} {quest.unit}
+                  <span className="text-[#5c435a] dark:text-[#B89CB0]">{ui("Progreso:")} {quest.progress} / {quest.target} {quest.unit}
                   </span>
                   <span className="font-mono text-[#B80C09] dark:text-pink-300">{percent}%</span>
                 </div>
@@ -198,7 +191,7 @@ export const AudiophileQuests = () => {
                   quest.claimed ? (
                     <span className="text-[11px] font-black uppercase text-emerald-600 dark:text-emerald-400 flex items-center gap-1">
                       <span className="material-symbols-outlined text-[14px]">verified</span>
-                      <span>Reclamado</span>
+                      <span>{ui("Reclamado")}</span>
                     </span>
                   ) : (
                     <button
@@ -207,11 +200,11 @@ export const AudiophileQuests = () => {
                       className="px-3.5 py-1.5 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-700 hover:from-emerald-500 hover:to-teal-600 text-white text-xs font-black uppercase transition-all shadow-md cursor-pointer flex items-center gap-1 hover:scale-105"
                     >
                       <span className="material-symbols-outlined text-[15px]">redeem</span>
-                      <span>Reclamar</span>
+                      <span>{ui("Reclamar")}</span>
                     </button>
                   )
                 ) : (
-                  <span className="text-[10px] text-gray-400 uppercase font-bold">En curso</span>
+                  <span className="text-[10px] text-gray-400 uppercase font-bold">{ui("En curso")}</span>
                 )}
               </div>
             </div>

@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import Navbar from '../../shared/components/layout/navbar';
 import Footer from '../../shared/components/layout/footer';
 import Toast from '../../shared/components/ui/toast';
+import { useTranslation } from '../../shared/context/language-context.jsx';
 
 const API_ENDPOINTS = [
   {
@@ -67,13 +68,14 @@ const API_ENDPOINTS = [
 ];
 
 export const DeveloperApiPage = () => {
+    const { t } = useTranslation();
   const [selectedEndpoint, setSelectedEndpoint] = useState(API_ENDPOINTS[0]);
   const [activeTab, setActiveTab] = useState('response'); // 'response' | 'curl' | 'js'
   const [toastMessage, setToastMessage] = useState(null);
 
   const copyToClipboard = (text) => {
     navigator.clipboard.writeText(text);
-    setToastMessage('Código copiado al portapapeles');
+    setToastMessage(t('page.api.copied'));
   };
 
   const getCurlSnippet = (ep) => {
@@ -107,14 +109,14 @@ export const DeveloperApiPage = () => {
           <div className="flex items-center gap-2 mb-2">
             <span className="w-2.5 h-2.5 rounded-full bg-[#B80C09] animate-pulse" />
             <span className="text-xs uppercase tracking-widest font-black text-[#5c1d5e] dark:text-pink-300">
-              SONAR DEV HUB & DOCUMENTACIÓN REST
+              {t('page.api.eyebrow')}
             </span>
           </div>
           <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-[#231123] dark:text-white">
-            API para Desarrolladores
+            {t('page.api.title')}
           </h1>
           <p className="text-sm sm:text-base text-[#5c435a] dark:text-[#B89CB0] max-w-2xl mt-2 font-medium">
-            Integra el catálogo analógico de Sonar, calificaciones audiófilas y metadatos discográficos en tus propias aplicaciones, widgets y bots.
+            {t('page.api.description')}
           </p>
         </header>
 
@@ -122,7 +124,7 @@ export const DeveloperApiPage = () => {
           {/* Lista de Endpoints */}
           <div className="lg:col-span-5 flex flex-col gap-3">
             <h2 className="text-xs uppercase tracking-wider font-extrabold text-[#5c1d5e] dark:text-pink-300 mb-2">
-              Endpoints Disponibles
+              {t('page.api.endpoints')}
             </h2>
             {API_ENDPOINTS.map((ep) => (
               <button
@@ -150,10 +152,10 @@ export const DeveloperApiPage = () => {
                   </span>
                 </div>
                 <h4 className="text-sm font-bold text-[#231123] dark:text-white mb-1">
-                  {ep.title}
+                  {ep.path.endsWith('/albums') ? t('page.api.getAlbums') : ep.method === 'POST' ? t('page.api.createReview') : t('page.api.getReviews')}
                 </h4>
                 <p className="text-xs text-[#5c435a] dark:text-[#B89CB0] line-clamp-2">
-                  {ep.description}
+                  {ep.path.endsWith('/albums') ? t('page.api.getAlbumsDescription') : ep.method === 'POST' ? t('page.api.createReviewDescription') : t('page.api.getReviewsDescription')}
                 </p>
               </button>
             ))}
@@ -161,10 +163,10 @@ export const DeveloperApiPage = () => {
             {/* Tarjeta de Clave de API */}
             <div className="mt-4 p-5 rounded-2xl bg-gradient-to-br from-[#4B2840] to-[#231123] text-white border border-white/10">
               <span className="text-xs uppercase tracking-wider font-bold text-pink-300 block mb-1">
-                Autenticación
+                {t('page.api.auth')}
               </span>
               <p className="text-xs text-white/80 leading-relaxed mb-3">
-                Todas las solicitudes requieren un encabezado de autorización Bearer Token.
+                {t('page.api.authHelp')}
               </p>
               <div className="flex items-center justify-between p-2.5 rounded-xl bg-black/40 font-mono text-[11px] text-pink-200">
                 <span className="truncate">sonar_live_pk_8f49a2...</span>
@@ -172,7 +174,7 @@ export const DeveloperApiPage = () => {
                   type="button"
                   onClick={() => copyToClipboard('sonar_live_pk_8f49a201c89e')}
                   className="hover:text-white transition-colors cursor-pointer ml-2"
-                  title="Copiar token de prueba"
+                  title={t('page.api.copyTestToken')}
                 >
                   <span className="material-symbols-outlined text-[16px]">content_copy</span>
                 </button>
@@ -206,7 +208,7 @@ export const DeveloperApiPage = () => {
                       activeTab === 'response' ? 'bg-[#B80C09] text-white' : 'text-gray-400 hover:text-white'
                     }`}
                   >
-                    JSON Response
+                    {t('page.api.jsonResponse')}
                   </button>
                   <button
                     onClick={() => setActiveTab('curl')}
@@ -239,7 +241,7 @@ export const DeveloperApiPage = () => {
                     copyToClipboard(content);
                   }}
                   className="absolute top-3 right-3 p-1.5 rounded-lg bg-white/10 hover:bg-white/20 text-white transition-colors cursor-pointer"
-                  title="Copiar código"
+                  title={t('page.api.copyCode')}
                 >
                   <span className="material-symbols-outlined text-[16px]">content_copy</span>
                 </button>
