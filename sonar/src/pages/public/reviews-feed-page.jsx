@@ -228,7 +228,7 @@ export const ReviewsFeedPage = () => {
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2 mb-1 flex-wrap">
                         <span className="px-2.5 py-0.5 rounded-md bg-[#f8e9f6] dark:bg-[#231123] text-[#5c1d5e] dark:text-pink-200 text-[10px] font-extrabold uppercase">
-                          {rev.badge}
+                          {ui(rev.badge)}
                         </span>
                         <span className="text-xs text-[#5c435a] dark:text-[#B89CB0] font-semibold">
                           {rev.genre} · {rev.year}

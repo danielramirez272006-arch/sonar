@@ -143,6 +143,18 @@ Amplio (2.2x)|Wide (2.2x)|Large (2.2x)|Ampio (2.2x)|宽幅（2.2x）|広幅（2.
 Bienvenido a SONAR. Esta es una prueba de lectura en voz alta para tus reseñas y análisis líricos.|Welcome to SONAR. This is a read-aloud test for your reviews and lyric analyses.|Bienvenue sur SONAR. Voici un test de lecture à voix haute pour vos critiques et analyses de paroles.|Benvenuto in SONAR. Questa è una prova di lettura ad alta voce per le tue recensioni e analisi dei testi.|欢迎使用 SONAR。这是一项朗读测试，用于您的评论和歌词分析。|SONAR へようこそ。これはレビューと歌詞分析の読み上げテストです。
 Escuchar {{value0}} en voz alta|Listen to {{value0}} aloud|Écouter {{value0}} à voix haute|Ascolta {{value0}} ad alta voce|朗读 {{value0}}|{{value0}} を読み上げる
 texto|text|texte|testo|文本|テキスト
+Crítica Verificada|Verified review|Critique vérifiée|Recensione verificata|认证乐评|認証レビュー
+Top Reseñador|Top Reviewer|Top Critique|Top Recensore|最佳乐评人|トップレビュアー
+Curadora|Curator|Curatrice|Curatrice|策展人|キュレーター
+Selección Editorial|Editorial Pick|Choix de la rédaction|Scelta editoriale|编辑精选|編集部ピック
+Voto de la Comunidad|Community Vote|Vote de la communauté|Voto della community|社区投票|コミュニティ投票
+Puntuación Perfecta|Perfect Score|Note parfaite|Punteggio perfetto|满分|満点
+Popular|Popular|Populaire|Popolare|热门|人気
+Hi-Fi Pro|Hi-Fi Pro|Hi-Fi Pro|Hi-Fi Pro|Hi-Fi 专业版|Hi-Fi プロ
+Calidez|Warmth|Chaleur|Calore|温暖音色|温もり
+Prioritario|Priority|Prioritaire|Prioritario|优先|優先
+Grave|Severe|Grave|Grave|严重|重大
+General|General|Général|Generale|一般|一般
 `.trim().split('\n').map(row => row.split('|'));
 export const INTERFACE_TRANSLATIONS = Object.fromEntries(
   ['es', 'en', 'fr', 'it', 'zh', 'ja'].map((language, index) => [language, Object.fromEntries(rows.map(values => [values[0], values[index]]))]),

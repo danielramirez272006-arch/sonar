@@ -673,7 +673,7 @@ export const RewardsStoreTab = () => {
                         <span>{item.name}</span>
                         {item.badge && (
                           <span className="px-1.5 py-0.2 rounded text-[9px] font-black uppercase bg-[#B80C09] text-white">
-                            {item.badge}
+                            {ui(item.badge)}
                           </span>
                         )}
                       </h4>

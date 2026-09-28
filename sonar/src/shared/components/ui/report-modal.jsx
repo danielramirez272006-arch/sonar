@@ -313,7 +313,7 @@ export const ReportModal = ({
                               <span
                                 className={`text-[9px] font-bold px-1.5 py-0.2 rounded-md border shrink-0 ${reason.badgeColor}`}
                               >
-                                {reason.badge}
+                                {ui(reason.badge)}
                               </span>
                             </div>
                             <p className="text-[11px] text-gray-400 leading-tight">
