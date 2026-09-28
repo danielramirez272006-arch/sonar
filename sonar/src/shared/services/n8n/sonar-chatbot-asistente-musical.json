@@ -176,7 +176,7 @@
       "main": [
         [
           {
-            "node": "Agente Sommelier IA",
+            "node": "Sonaria Agente IA",
             "type": "main",
             "index": 0
           }
@@ -187,7 +187,7 @@
       "ai_languageModel": [
         [
           {
-            "node": "Agente Sommelier IA",
+            "node": "Sonaria Agente IA",
             "type": "ai_languageModel",
             "index": 0
           }
@@ -198,14 +198,14 @@
       "ai_memory": [
         [
           {
-            "node": "Agente Sommelier IA",
+            "node": "Sonaria Agente IA",
             "type": "ai_memory",
             "index": 0
           }
         ]
       ]
     },
-    "Agente Sommelier IA": {
+    "Sonaria Agente IA": {
       "main": [
         [
           {
