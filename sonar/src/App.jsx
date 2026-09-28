@@ -224,7 +224,6 @@ export function AdminConsole() {
                 {dashboard.metrics.pendingReviews}
               </span>
             </a>
-<<<<<<< HEAD
             <a
               className={`${page === 'sonar-ai' ? 'active dark:bg-sonar-surface dark:text-sonar-text dark:border dark:border-[#B80C09]/40 font-bold' : 'dark:text-sonar-text dark:hover:bg-sonar-surface/60'}`}
               aria-current={page === 'sonar-ai' ? 'page' : undefined}
@@ -232,10 +231,7 @@ export function AdminConsole() {
             >
               🤖 <span>Sonar AI</span>
             </a>
-            <a href="#explore" className="dark:text-sonar-text dark:hover:bg-sonar-surface/60">← <span>Ir al Portal Público</span></a>
-=======
             <a href="#explore" className="dark:text-sonar-text dark:hover:bg-sonar-surface/60">← <span>{t('admin.console.publicPortal')}</span></a>
->>>>>>> a62825a6f441b827d99bc12505e1fc265c90cfae
           </nav>
           <span className="nav-caption dark:text-sonar-text/70">{t('admin.console.slogan')}</span>
         </div>
