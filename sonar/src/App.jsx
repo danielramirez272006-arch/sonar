@@ -21,6 +21,7 @@ import { ThemeProvider, useTheme } from './shared/context/theme-context.jsx'
 import { PlayerProvider } from './shared/context/player-context.jsx'
 import { GlobalAudioPlayer } from './shared/components/layout/global-audio-player.jsx'
 import { ReviewModal } from './shared/components/layout/review-modal.jsx'
+import { SonarAiSommelier } from './features/chatbot/components/sonar-ai-sommelier.jsx'
 import { ErrorBoundary } from './shared/components/ui/error-boundary.jsx'
 import AppRouter from './shared/routing/app-router.jsx'
 import { AccessibilityProvider } from './shared/context/accessibility-context.jsx'
@@ -271,6 +272,7 @@ export default function App() {
                       <GlobalAudioPlayer />
                     </ErrorBoundary>
                     <ReviewModal />
+                    <SonarAiSommelier />
                     <AccessibilityWidget />
                     <KeyboardShortcutsModal />
                     <ReadingGuide />
