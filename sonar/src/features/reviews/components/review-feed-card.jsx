@@ -12,6 +12,7 @@ import LikeButton from '../../../shared/components/ui/like-button';
 import { ReportModal } from '../../../shared/components/ui/report-modal';
 import { TTSButton } from '../../../shared/components/a11y/tts-button';
 import { handleImageFallbackError, getFallbackCoverForAlbum } from '../../../shared/services/recommendations-service';
+import { soundEffects } from '../../../shared/utils/sound-effects';
 
 const cardVariants = {
   hidden: { opacity: 0, y: 20 },
@@ -58,6 +59,33 @@ export const ReviewFeedCard = ({
   const [isFollowingArtist, setIsFollowingArtist] = useState(false);
   const [isReportingReview, setIsReportingReview] = useState(false);
   const [isReviewReported, setIsReviewReported] = useState(false);
+  const [tipsTotal, setTipsTotal] = useState(0);
+  const [showTipMenu, setShowTipMenu] = useState(false);
+  const [tipSuccessMessage, setTipSuccessMessage] = useState(null);
+
+  const handleSendTip = (amount) => {
+    if (!user) {
+      window.location.hash = '#login';
+      return;
+    }
+    const currentPoints = Number(localStorage.getItem('sonar_user_points') || user?.sonarPoints || 1250);
+    if (currentPoints < amount) {
+      soundEffects.playClick();
+      alert(`Necesitas al menos ${amount} Sonar Coins para enviar esta propina.`);
+      return;
+    }
+    const nextPoints = currentPoints - amount;
+    try {
+      localStorage.setItem('sonar_user_points', String(nextPoints));
+      window.dispatchEvent(new CustomEvent('sonar:points-updated', { detail: { points: nextPoints } }));
+      window.dispatchEvent(new CustomEvent('sonar:profile-customization-changed', { detail: { sonarPoints: nextPoints } }));
+    } catch {}
+    soundEffects.playTip();
+    setTipsTotal((prev) => prev + amount);
+    setShowTipMenu(false);
+    setTipSuccessMessage(`¡Propina de +${amount} 🪙 enviada a ${review.userName}!`);
+    setTimeout(() => setTipSuccessMessage(null), 3000);
+  };
 
   useEffect(() => {
     const likedIds = interactionsService.getLikedReviewIds(currentUserId);
@@ -368,7 +396,70 @@ export const ReviewFeedCard = ({
             size="sm"
             label={ui("Escuchar")}
           />
+
+          {/* Botón Dar Propina (Community Tipping) */}
+          <div className="relative">
+            <button
+              type="button"
+              onClick={() => setShowTipMenu(!showTipMenu)}
+              className={`flex items-center gap-1.5 px-2.5 py-1 rounded-xl text-xs font-bold transition-all cursor-pointer border ${
+                showTipMenu || tipsTotal > 0
+                  ? 'bg-amber-500/20 text-amber-600 dark:text-amber-400 border-amber-500/40'
+                  : 'bg-amber-50 dark:bg-amber-950/20 text-amber-700 dark:text-amber-300 border-amber-300/40 hover:bg-amber-100 dark:hover:bg-amber-900/30'
+              }`}
+              title="Recompensar al autor con Sonar Coins"
+            >
+              <span>🪙</span>
+              <span>{ui("Propina")}</span>
+              {tipsTotal > 0 && (
+                <span className="ml-0.5 px-1.5 py-0.2 rounded-full bg-amber-500 text-black text-[10px] font-black">
+                  +{tipsTotal}
+                </span>
+              )}
+            </button>
+
+            {/* Menú Flotante de Propinas */}
+            <AnimatePresence>
+              {showTipMenu && (
+                <motion.div
+                  initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                  animate={{ opacity: 1, y: 0, scale: 1 }}
+                  exit={{ opacity: 0, y: 10, scale: 0.95 }}
+                  className="absolute bottom-full mb-2 left-0 z-30 p-2.5 bg-white dark:bg-zinc-900 rounded-2xl shadow-xl border border-amber-500/30 flex items-center gap-2"
+                >
+                  <span className="text-[11px] font-bold text-zinc-500 dark:text-zinc-400 whitespace-nowrap pl-1">
+                    Enviar:
+                  </span>
+                  {[10, 25, 50].map((amt) => (
+                    <button
+                      key={amt}
+                      type="button"
+                      onClick={() => handleSendTip(amt)}
+                      className="px-2.5 py-1 rounded-xl bg-amber-500/10 hover:bg-amber-500 hover:text-black text-amber-600 dark:text-amber-400 font-extrabold text-xs transition-all border border-amber-500/20 active:scale-90"
+                    >
+                      +{amt} 🪙
+                    </button>
+                  ))}
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
         </div>
+
+        {/* Notificación Flotante de Propina */}
+        <AnimatePresence>
+          {tipSuccessMessage && (
+            <motion.div
+              initial={{ opacity: 0, y: -5 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -5 }}
+              className="absolute -top-10 left-1/2 -translate-x-1/2 z-40 bg-gradient-to-r from-amber-500 to-yellow-400 text-black font-extrabold text-xs px-4 py-1.5 rounded-full shadow-lg border border-amber-300 flex items-center gap-1.5"
+            >
+              <span>🎉</span>
+              <span>{tipSuccessMessage}</span>
+            </motion.div>
+          )}
+        </AnimatePresence>
 
         {/* Botón Reportar Reseña */}
         {!isSelf && (
