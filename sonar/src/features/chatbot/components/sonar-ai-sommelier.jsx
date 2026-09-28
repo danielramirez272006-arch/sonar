@@ -1,50 +1,136 @@
-import React, { useState, useRef, useEffect } from 'react'
+import React, { useState, useRef, useEffect, useMemo } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { sendChatMessage } from '../../../shared/services/chatbot-service.js'
 import { usePlayer } from '../../../shared/context/player-context.jsx'
-import { useAuth } from '../../../shared/context/auth-context.jsx'
+import { useLanguage } from '../../../shared/context/language-context.jsx'
+import { useLocation } from 'react-router-dom'
 
-const INITIAL_MESSAGE = {
-  id: 'init-msg-1',
-  sender: 'bot',
-  text: '¡Hola! Soy **Sonaria**, tu asistente de inteligencia artificial oficial de la plataforma **SONAR**. 🎧✨\n\nPuedo guiarte paso a paso por todas las funciones de la página: explorar el catálogo Hi-Fi, ganar **Sonar Coins**, canjear skins en la **Boutique**, publicar reseñas o activar el **Control Parental**.\n\n¿En qué te puedo asesorar hoy?',
-  suggestions: [
-    {
-      title: 'Aja',
-      artist: 'Steely Dan',
-      year: '1977',
-      genre: 'Jazz Rock / Hi-Fi',
-      reason: 'Álbum destacado en el catálogo de SONAR con preescucha Hi-Fi disponible.',
-      deezerQuery: 'Steely Dan Aja',
-    },
-    {
-      title: 'Random Access Memories',
-      artist: 'Daft Punk',
-      year: '2013',
-      genre: 'Nu-Disco / Hi-Fi',
-      reason: 'Producción de referencia en SONAR. ¡Escúchalo para ganar +5 Sonar Coins!',
-      deezerQuery: 'Daft Punk Random Access Memories',
-    },
-  ],
-  quickReplies: [
-    '🪙 ¿Cómo ganar Sonar Coins?',
-    '⭐ ¿Cómo publicar una reseña?',
-    '🛒 ¿Qué hay en la Boutique?',
-    '🔒 ¿Cómo activar Control Parental?',
-    '💿 Explorar Catálogo Hi-Fi',
-  ],
-  timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+// Mensajes iniciales por idioma
+const INITIAL_MESSAGES = {
+  es: {
+    text: '¡Hola! Soy **Sonaria**, tu asistente de inteligencia artificial oficial de la plataforma **SONAR**. 🎧✨\n\nPuedo guiarte paso a paso por todas las funciones de la página: explorar el catálogo Hi-Fi, ganar **Sonar Coins**, canjear skins en la **Boutique**, publicar reseñas o activar el **Control Parental**.\n\n¿En qué te puedo asesorar hoy?',
+    quickReplies: [
+      '🪙 ¿Cómo ganar Sonar Coins?',
+      '⭐ ¿Cómo publicar una reseña?',
+      '🛒 ¿Qué hay en la Boutique?',
+      '🔒 ¿Cómo activar Control Parental?',
+      '💿 Explorar Catálogo Hi-Fi',
+    ],
+    placeholder: 'Pregunta sobre la plataforma, funciones, catálogo...',
+  },
+  en: {
+    text: "Hi! I'm **Sonaria**, your official AI assistant for the **SONAR** platform. 🎧✨\n\nI can guide you step by step through all features: explore the Hi-Fi catalog, earn **Sonar Coins**, redeem skins at the **Boutique**, publish reviews, or enable **Parental Control**.\n\nHow can I help you today?",
+    quickReplies: [
+      '🪙 How to earn Sonar Coins?',
+      '⭐ How to publish a review?',
+      '🛒 What\'s in the Boutique?',
+      '🔒 How to enable Parental Control?',
+      '💿 Explore Hi-Fi Catalog',
+    ],
+    placeholder: 'Ask about the platform, features, catalog...',
+  },
+  zh: {
+    text: '你好！我是 **Sonaria**，**SONAR** 平台的官方人工智能助手。🎧✨\n\n我可以一步步引导你使用所有功能：浏览 Hi-Fi 目录、赚取 **Sonar Coins**、在 **精品店** 兑换皮肤、发表评论或启用 **家长控制**。\n\n今天我能帮你什么？',
+    quickReplies: [
+      '🪙 如何赚取 Sonar Coins？',
+      '⭐ 如何发表评论？',
+      '🛒 精品店有什么？',
+      '🔒 如何启用家长控制？',
+      '💿 浏览 Hi-Fi 目录',
+    ],
+    placeholder: '询问平台、功能、目录...',
+  },
+  fr: {
+    text: "Bonjour ! Je suis **Sonaria**, votre assistante IA officielle de la plateforme **SONAR**. 🎧✨\n\nJe peux vous guider à travers toutes les fonctionnalités : explorer le catalogue Hi-Fi, gagner des **Sonar Coins**, échanger des skins à la **Boutique**, publier des critiques ou activer le **Contrôle Parental**.\n\nComment puis-je vous aider aujourd'hui ?",
+    quickReplies: [
+      '🪙 Comment gagner des Sonar Coins ?',
+      '⭐ Comment publier une critique ?',
+      '🛒 Que propose la Boutique ?',
+      '🔒 Comment activer le Contrôle Parental ?',
+      '💿 Explorer le Catalogue Hi-Fi',
+    ],
+    placeholder: 'Posez des questions sur la plateforme, les fonctionnalités...',
+  },
+  it: {
+    text: "Ciao! Sono **Sonaria**, la tua assistente IA ufficiale della piattaforma **SONAR**. 🎧✨\n\nPosso guidarti passo dopo passo attraverso tutte le funzionalità: esplorare il catalogo Hi-Fi, guadagnare **Sonar Coins**, riscattare skin nella **Boutique**, pubblicare recensioni o attivare il **Controllo Parentale**.\n\nCome posso aiutarti oggi?",
+    quickReplies: [
+      '🪙 Come guadagnare Sonar Coins?',
+      '⭐ Come pubblicare una recensione?',
+      '🛒 Cosa c\'è nella Boutique?',
+      '🔒 Come attivare il Controllo Parentale?',
+      '💿 Esplorare il Catalogo Hi-Fi',
+    ],
+    placeholder: 'Chiedi informazioni sulla piattaforma, funzionalità...',
+  },
+  ja: {
+    text: 'こんにちは！私は **Sonaria**、**SONAR** プラットフォームの公式AIアシスタントです。🎧✨\n\nすべての機能をご案内します：Hi-Fiカタログの探索、**Sonar Coins** の獲得、**ブティック** でのスキン交換、レビューの投稿、**ペアレンタルコントロール** の設定。\n\n今日は何をお手伝いしましょうか？',
+    quickReplies: [
+      '🪙 Sonar Coins の獲得方法は？',
+      '⭐ レビューの投稿方法は？',
+      '🛒 ブティックには何がありますか？',
+      '🔒 ペアレンタルコントロールの設定方法は？',
+      '💿 Hi-Fi カタログを探索',
+    ],
+    placeholder: 'プラットフォーム、機能、カタログについて質問...',
+  },
+}
+
+const SUGGESTION_DEFAULTS = [
+  {
+    title: 'Aja',
+    artist: 'Steely Dan',
+    year: '1977',
+    genre: 'Jazz Rock / Hi-Fi',
+    reason: 'Álbum destacado en el catálogo de SONAR con preescucha Hi-Fi disponible.',
+    deezerQuery: 'Steely Dan Aja',
+  },
+  {
+    title: 'Random Access Memories',
+    artist: 'Daft Punk',
+    year: '2013',
+    genre: 'Nu-Disco / Hi-Fi',
+    reason: 'Producción de referencia en SONAR. ¡Escúchalo para ganar +5 Sonar Coins!',
+    deezerQuery: 'Daft Punk Random Access Memories',
+  },
+]
+
+function buildInitialMessage(lang = 'es') {
+  const msgs = INITIAL_MESSAGES[lang] || INITIAL_MESSAGES.es
+  return {
+    id: 'init-msg-1',
+    sender: 'bot',
+    text: msgs.text,
+    suggestions: SUGGESTION_DEFAULTS,
+    quickReplies: msgs.quickReplies,
+    timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+  }
 }
 
 export function SonarAiSommelier() {
+  const location = useLocation()
+  const { currentLang } = useLanguage()
   const [isOpen, setIsOpen] = useState(false)
-  const [messages, setMessages] = useState([INITIAL_MESSAGE])
+  const [messages, setMessages] = useState(() => [buildInitialMessage(currentLang)])
   const [inputValue, setInputValue] = useState('')
   const [isLoading, setIsLoading] = useState(false)
   const [sessionId] = useState(() => 'sonar-session-' + Date.now().toString(36))
 
   const { playTrack, pauseTrack, isPlaying, currentTrack } = usePlayer()
-  const { user } = useAuth()
+
+  // Actualizar mensaje inicial cuando cambia el idioma
+  useEffect(() => {
+    setMessages((prev) => {
+      if (prev.length === 1 && prev[0].id === 'init-msg-1') {
+        return [buildInitialMessage(currentLang)]
+      }
+      return prev
+    })
+  }, [currentLang])
+
+  const currentPlaceholder = useMemo(
+    () => (INITIAL_MESSAGES[currentLang] || INITIAL_MESSAGES.es).placeholder,
+    [currentLang]
+  )
 
   const messagesEndRef = useRef(null)
   const inputRef = useRef(null)
@@ -59,6 +145,14 @@ export function SonarAiSommelier() {
       setTimeout(() => inputRef.current?.focus(), 150)
     }
   }, [isOpen, messages])
+
+  // No mostrar Sonaria en páginas de login/registro (hash routing: /#login)
+  const hash = (window.location.hash || '').replace(/^#\/?/, '').toLowerCase().split('?')[0]
+  const hiddenPages = ['login', 'register', 'signup', 'forgot-password', 'recuperar-password', 'recuperar-contrasena', 'reset-password']
+  if (hiddenPages.includes(hash)) {
+    return null
+  }
+
 
   const handlePlaySuggestion = async (suggestion) => {
     if (!playTrack || !suggestion) return
@@ -99,8 +193,9 @@ export function SonarAiSommelier() {
 
     try {
       const response = await sendChatMessage(text, sessionId, {
-        userName: user?.name || user?.username || 'Melómano',
-        preferences: user?.preferences || ['Jazz', 'Rock', 'Electrónica'],
+        userName: 'Melómano',
+        preferences: ['Jazz', 'Rock', 'Electrónica'],
+        language: currentLang,
       })
 
       const botMsg = {
@@ -156,7 +251,7 @@ export function SonarAiSommelier() {
   }
 
   const handleClearHistory = () => {
-    setMessages([INITIAL_MESSAGE])
+    setMessages([buildInitialMessage(currentLang)])
   }
 
   return (
@@ -395,7 +490,7 @@ export function SonarAiSommelier() {
                 type="text"
                 value={inputValue}
                 onChange={(e) => setInputValue(e.target.value)}
-                placeholder="Pregunta sobre vinilos, jazz, másters..."
+                placeholder={currentPlaceholder}
                 disabled={isLoading}
                 className="flex-1 bg-[#2e1628] border border-white/15 rounded-xl px-3.5 py-2.5 text-xs text-white placeholder:text-[#DCDCDD]/40 focus:outline-none focus:border-[#B80C09] transition-colors"
               />
