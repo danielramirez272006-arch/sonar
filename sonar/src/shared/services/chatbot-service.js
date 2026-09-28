@@ -137,6 +137,62 @@ const LOCAL_KNOWLEDGE = [
     quickReplies: ['💿 Recomiéndame Jazz japonés', '🎛️ Discos con mejor masterización', '🎁 Ganar Sonar Coins'],
   },
   {
+    keywords: ['triste', 'tristeza', 'depre', 'desanimo', 'melancolia', 'llorar', 'bajon', 'solo', 'soledad'],
+    reply:
+      'Lamento que te sientas así. La música tiene un poder sanador y catártico único. Para momentos reflexivos o de melancolía, estas obras grabadas con calidez orgánica y guitarras acústicas profundas son un abrazo sonoro.',
+    suggestions: [
+      {
+        title: 'Sea Change',
+        artist: 'Beck',
+        year: '2002',
+        genre: 'Chamber Folk / Acoustic',
+        reason: 'Masterizado por Bob Ludwig con arreglos de cuerdas de David Campbell y una intimidad vocal conmovedora.',
+        deezerQuery: 'Beck Sea Change',
+      },
+      {
+        title: 'Blue',
+        artist: 'Joni Mitchell',
+        year: '1971',
+        genre: 'Folk / Singer-Songwriter',
+        reason: 'Grabación pura y despojada con dulcimer acústico y piano con un rango dinámico ultrasensible.',
+        deezerQuery: 'Joni Mitchell Blue',
+      },
+      {
+        title: 'Kid A',
+        artist: 'Radiohead',
+        year: '2000',
+        genre: 'Art Rock / Ambient',
+        reason: 'Paisajes sonoros reflexivos con sintetizadores etéreos y la voz vulnerable de Thom Yorke.',
+        deezerQuery: 'Radiohead Kid A',
+      },
+    ],
+    quickReplies: ['💿 Recomiéndame algo más relajante', '🎸 Álbumes con mejor acústica', '🎧 Escuchar con audífonos'],
+  },
+  {
+    keywords: ['feliz', 'alegre', 'animo', 'fiesta', 'bailar', 'motivacion', 'energia'],
+    reply:
+      '¡Qué gran vibra! Para elevar la energía y disfrutar con máximo impacto dinámico y ritmo contagioso, estas producciones brillantes te harán moverte al instante.',
+    suggestions: [
+      {
+        title: 'Off the Wall',
+        artist: 'Michael Jackson',
+        year: '1979',
+        genre: 'Disco / Funk',
+        reason: 'Producción dorada de Quincy Jones con mezcla de Bruce Swedien y sección de metales brillante.',
+        deezerQuery: 'Michael Jackson Off the Wall',
+      },
+      {
+        title: 'Discovery',
+        artist: 'Daft Punk',
+        year: '2001',
+        genre: 'French House',
+        reason: 'Samples eufóricos con sintetizadores y líneas de bajo sumamente enérgicas.',
+        deezerQuery: 'Daft Punk Discovery',
+      },
+    ],
+    quickReplies: ['🎸 Recomiéndame Funk clásico', '💿 Ver más producciones de Quincy Jones'],
+  },
+  {
     keywords: ['master', 'masterizacion', 'ingeniero', 'sonido', 'calidad', 'hi-fi', 'audiophile', 'dinamica', 'rango'],
     reply:
       'Para apreciar la máxima fidelidad sonora, busca masterizaciones que respeten el rango dinámico sin compresión agresiva (sin la guerra del volumen o *loudness war*). Ingenieros legendarios como Bernie Grundman, Bob Ludwig y Kevin Gray son garantía de sonido puro y transparente.',
@@ -195,7 +251,7 @@ export async function sendChatMessage(message, sessionId = 'default-session', co
   for (const endpoint of DEFAULT_ENDPOINTS) {
     try {
       const controller = new AbortController()
-      const timeoutId = setTimeout(() => controller.abort(), 6000)
+      const timeoutId = setTimeout(() => controller.abort(), 30000)
 
       const res = await fetch(endpoint, {
         method: 'POST',
@@ -213,7 +269,7 @@ export async function sendChatMessage(message, sessionId = 'default-session', co
       if (res.ok) {
         const data = await res.json()
         if (data && data.message) {
-          console.info('[Sonaria Service] Respuesta recibida desde n8n:', endpoint)
+          console.info('[Sonaria Service] Respuesta recibida exitosamente desde n8n:', endpoint)
           return {
             success: true,
             source: 'n8n-gemini',
@@ -228,9 +284,11 @@ export async function sendChatMessage(message, sessionId = 'default-session', co
             timestamp: data.timestamp || new Date().toISOString(),
           }
         }
+      } else {
+        console.warn(`[Sonaria Service] Endpoint ${endpoint} respondió con status: ${res.status}`)
       }
-    } catch {
-      // Continuar al siguiente endpoint o fallback local
+    } catch (err) {
+      console.warn(`[Sonaria Service] No se pudo conectar con ${endpoint}:`, err?.message || err)
     }
   }
 
