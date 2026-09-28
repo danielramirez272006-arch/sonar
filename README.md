@@ -5,15 +5,16 @@
 </p>
 
 <p align="center">
-  <strong>Plataforma comunitaria de crítica musical, preescucha en alta fidelidad y ecosistema interactivo para melómanos.</strong>
+  <strong>Plataforma comunitaria de crítica musical, preescucha en alta fidelidad y ecosistema interactivo para melómanos con moderación IA.</strong>
 </p>
 
 <p align="center">
   <img src="https://img.shields.io/badge/React-19.x-61DAFB?style=for-the-badge&logo=react&logoColor=black" alt="React 19" />
   <img src="https://img.shields.io/badge/Vite-8.x-646CFF?style=for-the-badge&logo=vite&logoColor=white" alt="Vite 8" />
   <img src="https://img.shields.io/badge/TailwindCSS-4.x-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white" alt="Tailwind CSS 4" />
-  <img src="https://img.shields.io/badge/Vitest-130%20Tests%20Passing-4EBA0F?style=for-the-badge&logo=vitest&logoColor=white" alt="Vitest Passing" />
-  <img src="https://img.shields.io/badge/n8n-Webhooks%20Active-EA4B71?style=for-the-badge&logo=n8n&logoColor=white" alt="n8n Webhooks" />
+  <img src="https://img.shields.io/badge/Vitest-157%20Tests%20Passing-4EBA0F?style=for-the-badge&logo=vitest&logoColor=white" alt="Vitest 157 Passing" />
+  <img src="https://img.shields.io/badge/n8n-Gemini%20Agent%20Active-EA4B71?style=for-the-badge&logo=n8n&logoColor=white" alt="n8n Gemini Agent" />
+  <img src="https://img.shields.io/badge/Google%20Gemini-2.0%20Flash-4285F4?style=for-the-badge&logo=google&logoColor=white" alt="Google Gemini" />
 </p>
 
 ---
@@ -37,6 +38,7 @@ SONAR está diseñado siguiendo una cuidada selección cromática con altos rati
 ### Prerrequisitos
 - **Node.js**: `^20.19.0 || >=22.12.0`
 - **npm**: `>=10.x`
+- **n8n**: `>=1.0.0` (Opcional, para el Agente Gemini y automatizaciones)
 
 ### 1. Clonar el repositorio
 ```bash
@@ -63,15 +65,27 @@ npm run dev
 ```
 > Abre la URL local generada por Vite (por defecto `http://localhost:5173/`).
 
-### 5. Iniciar n8n (Opcional para Webhooks y Automatizaciones)
+### 5. Iniciar n8n (Agente Moderador IA & Webhooks)
+En una tercera terminal:
 ```bash
 n8n start
 ```
-> Panel accesible en `http://localhost:5678/`. Los flujos de registro OTP, alertas de login, newsletter y recuperación se encuentran en `sonar/n8n/`.
+> Panel accesible en `http://localhost:5678/`. El flujo del **Agente IA con Gemini** se encuentra en `sonar/src/shared/services/n8n/sonar-moderacion-ia-resenas.json`.
 
 ---
 
 ## ✨ Características Principales
+
+### 🤖 Agente de Moderación IA con Google Gemini & n8n
+- **Agente Inteligente en Tiempo Real**: Analiza reseñas musicales conectando n8n con el modelo `@n8n/n8n-nodes-langchain.lmChatGoogleGemini` (`gemini-2.0-flash`).
+- **Política Estricta de Tolerancia Cero**: Detección automática de insultos, malas palabras, vulgaridades, leetspeak (evasiones de caracteres) y discurso de odio.
+- **Clasificación por Severidad Dinámica**:
+  - 🟢 **`none`**: Críticas respetuosas (incluso negativas o de 1 estrella).
+  - 🟠 **`low`**: Lenguaje informal o coloquial ligeramente soez.
+  - 🟡 **`medium`**: Descalificaciones hacia artistas o álbumes.
+  - 🔴 **`high`**: Agresiones graves, amenazas o discriminación.
+- **Auto-Flagging & Consola Admin**: Las reseñas marcadas se actualizan en la base de datos automáticamente con el distintivo rojo `✧ Marcada por IA`, el desglose de palabras detectadas y la justificación de Gemini.
+- **Notificación por Correo Gmail**: Envío automático de alertas HTML estilizadas al administrador del sistema.
 
 ### 🎧 Reproductor Global Hi-Fi con Motor de Síntesis Web Audio
 - **Audio Infalible**: Si los flujos remotos de Deezer presentan restricciones de red o CORS en el navegador del cliente, el motor Web Audio API sintetiza armonías sonoras en tiempo real, garantizando que el reproductor siempre funcione.
@@ -97,6 +111,7 @@ n8n start
 - **Títulos de Prestigio**: Luce distinciones como *«Oído Absoluto»* y *«Maestro del Mastering»*.
 
 ### 🌐 Automatizaciones con n8n
+- **Moderación IA con Agente Gemini**: `sonar-moderacion-ia-resenas.json`.
 - **Verificación OTP de Registro**: Envío de código de 6 dígitos al correo electrónico del nuevo usuario.
 - **Alerta de Inicio de Sesión**: Detección de nuevos dispositivos y notificación inmediata.
 - **Recuperación de Contraseña**: Flujo de validación OTP para restablecer credenciales.
@@ -104,7 +119,8 @@ n8n start
 
 ### 🛠️ Consola de Administración & Moderación
 - **Dashboard de Métricas**: Estadísticas de actividad comunitaria, reseñas pendientes y usuarios activos.
-- **Moderación Inteligente**: Clasificación y análisis asistido por IA de contenido ofensivo.
+- **Cola de Moderación**: Filtros de «Todas», «Pendientes», «Aprobadas», «Rechazadas» y «Marcadas por IA».
+- **Análisis Manual con IA**: Botón `✧ Analizar con IA` para auditar cualquier reseña en vivo.
 - **Gestión de Sanciones**: Notificaciones, advertencias y suspensiones con confirmación y auditoría.
 - **Exportación de Datos**: Descarga de registros y reportes en formato CSV.
 
@@ -123,12 +139,9 @@ El proyecto cuenta con una cobertura integral de pruebas unitarias y de integrac
 ```bash
 # Ejecutar todas las pruebas
 npm test
-
-# Ejecutar pruebas en modo observador
-npm run test:watch
 ```
 
-**Estado actual:** `26 suites de prueba / 130 tests pasando (100% pass rate)`.
+**Estado actual:** `31 suites de prueba / 157 tests pasando (100% pass rate)`.
 
 ---
 
@@ -136,16 +149,11 @@ npm run test:watch
 
 ```text
 sonar/
-├── n8n/                               # Workflows y automatizaciones exportadas de n8n
-│   ├── sonar-registro-verificacion-otp.json
-│   ├── sonar-notificacion-inicio-sesion.json
-│   ├── sonar-newsletter-suscripcion.json
-│   └── sonar-recuperacion-password.json
 ├── sonar/
 │   ├── src/
 │   │   ├── features/                  # Módulos organizados por dominio
 │   │   │   ├── admin/                 # Consola de administración y moderación
-│   │   │   ├── auth/                  # Formularios de acceso y registro
+│   │   │   ├── auth/                  # Formularios de acceso y registro OTP
 │   │   │   ├── home/                  # Componentes de la portada y destacados
 │   │   │   ├── profile/               # Perfil, Control Parental, Boutique y Recompensas
 │   │   │   └── reviews/               # Feed, tarjetas y modales de reseñas
@@ -154,11 +162,12 @@ sonar/
 │   │   │   ├── components/            # UI, navegación, reproductor y accesibilidad
 │   │   │   ├── context/               # Auth, Player, Theme y Accessibility Providers
 │   │   │   ├── routing/               # Router y protección de rutas
-│   │   │   └── services/              # Deezer API, Webhooks n8n, IA y Almacenamiento
+│   │   │   └── services/              # Deezer API, Webhooks n8n, Agente IA y Almacenamiento
+│   │   │       └── n8n/               # Workflows JSON listos para importar a n8n
 │   │   ├── Styles/                    # Tokens de diseño y hojas de estilo CSS
 │   │   ├── App.jsx                    # Raíz con arquitectura ErrorBoundary
 │   │   └── main.jsx                   # Punto de entrada de la aplicación
-│   ├── tests/                         # Suites de pruebas con Vitest
+│   ├── tests/                         # Suites de pruebas con Vitest (157 tests)
 │   ├── db.json                        # Base de datos simulada de JSON Server
 │   └── package.json                   # Dependencias y scripts
 └── README.md                          # Documentación principal del repositorio
@@ -170,9 +179,9 @@ sonar/
 
 | Comando | Descripción |
 | :--- | :--- |
-| `npm run dev` | Inicia el servidor de desarrollo Vite con HMR. |
-| `npm run api` | Inicia el backend mock JSON Server en el puerto 3001. |
-| `npm test` | Ejecuta la suite completa de 130 tests con Vitest. |
+| `npm run dev` | Inicia el servidor de desarrollo Vite con HMR (`http://localhost:5173/`). |
+| `npm run api` | Inicia el backend mock JSON Server en el puerto 3001 (`http://localhost:3001/`). |
+| `npm test` | Ejecuta la suite completa de 157 tests con Vitest. |
 | `npm run build` | Compila los paquetes optimizados para producción. |
 | `npm run lint` | Analiza el código fuente en busca de errores con ESLint. |
 
