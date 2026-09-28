@@ -118,7 +118,7 @@
     },
     {
       "parameters": {
-        "jsCode": "const input = $input.first().json;\nconst prev = $('Preparar Contexto').first().json;\n\nlet rawOutput = '';\nif (typeof input.output === 'string') {\n  rawOutput = input.output;\n} else if (input.output && typeof input.output.text === 'string') {\n  rawOutput = input.output.text;\n} else {\n  rawOutput = JSON.stringify(input.output || '¡Hola! ¿En qué puedo ayudarte hoy con tu música?');\n}\n\nlet suggestions = [];\nlet quickReplies = [\n  '💿 Recomiéndame Jazz japonés',\n  '🎸 Álbumes con mejor masterización',\n  '🎧 ¿Cómo calibrar mi tornamesa?'\n];\n\n// Extraer posible bloque JSON de sugerencias\nconst jsonMatch = rawOutput.match(/```json([\\s\\S]*?)```/);\nlet cleanMessage = rawOutput;\n\nif (jsonMatch) {\n  try {\n    const parsed = JSON.parse(jsonMatch[1].trim());\n    if (Array.isArray(parsed.suggestions)) {\n      suggestions = parsed.suggestions;\n    }\n    if (Array.isArray(parsed.quickReplies)) {\n      quickReplies = parsed.quickReplies;\n    }\n    cleanMessage = rawOutput.replace(/```json[\\s\\S]*?```/, '').trim();\n  } catch (e) {\n    // Dejar texto sin extraer si el json interno falla\n  }\n}\n\nreturn [\n  {\n    json: {\n      success: true,\n      message: cleanMessage,\n      suggestions,\n      quickReplies,\n      sessionId: prev.sessionId,\n      timestamp: new Date().toISOString(),\n      model: 'gemini-2.0-flash'\n    }\n  }\n];"
+        "jsCode": "const input = $input.first().json || {};\nconst prev = $('Preparar Contexto').first().json || {};\n\nlet rawOutput = '';\nif (typeof input.output === 'string') {\n  rawOutput = input.output;\n} else if (input.output && typeof input.output.text === 'string') {\n  rawOutput = input.output.text;\n} else if (typeof input.text === 'string') {\n  rawOutput = input.text;\n} else if (typeof input.response === 'string') {\n  rawOutput = input.response;\n} else if (typeof input === 'string') {\n  rawOutput = input;\n} else {\n  rawOutput = String(input.output || '¡Hola! Soy Sonaria. ¿En qué te puedo asesorar hoy con tu música audiófila?');\n}\n\nlet suggestions = [];\nlet quickReplies = [\n  '💿 Recomiéndame Jazz japonés',\n  '🎸 Álbumes con mejor masterización',\n  '🎧 ¿Cómo calibrar mi tornamesa?'\n];\n\n// Extraer posible bloque JSON de sugerencias\nconst jsonMatch = rawOutput.match(/```(?:json)?([\\s\\S]*?)```/);\nlet cleanMessage = rawOutput;\n\nif (jsonMatch) {\n  try {\n    const parsed = JSON.parse(jsonMatch[1].trim());\n    if (Array.isArray(parsed.suggestions)) {\n      suggestions = parsed.suggestions;\n    }\n    if (Array.isArray(parsed.quickReplies)) {\n      quickReplies = parsed.quickReplies;\n    }\n    cleanMessage = rawOutput.replace(/```(?:json)?[\\s\\S]*?```/, '').trim();\n  } catch (e) {\n    // Dejar texto sin extraer si el json interno falla\n  }\n}\n\nreturn [\n  {\n    json: {\n      success: true,\n      message: cleanMessage,\n      suggestions,\n      quickReplies,\n      sessionId: prev.sessionId || 'session-default',\n      timestamp: new Date().toISOString(),\n      model: 'gemini-2.0-flash'\n    }\n  }\n];"
       },
       "id": "bot-parse-001",
       "name": "Formatear Respuesta",
@@ -131,7 +131,23 @@
         "respondWith": "json",
         "responseBody": "={{ JSON.stringify({\n  success: true,\n  message: $('Formatear Respuesta').first().json.message,\n  suggestions: $('Formatear Respuesta').first().json.suggestions || [],\n  quickReplies: $('Formatear Respuesta').first().json.quickReplies || [],\n  sessionId: $('Formatear Respuesta').first().json.sessionId,\n  timestamp: $('Formatear Respuesta').first().json.timestamp,\n  model: $('Formatear Respuesta').first().json.model\n}) }}",
         "options": {
-          "responseCode": 200
+          "responseCode": 200,
+          "responseHeaders": {
+            "entries": [
+              {
+                "name": "Access-Control-Allow-Origin",
+                "value": "*"
+              },
+              {
+                "name": "Access-Control-Allow-Methods",
+                "value": "POST, OPTIONS, GET"
+              },
+              {
+                "name": "Access-Control-Allow-Headers",
+                "value": "Content-Type, Authorization"
+              }
+            ]
+          }
         }
       },
       "id": "bot-respond-001",

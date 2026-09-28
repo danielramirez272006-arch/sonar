@@ -286,7 +286,20 @@ export function SonarAiSommelier() {
                     )}
                   </div>
 
-                  <span className="text-[10px] text-[#DCDCDD]/40 mt-1 px-1">{msg.timestamp}</span>
+                  <div className="flex items-center gap-2 mt-1 px-1">
+                    <span className="text-[10px] text-[#DCDCDD]/40">{msg.timestamp}</span>
+                    {msg.sender === 'bot' && (
+                      <span
+                        className={`text-[9px] px-1.5 py-0.2 rounded-full font-bold uppercase tracking-wider ${
+                          msg.source === 'n8n-gemini'
+                            ? 'bg-emerald-950 text-emerald-300 border border-emerald-500/30'
+                            : 'bg-[#4B2840]/60 text-[#ffdddd]/60 border border-white/10'
+                        }`}
+                      >
+                        {msg.source === 'n8n-gemini' ? '⚡ n8n Gemini Agent' : '✧ Sonaria Local'}
+                      </span>
+                    )}
+                  </div>
 
                   {/* Sugerencias Rápidas (Chips) */}
                   {msg.sender === 'bot' && msg.quickReplies && msg.quickReplies.length > 0 && (
