@@ -1,18 +1,22 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Blobatar } from '@blobatar/react';
+import { useGaze } from '@blobatar/react/gaze';
 import 'blobatar/motion.css';
 import 'blobatar/gaze.css';
 import { Disc, Headphones, Radio, Volume2, Mic, Flame } from 'lucide-react';
 
 const sizeMap = {
-  xs: { size: '28px', font: '12px', num: 28, iconSize: 14 },
-  sm: { size: '36px', font: '14px', num: 36, iconSize: 18 },
-  md: { size: '44px', font: '16px', num: 44, iconSize: 22 },
-  lg: { size: '56px', font: '20px', num: 56, iconSize: 28 },
-  xl: { size: '72px', font: '26px', num: 72, iconSize: 36 },
-  '2xl': { size: '96px', font: '34px', num: 96, iconSize: 48 },
+  xs: { size: '28px', font: 12, num: 28, iconSize: 14 },
+  sm: { size: '36px', font: 14, num: 36, iconSize: 18 },
+  md: { size: '44px', font: 16, num: 44, iconSize: 22 },
+  lg: { size: '56px', font: 20, num: 56, iconSize: 28 },
+  xl: { size: '72px', font: 26, num: 72, iconSize: 36 },
+  '2xl': { size: '96px', font: 34, num: 96, iconSize: 48 },
 };
+
+// Un size en pixeles tambien vale, para no tener dos escalas distintas.
+const metricsFor = (num) => ({ size: `${num}px`, font: Math.round(num * 0.36), num, iconSize: Math.round(num * 0.5) });
 
 const ICON_MAP = {
   headphones: Headphones,
@@ -23,6 +27,11 @@ const ICON_MAP = {
   flame: Flame,
 };
 
+/**
+ * Avatar unico de SONAR. Decide foto, iniciales, icono o blobatar, y todos los
+ * lugares de la app pasan por aqui para que la misma persona se vea igual en
+ * el navbar, el perfil, la tabla de admin y las reseñas.
+ */
 export const Avatar = ({
   src,
   name,
@@ -38,14 +47,25 @@ export const Avatar = ({
   frame,
   size = 'md',
   animate = 'always',
+  // gaze: la mirada sigue al puntero. active lo amplifica.
+  gaze = false,
+  active = false,
   className = '',
+  'aria-label': ariaLabel,
   onClick,
 }) => {
   const [imageError, setImageError] = useState(false);
-  const currentSize = sizeMap[size] || sizeMap.md;
+  const currentSize = sizeMap[size] || (typeof size === 'number' ? metricsFor(size) : sizeMap.md);
   const rawName = name || username || 'Usuario';
   const effectiveSeed = avatarSeed || rawName.trim() || 'usuario-sonar';
   const bgColor = avatarBg || backgroundColor || bg || '#4B2840';
+
+  // El hook corre siempre; sin gaze no se le pasa ref ni travel, y el
+  // conductor de mirada queda inerte.
+  const { ref: gazeRef } = useGaze({
+    travel: gaze ? (active ? 2 : 1) : undefined,
+    lookAt: gaze && active ? 'pointer' : null,
+  });
 
   const frameClassMap = {
     'frame-gold-vinyl': 'ring-2 sm:ring-4 ring-amber-400 shadow-[0_0_18px_rgba(251,191,36,0.85)]',
@@ -57,9 +77,8 @@ export const Avatar = ({
   };
   const activeFrameClass = frame ? frameClassMap[frame] || '' : '';
 
-  // Usamos imagen real si existe y no es un path mock local inexistente
+  // La foto manda cuando existe; /avatars/ son mocks locales, no imagenes reales.
   const shouldShowImage = Boolean(
-    (src || avatarStyle === 'image') &&
     src &&
     !imageError &&
     src.trim() !== '' &&
@@ -72,6 +91,7 @@ export const Avatar = ({
     <motion.div
       className={`${className} ${activeFrameClass}`.trim()}
       onClick={onClick}
+      aria-label={ariaLabel}
       whileHover={{ scale: 1.05 }}
       whileTap={{ scale: 0.95 }}
       style={{
@@ -86,7 +106,7 @@ export const Avatar = ({
         userSelect: 'none',
         flexShrink: 0,
         cursor: onClick ? 'pointer' : 'default',
-        boxShadow: activeFrameClass ? undefined : '0 2px 10px rgba(0, 0, 0, 0.25)',
+        boxShadow: activeFrameClass ? undefined : '0 4px 10px rgba(92, 29, 94, 0.12)',
       }}
     >
       {shouldShowImage ? (
@@ -114,7 +134,15 @@ export const Avatar = ({
           className="text-white drop-shadow-md"
         />
       ) : (
-        <Blobatar hue={avatarHue} tone={avatarTone} name={effectiveSeed} size={currentSize.num} animate={animate} />
+        <Blobatar
+          ref={gaze ? gazeRef : undefined}
+          background="circle"
+          hue={avatarHue}
+          tone={avatarTone}
+          name={effectiveSeed}
+          size={currentSize.num}
+          animate={animate}
+        />
       )}
     </motion.div>
   );

@@ -4,9 +4,8 @@ import { ArrowRight, ArrowLeft, Eye, EyeOff, Headphones, Music2 } from 'lucide-r
 import { useAuth } from '../../../shared/context/auth-context';
 import { useTranslation } from 'react-i18next';
 import { useLanguage } from '../../../shared/context/language-context';
-import { GoogleIcon } from './social-provider-icon';
 import { RotatingReview } from './rotating-review';
-import { GoogleOAuthProvider, useGoogleLogin } from '@react-oauth/google';
+import { GoogleSignInButton } from './google-signin-button';
 
 const EditorialPanel = () => { const ui = useUIText(); return (<aside className="auth-editorial" aria-label={ui("Comunidad editorial de audio")}>
     <div className="auth-editorial__copy">
@@ -42,40 +41,18 @@ const LoginFormContent = () => {
     }
   };
 
-  const handleGoogleLogin = useGoogleLogin({
-      onSuccess: async (tokenResponse) => {
-        setGoogleLoading(true);
-        setMessage('');
-        try {
-          const res = await fetch('https://www.googleapis.com/oauth2/v3/userinfo', {
-            headers: { Authorization: `Bearer ${tokenResponse.access_token}` },
-          });
-          if (!res.ok) throw new Error('No se pudo obtener el perfil de Google.');
-          const googleUser = await res.json();
-
-          const fakeCredential = btoa(JSON.stringify({ alg: 'RS256' })) + '.' +
-            btoa(JSON.stringify({
-              sub: googleUser.sub,
-              email: googleUser.email,
-              given_name: googleUser.given_name,
-              name: googleUser.name,
-              picture: googleUser.picture,
-            })) + '.signature';
-
-          const account = await loginWithGoogle(fakeCredential);
-          redirectForRole(account);
-        } catch (err) {
-          setMessage(err.message || 'No se pudo iniciar sesión con Google.');
-        } finally {
-          setGoogleLoading(false);
-        }
-      },
-      onError: () => {
-        setMessage('No se pudo conectar con Google. Intenta de nuevo.');
-      },
-      flow: 'implicit',
-    });
-
+  const handleGoogleCredential = async (credential) => {
+    setGoogleLoading(true);
+    setMessage('');
+    try {
+      const account = await loginWithGoogle(credential);
+      redirectForRole(account);
+    } catch (err) {
+      setMessage(err.message || 'No se pudo iniciar sesión con Google.');
+    } finally {
+      setGoogleLoading(false);
+    }
+  };
 
   const activeError = message || authError;
   const isAnyLoading = isLoading || googleLoading;
@@ -104,21 +81,13 @@ const LoginFormContent = () => {
 
           {/* Botón de Google OAuth */}
           <div className="auth-socials" aria-label={ui("Acceso con servicios externos")}>
-            <button
+            <GoogleSignInButton
               id="google-login-btn"
-              type="button"
-              onClick={() => handleGoogleLogin()}
+              label={t('auth.google_login')}
               disabled={isAnyLoading}
-              className="auth-google-btn"
-              aria-label={t('auth.google_login')}
-            >
-              {googleLoading ? (
-                <span className="auth-google-spinner" aria-hidden="true" />
-              ) : (
-                <GoogleIcon />
-              )}
-              {googleLoading ? '...' : t('auth.google_login')}
-            </button>
+              onCredential={handleGoogleCredential}
+              onError={() => setMessage('No se pudo conectar con Google. Intenta de nuevo.')}
+            />
           </div>
 
           <p className="auth-divider"><span />{t('auth.or_email')}<span /></p>
@@ -170,11 +139,7 @@ const LoginFormContent = () => {
   );
 };
 
-export const LoginForm = () => (
-  <GoogleOAuthProvider clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID || ''}>
-    <LoginFormContent />
-  </GoogleOAuthProvider>
-);
+export const LoginForm = () => <LoginFormContent />;
 
 export default LoginForm;
 

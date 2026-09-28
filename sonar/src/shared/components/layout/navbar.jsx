@@ -2,6 +2,7 @@ import { useUIText } from '../../i18n/use-ui-text.js';
 import React, { useState, useEffect, useRef, useMemo, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Avatar } from '../ui/avatar';
+import { avatarPropsFor } from '../ui/avatar-props';
 import { AnimatedLogo } from '../ui/AnimatedLogo';
 import { useTheme } from '../../context/theme-context';
 import { useAuth } from '../../context/auth-context';
@@ -697,14 +698,7 @@ export const Navbar = ({
                 className="flex items-center gap-2.5 p-1 pr-3 sm:pr-3.5 rounded-full bg-[#f8e9f6] dark:bg-white/5 border border-[#e6d5e2] dark:border-white/10 hover:dark:bg-white/10 cursor-pointer transition-all shadow-xs"
               >
                 <Avatar
-                  src={authUser?.avatarUrl}
-                  name={displayName}
-                  avatarBg={authUser?.avatarBg || authUser?.avatarColor}
-                  avatarHue={authUser?.avatarHue}
-                  avatarTone={authUser?.avatarTone}
-                  avatarSeed={authUser?.avatarSeed}
-                  avatarStyle={authUser?.avatarStyle}
-                  avatarIcon={authUser?.avatarIcon}
+                  {...avatarPropsFor(authUser, { name: displayName })}
                   frame={equippedFrame}
                   size="sm"
                 />

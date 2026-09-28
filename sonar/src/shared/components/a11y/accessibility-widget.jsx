@@ -108,13 +108,13 @@ export const AccessibilityWidget = () => {
                           key={opt.id}
                           type="button"
                           onClick={() => updateSetting('fontSize', opt.id)}
-                          className={`py-2 px-3 rounded-xl text-xs font-extrabold transition-all cursor-pointer ${
+                          className={`py-2 px-2.5 rounded-xl text-xs font-extrabold transition-all cursor-pointer ${
                             settings.fontSize === opt.id
-                              ? 'bg-[#B80C09] text-white shadow-xs'
+                              ? 'bg-[#B80C09] text-white shadow-md'
                               : 'bg-white dark:bg-[#4B2840] border border-gray-200 dark:border-white/10 text-gray-700 dark:text-gray-200'
                           }`}
                         >
-                          {opt.label}
+                          {ui(opt.label)}
                         </button>
                       ))}
                     </div>
@@ -140,12 +140,12 @@ export const AccessibilityWidget = () => {
                           type="button"
                           onClick={() => updateSetting('lineSpacing', opt.id)}
                           className={`py-2 px-2.5 rounded-xl text-xs font-extrabold transition-all cursor-pointer ${
-                            settings.lineSpacing === opt.id
+                            settings.                            lineSpacing === opt.id
                               ? 'bg-[#B80C09] text-white shadow-xs'
                               : 'bg-white dark:bg-[#4B2840] border border-gray-200 dark:border-white/10 text-gray-700 dark:text-gray-200'
                           }`}
                         >
-                          {opt.label}
+                          {ui(opt.label)}
                         </button>
                       ))}
                     </div>
@@ -292,7 +292,7 @@ export const AccessibilityWidget = () => {
                               : 'bg-white dark:bg-[#4B2840] border border-gray-200 dark:border-white/10 text-gray-700 dark:text-gray-200 hover:border-[#B80C09]/40'
                           }`}
                         >
-                          <span>{opt.label}</span>
+                          <span>{ui(opt.label)}</span>
                           {settings.colorBlindness === opt.id && (
                             <span className="material-symbols-outlined text-[16px]">check</span>
                           )}
@@ -351,7 +351,7 @@ export const AccessibilityWidget = () => {
                         onClick={() =>
                           isSpeaking
                             ? stopSpeaking()
-                            : speak('Bienvenido a SONAR. Esta es una prueba de lectura en voz alta para tus reseñas y análisis líricos.')
+                            : speak(ui('Bienvenido a SONAR. Esta es una prueba de lectura en voz alta para tus reseñas y análisis líricos.'))
                         }
                         className={`px-3 py-1 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center gap-1 ${
                           isSpeaking

@@ -166,5 +166,15 @@
   "shortcuts.media_group": "Reproducción y Control Multimedia",
   "shortcuts.nav_group": "Navegación Rápida",
   "shortcuts.title": "Atajos de Teclado",
-  "shortcuts.subtitle": "Navega de forma rápida y accesible por todo SONAR sin usar el ratón."
+  "shortcuts.subtitle": "Navega de forma rápida y accesible por todo SONAR sin usar el ratón.",
+  "shortcuts.toggleA11yPanel": "Abrir / Cerrar Panel de Accesibilidad",
+  "shortcuts.openShortcutsGuide": "Abrir esta guía de atajos de teclado",
+  "shortcuts.nextInteractive": "Navegar hacia el siguiente elemento interactivo",
+  "shortcuts.previousInteractive": "Navegar hacia el elemento interactivo anterior",
+  "shortcuts.closeModal": "Cerrar cualquier ventana modal o menú abierto",
+  "shortcuts.toggleAudioPreview": "Reproducir / Pausar muestra de audio activa",
+  "shortcuts.toggleVolume": "Silenciar / Restaurar volumen del reproductor",
+  "shortcuts.focusSearch": "Enfocar barra de búsqueda global",
+  "shortcuts.activate": "Activar botón, reproducir tarjeta o entrar a perfil",
+  "shortcuts.jumpToEdge": "Ir al principio o final de la página"
 }

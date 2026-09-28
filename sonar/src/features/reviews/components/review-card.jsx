@@ -3,14 +3,16 @@ import { ReportReview } from './report-review.jsx';
 
 import StarRating from '../../../shared/components/ui/star-rating';
 import Avatar from '../../../shared/components/ui/avatar';
+import { avatarPropsFor } from '../../../shared/components/ui/avatar-props';
 
 export const ReviewCard = ({ review = {} }) => {
   const ui = useUIText();
+  const identity = review.username || `Usuario #${review.userId || ''}`;
   return (
     <article className="p-6 rounded-3xl bg-white dark:bg-[#4B2840] border border-[#e6d5e2] dark:border-white/10 shadow-sm flex flex-col gap-4">
       <div className="flex items-center justify-between gap-4">
         <div className="flex items-center gap-3">
-          <Avatar username={review.username || `User ${review.userId || ''}`} size="md" />
+          <Avatar {...avatarPropsFor(review, { name: identity, avatarSeed: identity })} size="md" />
           <div>
             <h4 className="font-bold text-sm text-[#231123] dark:text-white">
               {review.username || `Usuario #${review.userId}`}

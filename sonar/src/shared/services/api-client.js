@@ -1,5 +1,4 @@
 import { userStatus } from './admin-data.js'
-import { sendReviewToModeration } from './n8n-webhooks.js'
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || '/api/catalog'
 
 export async function apiRequest(endpoint, options = {}) {
@@ -12,12 +11,14 @@ export async function apiRequest(endpoint, options = {}) {
   let response
   try { response = await fetch(`${API_BASE_URL}${path}`, {
     ...options,
+    credentials: 'include',
     headers,
   }) } catch (cause) { throw new Error('Se perdió la conexión con la API. Comprueba que npm run api esté activo y vuelve a intentar.', { cause }) }
 
   if (!response.ok) {
+    const detail = await response.json().catch(() => null)
     throw new Error(
-      `Error HTTP ${response.status}${response.statusText ? ` (${response.statusText})` : ''}: ${options.method || 'GET'} ${path}`,
+      detail?.error || `Error HTTP ${response.status}${response.statusText ? ` (${response.statusText})` : ''}: ${options.method || 'GET'} ${path}`,
     )
   }
 
@@ -165,52 +166,13 @@ export function getPendingReviews() {
 }
 
 export async function createReview(review) {
-  let author = null
-  try {
-    author = await getUserById(review.userId)
-  } catch {
-    author = null
-  }
-  if (author && userStatus(author) !== 'active') {
-    throw new Error('Tu cuenta tiene una sanción activa y no puede publicar reseñas.')
-  }
-
-  const authorName = author?.username || author?.name || review.userName || 'Usuario Sonar'
-  const createdReview = await apiRequest('/reviews', {
+  const author = await apiRequest(`/users/${encodeURIComponent(review.userId)}`)
+  if (userStatus(author) !== 'active') throw new Error('Tu cuenta tiene una sanción activa y no puede publicar reseñas.')
+  const savedReview = await apiRequest('/reviews', {
     method: 'POST',
-    body: JSON.stringify({
-      ...review,
-      userName: authorName,
-      status: 'pending_moderation',
-      createdAt: review.createdAt || new Date().toISOString(),
-    }),
-  }).catch(() => ({
-    id: review.id || `rev-${Date.now()}`,
-    ...review,
-    userName: authorName,
-    status: 'pending_moderation',
-    createdAt: review.createdAt || new Date().toISOString(),
-  }))
-
-  try {
-    sendReviewToModeration(createdReview).then(async (modResult) => {
-      if (modResult && modResult.aiFlagged && createdReview.id) {
-        await updateReview(createdReview.id, {
-          aiFlagged: true,
-          severity: modResult.severity || 'medium',
-          moderationReason: modResult.reason || 'Marcada automáticamente por IA',
-          flaggedWords: modResult.flaggedWords || [],
-        }).catch(() => {})
-        if (typeof window !== 'undefined') {
-          window.dispatchEvent(new CustomEvent('sonar:reports-updated'))
-        }
-      }
-    }).catch(() => {})
-  } catch {
-    /* error de envío a n8n ignorado */
-  }
-
-  return createdReview
+    body: JSON.stringify({ ...review, userName: author.username, status: 'pending_moderation', createdAt: review.createdAt || new Date().toISOString() }),
+  })
+  return savedReview
 }
 
 export async function updateReview(reviewId, changes) {

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Avatar } from '../../../shared/components/ui/avatar';
+import { avatarPropsFor } from '../../../shared/components/ui/avatar-props';
 import { useRouter } from '../../../shared/routing/app-router';
 import { socialService } from '../../../shared/services/social-service';
 import { useAuth } from '../../../shared/context/auth-context';
@@ -145,14 +146,7 @@ export const ProfileHeader = ({
             {/* Avatar con borde flotante y Marco de Boutique */}
             <div className={`shrink-0 rounded-full bg-white dark:bg-[#231123] transition-all duration-300 ${frameClass}`}>
               <Avatar
-                src={currentUser.avatarUrl}
-                name={displayName}
-                avatarBg={currentUser.avatarBg || currentUser.avatarColor}
-                avatarHue={currentUser.avatarHue}
-                avatarTone={currentUser.avatarTone}
-                avatarSeed={currentUser.avatarSeed}
-                avatarStyle={currentUser.avatarStyle}
-                avatarIcon={currentUser.avatarIcon}
+                {...avatarPropsFor(currentUser)}
                 size="2xl"
                 className="w-24 h-24 sm:w-28 sm:h-28"
               />

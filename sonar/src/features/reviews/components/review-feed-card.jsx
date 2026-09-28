@@ -7,6 +7,7 @@ import { usePlayer } from '../../../shared/context/player-context';
 import { interactionsService } from '../../../shared/services/interactions-service';
 import { socialService } from '../../../shared/services/social-service';
 import { Avatar } from '../../../shared/components/ui/avatar';
+import { avatarPropsFor } from '../../../shared/components/ui/avatar-props';
 import CommentSection from './comment-section';
 import LikeButton from '../../../shared/components/ui/like-button';
 import { ReportModal } from '../../../shared/components/ui/report-modal';
@@ -221,9 +222,7 @@ export const ReviewFeedCard = ({
       <div className="flex items-center justify-between gap-3">
         <div className="flex items-center gap-3">
           <Avatar
-            name={review.userName}
-            src={review.avatarUrl}
-            avatarBg={review.avatarBg}
+            {...avatarPropsFor(review)}
             size="md"
             className="w-10 h-10 ring-2 ring-[#e6d5e2]/60 dark:ring-white/15"
           />

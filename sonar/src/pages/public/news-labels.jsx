@@ -62,7 +62,7 @@ export function NewsLabels({ labels, articles, editions, releases, selected, onS
 
                 <p className="sonar-label-card__meta">
                   {label.country}
-                  {label.founded ? ` · Desde ${label.founded}` : ''}
+                  {label.founded ? ui(' · Desde {{value0}}', { value0: label.founded }) : ''}
                 </p>
 
                 {label.description && <p className="sonar-label-card__text">{label.description}</p>}

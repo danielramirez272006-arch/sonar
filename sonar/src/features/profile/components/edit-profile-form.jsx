@@ -29,6 +29,7 @@ import {
 import Input from '../../../shared/components/ui/input';
 import Button from '../../../shared/components/ui/button';
 import Avatar from '../../../shared/components/ui/avatar';
+import { avatarPropsFor } from '../../../shared/components/ui/avatar-props';
 import { BlobatarAvatar } from '../../../shared/components/ui/blobatar-avatar';
 import { GENRE_OPTIONS } from '../../../shared/services/recommendations-service';
 import { useAuth } from '../../../shared/context/auth-context';
@@ -397,12 +398,7 @@ export const EditProfileForm = ({ initialData = {}, onSave = () => {} }) => {
             <div className="flex flex-col sm:flex-row items-center justify-between gap-4 border-b border-[#e6d5e2] dark:border-white/10 pb-4">
               <div className="flex items-center gap-4">
                 <Avatar
-                  name={formData.username || 'Usuario'}
-                  avatarBg={formData.avatarBg}
-                  avatarStyle={formData.avatarStyle}
-                  avatarSeed={formData.avatarSeed}
-                  avatarIcon={formData.avatarIcon}
-                  src={formData.avatarUrl}
+                  {...avatarPropsFor(formData, { name: formData.username || 'Usuario' })}
                   size="xl"
                   className="shrink-0 shadow-lg ring-4 ring-white dark:ring-white/10"
                 />
@@ -566,7 +562,7 @@ export const EditProfileForm = ({ initialData = {}, onSave = () => {} }) => {
                         : 'bg-white dark:bg-[#4B2840] border-[#e6d5e2] dark:border-white/10 text-[#5c435a] dark:text-gray-200'
                     }`}
                   >
-                    <BlobatarAvatar name={preset.seed} size={28} />
+                    <BlobatarAvatar name={preset.seed} hue={formData.avatarHue} tone={formData.avatarTone} avatarBg={formData.avatarBg} size={28} />
                     <span className="truncate">{preset.name}</span>
                   </button>
                 ))}

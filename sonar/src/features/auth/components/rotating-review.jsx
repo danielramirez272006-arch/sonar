@@ -2,6 +2,7 @@ import { useUIText } from '../../../shared/i18n/use-ui-text.js';
 import { useEffect, useState } from 'react';
 import { motion, useReducedMotion } from 'framer-motion';
 import { BlobatarAvatar } from '../../../shared/components/ui/blobatar-avatar';
+import { avatarPropsFor } from '../../../shared/components/ui/avatar-props';
 
 const reviews = [
   {
@@ -90,7 +91,7 @@ export const RotatingReview = () => {
               <div className="flex items-center justify-between gap-3">
                 <div className="flex items-center gap-3 min-w-0">
                   <div className="relative w-11 h-11 shrink-0 rounded-full overflow-hidden border border-purple-200/60 shadow-xs flex items-center justify-center bg-purple-50">
-                    <BlobatarAvatar name={review.username} active={isActive} size={44} />
+                    <BlobatarAvatar {...avatarPropsFor(review)} active={isActive} size={44} />
                   </div>
 
                   <div className="min-w-0 flex flex-col">

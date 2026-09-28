@@ -9,6 +9,7 @@ import { usePlayer } from '../../shared/context/player-context';
 import { useTranslation } from 'react-i18next';
 import { useLanguage } from '../../shared/context/language-context';
 import { Avatar } from '../../shared/components/ui/avatar';
+import { avatarPropsFor } from '../../shared/components/ui/avatar-props';
 import { getReviews, getUsers, createReview } from '../../shared/services/api-client';
 import { searchAlbums, DEFAULT_DEEZER_ALBUMS } from '../../shared/services/deezer-service';
 import { interactionsService } from '../../shared/services/interactions-service';
@@ -739,8 +740,7 @@ export const CommunityPage = () => {
                     >
                       <div className="flex items-center gap-3 min-w-0">
                         <Avatar
-                          name={fUser.name}
-                          avatarBg={fUser.avatarBg}
+                          {...avatarPropsFor(fUser)}
                           size="md"
                           className="w-10 h-10 ring-2 ring-[#e6d5e2]/60 dark:ring-white/15"
                         />

@@ -1083,11 +1083,10 @@ export const RewardsStoreTab = () => {
                     <div className={`w-12 h-12 rounded-2xl bg-gradient-to-tr ${item.color} flex items-center justify-center text-white shadow-lg`}>
                       <span className="material-symbols-outlined text-2xl">{item.icon}</span>
                     </div>
-
                     <div className="flex items-center gap-1.5">
                       {item.badge && (
                         <span className="px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-400 text-[10px] font-bold border border-amber-500/20">
-                          {item.badge}
+                          {ui(item.badge)}
                         </span>
                       )}
                       <button
@@ -1100,6 +1099,7 @@ export const RewardsStoreTab = () => {
                       >
                         <span className="material-symbols-outlined text-sm">visibility</span>
                       </button>
+                    </div>
                     </div>
                   </div>
 

@@ -2,6 +2,7 @@
  * @vitest-environment jsdom
  */
 import React from 'react';
+import { authServerFetch } from './helpers/auth-server';
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import { render, screen, fireEvent, waitFor, cleanup, act } from '@testing-library/react';
 import { isExplicitTrack } from '../src/shared/services/deezer-service';
@@ -11,6 +12,7 @@ import { RegisterForm } from '../src/features/auth/components/register-form';
 
 describe('Control Parental & Filtro de Contenido Sonar', () => {
   beforeEach(() => {
+    vi.stubGlobal('fetch', authServerFetch());
     window.localStorage.clear();
     global.ResizeObserver = class ResizeObserver {
       observe() {}
@@ -30,7 +32,7 @@ describe('Control Parental & Filtro de Contenido Sonar', () => {
     vi.clearAllMocks();
   });
 
-  afterEach(cleanup);
+  afterEach(() => { cleanup(); vi.unstubAllGlobals(); });
 
   describe('1. Detección de Pistas Explícitas (isExplicitTrack)', () => {
     it('detecta pistas explícitas mediante flag booleano o código Deezer', () => {

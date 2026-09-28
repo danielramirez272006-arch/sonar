@@ -418,6 +418,8 @@ export async function notifyLoginAlertWebhook(params = {}, legacyUsername = '', 
   }
 }
 
+export { askSonarAI } from './sonar-ai-service.js'
+
 export default {
   sendReviewToModeration,
   notifyReviewCreated,
@@ -427,5 +429,6 @@ export default {
   notifyLoginAlertWebhook,
   subscribeNewsletterWebhook,
 }
+
 
 

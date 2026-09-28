@@ -149,7 +149,7 @@ const FeaturedReviewCard = ({ review }) => {
                 >
                   {review.badgeIcon}
                 </span>
-                <span>{review.badge}</span>
+                <span>{ui(review.badge)}</span>
               </span>
             </div>
           </div>

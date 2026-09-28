@@ -1,0 +1,172 @@
+{
+  "name": "SONAR - Asistente IA de Plataforma (AI Agent + Google Gemini)",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "sonar-ai-assistant",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "sonar-ai-webhook-001",
+      "name": "Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        200,
+        300
+      ],
+      "webhookId": "sonar-ai-assistant"
+    },
+    {
+      "parameters": {
+        "jsCode": "const inputData = $input.first().json || {};\nconst body = inputData.body || inputData;\nconst message = (body.message || 'Analizar actividad general, usuarios y moderación de comentarios de Sonar').trim();\nconst user = body.user || { name: 'Administrador', role: 'admin' };\nconst context = body.context || {};\n\nconst userPrompt = `Consulta del Administrador (${user.name} - Rol: ${user.role}):\n\"${message}\"\n\n--- DATOS DE LA PLATAFORMA SONAR ---\nUsuarios (${(context.users || []).length}): ${JSON.stringify(context.users || [])}\nReseñas (${(context.reviews || []).length}): ${JSON.stringify(context.reviews || [])}\nLanzamientos destacados (${(context.releases || []).length}): ${JSON.stringify(context.releases || [])}\nSellos discográficos (${(context.labels || []).length}): ${JSON.stringify(context.labels || [])}\nEdiciones de Vinilo (${(context.vinyls || []).length}): ${JSON.stringify(context.vinyls || [])}`;\n\nreturn [{\n  json: {\n    message,\n    user,\n    promptText: userPrompt,\n    timestamp: new Date().toISOString()\n  }\n}];"
+      },
+      "id": "sonar-ai-prep-004",
+      "name": "Edit Fields / Set",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        480,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.promptText }}",
+        "options": {
+          "systemMessage": "Eres Sonar AI, un asistente inteligente integrado en una plataforma musical llamada Sonar.\nTu función es ayudar a administradores a comprender la información de la plataforma.\nPuedes analizar usuarios, reseñas, lanzamientos musicales, sellos discográficos y vinilos.\nDebes basar tus respuestas únicamente en los datos recibidos.\nNo inventes estadísticas si los datos necesarios no están disponibles.\nCuando analices información:\nResume primero el hallazgo principal.\nIdentifica patrones importantes.\nSeñala posibles anomalías o insultos/comentarios subidos de tono en reseñas.\nOfrece sugerencias concretas cuando sean útiles.\nUsa lenguaje claro y breve.\nSi una reseña parece sospechosa o contiene insultos, explica qué características provocaron esa evaluación y agrégala a las señales para moderación.\nNo tomes decisiones administrativas irreversibles.\nTu función es analizar y recomendar; el administrador toma la decisión final."
+        }
+      },
+      "id": "sonar-ai-agent-005",
+      "name": "AI Agent",
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.7,
+      "position": [
+        720,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "modelName": "models/gemini-1.5-flash",
+        "options": {
+          "temperature": 0.2
+        }
+      },
+      "id": "sonar-ai-model-gemini-006",
+      "name": "Google Gemini Chat Model",
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        720,
+        500
+      ],
+      "credentials": {
+        "googlePalmApi": {
+          "id": "google-gemini-credentials",
+          "name": "Google Gemini API Key"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const response = $input.first().json;\nlet analysisText = '';\n\ntry {\n  if (response.output) {\n    analysisText = response.output;\n  } else if (response.text) {\n    analysisText = response.text;\n  } else {\n    analysisText = typeof response === 'string' ? response : JSON.stringify(response);\n  }\n} catch (err) {\n  analysisText = 'No fue posible extraer la respuesta del AI Agent.';\n}\n\nreturn [{\n  json: {\n    success: true,\n    message: 'Respuesta generada por la IA',\n    analysis: analysisText,\n    timestamp: new Date().toISOString()\n  }\n}];"
+      },
+      "id": "sonar-ai-parse-007",
+      "name": "Code / Edit Fields",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        960,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={\n  \"success\": {{ $json.success }},\n  \"message\": {{ JSON.stringify($json.message) }},\n  \"analysis\": {{ JSON.stringify($json.analysis) }},\n  \"timestamp\": {{ JSON.stringify($json.timestamp) }}\n}",
+        "options": {
+          "responseCode": 200
+        }
+      },
+      "id": "sonar-ai-resp-success-008",
+      "name": "Respond to Webhook",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [
+        1200,
+        300
+      ]
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields / Set",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields / Set": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Code / Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code / Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "sonar-ai-assistant-agent-gemini-v4",
+  "meta": {
+    "instanceId": "sonar-n8n-ai-agent-instance"
+  },
+  "id": "sonar-ai-assistant-flow",
+  "tags": []
+}

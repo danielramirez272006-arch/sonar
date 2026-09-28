@@ -166,5 +166,15 @@
   "shortcuts.media_group": "Playback and media controls",
   "shortcuts.nav_group": "Quick navigation",
   "shortcuts.title": "Keyboard shortcuts",
-  "shortcuts.subtitle": "Navigate SONAR quickly and accessibly without a mouse."
+  "shortcuts.subtitle": "Navigate SONAR quickly and accessibly without a mouse.",
+  "shortcuts.toggleA11yPanel": "Open / Close Accessibility Panel",
+  "shortcuts.openShortcutsGuide": "Open this keyboard shortcuts guide",
+  "shortcuts.nextInteractive": "Move to the next interactive element",
+  "shortcuts.previousInteractive": "Move to the previous interactive element",
+  "shortcuts.closeModal": "Close any open modal window or menu",
+  "shortcuts.toggleAudioPreview": "Play / Pause the active audio preview",
+  "shortcuts.toggleVolume": "Mute / Restore player volume",
+  "shortcuts.focusSearch": "Focus the global search bar",
+  "shortcuts.activate": "Activate button, play card or open profile",
+  "shortcuts.jumpToEdge": "Go to the top or bottom of the page"
 }

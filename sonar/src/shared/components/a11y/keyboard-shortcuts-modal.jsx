@@ -15,26 +15,26 @@ export const KeyboardShortcutsModal = () => {
     {
       category: t('shortcuts.a11y_group', 'Accesibilidad y Asistencia'),
       items: [
-        { keys: ['Alt', 'A'], description: 'Abrir / Cerrar Panel de Accesibilidad' },
-        { keys: ['?'], description: 'Abrir esta guía de atajos de teclado' },
-        { keys: ['Tab'], description: 'Navegar hacia el siguiente elemento interactivo' },
-        { keys: ['Shift', 'Tab'], description: 'Navegar hacia el elemento interactivo anterior' },
-        { keys: ['Esc'], description: 'Cerrar cualquier ventana modal o menú abierto' },
+        { keys: ['Alt', 'A'], description: t('shortcuts.toggleA11yPanel', 'Abrir / Cerrar Panel de Accesibilidad') },
+        { keys: ['?'], description: t('shortcuts.openShortcutsGuide', 'Abrir esta guía de atajos de teclado') },
+        { keys: ['Tab'], description: t('shortcuts.nextInteractive', 'Navegar hacia el siguiente elemento interactivo') },
+        { keys: ['Shift', 'Tab'], description: t('shortcuts.previousInteractive', 'Navegar hacia el elemento interactivo anterior') },
+        { keys: ['Esc'], description: t('shortcuts.closeModal', 'Cerrar cualquier ventana modal o menú abierto') },
       ],
     },
     {
       category: t('shortcuts.media_group', 'Reproducción y Control Multimedia'),
       items: [
-        { keys: ['Espacio'], description: 'Reproducir / Pausar muestra de audio activa' },
-        { keys: ['M'], description: 'Silenciar / Restaurar volumen del reproductor' },
-        { keys: ['Ctrl', 'K'], description: 'Enfocar barra de búsqueda global' },
+        { keys: ['Espacio'], description: t('shortcuts.toggleAudioPreview', 'Reproducir / Pausar muestra de audio activa') },
+        { keys: ['M'], description: t('shortcuts.toggleVolume', 'Silenciar / Restaurar volumen del reproductor') },
+        { keys: ['Ctrl', 'K'], description: t('shortcuts.focusSearch', 'Enfocar barra de búsqueda global') },
       ],
     },
     {
       category: t('shortcuts.nav_group', 'Navegación Rápida'),
       items: [
-        { keys: ['Enter'], description: 'Activar botón, reproducir tarjeta o entrar a perfil' },
-        { keys: ['Inicio / Fin'], description: 'Ir al principio o final de la página' },
+        { keys: ['Enter'], description: t('shortcuts.activate', 'Activar botón, reproducir tarjeta o entrar a perfil') },
+        { keys: ['Inicio / Fin'], description: t('shortcuts.jumpToEdge', 'Ir al principio o final de la página') },
       ],
     },
   ];

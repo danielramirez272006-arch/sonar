@@ -9,6 +9,9 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url))
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [react(), tailwindcss()],
+  optimizeDeps: {
+    include: ['react-i18next', 'i18next', 'i18next-browser-languagedetector'],
+  },
   preview: {
     proxy: {
       '/api/catalog': {
@@ -29,6 +32,8 @@ export default defineConfig({
     },
   },
   server: {
+    port: 5173,
+    strictPort: true,
     // JSON Server writes these files on every mutation. They are runtime data,
     // not frontend source files: watching them resets the open admin profile.
     watch: {

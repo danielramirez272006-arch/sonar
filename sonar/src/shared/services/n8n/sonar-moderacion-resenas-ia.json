@@ -1,0 +1,172 @@
+{
+  "name": "SONAR - Advertencia por Mal Comportamiento (AI Review Warning)",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "sonar-review-warning",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "warn-webhook-001",
+      "name": "Webhook Moderación Reseñas",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        200,
+        300
+      ],
+      "webhookId": "sonar-review-warning"
+    },
+    {
+      "parameters": {
+        "jsCode": "const inputData = $input.first().json || {};\nconst body = inputData.body || inputData;\n\nconst email = (body.email || body.user?.email || 'admin@sonar.com').trim().toLowerCase();\nconst username = body.username || body.user?.name || body.userName || 'Usuario Sonar';\nconst reviewId = body.reviewId || body.id || 'N/A';\nconst content = body.content || body.message || 'Sin texto de comentario';\nconst reason = body.reason || 'Lenguaje o contenido subido de tono detectado por IA';\nconst timestamp = body.timestamp || new Date().toISOString();\n\nconst promptText = `Evalúa y redacta una advertencia formal para el usuario ${username} sobre el comentario: \"${content}\". El motivo detectado es: ${reason}.`;\n\nreturn [{\n  json: {\n    email,\n    username,\n    reviewId,\n    content,\n    reason,\n    promptText,\n    timestamp,\n    subject: `⚠️ Aviso de Seguridad y Moderación en SONAR - Cuenta en revisión`\n  }\n}];"
+      },
+      "id": "warn-prep-004",
+      "name": "Formatear Datos de Entrada",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        480,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.promptText }}",
+        "options": {
+          "systemMessage": "Eres Sonar AI, el sistema de moderación de Sonar. Analiza si el comentario contiene insultos, lenguaje subido de tono, agresión o spam. Explica claramente la falta detectada y genera el reporte de conducta."
+        }
+      },
+      "id": "warn-agent-005",
+      "name": "AI Agent Moderación",
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.7,
+      "position": [
+        720,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "modelName": "models/gemini-1.5-flash",
+        "options": {
+          "temperature": 0.2
+        }
+      },
+      "id": "warn-model-gemini-006",
+      "name": "Google Gemini Model",
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        720,
+        500
+      ],
+      "credentials": {
+        "googlePalmApi": {
+          "id": "google-gemini-credentials",
+          "name": "Google Gemini API Key"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const response = $input.first().json;\nlet analysisText = '';\n\ntry {\n  if (response.output) {\n    analysisText = response.output;\n  } else if (response.text) {\n    analysisText = response.text;\n  } else {\n    analysisText = typeof response === 'string' ? response : JSON.stringify(response);\n  }\n} catch (err) {\n  analysisText = 'Análisis de moderación completado por IA.';\n}\n\nreturn [{\n  json: {\n    success: true,\n    aiFlagged: true,\n    message: 'Reseña procesada por IA y enviada a moderación del administrador.',\n    analysis: analysisText,\n    timestamp: new Date().toISOString()\n  }\n}];"
+      },
+      "id": "warn-parse-007",
+      "name": "Procesar Respuesta IA",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        960,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={\n  \"success\": {{ $json.success }},\n  \"aiFlagged\": {{ $json.aiFlagged }},\n  \"message\": {{ JSON.stringify($json.message) }},\n  \"analysis\": {{ JSON.stringify($json.analysis) }},\n  \"timestamp\": {{ JSON.stringify($json.timestamp) }}\n}",
+        "options": {
+          "responseCode": 200
+        }
+      },
+      "id": "warn-resp-008",
+      "name": "Respond to Webhook",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [
+        1200,
+        300
+      ]
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Webhook Moderación Reseñas": {
+      "main": [
+        [
+          {
+            "node": "Formatear Datos de Entrada",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Formatear Datos de Entrada": {
+      "main": [
+        [
+          {
+            "node": "AI Agent Moderación",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent Moderación",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent Moderación": {
+      "main": [
+        [
+          {
+            "node": "Procesar Respuesta IA",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Procesar Respuesta IA": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "sonar-moderacion-resenas-ia-v2",
+  "meta": {
+    "instanceId": "sonar-n8n-warning-instance"
+  },
+  "id": "sonar-moderacion-resenas-ia-flow",
+  "tags": []
+}
