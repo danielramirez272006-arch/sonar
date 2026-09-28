@@ -43,7 +43,7 @@ export function SonarAiSommelier() {
   const [isLoading, setIsLoading] = useState(false)
   const [sessionId] = useState(() => 'sonar-session-' + Date.now().toString(36))
 
-  const { playTrack } = usePlayer()
+  const { playTrack, pauseTrack, isPlaying, currentTrack } = usePlayer()
   const { user } = useAuth()
 
   const messagesEndRef = useRef(null)
@@ -60,9 +60,31 @@ export function SonarAiSommelier() {
     }
   }, [isOpen, messages])
 
+  const handlePlaySuggestion = async (suggestion) => {
+    if (!playTrack || !suggestion) return
+    try {
+      playTrack({
+        id: suggestion.id || 'sommelier-' + (suggestion.title || 'track').replace(/\s+/g, '-').toLowerCase(),
+        title: suggestion.title,
+        artist: suggestion.artist,
+        album: suggestion.album || suggestion.title,
+        cover: suggestion.cover || 'https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=600&auto=format&fit=crop&q=80',
+        preview: suggestion.preview || null,
+        previewUrl: suggestion.previewUrl || null,
+      })
+    } catch {
+      /* ignore */
+    }
+  }
+
   const handleSend = async (textToSend) => {
     const text = (textToSend || inputValue).trim()
     if (!text || isLoading) return
+
+    // Soporte directo para pausar
+    if (/^(?:pausa|pausar|stop|detener|silencio)\b/i.test(text)) {
+      if (pauseTrack) pauseTrack()
+    }
 
     const userMsg = {
       id: 'usr-' + Date.now(),
@@ -88,40 +110,33 @@ export function SonarAiSommelier() {
         suggestions: response.suggestions || [],
         quickReplies: response.quickReplies || [],
         source: response.source,
+        autoPlay: Boolean(response.autoPlay),
         timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
       }
 
       setMessages((prev) => [...prev, botMsg])
+
+      // Auto-reproducción si el usuario pidió reproducir o el agente activó autoPlay
+      if (response.autoPlay && response.suggestions && response.suggestions.length > 0) {
+        handlePlaySuggestion(response.suggestions[0])
+      }
     } catch {
       setMessages((prev) => [
         ...prev,
         {
           id: 'bot-err-' + Date.now(),
           sender: 'bot',
-          text: 'Disculpa, ocurrió un breve retraso al conectar con el Sommelier. ¿Podrías intentar formular tu pregunta nuevamente?',
-          quickReplies: ['💿 Recomiéndame Jazz japonés', '🎸 Álbumes con mejor masterización'],
+          text: 'Disculpa, ocurrió un breve retraso al conectar con Sonaria. ¿Podrías intentar formular tu solicitud nuevamente?',
+          quickReplies: [
+            '▶️ Reproduce Steely Dan',
+            '▶️ Pon Daft Punk',
+            '🪙 ¿Cómo ganar Sonar Coins?',
+          ],
           timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
         },
       ])
     } finally {
       setIsLoading(false)
-    }
-  }
-
-  const handlePlaySuggestion = async (suggestion) => {
-    if (!playTrack) return
-    try {
-      // Simular reproducción con motor de audio Hi-Fi
-      playTrack({
-        id: 'sommelier-' + Date.now(),
-        title: suggestion.title,
-        artist: suggestion.artist,
-        album: suggestion.title,
-        cover: 'https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=600&auto=format&fit=crop&q=80',
-        audioSrc: 'https://cdn.freesound.org/previews/612/612644_5674468-lq.mp3',
-      })
-    } catch {
-      /* ignore */
     }
   }
 
@@ -242,47 +257,80 @@ export function SonarAiSommelier() {
                         <span className="text-[10px] font-bold tracking-wider uppercase text-[#ff4d4a] block">
                           💿 Recomendaciones del Sommelier:
                         </span>
-                        {msg.suggestions.map((sug, idx) => (
-                          <div
-                            key={idx}
-                            className="p-2.5 rounded-xl bg-[#231123]/90 border border-white/10 flex flex-col gap-2 hover:border-[#B80C09]/50 transition-colors"
-                          >
-                            <div className="flex items-start justify-between gap-2">
-                              <div>
-                                <strong className="text-xs text-white font-bold block">{sug.title}</strong>
-                                <small className="text-[11px] text-[#DCDCDD]/70 block">
-                                  {sug.artist} {sug.year ? `· ${sug.year}` : ''} {sug.genre ? `· ${sug.genre}` : ''}
-                                </small>
+                        {msg.suggestions.map((sug, idx) => {
+                          const isThisTrackPlaying =
+                            isPlaying &&
+                            currentTrack &&
+                            (String(currentTrack.title || '').toLowerCase().includes(String(sug.title || '').toLowerCase()) ||
+                              String(sug.title || '').toLowerCase().includes(String(currentTrack.title || '').toLowerCase()))
+
+                          return (
+                            <div
+                              key={idx}
+                              className={`p-2.5 rounded-xl bg-[#231123]/90 border transition-all flex flex-col gap-2 ${
+                                isThisTrackPlaying
+                                  ? 'border-[#ff4d4a] shadow-lg shadow-[#ff4d4a]/20 bg-[#2e122b]'
+                                  : 'border-white/10 hover:border-[#B80C09]/50'
+                              }`}
+                            >
+                              <div className="flex items-start justify-between gap-2">
+                                <div>
+                                  <strong className="text-xs text-white font-bold block flex items-center gap-1.5">
+                                    {sug.title}
+                                    {isThisTrackPlaying && (
+                                      <span className="flex items-center gap-0.5 ml-1">
+                                        <span className="w-1 h-3 bg-[#ff4d4a] animate-pulse"></span>
+                                        <span className="w-1 h-2 bg-[#ff4d4a] animate-pulse [animation-delay:0.2s]"></span>
+                                        <span className="w-1 h-4 bg-[#ff4d4a] animate-pulse [animation-delay:0.4s]"></span>
+                                      </span>
+                                    )}
+                                  </strong>
+                                  <small className="text-[11px] text-[#DCDCDD]/70 block">
+                                    {sug.artist} {sug.year ? `· ${sug.year}` : ''} {sug.genre ? `· ${sug.genre}` : ''}
+                                  </small>
+                                </div>
+                                <span
+                                  className={`px-1.5 py-0.5 rounded text-[9px] font-bold whitespace-nowrap ${
+                                    isThisTrackPlaying
+                                      ? 'bg-[#B80C09] text-white animate-pulse'
+                                      : 'bg-[#003844] text-white'
+                                  }`}
+                                >
+                                  {isThisTrackPlaying ? 'Sonando Ahora' : 'Hi-Fi Master'}
+                                </span>
                               </div>
-                              <span className="px-1.5 py-0.5 rounded text-[9px] font-bold bg-[#003844] text-white whitespace-nowrap">
-                                Hi-Fi Master
-                              </span>
-                            </div>
 
-                            {sug.reason && (
-                              <p className="text-[11px] text-[#DCDCDD]/80 italic bg-[#1a0c1a]/60 p-2 rounded-lg border-l-2 border-[#B80C09]">
-                                «{sug.reason}»
-                              </p>
-                            )}
+                              {sug.reason && (
+                                <p className="text-[11px] text-[#DCDCDD]/80 italic bg-[#1a0c1a]/60 p-2 rounded-lg border-l-2 border-[#B80C09]">
+                                  «{sug.reason}»
+                                </p>
+                              )}
 
-                            <div className="flex items-center gap-2 pt-1">
-                              <button
-                                onClick={() => handlePlaySuggestion(sug)}
-                                className="flex-1 flex items-center justify-center gap-1 py-1.5 px-2 rounded-lg bg-[#003844] hover:bg-[#005161] text-white font-semibold text-[11px] transition-colors cursor-pointer"
-                              >
-                                <span className="material-symbols-outlined text-[14px]">play_arrow</span>
-                                <span>Preescucha</span>
-                              </button>
-                              <button
-                                onClick={() => handleOpenReview(sug)}
-                                className="flex-1 flex items-center justify-center gap-1 py-1.5 px-2 rounded-lg bg-white/10 hover:bg-white/20 text-[#DCDCDD] font-semibold text-[11px] transition-colors cursor-pointer"
-                              >
-                                <span className="material-symbols-outlined text-[14px]">rate_review</span>
-                                <span>Reseñar</span>
-                              </button>
+                              <div className="flex items-center gap-2 pt-1">
+                                <button
+                                  onClick={() => (isThisTrackPlaying && pauseTrack ? pauseTrack() : handlePlaySuggestion(sug))}
+                                  className={`flex-1 flex items-center justify-center gap-1 py-1.5 px-2 rounded-lg font-semibold text-[11px] transition-colors cursor-pointer text-white ${
+                                    isThisTrackPlaying
+                                      ? 'bg-[#B80C09] hover:bg-[#8C0A07]'
+                                      : 'bg-[#003844] hover:bg-[#005161]'
+                                  }`}
+                                >
+                                  <span className="material-symbols-outlined text-[14px]">
+                                    {isThisTrackPlaying ? 'pause' : 'play_arrow'}
+                                  </span>
+                                  <span>{isThisTrackPlaying ? 'Pausar' : 'Reproducir'}</span>
+                                </button>
+                                <button
+                                  onClick={() => handleOpenReview(sug)}
+                                  className="flex-1 flex items-center justify-center gap-1 py-1.5 px-2 rounded-lg bg-white/10 hover:bg-white/20 text-[#DCDCDD] font-semibold text-[11px] transition-colors cursor-pointer"
+                                >
+                                  <span className="material-symbols-outlined text-[14px]">rate_review</span>
+                                  <span>Reseñar</span>
+                                </button>
+                              </div>
                             </div>
-                          </div>
-                        ))}
+                          )
+                        })}
                       </div>
                     )}
                   </div>

@@ -143,6 +143,10 @@ export async function sendChatMessage(message, sessionId = 'default-session', co
     throw new Error('El mensaje no puede estar vacío.')
   }
 
+  const isPlaybackCommand =
+    /^(?:reproduce|reproducir|pon|ponme|play|toca|escuchar|dale play|quiero escuchar)\b/i.test(cleanMsg) ||
+    /(?:reproducir|reproduceme|tocar|ponerme)\b/i.test(cleanMsg)
+
   // 1. Intentar llamar al Webhook de n8n
   for (const endpoint of DEFAULT_ENDPOINTS) {
     try {
@@ -177,6 +181,7 @@ export async function sendChatMessage(message, sessionId = 'default-session', co
               '💿 Explorar Catálogo Hi-Fi',
               '🔒 ¿Cómo activar el Control Parental?',
             ],
+            autoPlay: Boolean(data.autoPlay || isPlaybackCommand),
             sessionId: data.sessionId || sessionId,
             timestamp: data.timestamp || new Date().toISOString(),
           }
@@ -193,6 +198,61 @@ export async function sendChatMessage(message, sessionId = 'default-session', co
   await new Promise((r) => setTimeout(r, 350))
 
   const lower = cleanMsg.toLowerCase()
+
+  // Si es un comando directo de reproducción
+  if (isPlaybackCommand) {
+    let playTitle = 'Aja'
+    let playArtist = 'Steely Dan'
+    let playGenre = 'Jazz Rock / Hi-Fi'
+    let playReason = 'Iniciando reproducción de alta fidelidad en el reproductor de SONAR.'
+
+    if (lower.includes('daft punk') || lower.includes('random access') || lower.includes('discovery')) {
+      playTitle = 'Random Access Memories'
+      playArtist = 'Daft Punk'
+      playGenre = 'Nu-Disco / Hi-Fi'
+    } else if (lower.includes('pink floyd') || lower.includes('dark side') || lower.includes('moon')) {
+      playTitle = 'The Dark Side of the Moon'
+      playArtist = 'Pink Floyd'
+      playGenre = 'Progressive Rock'
+    } else if (lower.includes('radiohead') || lower.includes('in rainbows') || lower.includes('kid a')) {
+      playTitle = 'In Rainbows'
+      playArtist = 'Radiohead'
+      playGenre = 'Art Rock'
+    } else if (lower.includes('jazz') || lower.includes('fukui') || lower.includes('scenery')) {
+      playTitle = 'Scenery'
+      playArtist = 'Ryo Fukui'
+      playGenre = 'Modal Jazz'
+    } else if (lower.includes('casiopea') || lower.includes('mint jams') || lower.includes('fusion')) {
+      playTitle = 'Mint Jams'
+      playArtist = 'Casiopea'
+      playGenre = 'Jazz Fusion'
+    } else if (lower.includes('kendrick') || lower.includes('butterfly') || lower.includes('hip hop')) {
+      playTitle = 'To Pimp a Butterfly'
+      playArtist = 'Kendrick Lamar'
+      playGenre = 'Conscious Hip-Hop'
+    }
+
+    return {
+      success: true,
+      source: 'local-sommelier',
+      message: `▶️ ¡Con gusto! Iniciando la reproducción de **${playTitle}** de **${playArtist}** en el reproductor de SONAR. Disfruta de la calidad de audio Hi-Fi y suma **+5 Sonar Coins**.`,
+      suggestions: [
+        {
+          title: playTitle,
+          artist: playArtist,
+          year: 'Master Hi-Fi',
+          genre: playGenre,
+          reason: playReason,
+          deezerQuery: `${playArtist} ${playTitle}`,
+        },
+      ],
+      quickReplies: ['⏸️ Pausar música', '⭐ Escribir reseña de este álbum', '🪙 Ver mis Sonar Coins'],
+      autoPlay: true,
+      sessionId,
+      timestamp: new Date().toISOString(),
+    }
+  }
+
   const match = LOCAL_KNOWLEDGE.find((item) =>
     item.keywords.some((kw) => lower.includes(kw))
   )
@@ -204,6 +264,7 @@ export async function sendChatMessage(message, sessionId = 'default-session', co
       message: match.reply,
       suggestions: match.suggestions,
       quickReplies: match.quickReplies,
+      autoPlay: false,
       sessionId,
       timestamp: new Date().toISOString(),
     }
@@ -213,7 +274,7 @@ export async function sendChatMessage(message, sessionId = 'default-session', co
   return {
     success: true,
     source: 'local-sommelier',
-    message: `¡Hola! Soy **Sonaria**, tu asistente oficial de la plataforma **SONAR**. 🎧\n\nEstoy aquí para guiarte en todo lo relacionado con la aplicación: navegar por el catálogo de alta fidelidad, publicar reseñas, ganar **Sonar Coins**, canjear skins en la **Boutique** o configurar el **Control Parental**.\n\n¿En qué herramienta o sección de SONAR te puedo ayudar hoy?`,
+    message: `¡Hola! Soy **Sonaria**, tu asistente oficial de la plataforma **SONAR**. 🎧\n\nPuedo guiarte por el catálogo, publicar reseñas, ayudarte a ganar **Sonar Coins**, o puedes pedirme cosas como *"reproduce Aja"*, *"pon Daft Punk"* o *"toca jazz"* para iniciar la música de inmediato.\n\n¿En qué herramienta o canción de SONAR te puedo ayudar hoy?`,
     suggestions: [
       {
         title: 'Aja',
@@ -233,11 +294,12 @@ export async function sendChatMessage(message, sessionId = 'default-session', co
       },
     ],
     quickReplies: [
+      '▶️ Reproduce Steely Dan',
+      '▶️ Pon Daft Punk',
       '🪙 ¿Cómo ganar Sonar Coins?',
       '⭐ ¿Cómo publicar una reseña?',
-      '🛒 Ver Boutique de Skins',
-      '🔒 ¿Cómo activar el Control Parental?',
     ],
+    autoPlay: false,
     sessionId,
     timestamp: new Date().toISOString(),
   }
