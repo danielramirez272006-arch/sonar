@@ -4,6 +4,7 @@ import { Avatar } from '../../../shared/components/ui/avatar';
 import { useRouter } from '../../../shared/routing/app-router';
 import { socialService } from '../../../shared/services/social-service';
 import { useAuth } from '../../../shared/context/auth-context';
+import { useLanguage } from '../../../shared/context/language-context';
 
 export const ProfileHeader = ({
   user,
@@ -13,6 +14,7 @@ export const ProfileHeader = ({
 }) => {
   const router = useRouter?.();
   const { user: authUser } = useAuth();
+  const { t } = useLanguage();
 
   const currentUser = user || {
     name: 'Mateo Rivaes',
@@ -81,7 +83,7 @@ export const ProfileHeader = ({
 
   const { displayName, handle } = socialService.formatUserIdentity(currentUser);
   const stats = socialService.getUserStats(currentUser, actualReviewsCount);
-  const bio = currentUser.bio || 'Melómano explorando nuevas texturas acústicas en Sonar.';
+  const bio = currentUser.bio || t('profile.default_bio', 'Nuevo melómano explorando vinilos y texturas acústicas en Sonar.');
 
   const handleEditClick = () => {
     try {
@@ -106,6 +108,8 @@ export const ProfileHeader = ({
     'frame-neon-cyber': 'ring-4 ring-cyan-400 shadow-[0_0_25px_rgba(6,182,212,0.85)]',
     'frame-valve-tube': 'ring-4 ring-orange-500 shadow-[0_0_20px_rgba(249,115,22,0.75)]',
     'frame-hologram': 'ring-4 ring-purple-400 shadow-[0_0_26px_rgba(168,85,247,0.8)]',
+    'frame-prism-rainbow': 'ring-4 ring-pink-500 shadow-[0_0_26px_rgba(236,72,153,0.85)]',
+    'frame-analog-wood': 'ring-4 ring-amber-700 shadow-[0_0_20px_rgba(180,83,9,0.75)]',
   }[equippedFrame] || 'ring-4 ring-white dark:ring-[#4B2840] shadow-xl';
 
   return (
@@ -128,7 +132,7 @@ export const ProfileHeader = ({
             className="absolute top-3 right-3 px-3 py-1.5 rounded-xl bg-black/50 hover:bg-black/70 text-white text-xs font-semibold backdrop-blur-md border border-white/20 transition-all flex items-center gap-1.5 cursor-pointer shadow-sm"
           >
             <span className="material-symbols-outlined text-[15px]">photo_camera</span>
-            <span>Cambiar Portada</span>
+            <span>{t('profile.change_cover', 'Cambiar Portada')}</span>
           </button>
         )}
       </div>
@@ -161,7 +165,7 @@ export const ProfileHeader = ({
                   {displayName}
                 </h1>
                 <span className="px-2.5 py-0.5 rounded-full bg-[#f8e9f6] dark:bg-[#231123] text-[#5c1d5e] dark:text-pink-200 text-xs font-bold border border-[#e6d5e2] dark:border-white/10">
-                  {currentUser.role === 'admin' ? 'Administrador' : 'Audiófilo Pro'}
+                  {currentUser.role === 'admin' ? t('profile.role_admin', 'Administrador') : t('profile.role_audiophile_pro', 'Audiófilo Pro')}
                 </span>
 
                 {equippedTitle && (
@@ -173,7 +177,7 @@ export const ProfileHeader = ({
 
                 <span className="px-2.5 py-0.5 rounded-full bg-amber-500/15 text-amber-700 dark:text-amber-300 border border-amber-500/30 text-xs font-mono font-bold flex items-center gap-1">
                   <span className="material-symbols-outlined text-[14px]">toll</span>
-                  <span>{userPoints.toLocaleString()} Monedas</span>
+                  <span>{userPoints.toLocaleString()} {t('profile.coins', 'Monedas')}</span>
                 </span>
               </div>
               <p className="text-sm font-semibold text-[#5c435a] dark:text-[#B89CB0]">
@@ -187,7 +191,7 @@ export const ProfileHeader = ({
               {currentUser.preferences && currentUser.preferences.length > 0 && (
                 <div className="flex flex-wrap items-center justify-center sm:justify-start gap-1.5 pt-2">
                   <span className="text-[11px] font-bold text-[#5c435a] dark:text-[#B89CB0] uppercase tracking-wider mr-1">
-                    Gustos:
+                    {t('profile.tastes', 'Gustos:')}
                   </span>
                   {currentUser.preferences.map((pref) => (
                     <span
@@ -251,7 +255,7 @@ export const ProfileHeader = ({
                   {stats.reviews || stats.reviewsCount || 0}
                 </span>
                 <span className="text-xs text-[#5c435a] dark:text-[#B89CB0] font-medium">
-                  Reseñas
+                  {t('profile.reviews_count', 'Reseñas')}
                 </span>
               </div>
               <div className="w-[1px] h-8 bg-[#e6d5e2] dark:bg-white/10" />
@@ -260,7 +264,7 @@ export const ProfileHeader = ({
                   {stats.followers || 0}
                 </span>
                 <span className="text-xs text-[#5c435a] dark:text-[#B89CB0] font-medium">
-                  Seguidores
+                  {t('profile.followers', 'Seguidores')}
                 </span>
               </div>
               <div className="w-[1px] h-8 bg-[#e6d5e2] dark:bg-white/10" />
@@ -269,7 +273,7 @@ export const ProfileHeader = ({
                   {stats.following ?? 0}
                 </span>
                 <span className="text-xs text-[#5c435a] dark:text-[#B89CB0] font-medium">
-                  Siguiendo
+                  {t('profile.following', 'Siguiendo')}
                 </span>
               </div>
             </div>
@@ -284,7 +288,7 @@ export const ProfileHeader = ({
                 className="w-full sm:w-auto px-6 py-2.5 rounded-xl border-2 border-[#B80C09] text-[#B80C09] hover:bg-[#B80C09] hover:text-white text-xs sm:text-sm font-bold uppercase tracking-wider transition-all duration-200 cursor-pointer shadow-xs flex items-center justify-center gap-1.5"
               >
                 <span className="material-symbols-outlined text-[16px]">tune</span>
-                <span>Personalizar Perfil & Gustos</span>
+                <span>{t('profile.customize_btn', 'Personalizar Perfil & Gustos')}</span>
               </motion.button>
             ) : (
               <motion.button
@@ -301,7 +305,7 @@ export const ProfileHeader = ({
                 <span className="material-symbols-outlined text-[16px]">
                   {isFollowing ? 'person_remove' : 'person_add'}
                 </span>
-                <span>{isFollowing ? 'Siguiendo' : 'Seguir Usuario'}</span>
+                <span>{isFollowing ? t('profile.following', 'Siguiendo') : t('profile.follow_btn', 'Seguir Usuario')}</span>
               </motion.button>
             )}
           </div>

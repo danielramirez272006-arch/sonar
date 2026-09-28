@@ -52,6 +52,8 @@ export const Avatar = ({
     'frame-neon-cyber': 'ring-2 sm:ring-4 ring-cyan-400 shadow-[0_0_18px_rgba(6,182,212,0.85)]',
     'frame-valve-tube': 'ring-2 sm:ring-4 ring-orange-500 shadow-[0_0_16px_rgba(249,115,22,0.8)]',
     'frame-hologram': 'ring-2 sm:ring-4 ring-purple-400 shadow-[0_0_18px_rgba(168,85,247,0.85)]',
+    'frame-prism-rainbow': 'ring-2 sm:ring-4 ring-pink-500 shadow-[0_0_20px_rgba(236,72,153,0.85)]',
+    'frame-analog-wood': 'ring-2 sm:ring-4 ring-amber-700 shadow-[0_0_16px_rgba(180,83,9,0.7)]',
   };
   const activeFrameClass = frame ? frameClassMap[frame] || '' : '';
 

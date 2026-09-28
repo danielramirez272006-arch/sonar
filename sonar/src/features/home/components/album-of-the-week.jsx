@@ -2,6 +2,7 @@ import React, { useState, useEffect, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { usePlayer } from '../../../shared/context/player-context';
 import { useAuth } from '../../../shared/context/auth-context';
+import { useTranslation } from 'react-i18next';
 import { interactionsService } from '../../../shared/services/interactions-service';
 import Toast from '../../../shared/components/ui/toast';
 import { handleImageFallbackError, getFallbackCoverForAlbum } from '../../../shared/services/recommendations-service';
@@ -121,6 +122,7 @@ export const AlbumOfTheWeek = () => {
   const { user, isJunior, isParentalControlActive } = useAuth() || {};
   const isKidsActive = Boolean(isJunior || isParentalControlActive);
   const { playTrack, toggleTrack, currentTrack, isPlaying, openReviewModal } = usePlayer();
+  const { t } = useTranslation();
   const [toastMessage, setToastMessage] = useState(null);
 
   const userPreferences = useMemo(() => {
@@ -330,7 +332,7 @@ export const AlbumOfTheWeek = () => {
               <div className="flex flex-wrap items-center gap-2">
                 <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#f8e9f6] dark:bg-[#4B2840] border border-[#e6d5e2] dark:border-white/10 text-[#5c1d5e] dark:text-pink-200 text-xs font-bold shadow-xs">
                   <span className="material-symbols-outlined text-[14px] text-[#B80C09]">star</span>
-                  <span>Álbum Destacado de la Semana</span>
+                  <span>{t('explore.album_of_week', 'Álbum Destacado de la Semana')}</span>
                 </span>
                 <span className="px-2.5 py-1 rounded-full bg-white dark:bg-white/10 border border-[#e6d5e2] dark:border-white/10 text-[#5c435a] dark:text-gray-300 text-[11px] font-bold">
                   {currentAlbum.genre}

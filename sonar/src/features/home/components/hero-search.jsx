@@ -1,9 +1,11 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useTheme } from '../../../shared/context/theme-context';
 import { searchAlbums, searchTracks, searchArtists, getAlbumTracks, isKidsSafeTrack } from '../../../shared/services/deezer-service';
 import { usePlayer } from '../../../shared/context/player-context';
 import { useAuth } from '../../../shared/context/auth-context';
+import { useTranslation } from 'react-i18next';
+import { useLanguage } from '../../../shared/context/language-context';
 import { handleImageFallbackError, getFallbackCoverForAlbum } from '../../../shared/services/recommendations-service';
 
 const SEARCH_TABS = [
@@ -106,7 +108,16 @@ export const HeroSearch = ({ onSearch = () => {}, onSubmit = () => {} }) => {
   const { isDarkMode } = useTheme();
   const { toggleTrack, currentTrack, isPlaying } = usePlayer();
   const { isJunior, isParentalControlActive } = useAuth() || {};
+  const { t } = useTranslation();
   const isKidsActive = Boolean(isJunior || isParentalControlActive);
+
+  const searchTabs = useMemo(() => [
+    { id: 'all', label: t('nav.all', 'Todo'), icon: 'manage_search' },
+    { id: 'artist', label: t('profile.artists', 'Artistas'), icon: 'person' },
+    { id: 'track', label: t('nav.tracks', 'Canciones'), icon: 'music_note' },
+    { id: 'album', label: t('nav.albums', 'Álbumes'), icon: 'album' },
+    { id: 'lyrics', label: t('hero.lyrics', 'Letras'), icon: 'lyrics' },
+  ], [t]);
 
   const currentSuggestionsPool = isKidsActive ? KIDS_TYPEWRITER_SUGGESTIONS : TYPEWRITER_SUGGESTIONS;
   const currentTrendingPool = isKidsActive ? KIDS_TRENDING_SEARCHES : TRENDING_SEARCHES;
@@ -399,16 +410,16 @@ export const HeroSearch = ({ onSearch = () => {}, onSubmit = () => {} }) => {
         {/* Título Principal y Subtítulo */}
         <h1 className="text-3xl sm:text-4xl md:text-5xl font-black tracking-tight leading-tight mb-2 text-[#231123] dark:text-[#FAF5F8]">
           <span className="bg-gradient-to-r from-[#231123] via-[#5c1d5e] to-[#B80C09] dark:from-white dark:via-rose-300 dark:to-[#B80C09] bg-clip-text text-transparent">
-            Descubre. Escucha. Reseña.
+            {t('hero.title', 'Descubre. Escucha. Reseña.')}
           </span>
         </h1>
         <p className="text-xs sm:text-sm text-[#5c435a] dark:text-[#B89CB0] max-w-[560px] mb-5 font-medium">
-          Explora la enciclopedia sonora con búsqueda inteligente por voz, épocas, géneros y preescucha en vivo.
+          {t('hero.subtitle', 'Explora la enciclopedia sonora con búsqueda inteligente por voz, épocas, géneros y preescucha en vivo.')}
         </p>
 
         {/* Pestañas de Búsqueda Minimalistas (Segmented Control) */}
         <div className="inline-flex items-center p-1 rounded-full bg-[#f0e2ee] dark:bg-[#1a0b1b] border border-[#e0cbdd] dark:border-white/10 mb-4 gap-1 shadow-inner max-w-full overflow-x-auto">
-          {SEARCH_TABS.map((tab) => {
+          {searchTabs.map((tab) => {
             const isActive = activeTab === tab.id;
             return (
               <button
@@ -500,7 +511,7 @@ export const HeroSearch = ({ onSearch = () => {}, onSubmit = () => {} }) => {
                   type="submit"
                   className="flex items-center gap-1 px-4 py-2 rounded-full bg-[#B80C09] hover:bg-[#9c0a07] text-white text-xs font-bold shadow-md hover:shadow-lg transition-all cursor-pointer"
                 >
-                  <span>Buscar</span>
+                  <span>{t('common.search', 'Buscar')}</span>
                   <span className="material-symbols-outlined text-[15px]">arrow_forward</span>
                 </button>
               </div>
@@ -520,7 +531,7 @@ export const HeroSearch = ({ onSearch = () => {}, onSubmit = () => {} }) => {
                   <div className="flex items-center gap-2">
                     <span className="w-2.5 h-2.5 rounded-full bg-rose-300 animate-ping" />
                     <span className="text-xs font-black uppercase tracking-wider text-white">
-                      🎙️ Escuchando... Di el nombre de un artista o álbum
+                      🎙️ {t('common.listening', 'Escuchando...')}
                     </span>
                   </div>
                   <button
@@ -533,7 +544,7 @@ export const HeroSearch = ({ onSearch = () => {}, onSubmit = () => {} }) => {
                     }}
                     className="text-xs font-bold bg-white/20 hover:bg-white/30 px-2.5 py-0.5 rounded-full cursor-pointer transition-colors"
                   >
-                    ✕ Cerrar
+                    ✕ {t('common.close', 'Cerrar')}
                   </button>
                 </div>
 
@@ -582,14 +593,14 @@ export const HeroSearch = ({ onSearch = () => {}, onSubmit = () => {} }) => {
                         <div className="flex items-center justify-between text-[11px] font-extrabold text-[#5c435a] dark:text-gray-400">
                           <span className="flex items-center gap-1.5">
                             <span className="material-symbols-outlined text-[15px]">history</span>
-                            <span>BÚSQUEDAS RECIENTES</span>
+                            <span>{t('common.recent_searches', 'BÚSQUEDAS RECIENTES')}</span>
                           </span>
                           <button
                             type="button"
                             onClick={clearRecentSearches}
                             className="text-[#B80C09] hover:underline cursor-pointer font-bold text-[11px]"
                           >
-                            Limpiar
+                            {t('common.clear', 'Limpiar')}
                           </button>
                         </div>
                         <div className="flex flex-wrap gap-1.5">

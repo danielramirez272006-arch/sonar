@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react';
 import { ArrowRight, Check, Eye, EyeOff, Headphones, Music2, Sparkles, User, Disc3, ShieldCheck, Mail, KeyRound, ArrowLeft, RefreshCw } from 'lucide-react';
 import { useAuth } from '../../../shared/context/auth-context';
+import { useTranslation } from 'react-i18next';
+import { useLanguage } from '../../../shared/context/language-context';
 import { GoogleIcon } from './social-provider-icon';
 import { RotatingReview } from './rotating-review';
 import { GENRE_OPTIONS } from '../../../shared/services/recommendations-service';
@@ -62,6 +64,7 @@ const EditorialPanel = () => (
 
 export const RegisterForm = () => {
   const { register, isLoading } = useAuth();
+  const { t } = useTranslation();
   const [step, setStep] = useState('info'); // 'info' | 'otp' | 'password'
   const [formData, setFormData] = useState({
     username: '',
@@ -259,9 +262,11 @@ export const RegisterForm = () => {
    * Si el correo ya existe en la BD, redirige a login (#login).
    * Si es nuevo, redirige a la página de usuario (#usuario).
    */
-  const handleGoogleRegister = useGoogleLogin({
-    onSuccess: async (tokenResponse) => {
-      setErrorMessage('');
+  let handleGoogleRegister = () => {};
+  try {
+    handleGoogleRegister = useGoogleLogin({
+      onSuccess: async (tokenResponse) => {
+        setErrorMessage('');
       try {
         const res = await fetch('https://www.googleapis.com/oauth2/v3/userinfo', {
           headers: { Authorization: `Bearer ${tokenResponse.access_token}` },
@@ -301,23 +306,43 @@ export const RegisterForm = () => {
     onError: () => setErrorMessage('No se pudo conectar con Google. Intenta de nuevo.'),
     flow: 'implicit',
   });
+  } catch {
+    handleGoogleRegister = () => {};
+  }
 
   return (
     <div className="auth-shell">
       <EditorialPanel />
       <section className="auth-form-area" aria-labelledby="register-title">
         <div className="auth-form-wrap">
+          <button
+            type="button"
+            onClick={() => {
+              if (step === 'password') {
+                setStep('otp');
+              } else if (step === 'otp') {
+                setStep('info');
+              } else {
+                window.location.hash = '#explore';
+              }
+            }}
+            className="auth-back-btn"
+            aria-label={step === 'info' ? 'Volver al catálogo' : 'Regresar al paso anterior'}
+          >
+            <ArrowLeft size={15} />
+            <span>{step === 'info' ? 'Volver al catálogo' : 'Paso anterior'}</span>
+          </button>
           <div className="auth-mobile-brand">
             <Headphones size={19} /> SONAR
           </div>
           <header className="auth-heading">
             <h2 id="register-title">
-              {step === 'info' && 'Crea tu cuenta en Sonar'}
+              {step === 'info' && t('auth.register_title')}
               {step === 'otp' && 'Verifica tu Correo'}
               {step === 'password' && 'Define tu Contraseña'}
             </h2>
             <p>
-              {step === 'info' && 'Personaliza tu identidad y recibe tu código de seguridad.'}
+              {step === 'info' && t('auth.register_subtitle')}
               {step === 'otp' && 'Ingresa el código de 6 dígitos que enviamos a tu bandeja.'}
               {step === 'password' && 'Elige la contraseña que desees para acceder a Sonar.'}
             </p>
@@ -358,10 +383,10 @@ export const RegisterForm = () => {
                   onClick={() => handleGoogleRegister()}
                   disabled={isLoading}
                   className="auth-google-btn"
-                  aria-label="Registrarse con Google"
+                  aria-label={t('auth.google_login')}
                 >
                   <GoogleIcon />
-                  Continuar con Google
+                  {t('auth.google_login')}
                 </button>
               </div>
 
