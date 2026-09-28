@@ -58,6 +58,7 @@ describe('analyzeReview', () => {
       aiFlagged: false,
       status: 'pending_moderation',
       reason: null,
+      source: 'local',
     })
   })
 
@@ -69,6 +70,7 @@ describe('analyzeReview', () => {
       aiFlagged: true,
       status: 'pending_moderation',
       reason: expect.any(String),
+      source: 'local',
     })
   })
 })

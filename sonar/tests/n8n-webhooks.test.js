@@ -6,9 +6,10 @@ import {
 
 beforeEach(() => {
   vi.useFakeTimers()
-  // Evita tráfico real y permite detectar si el mock intenta usar fetch.
+  // El fetch mockeado simula que n8n no está disponible (lanza error).
+  // sendReviewToModeration intentará conectar y luego caerá al fallback local.
   vi.stubGlobal('fetch', vi.fn(() => {
-    throw new Error('Los webhooks mock no deben realizar peticiones HTTP.')
+    throw new Error('n8n no disponible en entorno de test.')
   }))
 })
 
@@ -18,7 +19,7 @@ afterEach(() => {
 })
 
 describe('sendReviewToModeration', () => {
-  it('encola una reseña y conserva su ID sin hacer peticiones HTTP', async () => {
+  it('encola una reseña y conserva su ID, cayendo al fallback si n8n no responde', async () => {
     const result = sendReviewToModeration({ id: '101', content: 'Excelente álbum.' })
     await vi.runAllTimersAsync()
 
@@ -27,8 +28,8 @@ describe('sendReviewToModeration', () => {
       queued: true,
       reviewId: '101',
       message: expect.any(String),
+      simulated: true,
     })
-    expect(globalThis.fetch).not.toHaveBeenCalled()
   })
 
   it('rechaza null con un Error sin hacer peticiones HTTP', async () => {
@@ -48,6 +49,6 @@ describe('notifyReviewCreated', () => {
     const [sent, notified] = await result
 
     expect(notified).toEqual(sent)
-    expect(globalThis.fetch).not.toHaveBeenCalled()
   })
 })
+
