@@ -7,7 +7,7 @@ import { useAuth } from '../../../shared/context/auth-context.jsx'
 const INITIAL_MESSAGE = {
   id: 'init-msg-1',
   sender: 'bot',
-  text: '¡Hola! Soy **SONAR AI Sommelier**, tu consultor de música audiófila, masterizaciones y vinilos. 🎧\n\n¿Qué te gustaría descubrir hoy? Puedo sugerirte discos legendarios, explicarte datos de grabación o ayudarte a encontrar tu próximo álbum favorito.',
+  text: '¡Hola! Soy **Sonaria**, tu consultora de inteligencia artificial para música audiófila, masterizaciones y vinilos. 🎧✨\n\n¿Qué te gustaría descubrir hoy? Puedo sugerirte discos legendarios, explicarte datos de grabación o ayudarte a encontrar tu próximo álbum favorito.',
   suggestions: [
     {
       title: 'Scenery',
@@ -152,7 +152,7 @@ export function SonarAiSommelier() {
           whileTap={{ scale: 0.94 }}
           onClick={() => setIsOpen((prev) => !prev)}
           className="flex items-center gap-2.5 px-4 py-3 rounded-full bg-gradient-to-r from-[#B80C09] via-[#8C0A07] to-[#4B2840] text-white font-bold shadow-2xl shadow-black/60 border border-white/20 cursor-pointer backdrop-blur-md transition-all group"
-          aria-label={isOpen ? 'Cerrar Sommelier Musical' : 'Abrir SONAR AI Sommelier'}
+          aria-label={isOpen ? 'Cerrar Sonaria' : 'Abrir Sonaria (Asistente IA)'}
         >
           <div className="relative flex items-center justify-center w-7 h-7 rounded-full bg-white/15">
             <span className="material-symbols-outlined text-[19px] text-[#ffdddd] group-hover:rotate-12 transition-transform">
@@ -166,7 +166,7 @@ export function SonarAiSommelier() {
             )}
           </div>
           <span className="text-xs tracking-wider uppercase hidden sm:inline-block font-extrabold text-[#DCDCDD]">
-            {isOpen ? 'Cerrar Sommelier' : 'AI Sommelier'}
+            {isOpen ? 'Cerrar Sonaria' : 'Sonaria'}
           </span>
         </motion.button>
       </div>
@@ -189,14 +189,14 @@ export function SonarAiSommelier() {
                 </div>
                 <div>
                   <div className="flex items-center gap-2">
-                    <strong className="text-sm font-bold text-white tracking-wide">SONAR Sommelier</strong>
+                    <strong className="text-sm font-bold text-white tracking-wide">Sonaria</strong>
                     <span className="px-1.5 py-0.5 rounded text-[9px] font-extrabold tracking-widest bg-[#B80C09] text-white uppercase">
                       Gemini IA
                     </span>
                   </div>
                   <small className="text-[11px] text-[#DCDCDD]/70 flex items-center gap-1.5">
                     <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
-                    Consultor de alta fidelidad activo
+                    Asistente y consultora musical activa
                   </small>
                 </div>
               </div>

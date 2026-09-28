@@ -60,7 +60,7 @@ describe('Sonar AI Sommelier Chatbot Service', () => {
 
     expect(result.success).toBe(true)
     expect(result.source).toBe('local-sommelier')
-    expect(result.message).toContain('Sommelier Musical de SONAR')
+    expect(result.message).toContain('Sonaria')
     expect(result.suggestions).toHaveLength(2)
   })
 })

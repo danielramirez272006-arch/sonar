@@ -158,7 +158,7 @@ export async function sendChatMessage(message, sessionId = 'default-session', co
   return {
     success: true,
     source: 'local-sommelier',
-    message: `¡Excelente pregunta! Como Sommelier Musical de SONAR, te recomiendo explorar obras con gran cuidado en la dinámica y producción. Cuéntame qué género musical te gusta o qué estado de ánimo buscas hoy para sugerirte álbumes selectos.`,
+    message: `¡Excelente pregunta! Soy **Sonaria**, tu consultora musical en SONAR. Te recomiendo explorar obras con gran cuidado en la dinámica y producción. Cuéntame qué género musical te gusta o qué estado de ánimo buscas hoy para sugerirte álbumes selectos.`,
     suggestions: [
       {
         title: 'To Pimp a Butterfly',
