@@ -1,9 +1,11 @@
+import { useUIText } from '../../../shared/i18n/use-ui-text.js';
 import React from 'react';
 import ReviewCard from './review-card';
 import useReviews from '../use-reviews';
 import Loader from '../../../shared/components/ui/loader';
 
 export const ReviewList = () => {
+  const ui = useUIText();
   const { reviews, isLoading, error } = useReviews();
 
   if (isLoading) {
@@ -19,7 +21,7 @@ export const ReviewList = () => {
   }
 
   if (!reviews || reviews.length === 0) {
-    return <p className="text-sm text-[#5c435a] dark:text-[#B89CB0]">No hay reseñas publicadas aún.</p>;
+    return <p className="text-sm text-[#5c435a] dark:text-[#B89CB0]">{ui("No hay reseñas publicadas aún.")}</p>;
   }
 
   return (

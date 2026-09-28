@@ -1,9 +1,11 @@
+import { useUIText } from '../../shared/i18n/use-ui-text.js';
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Navbar from '../../shared/components/layout/navbar';
 import Footer from '../../shared/components/layout/footer';
 import { usePlayer } from '../../shared/context/player-context';
 import Toast from '../../shared/components/ui/toast';
+import { useTranslation } from '../../shared/context/language-context.jsx';
 
 const DEFAULT_PODCAST_EPISODES = [
   {
@@ -69,6 +71,8 @@ const DEFAULT_PODCAST_EPISODES = [
 ];
 
 export const PodcastsPage = () => {
+  const ui = useUIText();
+  const { t } = useTranslation();
   const { playTrack, currentTrack, isPlaying } = usePlayer();
   const [toastMessage, setToastMessage] = useState(null);
   const [isUploadModalOpen, setIsUploadModalOpen] = useState(false);
@@ -242,14 +246,14 @@ export const PodcastsPage = () => {
             <div className="flex items-center gap-2 mb-2">
               <span className="w-2.5 h-2.5 rounded-full bg-[#B80C09] animate-pulse" />
               <span className="text-xs uppercase tracking-widest font-black text-[#5c1d5e] dark:text-pink-300">
-                SESIONES SONAR & PODCASTS AUDIÓFILOS
+                {t('page.podcasts.eyebrow')}
               </span>
             </div>
             <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-[#231123] dark:text-white">
-              Podcasts & Debates
+              {t('page.podcasts.debates')}
             </h1>
             <p className="text-sm sm:text-base text-[#5c435a] dark:text-[#B89CB0] max-w-2xl mt-2 font-medium">
-              Conversaciones en profundidad entre ingenieros de mezcla, críticos y coleccionistas sobre la ciencia acústica y el arte del álbum.
+              {t('page.podcasts.subtitle')}
             </p>
           </div>
 
@@ -260,7 +264,7 @@ export const PodcastsPage = () => {
               className="flex items-center gap-2 px-5 py-3 rounded-2xl bg-[#B80C09] hover:bg-[#9c0a07] text-white text-xs sm:text-sm font-bold uppercase tracking-wider shadow-lg hover:scale-105 active:scale-95 transition-all cursor-pointer"
             >
               <span className="material-symbols-outlined text-[20px]">upload_file</span>
-              <span>+ Subir Nuevo Episodio</span>
+              <span>{t('page.podcasts.uploadNew')}</span>
             </button>
           </div>
         </header>
@@ -275,7 +279,7 @@ export const PodcastsPage = () => {
               type="text"
               value={searchFilter}
               onChange={(e) => setSearchFilter(e.target.value)}
-              placeholder="Buscar episodios por título, show o invitados..."
+              placeholder={t('page.podcasts.searchPlaceholder')}
               className="w-full pl-10 pr-4 py-2.5 rounded-2xl border border-[#e6d5e2] dark:border-white/10 bg-white dark:bg-[#4B2840] text-sm text-[#231123] dark:text-white placeholder-gray-400 focus:outline-none focus:border-[#B80C09]"
             />
           </div>
@@ -286,9 +290,9 @@ export const PodcastsPage = () => {
           {filteredEpisodes.length === 0 ? (
             <div className="p-12 rounded-3xl bg-white dark:bg-[#4B2840] border border-[#e6d5e2] dark:border-white/10 text-center flex flex-col items-center gap-3">
               <span className="material-symbols-outlined text-[48px] text-gray-400">podcasts</span>
-              <h3 className="text-lg font-bold">No se encontraron episodios</h3>
+              <h3 className="text-lg font-bold">{t('page.podcasts.empty')}</h3>
               <p className="text-xs text-[#5c435a] dark:text-[#B89CB0]">
-                Prueba con otro término de búsqueda o sube tu propio podcast.
+                {t('page.podcasts.uploadDescription')}
               </p>
             </div>
           ) : (
@@ -317,7 +321,7 @@ export const PodcastsPage = () => {
                       <span>{ep.duration}</span>
                       {ep.isCustom && (
                         <span className="px-2 py-0.5 rounded-full bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 text-[10px] font-extrabold uppercase">
-                          Subido por Melómano
+                          {t('page.podcasts.uploaded')}
                         </span>
                       )}
                     </div>
@@ -331,7 +335,7 @@ export const PodcastsPage = () => {
                     </p>
 
                     <span className="text-xs text-gray-500 dark:text-gray-400 font-medium">
-                      Voces / Anfitriones: {ep.hosts}
+                      {t('page.podcasts.hosts')} {ep.hosts}
                     </span>
                   </div>
 
@@ -343,7 +347,7 @@ export const PodcastsPage = () => {
                     <span className="material-symbols-outlined text-[20px]">
                       {isCurrent ? 'pause' : 'play_arrow'}
                     </span>
-                    <span>{isCurrent ? 'Pausar Sesión' : 'Escuchar Sesión'}</span>
+                    <span>{isCurrent ? t('page.podcasts.pauseSession') : t('page.podcasts.listenSession')}</span>
                   </button>
                 </motion.div>
               );
@@ -376,10 +380,10 @@ export const PodcastsPage = () => {
                 </div>
                 <div>
                   <h3 className="text-xl font-black text-[#231123] dark:text-white">
-                    Subir Nuevo Episodio de Podcast
+                    {t('page.podcasts.uploadTitle')}
                   </h3>
                   <p className="text-xs text-[#5c435a] dark:text-[#B89CB0]">
-                    Comparte tu debate o análisis sonoro con la comunidad de audiófilos.
+                    {t('page.podcasts.uploadDescription')}
                   </p>
                 </div>
               </div>
@@ -389,11 +393,9 @@ export const PodcastsPage = () => {
                 <div className="flex flex-col gap-1.5">
                   <div className="flex items-center justify-between">
                     <label className="text-xs font-extrabold uppercase tracking-wider text-[#342632] dark:text-gray-300">
-                      Archivo de Audio (.mp3, .wav, .m4a, .ogg)
+                      {t('page.podcasts.audioFile')} (.mp3, .wav, .m4a, .ogg)
                     </label>
-                    <span className="text-[11px] text-[#B80C09] font-semibold">
-                      o coloca en public/audio/
-                    </span>
+                    <span className="text-[11px] text-[#B80C09] font-semibold">{ui("o coloca en public/audio/")}</span>
                   </div>
                   <input
                     type="file"
@@ -410,10 +412,10 @@ export const PodcastsPage = () => {
                       audiotrack
                     </span>
                     <span className="text-xs font-bold text-[#231123] dark:text-white">
-                      {newPodcast.audioFileName ? newPodcast.audioFileName : 'Haz clic para seleccionar el archivo de audio desde tu computadora'}
+                      {newPodcast.audioFileName ? newPodcast.audioFileName : t('page.podcasts.selectFile')}
                     </span>
                     <span className="text-[11px] text-gray-500">
-                      {audioUploadState.success ? '✓ Audio cargado correctamente' : 'Formatos soportados: MP3, WAV, AAC, M4A, OGG'}
+                      {audioUploadState.success ? t('page.podcasts.audioLoaded') : t('page.podcasts.audioFormats')}
                     </span>
                   </div>
                 </div>
@@ -421,14 +423,14 @@ export const PodcastsPage = () => {
                 {/* Título */}
                 <div className="flex flex-col gap-1.5">
                   <label className="text-xs font-extrabold uppercase tracking-wider text-[#342632] dark:text-gray-300">
-                    Título del Episodio
+                    {t('page.podcasts.episodeTitle')}
                   </label>
                   <input
                     type="text"
                     required
                     value={newPodcast.title}
                     onChange={(e) => setNewPodcast({ ...newPodcast, title: e.target.value })}
-                    placeholder="ej. Ep. 45: La historia no contada del sintetizador Minimoog"
+                    placeholder={ui("ej. Ep. 45: La historia no contada del sintetizador Minimoog")}
                     className="w-full px-4 py-2.5 rounded-2xl border border-[#e6d5e2] dark:border-white/10 bg-gray-50 dark:bg-[#4B2840] text-sm text-[#231123] dark:text-white focus:outline-none focus:border-[#B80C09]"
                   />
                 </div>
@@ -437,13 +439,13 @@ export const PodcastsPage = () => {
                   {/* Nombre del Show / Programa */}
                   <div className="flex flex-col gap-1.5">
                     <label className="text-xs font-extrabold uppercase tracking-wider text-[#342632] dark:text-gray-300">
-                      Show o Programa
+                      {t('page.podcasts.showName')}
                     </label>
                     <input
                       type="text"
                       value={newPodcast.show}
                       onChange={(e) => setNewPodcast({ ...newPodcast, show: e.target.value })}
-                      placeholder="ej. Crónicas del Vinilo"
+                      placeholder={ui("ej. Crónicas del Vinilo")}
                       className="w-full px-4 py-2.5 rounded-2xl border border-[#e6d5e2] dark:border-white/10 bg-gray-50 dark:bg-[#4B2840] text-sm text-[#231123] dark:text-white focus:outline-none focus:border-[#B80C09]"
                     />
                   </div>
@@ -451,13 +453,13 @@ export const PodcastsPage = () => {
                   {/* Anfitriones */}
                   <div className="flex flex-col gap-1.5">
                     <label className="text-xs font-extrabold uppercase tracking-wider text-[#342632] dark:text-gray-300">
-                      Voces / Anfitriones
+                      {t('page.podcasts.hostNames')}
                     </label>
                     <input
                       type="text"
                       value={newPodcast.hosts}
                       onChange={(e) => setNewPodcast({ ...newPodcast, hosts: e.target.value })}
-                      placeholder="ej. Marcos Vinyl & Elena Analog"
+                      placeholder={ui("ej. Marcos Vinyl & Elena Analog")}
                       className="w-full px-4 py-2.5 rounded-2xl border border-[#e6d5e2] dark:border-white/10 bg-gray-50 dark:bg-[#4B2840] text-sm text-[#231123] dark:text-white focus:outline-none focus:border-[#B80C09]"
                     />
                   </div>
@@ -466,7 +468,7 @@ export const PodcastsPage = () => {
                 {/* Portada */}
                 <div className="flex flex-col gap-1.5">
                   <label className="text-xs font-extrabold uppercase tracking-wider text-[#342632] dark:text-gray-300">
-                    Imagen de Portada (Opcional)
+                    {t('page.podcasts.coverImage')}
                   </label>
                   <input
                     type="file"
@@ -479,7 +481,7 @@ export const PodcastsPage = () => {
                     {newPodcast.cover && (
                       <img
                         src={newPodcast.cover}
-                        alt="Preview Portada"
+                        alt={ui("Preview Portada")}
                         className="w-12 h-12 rounded-xl object-cover shadow-sm shrink-0"
                       />
                     )}
@@ -488,21 +490,19 @@ export const PodcastsPage = () => {
                       onClick={() => coverInputRef.current?.click()}
                       className="px-4 py-2 rounded-xl border border-[#e6d5e2] dark:border-white/10 text-xs font-bold bg-gray-50 dark:bg-white/5 hover:bg-gray-100 transition-colors cursor-pointer"
                     >
-                      {newPodcast.cover ? 'Cambiar Imagen' : 'Seleccionar Imagen de Portada'}
+                      {newPodcast.cover ? ui("Cambiar Imagen") : ui("Seleccionar Imagen de Portada")}
                     </button>
                   </div>
                 </div>
 
                 {/* Descripción */}
                 <div className="flex flex-col gap-1.5">
-                  <label className="text-xs font-extrabold uppercase tracking-wider text-[#342632] dark:text-gray-300">
-                    Descripción / Notas del Episodio
-                  </label>
+                  <label className="text-xs font-extrabold uppercase tracking-wider text-[#342632] dark:text-gray-300">{ui("Descripción / Notas del Episodio")}</label>
                   <textarea
                     rows={3}
                     value={newPodcast.description}
                     onChange={(e) => setNewPodcast({ ...newPodcast, description: e.target.value })}
-                    placeholder="Escribe de qué trata el episodio, temas técnicos discutidos o pistas analizadas..."
+                    placeholder={ui("Escribe de qué trata el episodio, temas técnicos discutidos o pistas analizadas...")}
                     className="w-full p-3 rounded-2xl border border-[#e6d5e2] dark:border-white/10 bg-gray-50 dark:bg-[#4B2840] text-sm text-[#231123] dark:text-white focus:outline-none focus:border-[#B80C09]"
                   />
                 </div>
@@ -512,15 +512,11 @@ export const PodcastsPage = () => {
                     type="button"
                     onClick={() => setIsUploadModalOpen(false)}
                     className="px-5 py-2.5 rounded-xl border border-[#e6d5e2] dark:border-white/10 text-xs font-bold text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-white/5 cursor-pointer"
-                  >
-                    Cancelar
-                  </button>
+                  >{ui("Cancelar")}</button>
                   <button
                     type="submit"
                     className="px-6 py-2.5 rounded-xl bg-[#B80C09] hover:bg-[#9c0a07] text-white text-xs font-bold uppercase tracking-wider shadow-md cursor-pointer"
-                  >
-                    Publicar Episodio
-                  </button>
+                  >{ui("Publicar Episodio")}</button>
                 </div>
               </form>
             </motion.div>

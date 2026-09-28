@@ -4773,6 +4773,922 @@
       "createdAt": "2026-09-24T21:24:42.484Z"
     },
     {
+<<<<<<< HEAD
+      "id": "user-1790283902923",
+      "username": "Daniel Ramirez",
+      "email": "daniel_1790283902615@sonar.local",
+      "password": "sha256$0e0542b197471a340b604e5cb955a1c5$25357ea50fb8b2886cd2c7d79cd98951473043f5474e927a358ddab336c3e292",
+      "role": "user",
+      "accountType": "standard",
+      "parentalControl": {
+        "enabled": false,
+        "blockExplicit": false,
+        "pin": "1234"
+      },
+      "avatarUrl": "",
+      "avatarBg": "#B80C09",
+      "bio": "Nuevo melómano explorando vinilos y texturas acústicas en Sonar.",
+      "stats": {
+        "savedAlbums": 0,
+        "reviewsCount": 0,
+        "followers": 0,
+        "following": 0
+      },
+      "preferences": [
+        "Dream Pop",
+        "IDM / Techno"
+      ],
+      "gear": {
+        "headphones": "Auriculares de referencia",
+        "turntable": "Tocadiscos Direct Drive",
+        "favoriteFormat": "Vinilo 33⅓ RPM"
+      },
+      "badges": [
+        "Melómano Verificado",
+        "Audiófilo Inicial"
+      ],
+      "createdAt": "2026-09-24T21:05:02.923Z"
+    },
+    {
+      "id": "user-1790283903080",
+      "username": "Elena Jazz",
+      "email": "audiophile_1790283903009@sonar.local",
+      "password": "sha256$f2bca39bebf6bb45b9a861ed54b061db$2adcf476c9fb555e741ed73caea1189c2685cfd1d19e87fb5ac8b1a7b20e32cf",
+      "role": "user",
+      "accountType": "standard",
+      "parentalControl": {
+        "enabled": false,
+        "blockExplicit": false,
+        "pin": "1234"
+      },
+      "avatarUrl": "",
+      "avatarBg": "#d97706",
+      "bio": "Exploradora de sintetizadores analógicos.",
+      "stats": {
+        "savedAlbums": 0,
+        "reviewsCount": 0,
+        "followers": 0,
+        "following": 0
+      },
+      "preferences": [
+        "Synthwave",
+        "Ambient & Drone",
+        "IDM / Techno"
+      ],
+      "gear": {
+        "headphones": "Auriculares de referencia",
+        "turntable": "Tocadiscos Direct Drive",
+        "favoriteFormat": "Vinilo 33⅓ RPM"
+      },
+      "badges": [
+        "Melómano Verificado",
+        "Audiófilo Inicial"
+      ],
+      "createdAt": "2026-09-24T21:05:03.080Z"
+    },
+    {
+      "id": "user-1790283907309",
+      "username": "melomano_junior",
+      "email": "junior_1790283907113@sonar.test",
+      "password": "sha256$df09a1f1109e69e60e790e32157725b8$4162aa36caf7f67ff5d3060308fe3b2f87a9822f32e859ee141ceaa8333138de",
+=======
+      "id": "user-1790285580159",
+      "username": "melomano_junior",
+      "email": "junior_1790285579995@sonar.test",
+      "password": "sha256$c70b1474b4ddb0263ef49321021174a9$8ddbef1432289e96bfbadcf2900e8196cdd2ab0f53d369c0bdd65f5011babaa8",
+>>>>>>> a62825a6f441b827d99bc12505e1fc265c90cfae
+      "role": "user",
+      "accountType": "junior",
+      "parentalControl": {
+        "enabled": true,
+        "blockExplicit": true,
+        "pin": "5555"
+      },
+      "avatarUrl": "",
+<<<<<<< HEAD
+      "avatarBg": "#0284c7",
+      "bio": "Melómano Junior explorando música segura y educativa en Sonar.",
+      "stats": {
+        "savedAlbums": 0,
+        "reviewsCount": 0,
+        "followers": 0,
+        "following": 0
+      },
+      "preferences": [
+        "Post-Punk",
+        "Dream Pop"
+      ],
+      "gear": {
+        "headphones": "Auriculares de referencia",
+        "turntable": "Tocadiscos Direct Drive",
+        "favoriteFormat": "Vinilo 33⅓ RPM"
+      },
+      "badges": [
+        "Melómano Junior",
+        "Audio Seguro"
+      ],
+      "createdAt": "2026-09-24T21:05:07.310Z"
+    },
+    {
+      "id": "user-1790283967279",
+      "username": "Daniel Ramirez",
+      "email": "daniel_1790283967050@sonar.local",
+      "password": "sha256$69ebdb3d890d4ff541548cb7b281216a$2c15967842aaf68d773ae1e3cbc3608b958efb12b30adfcc4435632b5a48523f",
+      "role": "user",
+      "accountType": "standard",
+      "parentalControl": {
+        "enabled": false,
+        "blockExplicit": false,
+        "pin": "1234"
+      },
+      "avatarUrl": "",
+      "avatarBg": "#5c1d5e",
+      "bio": "Nuevo melómano explorando vinilos y texturas acústicas en Sonar.",
+      "stats": {
+        "savedAlbums": 0,
+        "reviewsCount": 0,
+        "followers": 0,
+        "following": 0
+      },
+      "preferences": [
+        "Synthwave",
+        "Hip-Hop Experimental"
+      ],
+      "gear": {
+        "headphones": "Auriculares de referencia",
+        "turntable": "Tocadiscos Direct Drive",
+        "favoriteFormat": "Vinilo 33⅓ RPM"
+      },
+      "badges": [
+        "Melómano Verificado",
+        "Audiófilo Inicial"
+      ],
+      "createdAt": "2026-09-24T21:06:07.279Z"
+    },
+    {
+      "id": "user-1790283967452",
+      "username": "Elena Jazz",
+      "email": "audiophile_1790283967352@sonar.local",
+      "password": "sha256$411454f409eab0fe3332489863b0c2f4$05d0a934f5935b9a1ef6012c862ba5ced2ebc678b725628ae4675140bedd5c0b",
+      "role": "user",
+      "accountType": "standard",
+      "parentalControl": {
+        "enabled": false,
+        "blockExplicit": false,
+        "pin": "1234"
+      },
+      "avatarUrl": "",
+      "avatarBg": "#0284c7",
+      "bio": "Exploradora de sintetizadores analógicos.",
+      "stats": {
+        "savedAlbums": 0,
+        "reviewsCount": 0,
+        "followers": 0,
+        "following": 0
+      },
+      "preferences": [
+        "Synthwave",
+        "Ambient & Drone",
+        "IDM / Techno"
+      ],
+      "gear": {
+        "headphones": "Auriculares de referencia",
+        "turntable": "Tocadiscos Direct Drive",
+        "favoriteFormat": "Vinilo 33⅓ RPM"
+      },
+      "badges": [
+        "Melómano Verificado",
+        "Audiófilo Inicial"
+      ],
+      "createdAt": "2026-09-24T21:06:07.452Z"
+    },
+    {
+      "id": "user-1790283970647",
+      "username": "melomano_junior",
+      "email": "junior_1790283970527@sonar.test",
+      "password": "sha256$6a77af15007d2f31e5b243c6f09f6d62$b594af74ddb2f77216539533dde9b57eeb18cdc10c7e3b19f84a5f635cc49bb8",
+      "role": "user",
+      "accountType": "junior",
+      "parentalControl": {
+        "enabled": true,
+        "blockExplicit": true,
+        "pin": "5555"
+      },
+      "avatarUrl": "",
+      "avatarBg": "#d97706",
+=======
+      "avatarBg": "#7c3aed",
+>>>>>>> a62825a6f441b827d99bc12505e1fc265c90cfae
+      "bio": "Melómano Junior explorando música segura y educativa en Sonar.",
+      "stats": {
+        "savedAlbums": 0,
+        "reviewsCount": 0,
+        "followers": 0,
+        "following": 0
+      },
+      "preferences": [
+        "Dream Pop",
+        "IDM / Techno"
+      ],
+      "gear": {
+        "headphones": "Auriculares de referencia",
+        "turntable": "Tocadiscos Direct Drive",
+        "favoriteFormat": "Vinilo 33⅓ RPM"
+      },
+      "badges": [
+        "Melómano Junior",
+        "Audio Seguro"
+      ],
+<<<<<<< HEAD
+      "createdAt": "2026-09-24T21:06:10.647Z"
+    },
+    {
+      "id": "user-1790284383121",
+      "username": "google_listener_75",
+      "email": "google_user_75@sonar.local",
+      "password": "sha256$67716d8acbf915a9cea5ec660981197a$ecac1dd75cc993d982ab32d9c07216bf60b644182ed7858eaf94868d4ffcb5e6",
+=======
+      "createdAt": "2026-09-24T21:33:00.159Z"
+    },
+    {
+      "id": "user-1790285587222",
+      "username": "Daniel Ramirez",
+      "email": "daniel_1790285587141@sonar.local",
+      "password": "sha256$a89a7d31496965ca1278075b51a5390d$495375543ea7435a43734855c871c6c995e80e1a918f7d663bee594524cfd814",
+      "role": "user",
+      "accountType": "standard",
+      "parentalControl": {
+        "enabled": false,
+        "blockExplicit": false,
+        "pin": "1234"
+      },
+      "avatarUrl": "",
+      "avatarBg": "#4B2840",
+      "bio": "Nuevo melómano explorando vinilos y texturas acústicas en Sonar.",
+      "stats": {
+        "savedAlbums": 0,
+        "reviewsCount": 0,
+        "followers": 0,
+        "following": 0
+      },
+      "preferences": [
+        "Hip-Hop Experimental",
+        "Neo-Soul"
+      ],
+      "gear": {
+        "headphones": "Auriculares de referencia",
+        "turntable": "Tocadiscos Direct Drive",
+        "favoriteFormat": "Vinilo 33⅓ RPM"
+      },
+      "badges": [
+        "Melómano Verificado",
+        "Audiófilo Inicial"
+      ],
+      "createdAt": "2026-09-24T21:33:07.222Z"
+    },
+    {
+      "id": "user-1790285587285",
+      "username": "Elena Jazz",
+      "email": "audiophile_1790285587266@sonar.local",
+      "password": "sha256$daf9ea7ca74102c99cd2a6af664db7cd$1096c9c3e509622a7e5fc231981e76baa382513dc4734e7ffa98c398c2e821ef",
+      "role": "user",
+      "accountType": "standard",
+      "parentalControl": {
+        "enabled": false,
+        "blockExplicit": false,
+        "pin": "1234"
+      },
+      "avatarUrl": "",
+      "avatarBg": "#d97706",
+      "bio": "Amante del vinilo y el jazz modal.",
+      "stats": {
+        "savedAlbums": 0,
+        "reviewsCount": 0,
+        "followers": 0,
+        "following": 0
+      },
+      "preferences": [
+        "Jazz & Fusion",
+        "Post-Punk"
+      ],
+      "gear": {
+        "headphones": "Auriculares de referencia",
+        "turntable": "Tocadiscos Direct Drive",
+        "favoriteFormat": "Vinilo 33⅓ RPM"
+      },
+      "badges": [
+        "Melómano Verificado",
+        "Audiófilo Inicial"
+      ],
+      "createdAt": "2026-09-24T21:33:07.285Z"
+    },
+    {
+      "id": "user-1790285668882",
+      "username": "melomano_junior",
+      "email": "junior_1790285668780@sonar.test",
+      "password": "sha256$3ae5b531c32a812a91cdd2f940fc6fec$8109c3ad531bcd1bed6c7c32a9e75a3c6f32877d76c39020dedbd9c1616022de",
+      "role": "user",
+      "accountType": "junior",
+      "parentalControl": {
+        "enabled": true,
+        "blockExplicit": true,
+        "pin": "5555"
+      },
+      "avatarUrl": "",
+      "avatarBg": "#7c3aed",
+      "bio": "Melómano Junior explorando música segura y educativa en Sonar.",
+      "stats": {
+        "savedAlbums": 0,
+        "reviewsCount": 0,
+        "followers": 0,
+        "following": 0
+      },
+      "preferences": [
+        "Ambient & Drone",
+        "Folk Acústico"
+      ],
+      "gear": {
+        "headphones": "Auriculares de referencia",
+        "turntable": "Tocadiscos Direct Drive",
+        "favoriteFormat": "Vinilo 33⅓ RPM"
+      },
+      "badges": [
+        "Melómano Junior",
+        "Audio Seguro"
+      ],
+      "createdAt": "2026-09-24T21:34:28.882Z"
+    },
+    {
+      "id": "user-1790285675674",
+      "username": "Daniel Ramirez",
+      "email": "daniel_1790285675559@sonar.local",
+      "password": "sha256$aeada923816cbf951aeca8dc28d16183$e4ccfdaf60e5e46318eedc17b9246cd9661dcb2ce1398438492e5cc44ed5ab09",
+>>>>>>> a62825a6f441b827d99bc12505e1fc265c90cfae
+      "role": "user",
+      "accountType": "standard",
+      "parentalControl": {
+        "enabled": false,
+        "blockExplicit": false,
+        "pin": "1234"
+      },
+      "avatarUrl": "",
+      "avatarBg": "#B80C09",
+      "bio": "Nuevo melómano explorando vinilos y texturas acústicas en Sonar.",
+      "stats": {
+        "savedAlbums": 0,
+        "reviewsCount": 0,
+        "followers": 0,
+        "following": 0
+      },
+      "preferences": [
+<<<<<<< HEAD
+        "Art Rock",
+        "Electrónica",
+        "Psicodelia"
+=======
+        "Jazz & Fusion",
+        "Ambient & Drone"
+>>>>>>> a62825a6f441b827d99bc12505e1fc265c90cfae
+      ],
+      "gear": {
+        "headphones": "Auriculares de referencia",
+        "turntable": "Tocadiscos Direct Drive",
+        "favoriteFormat": "Vinilo 33⅓ RPM"
+      },
+      "badges": [
+        "Melómano Verificado",
+        "Audiófilo Inicial"
+      ],
+<<<<<<< HEAD
+=======
+      "createdAt": "2026-09-24T21:34:35.674Z"
+    },
+    {
+      "id": "user-1790285675739",
+      "username": "Elena Jazz",
+      "email": "audiophile_1790285675716@sonar.local",
+      "password": "sha256$dcc9097c518a0cb1772197cd503e2423$2fdaf8e54846e587345c1fc57ec1ff3b657ed7ce5f559cf10ad1173f8cdb893e",
+      "role": "user",
+      "accountType": "standard",
+      "parentalControl": {
+        "enabled": false,
+        "blockExplicit": false,
+        "pin": "1234"
+      },
+      "avatarUrl": "",
+      "avatarBg": "#5c1d5e",
+      "bio": "Exploradora de sintetizadores analógicos.",
+      "stats": {
+        "savedAlbums": 0,
+        "reviewsCount": 0,
+        "followers": 0,
+        "following": 0
+      },
+      "preferences": [
+        "Synthwave",
+        "Ambient & Drone",
+        "IDM / Techno"
+      ],
+      "gear": {
+        "headphones": "Auriculares de referencia",
+        "turntable": "Tocadiscos Direct Drive",
+        "favoriteFormat": "Vinilo 33⅓ RPM"
+      },
+      "badges": [
+        "Melómano Verificado",
+        "Audiófilo Inicial"
+      ],
+      "createdAt": "2026-09-24T21:34:35.739Z"
+    },
+    {
+      "id": "user-1790285738454",
+      "username": "melomano_junior",
+      "email": "junior_1790285738346@sonar.test",
+      "password": "sha256$fa02f25acf3aed5bb0f2e154a477e305$46e0efc42bceadee3911e945ef5e351ca29ebe081b2bb10aa6eea23ecc7e0c98",
+      "role": "user",
+      "accountType": "junior",
+      "parentalControl": {
+        "enabled": true,
+        "blockExplicit": true,
+        "pin": "5555"
+      },
+      "avatarUrl": "",
+      "avatarBg": "#059669",
+      "bio": "Melómano Junior explorando música segura y educativa en Sonar.",
+      "stats": {
+        "savedAlbums": 0,
+        "reviewsCount": 0,
+        "followers": 0,
+        "following": 0
+      },
+      "preferences": [
+        "Art Rock",
+        "Jazz & Fusion"
+      ],
+      "gear": {
+        "headphones": "Auriculares de referencia",
+        "turntable": "Tocadiscos Direct Drive",
+        "favoriteFormat": "Vinilo 33⅓ RPM"
+      },
+      "badges": [
+        "Melómano Junior",
+        "Audio Seguro"
+      ],
+      "createdAt": "2026-09-24T21:35:38.454Z"
+    },
+    {
+      "id": "user-1790285744922",
+      "username": "Daniel Ramirez",
+      "email": "daniel_1790285744831@sonar.local",
+      "password": "sha256$c995b25d8f42f7eef1f7b4e467d33b10$af8c70a4af3a0ca361771664305757a1d598204105a637b3bce08832b931a0d0",
+      "role": "user",
+      "accountType": "standard",
+      "parentalControl": {
+        "enabled": false,
+        "blockExplicit": false,
+        "pin": "1234"
+      },
+      "avatarUrl": "",
+      "avatarBg": "#4B2840",
+      "bio": "Nuevo melómano explorando vinilos y texturas acústicas en Sonar.",
+      "stats": {
+        "savedAlbums": 0,
+        "reviewsCount": 0,
+        "followers": 0,
+        "following": 0
+      },
+      "preferences": [
+        "Synthwave",
+        "Hip-Hop Experimental"
+      ],
+      "gear": {
+        "headphones": "Auriculares de referencia",
+        "turntable": "Tocadiscos Direct Drive",
+        "favoriteFormat": "Vinilo 33⅓ RPM"
+      },
+      "badges": [
+        "Melómano Verificado",
+        "Audiófilo Inicial"
+      ],
+      "createdAt": "2026-09-24T21:35:44.922Z"
+    },
+    {
+      "id": "user-1790285744994",
+      "username": "Elena Jazz",
+      "email": "audiophile_1790285744975@sonar.local",
+      "password": "sha256$451301f7c65aba9a889738df1d8c9310$b9de17b7112a85e0fc6fd7ceef54c741d2b2ff4521ad9e67885cf82aaa2f7d74",
+      "role": "user",
+      "accountType": "standard",
+      "parentalControl": {
+        "enabled": false,
+        "blockExplicit": false,
+        "pin": "1234"
+      },
+      "avatarUrl": "",
+      "avatarBg": "#059669",
+      "bio": "Exploradora de sintetizadores analógicos.",
+      "stats": {
+        "savedAlbums": 0,
+        "reviewsCount": 0,
+        "followers": 0,
+        "following": 0
+      },
+      "preferences": [
+        "Synthwave",
+        "Ambient & Drone",
+        "IDM / Techno"
+      ],
+      "gear": {
+        "headphones": "Auriculares de referencia",
+        "turntable": "Tocadiscos Direct Drive",
+        "favoriteFormat": "Vinilo 33⅓ RPM"
+      },
+      "badges": [
+        "Melómano Verificado",
+        "Audiófilo Inicial"
+      ],
+      "createdAt": "2026-09-24T21:35:44.994Z"
+    },
+    {
+      "id": "user-1790285789837",
+      "username": "melomano_junior",
+      "email": "junior_1790285789723@sonar.test",
+      "password": "sha256$337b8b49aa9852d8b8de647307717d0c$d1964f32f7098e4f73c598d3613227524210c6debe1a54261475d505ec781c26",
+      "role": "user",
+      "accountType": "junior",
+      "parentalControl": {
+        "enabled": true,
+        "blockExplicit": true,
+        "pin": "5555"
+      },
+      "avatarUrl": "",
+      "avatarBg": "#7c3aed",
+      "bio": "Melómano Junior explorando música segura y educativa en Sonar.",
+      "stats": {
+        "savedAlbums": 0,
+        "reviewsCount": 0,
+        "followers": 0,
+        "following": 0
+      },
+      "preferences": [
+        "Electrónica",
+        "Post-Punk"
+      ],
+      "gear": {
+        "headphones": "Auriculares de referencia",
+        "turntable": "Tocadiscos Direct Drive",
+        "favoriteFormat": "Vinilo 33⅓ RPM"
+      },
+      "badges": [
+        "Melómano Junior",
+        "Audio Seguro"
+      ],
+      "createdAt": "2026-09-24T21:36:29.838Z"
+    },
+    {
+      "id": "user-1790285797159",
+      "username": "Daniel Ramirez",
+      "email": "daniel_1790285797076@sonar.local",
+      "password": "sha256$e3b682a3583319f2adf1119e426eb84a$69895e68c9503c3c6970229f4fc9434ef72ae552fbf5dbe24bf0e2e558038964",
+      "role": "user",
+      "accountType": "standard",
+      "parentalControl": {
+        "enabled": false,
+        "blockExplicit": false,
+        "pin": "1234"
+      },
+      "avatarUrl": "",
+      "avatarBg": "#4B2840",
+      "bio": "Nuevo melómano explorando vinilos y texturas acústicas en Sonar.",
+      "stats": {
+        "savedAlbums": 0,
+        "reviewsCount": 0,
+        "followers": 0,
+        "following": 0
+      },
+      "preferences": [
+        "Post-Punk",
+        "Dream Pop"
+      ],
+      "gear": {
+        "headphones": "Auriculares de referencia",
+        "turntable": "Tocadiscos Direct Drive",
+        "favoriteFormat": "Vinilo 33⅓ RPM"
+      },
+      "badges": [
+        "Melómano Verificado",
+        "Audiófilo Inicial"
+      ],
+      "createdAt": "2026-09-24T21:36:37.159Z"
+    },
+    {
+      "id": "user-1790285797235",
+      "username": "Elena Jazz",
+      "email": "audiophile_1790285797216@sonar.local",
+      "password": "sha256$f66c9b17abcbd5458f036eb54cf073fe$46added979484cb445688a1b2f1355ab7fd1f8deabfc7aae72672d129b90f51a",
+      "role": "user",
+      "accountType": "standard",
+      "parentalControl": {
+        "enabled": false,
+        "blockExplicit": false,
+        "pin": "1234"
+      },
+      "avatarUrl": "",
+      "avatarBg": "#4B2840",
+      "bio": "Amante del vinilo y el jazz modal.",
+      "stats": {
+        "savedAlbums": 0,
+        "reviewsCount": 0,
+        "followers": 0,
+        "following": 0
+      },
+      "preferences": [
+        "Jazz & Fusion",
+        "Post-Punk"
+      ],
+      "gear": {
+        "headphones": "Auriculares de referencia",
+        "turntable": "Tocadiscos Direct Drive",
+        "favoriteFormat": "Vinilo 33⅓ RPM"
+      },
+      "badges": [
+        "Melómano Verificado",
+        "Audiófilo Inicial"
+      ],
+      "createdAt": "2026-09-24T21:36:37.235Z"
+    },
+    {
+      "id": "user-1790287883025",
+      "username": "mr.4lexx",
+      "email": "mr.4leexx@gmail.com",
+      "password": "sha256$b9657c0c62bc8eea97fe472c72371edd$61ecccaeda8b53f0faa95aa9b8b816e535cf76737e6498e213cb16eba8b203b1",
+      "role": "user",
+      "accountType": "standard",
+      "parentalControl": {
+        "enabled": false,
+        "blockExplicit": false,
+        "pin": "1234"
+      },
+      "avatarUrl": "",
+      "avatarBg": "#06B6D4",
+      "bio": "Nuevo melómano explorando vinilos y texturas acústicas en Sonar.",
+      "stats": {
+        "savedAlbums": 0,
+        "reviewsCount": 0,
+        "followers": 0,
+        "following": 0
+      },
+      "preferences": [
+        "Electrónica",
+        "Dream Pop",
+        "Hip-Hop Experimental"
+      ],
+      "gear": {
+        "headphones": "Auriculares de referencia",
+        "turntable": "Tocadiscos Direct Drive",
+        "favoriteFormat": "Vinilo 33⅓ RPM"
+      },
+      "badges": [
+        "Melómano Verificado",
+        "Audiófilo Inicial"
+      ],
+      "createdAt": "2026-09-24T22:11:23.025Z",
+      "avatarStyle": "blobatar",
+      "avatarSeed": "synth-rider",
+      "avatarIcon": "headphones",
+      "avatarHue": 18,
+      "avatarTone": "vivid",
+      "bannerUrl": "",
+      "bannerGradient": "linear-gradient(135deg, rgba(184, 12, 9, 0.7) 0%, rgba(75, 40, 64, 0.95) 100%)"
+    },
+    {
+      "id": "user-1790345123262",
+      "username": "google_listener_142",
+      "email": "google_user_142@sonar.local",
+      "password": "sha256$a37e779189d6174610dadb16bf532e2c$bc3c50ded752235855fdadd7e7f2db7aef67fa04c876961c50cd759b3ccd19e7",
+      "role": "user",
+      "accountType": "standard",
+      "parentalControl": {
+        "enabled": false,
+        "blockExplicit": false,
+        "pin": "1234"
+      },
+      "avatarUrl": "",
+      "avatarBg": "#B80C09",
+      "bio": "Nuevo melómano explorando vinilos y texturas acústicas en Sonar.",
+      "stats": {
+        "savedAlbums": 0,
+        "reviewsCount": 0,
+        "followers": 0,
+        "following": 0
+      },
+      "preferences": [
+        "Art Rock",
+        "Electrónica",
+        "Psicodelia"
+      ],
+      "gear": {
+        "headphones": "Auriculares de referencia",
+        "turntable": "Tocadiscos Direct Drive",
+        "favoriteFormat": "Vinilo 33⅓ RPM"
+      },
+      "badges": [
+        "Melómano Verificado",
+        "Audiófilo Inicial"
+      ],
+      "createdAt": "2026-09-25T14:05:23.262Z"
+    },
+    {
+      "id": "user-1790345685799",
+      "username": "google_listener_735",
+      "email": "google_user_735@sonar.local",
+      "password": "sha256$10524fd767cad409528483905147bd61$70c8a9d3e81909de02c3950a51faf6c78cecfb5237381548e21a34a3e9175f33",
+      "role": "user",
+      "accountType": "standard",
+      "parentalControl": {
+        "enabled": false,
+        "blockExplicit": false,
+        "pin": "1234"
+      },
+      "avatarUrl": "",
+      "avatarBg": "#B80C09",
+      "bio": "Nuevo melómano explorando vinilos y texturas acústicas en Sonar.",
+      "stats": {
+        "savedAlbums": 0,
+        "reviewsCount": 0,
+        "followers": 0,
+        "following": 0
+      },
+      "preferences": [
+        "Art Rock",
+        "Electrónica",
+        "Psicodelia"
+      ],
+      "gear": {
+        "headphones": "Auriculares de referencia",
+        "turntable": "Tocadiscos Direct Drive",
+        "favoriteFormat": "Vinilo 33⅓ RPM"
+      },
+      "badges": [
+        "Melómano Verificado",
+        "Audiófilo Inicial"
+      ],
+      "createdAt": "2026-09-25T14:14:45.799Z"
+    },
+    {
+      "id": "user-1790345701068",
+      "username": "google_listener_204",
+      "email": "google_user_204@sonar.local",
+      "password": "sha256$ee0d2a5f1ce6b6d34b7c2d56b891f1de$1b52cc49b9c22394157fab7ec29173558791a84c1765da5f052eb6b020133f3c",
+      "role": "user",
+      "accountType": "standard",
+      "parentalControl": {
+        "enabled": false,
+        "blockExplicit": false,
+        "pin": "1234"
+      },
+      "avatarUrl": "",
+      "avatarBg": "#B80C09",
+      "bio": "Nuevo melómano explorando vinilos y texturas acústicas en Sonar.",
+      "stats": {
+        "savedAlbums": 0,
+        "reviewsCount": 0,
+        "followers": 0,
+        "following": 0
+      },
+      "preferences": [
+        "Art Rock",
+        "Electrónica",
+        "Psicodelia"
+      ],
+      "gear": {
+        "headphones": "Auriculares de referencia",
+        "turntable": "Tocadiscos Direct Drive",
+        "favoriteFormat": "Vinilo 33⅓ RPM"
+      },
+      "badges": [
+        "Melómano Verificado",
+        "Audiófilo Inicial"
+      ],
+      "createdAt": "2026-09-25T14:15:01.068Z"
+    },
+    {
+      "id": "user-1790345737105",
+      "username": "Audiophile_825",
+      "email": "spotify_user_825@sonar.local",
+      "password": "sha256$e5acff27e6c4bfd6b22ef3135bc4e264$9c4ee1221b5df301167eb11528739b14640063e3caf4ab50123e56048af4276f",
+      "role": "user",
+      "accountType": "standard",
+      "parentalControl": {
+        "enabled": false,
+        "blockExplicit": false,
+        "pin": "1234"
+      },
+      "avatarUrl": "",
+      "avatarBg": "#B80C09",
+      "bio": "Nuevo melómano explorando vinilos y texturas acústicas en Sonar.",
+      "stats": {
+        "savedAlbums": 0,
+        "reviewsCount": 0,
+        "followers": 0,
+        "following": 0
+      },
+      "preferences": [
+        "Art Rock",
+        "Electrónica",
+        "Psicodelia"
+      ],
+      "gear": {
+        "headphones": "Auriculares de referencia",
+        "turntable": "Tocadiscos Direct Drive",
+        "favoriteFormat": "Vinilo 33⅓ RPM"
+      },
+      "badges": [
+        "Melómano Verificado",
+        "Audiófilo Inicial"
+      ],
+      "createdAt": "2026-09-25T14:15:37.105Z",
+      "avatarStyle": "blobatar",
+      "avatarSeed": "audiophile_825",
+      "avatarIcon": "headphones",
+      "avatarHue": 18,
+      "avatarTone": "vivid",
+      "bannerUrl": "",
+      "bannerGradient": "linear-gradient(135deg, rgba(184, 12, 9, 0.7) 0%, rgba(75, 40, 64, 0.95) 100%)"
+    },
+    {
+      "id": "user-1790345905782",
+      "username": "google_listener_347",
+      "email": "google_user_347@sonar.local",
+      "password": "sha256$2955a4074cc1516dea99390f285d0751$6e35c1264b722e15dca5d55ba59a3d5cb1e0adbd8672cae1d8a01a85dc8a55a4",
+      "role": "user",
+      "accountType": "standard",
+      "parentalControl": {
+        "enabled": false,
+        "blockExplicit": false,
+        "pin": "1234"
+      },
+      "avatarUrl": "",
+      "avatarBg": "#B80C09",
+      "bio": "Nuevo melómano explorando vinilos y texturas acústicas en Sonar.",
+      "stats": {
+        "savedAlbums": 0,
+        "reviewsCount": 0,
+        "followers": 0,
+        "following": 0
+      },
+      "preferences": [
+        "Electrónica"
+      ],
+      "gear": {
+        "headphones": "Auriculares de referencia",
+        "turntable": "Tocadiscos Direct Drive",
+        "favoriteFormat": "Vinilo 33⅓ RPM"
+      },
+      "badges": [
+        "Melómano Verificado",
+        "Audiófilo Inicial"
+      ],
+      "createdAt": "2026-09-25T14:18:25.782Z"
+    },
+    {
+      "id": "user-1790345935379",
+      "username": "google_listener_930",
+      "email": "google_user_930@sonar.local",
+      "password": "sha256$234453cdfb24950848ceef1668a68659$63da2ad03a3d520284859c9479c48930e6d3aa6e0ed66313b6c1cbe429483d03",
+      "role": "user",
+      "accountType": "standard",
+      "parentalControl": {
+        "enabled": false,
+        "blockExplicit": false,
+        "pin": "1234"
+      },
+      "avatarUrl": "",
+      "avatarBg": "#ec4899",
+      "bio": "Nuevo melómano explorando vinilos y texturas acústicas en Sonar.",
+      "stats": {
+        "savedAlbums": 0,
+        "reviewsCount": 0,
+        "followers": 0,
+        "following": 0
+      },
+      "preferences": [
+        "Art Rock",
+        "Electrónica",
+        "Psicodelia"
+      ],
+      "gear": {
+        "headphones": "Auriculares de referencia",
+        "turntable": "Tocadiscos Direct Drive",
+        "favoriteFormat": "Vinilo 33⅓ RPM"
+      },
+      "badges": [
+        "Melómano Verificado",
+        "Audiófilo Inicial"
+      ],
+      "createdAt": "2026-09-25T14:18:55.379Z"
+    },
+    {
       "id": "user-1790283902923",
       "username": "Daniel Ramirez",
       "email": "daniel_1790283902615@sonar.local",
@@ -5025,6 +5941,7 @@
         "Melómano Verificado",
         "Audiófilo Inicial"
       ],
+>>>>>>> a62825a6f441b827d99bc12505e1fc265c90cfae
       "createdAt": "2026-09-24T21:13:03.121Z"
     },
     {
@@ -9651,6 +10568,7 @@
         "Audiófilo Inicial"
       ],
       "createdAt": "2026-09-25T19:53:34.357Z"
+<<<<<<< HEAD
     },
     {
       "id": "user-1790285580159",
@@ -10393,6 +11311,8 @@
         "Audiófilo Inicial"
       ],
       "createdAt": "2026-09-25T20:44:59.893Z"
+=======
+>>>>>>> a62825a6f441b827d99bc12505e1fc265c90cfae
     }
   ],
   "reviews": [
@@ -10536,6 +11456,7 @@
       "id": "p8vjNC2"
     },
     {
+<<<<<<< HEAD
       "userId": "1",
       "userName": "Mateo Rivae",
       "albumId": "14880659",
@@ -10588,6 +11509,330 @@
       "aiFlagged": false,
       "createdAt": "2026-09-25T21:37:07.350Z",
       "id": "quLzInF"
+=======
+      "userId": "user-1790116484490",
+      "userName": "danielramirez272006@gmail.com",
+      "albumId": "9896728",
+      "albumTitle": "To Pimp a Butterfly",
+      "parentAlbum": "To Pimp a Butterfly",
+      "type": "album",
+      "trackTitle": "",
+      "artist": "Kendrick Lamar",
+      "cover": "https://cdn-images.dzcdn.net/images/cover/00dd0da365a94b1829302d6b7fec70e6/500x500-000000-80-0-0.jpg",
+      "rating": 5,
+      "content": "negro jue",
+      "hasSpoilers": false,
+      "status": "pending_moderation",
+      "aiFlagged": false,
+      "createdAt": "2026-09-28T14:43:18.994Z",
+      "id": "FqdXtvP"
+    },
+    {
+      "userId": "user-1790116484490",
+      "userName": "danielramirez272006@gmail.com",
+      "albumId": "9896728",
+      "albumTitle": "To Pimp a Butterfly",
+      "parentAlbum": "To Pimp a Butterfly",
+      "type": "album",
+      "trackTitle": "",
+      "artist": "Kendrick Lamar",
+      "cover": "https://cdn-images.dzcdn.net/images/cover/00dd0da365a94b1829302d6b7fec70e6/500x500-000000-80-0-0.jpg",
+      "rating": 4,
+      "content": "negro ",
+      "hasSpoilers": false,
+      "status": "pending_moderation",
+      "aiFlagged": false,
+      "createdAt": "2026-09-28T14:44:00.116Z",
+      "id": "Y_FOTlT"
+    },
+    {
+      "userId": "user-1790116484490",
+      "userName": "danielramirez272006@gmail.com",
+      "albumId": "9896728",
+      "albumTitle": "To Pimp a Butterfly",
+      "parentAlbum": "To Pimp a Butterfly",
+      "type": "album",
+      "trackTitle": "",
+      "artist": "Kendrick Lamar",
+      "cover": "https://cdn-images.dzcdn.net/images/cover/00dd0da365a94b1829302d6b7fec70e6/500x500-000000-80-0-0.jpg",
+      "rating": 4,
+      "content": "negro",
+      "hasSpoilers": false,
+      "status": "pending_moderation",
+      "aiFlagged": false,
+      "createdAt": "2026-09-28T14:44:34.170Z",
+      "id": "wHjAVlF"
+    },
+    {
+      "userId": "user-1790116484490",
+      "userName": "danielramirez272006@gmail.com",
+      "albumId": "9896728",
+      "albumTitle": "To Pimp A Butterfly",
+      "parentAlbum": "To Pimp A Butterfly",
+      "type": "album",
+      "trackTitle": "",
+      "artist": "Kendrick Lamar",
+      "cover": "https://cdn-images.dzcdn.net/images/cover/00dd0da365a94b1829302d6b7fec70e6/500x500-000000-80-0-0.jpg",
+      "rating": 4,
+      "content": "negro",
+      "hasSpoilers": true,
+      "status": "pending_moderation",
+      "aiFlagged": false,
+      "createdAt": "2026-09-28T14:46:03.860Z",
+      "id": "bbBWCr4"
+    },
+    {
+      "userId": "user-1790116484490",
+      "userName": "danielramirez272006@gmail.com",
+      "albumId": "14880659",
+      "albumTitle": "Studio Ghibli Symphonic Suite",
+      "parentAlbum": "Studio Ghibli Symphonic Suite",
+      "type": "album",
+      "trackTitle": "",
+      "artist": "Joe Hisaishi & New Japan Philharmonic",
+      "cover": "https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=600&auto=format&fit=crop&q=80",
+      "rating": 4,
+      "content": "negro",
+      "hasSpoilers": false,
+      "status": "pending_moderation",
+      "aiFlagged": false,
+      "createdAt": "2026-09-28T14:48:40.026Z",
+      "id": "JyN4Ikf"
+    },
+    {
+      "userId": "user-1790116484490",
+      "userName": "danielramirez272006@gmail.com",
+      "albumId": "9896728",
+      "albumTitle": "To Pimp a Butterfly",
+      "parentAlbum": "To Pimp a Butterfly",
+      "type": "album",
+      "trackTitle": "",
+      "artist": "Kendrick Lamar",
+      "cover": "https://cdn-images.dzcdn.net/images/cover/00dd0da365a94b1829302d6b7fec70e6/500x500-000000-80-0-0.jpg",
+      "rating": 4,
+      "content": "negro",
+      "hasSpoilers": false,
+      "status": "pending_moderation",
+      "aiFlagged": false,
+      "createdAt": "2026-09-28T14:49:23.951Z",
+      "id": "9yUl5b9"
+    },
+    {
+      "userId": "user-1790116484490",
+      "userName": "danielramirez272006@gmail.com",
+      "albumId": "9896728",
+      "albumTitle": "To Pimp a Butterfly",
+      "parentAlbum": "To Pimp a Butterfly",
+      "type": "album",
+      "trackTitle": "",
+      "artist": "Kendrick Lamar",
+      "cover": "https://cdn-images.dzcdn.net/images/cover/00dd0da365a94b1829302d6b7fec70e6/500x500-000000-80-0-0.jpg",
+      "rating": 3,
+      "content": "wenas",
+      "hasSpoilers": false,
+      "status": "pending_moderation",
+      "aiFlagged": false,
+      "createdAt": "2026-09-28T14:50:07.863Z",
+      "id": "M2kqurA"
+    },
+    {
+      "userId": "user-1790116484490",
+      "userName": "danielramirez272006@gmail.com",
+      "albumId": "9896728",
+      "albumTitle": "To Pimp a Butterfly",
+      "parentAlbum": "To Pimp a Butterfly",
+      "type": "album",
+      "trackTitle": "",
+      "artist": "Kendrick Lamar",
+      "cover": "https://cdn-images.dzcdn.net/images/cover/00dd0da365a94b1829302d6b7fec70e6/500x500-000000-80-0-0.jpg",
+      "rating": 3,
+      "content": "wenas",
+      "hasSpoilers": true,
+      "status": "pending_moderation",
+      "aiFlagged": false,
+      "createdAt": "2026-09-28T14:50:37.491Z",
+      "id": "zF1Y2GN"
+    },
+    {
+      "userId": "user-1790116484490",
+      "userName": "danielramirez272006@gmail.com",
+      "albumId": "9896728",
+      "albumTitle": "To Pimp a Butterfly",
+      "parentAlbum": "To Pimp a Butterfly",
+      "type": "album",
+      "trackTitle": "",
+      "artist": "Kendrick Lamar",
+      "cover": "https://cdn-images.dzcdn.net/images/cover/00dd0da365a94b1829302d6b7fec70e6/500x500-000000-80-0-0.jpg",
+      "rating": 5,
+      "content": "negro",
+      "hasSpoilers": false,
+      "status": "pending_moderation",
+      "aiFlagged": false,
+      "createdAt": "2026-09-28T14:53:58.606Z",
+      "id": "0qMIAno"
+    },
+    {
+      "userId": "user-1790116484490",
+      "userName": "danielramirez272006@gmail.com",
+      "albumId": "9896728",
+      "albumTitle": "To Pimp a Butterfly",
+      "parentAlbum": "To Pimp a Butterfly",
+      "type": "album",
+      "trackTitle": "",
+      "artist": "Kendrick Lamar",
+      "cover": "https://cdn-images.dzcdn.net/images/cover/00dd0da365a94b1829302d6b7fec70e6/500x500-000000-80-0-0.jpg",
+      "rating": 4,
+      "content": "negro",
+      "hasSpoilers": false,
+      "status": "pending_moderation",
+      "aiFlagged": false,
+      "createdAt": "2026-09-28T14:58:49.339Z",
+      "id": "8OuQUOM"
+    },
+    {
+      "userId": "user-1790116484490",
+      "userName": "danielramirez272006@gmail.com",
+      "albumId": "9896728",
+      "albumTitle": "To Pimp a Butterfly",
+      "parentAlbum": "To Pimp a Butterfly",
+      "type": "album",
+      "trackTitle": "",
+      "artist": "Kendrick Lamar",
+      "cover": "https://cdn-images.dzcdn.net/images/cover/00dd0da365a94b1829302d6b7fec70e6/500x500-000000-80-0-0.jpg",
+      "rating": 4,
+      "content": "artista  juemadre",
+      "hasSpoilers": false,
+      "status": "pending_moderation",
+      "aiFlagged": false,
+      "createdAt": "2026-09-28T14:59:27.220Z",
+      "id": "j74BEhs"
+    },
+    {
+      "userId": "user-1790116484490",
+      "userName": "danielramirez272006@gmail.com",
+      "albumId": "9896728",
+      "albumTitle": "To Pimp a Butterfly",
+      "parentAlbum": "To Pimp a Butterfly",
+      "type": "album",
+      "trackTitle": "",
+      "artist": "Kendrick Lamar",
+      "cover": "https://cdn-images.dzcdn.net/images/cover/00dd0da365a94b1829302d6b7fec70e6/500x500-000000-80-0-0.jpg",
+      "rating": 2,
+      "content": "artista jemadre",
+      "hasSpoilers": false,
+      "status": "pending_moderation",
+      "aiFlagged": false,
+      "createdAt": "2026-09-28T14:59:46.055Z",
+      "id": "CEFrGFT"
+    },
+    {
+      "userId": "admin-1",
+      "userName": "Administrador",
+      "albumId": "9896728",
+      "albumTitle": "To Pimp a Butterfly",
+      "parentAlbum": "To Pimp a Butterfly",
+      "type": "album",
+      "trackTitle": "",
+      "artist": "Kendrick Lamar",
+      "cover": "https://cdn-images.dzcdn.net/images/cover/00dd0da365a94b1829302d6b7fec70e6/500x500-000000-80-0-0.jpg",
+      "rating": 2,
+      "content": "negro  que coma pollo",
+      "hasSpoilers": false,
+      "status": "pending_moderation",
+      "aiFlagged": false,
+      "createdAt": "2026-09-28T15:02:21.457Z",
+      "id": "1pqb_2s"
+    },
+    {
+      "userId": "user-1790116484490",
+      "userName": "danielramirez272006@gmail.com",
+      "albumId": "9896728",
+      "albumTitle": "To Pimp a Butterfly",
+      "parentAlbum": "To Pimp a Butterfly",
+      "type": "album",
+      "trackTitle": "",
+      "artist": "Kendrick Lamar",
+      "cover": "https://cdn-images.dzcdn.net/images/cover/00dd0da365a94b1829302d6b7fec70e6/500x500-000000-80-0-0.jpg",
+      "rating": 3,
+      "content": "negro come pollo",
+      "hasSpoilers": false,
+      "status": "pending_moderation",
+      "aiFlagged": false,
+      "createdAt": "2026-09-28T15:08:07.731Z",
+      "id": "ZC5rZyM"
+    },
+    {
+      "userId": "user-1790116484490",
+      "userName": "danielramirez272006@gmail.com",
+      "albumId": "9896728",
+      "albumTitle": "To Pimp a Butterfly",
+      "parentAlbum": "To Pimp a Butterfly",
+      "type": "album",
+      "trackTitle": "",
+      "artist": "Kendrick Lamar",
+      "cover": "https://cdn-images.dzcdn.net/images/cover/00dd0da365a94b1829302d6b7fec70e6/500x500-000000-80-0-0.jpg",
+      "rating": 4,
+      "content": "puta caca",
+      "hasSpoilers": false,
+      "status": "pending_moderation",
+      "aiFlagged": false,
+      "createdAt": "2026-09-28T15:11:02.147Z",
+      "id": "LB_XK94"
+    },
+    {
+      "userId": "user-1790116484490",
+      "userName": "danielramirez272006@gmail.com",
+      "albumId": "9896728",
+      "albumTitle": "To Pimp a Butterfly",
+      "parentAlbum": "To Pimp a Butterfly",
+      "type": "album",
+      "trackTitle": "",
+      "artist": "Kendrick Lamar",
+      "cover": "https://cdn-images.dzcdn.net/images/cover/00dd0da365a94b1829302d6b7fec70e6/500x500-000000-80-0-0.jpg",
+      "rating": 4,
+      "content": "malparido hijueputa ojala se muera  estupido idiota",
+      "hasSpoilers": false,
+      "status": "pending_moderation",
+      "aiFlagged": false,
+      "createdAt": "2026-09-28T15:14:07.691Z",
+      "id": "xkglvmU"
+    },
+    {
+      "userId": "user-1790116484490",
+      "userName": "danielramirez272006@gmail.com",
+      "albumId": "9896728",
+      "albumTitle": "To Pimp a Butterfly",
+      "parentAlbum": "To Pimp a Butterfly",
+      "type": "album",
+      "trackTitle": "",
+      "artist": "Kendrick Lamar",
+      "cover": "https://cdn-images.dzcdn.net/images/cover/00dd0da365a94b1829302d6b7fec70e6/500x500-000000-80-0-0.jpg",
+      "rating": 4,
+      "content": "jueputa ",
+      "hasSpoilers": false,
+      "status": "pending_moderation",
+      "aiFlagged": false,
+      "createdAt": "2026-09-28T15:20:04.237Z",
+      "id": "ytjEbHz"
+    },
+    {
+      "userId": "user-1790116484490",
+      "userName": "danielramirez272006@gmail.com",
+      "albumId": "9896728",
+      "albumTitle": "To Pimp A Butterfly",
+      "parentAlbum": "To Pimp A Butterfly",
+      "type": "album",
+      "trackTitle": "",
+      "artist": "Kendrick Lamar",
+      "cover": "https://cdn-images.dzcdn.net/images/cover/00dd0da365a94b1829302d6b7fec70e6/500x500-000000-80-0-0.jpg",
+      "rating": 3,
+      "content": "jueputa",
+      "hasSpoilers": false,
+      "status": "pending_moderation",
+      "aiFlagged": false,
+      "createdAt": "2026-09-28T15:25:49.956Z",
+      "id": "OZrG4AO"
+>>>>>>> a62825a6f441b827d99bc12505e1fc265c90cfae
     }
   ],
   "featuredReleases": [

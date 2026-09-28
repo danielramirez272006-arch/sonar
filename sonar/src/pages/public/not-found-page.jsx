@@ -1,7 +1,9 @@
 import React from 'react';
 import { motion } from 'framer-motion';
+import { useTranslation } from '../../shared/context/language-context.jsx';
 
 export const NotFoundPage = () => {
+  const { t } = useTranslation();
   return (
     <div className="min-h-screen w-full flex items-center justify-center bg-gray-50 dark:bg-[#231123] text-[#231123] dark:text-[#FAF5F8] px-4 py-12 transition-colors duration-300 relative overflow-hidden">
       {/* Resplandor ambiental de fondo */}
@@ -45,11 +47,11 @@ export const NotFoundPage = () => {
 
         {/* Subtítulo y Descripción */}
         <h2 className="text-2xl sm:text-3xl font-extrabold text-[#231123] dark:text-white tracking-tight mt-3">
-          Disco Rayado
+          {t('page.notFound.title')}
         </h2>
 
         <p className="text-sm sm:text-base text-[#5c435a] dark:text-[#B89CB0] mt-2 max-w-sm leading-relaxed">
-          Parece que la pista que buscas no existe o fue eliminada del archivo sonoro.
+          {t('page.notFound.description')}
         </p>
 
         {/* Botón Volver al Inicio */}
@@ -62,7 +64,7 @@ export const NotFoundPage = () => {
           <span className="material-symbols-outlined text-[18px]">
             arrow_back
           </span>
-          <span>Volver al inicio</span>
+          <span>{t('page.notFound.home')}</span>
         </motion.a>
       </motion.div>
     </div>

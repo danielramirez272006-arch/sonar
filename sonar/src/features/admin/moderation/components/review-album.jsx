@@ -1,3 +1,4 @@
+import { useUIText } from '../../../../shared/i18n/use-ui-text.js';
 import { useEffect, useState } from 'react'
 import { DEFAULT_DEEZER_ALBUMS, getAlbumById } from '../../../../shared/services/deezer-service.js'
 
@@ -5,6 +6,7 @@ import { DEFAULT_DEEZER_ALBUMS, getAlbumById } from '../../../../shared/services
 const demoAlbums = { album_01: 10709540, album_02: 14880659 }
 
 export function ReviewAlbum({ review }) {
+  const ui = useUIText();
   const albumId = demoAlbums[review.albumId] ?? review.albumId
   const fallback = DEFAULT_DEEZER_ALBUMS.find(album => String(album.id) === String(albumId))
   const [result, setResult] = useState(null)
@@ -28,19 +30,19 @@ export function ReviewAlbum({ review }) {
   return (
     <div className="review-body">
       {album?.cover && failedCover !== album.cover ? (
-        <img className="review-album-cover" src={album.cover} alt={`Portada de ${album.title}`} loading="lazy" onError={() => setFailedCover(album.cover)} />
+        <img className="review-album-cover" src={album.cover} alt={ui("Portada de {{value0}}", { value0: album.title })} loading="lazy" onError={() => setFailedCover(album.cover)} />
       ) : (
-        <div className="review-album-placeholder" role="img" aria-label="Portada no disponible">♫</div>
+        <div className="review-album-placeholder" role="img" aria-label={ui("Portada no disponible")}>♫</div>
       )}
       <div className="review-copy">
-        <div className="eyebrow">CATÁLOGO MUSICAL · DEEZER</div>
+        <div className="eyebrow">{ui("CATÁLOGO MUSICAL · DEEZER")}</div>
         <h3>{album?.title || review.albumTitle || `Álbum ${review.albumId}`}</h3>
         {album && <p className="review-album-artist">{album.artist}{album.year ? ` · ${album.year}` : ''}</p>}
-        <div className="rating"><span aria-hidden="true">★</span> {review.rating} <small>/ 5 · Calificación del oyente</small></div>
+        <div className="rating"><span aria-hidden="true">★</span> {review.rating} <small>{ui("/ 5 · Calificación del oyente")}</small></div>
         <blockquote>“{review.content}”</blockquote>
         <div className="review-album-source">
-          <span role="status">{loading ? 'Consultando Deezer…' : current.album ? 'Información de Deezer' : album ? 'Datos guardados · Deezer no disponible' : 'No se pudo cargar el álbum'}</span>
-          {album && <a href={`https://www.deezer.com/album/${albumId}`} target="_blank" rel="noopener noreferrer" aria-label={`Escuchar ${album.title} en Deezer (nueva pestaña)`}>Escuchar en Deezer ↗</a>}
+          <span role="status">{loading ? ui("Consultando Deezer…") : current.album ? ui("Información de Deezer") : album ? ui("Datos guardados · Deezer no disponible") : ui("No se pudo cargar el álbum")}</span>
+          {album && <a href={`https://www.deezer.com/album/${albumId}`} target="_blank" rel="noopener noreferrer" aria-label={ui("Escuchar {{value0}} en Deezer (nueva pestaña)", { value0: album.title })}>{ui("Escuchar en Deezer ↗")}</a>}
         </div>
       </div>
     </div>

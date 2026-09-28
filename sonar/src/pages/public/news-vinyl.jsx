@@ -1,3 +1,4 @@
+import { useUIText } from '../../shared/i18n/use-ui-text.js';
 import { Modal } from '../../shared/components/ui/modal.jsx'
 
 const formatReleaseDate = value => {
@@ -8,6 +9,7 @@ const formatReleaseDate = value => {
 }
 
 export function NewsVinyl({ editions, labels, articles, selected, onSelect, onArticle }) {
+  const ui = useUIText();
   const labelFor = edition => labels.find(label => String(label.id) === String(edition.labelId))
   const newsFor = edition => articles.filter(article => String(article.vinylId) === String(edition.id))
 
@@ -17,19 +19,14 @@ export function NewsVinyl({ editions, labels, articles, selected, onSelect, onAr
         <header className="sonar-showcase__head">
           <div className="sonar-showcase__intro">
             <span className="sonar-showcase__eyebrow">
-              <span className="material-symbols-outlined">album</span>
-              Analógico
-            </span>
-            <h2 id="sonar-vinyl-title" className="sonar-showcase__title">
-              Próximos vinilos <span className="sonar-showcase__title-accent">y reediciones</span>
+              <span className="material-symbols-outlined">album</span>{ui("Analógico")}</span>
+            <h2 id="sonar-vinyl-title" className="sonar-showcase__title">{ui("Próximos vinilos")} <span className="sonar-showcase__title-accent">{ui("y reediciones")}</span>
             </h2>
-            <p className="sonar-showcase__lead">
-              Descubre las ediciones anunciadas, sus detalles técnicos y las noticias relacionadas de cada tirada.
-            </p>
+            <p className="sonar-showcase__lead">{ui("Descubre las ediciones anunciadas, sus detalles técnicos y las noticias relacionadas de cada tirada.")}</p>
           </div>
           <span className="sonar-showcase__count">
             <span className="material-symbols-outlined">library_music</span>
-            {editions.length} {editions.length === 1 ? 'edición' : 'ediciones'}
+            {editions.length} {editions.length === 1 ? ui("edición") : ui("ediciones")}
           </span>
         </header>
 
@@ -52,7 +49,7 @@ export function NewsVinyl({ editions, labels, articles, selected, onSelect, onAr
                     <img
                       className="sonar-vinyl-card__cover"
                       src={edition.cover}
-                      alt={`Portada de ${edition.title}`}
+                      alt={ui("Portada de {{value0}}", { value0: edition.title })}
                       loading="lazy"
                     />
                   ) : (
@@ -60,7 +57,7 @@ export function NewsVinyl({ editions, labels, articles, selected, onSelect, onAr
                       <span className="material-symbols-outlined">album</span>
                     </span>
                   )}
-                  <span className="sonar-vinyl-card__badge">{edition.editionType || 'En vinilo'}</span>
+                  <span className="sonar-vinyl-card__badge">{edition.editionType || ui("En vinilo")}</span>
                   {relatedNews.length > 0 && (
                     <span className="sonar-vinyl-card__news">
                       <span className="material-symbols-outlined">newspaper</span>
@@ -99,10 +96,8 @@ export function NewsVinyl({ editions, labels, articles, selected, onSelect, onAr
                     type="button"
                     className="sonar-vinyl-card__cta"
                     onClick={() => onSelect(edition)}
-                    aria-label={`Ver edición de vinilo ${edition.title}`}
-                  >
-                    Ver edición de vinilo
-                    <span className="material-symbols-outlined">arrow_forward</span>
+                    aria-label={ui("Ver edición de vinilo {{value0}}", { value0: edition.title })}
+                  >{ui("Ver edición de vinilo")}<span className="material-symbols-outlined">arrow_forward</span>
                   </button>
                 </div>
               </article>
@@ -118,7 +113,7 @@ export function NewsVinyl({ editions, labels, articles, selected, onSelect, onAr
           <img
             className="news-edition-cover"
             src={selected.cover}
-            alt={`Portada de ${selected.title}`}
+            alt={ui("Portada de {{value0}}", { value0: selected.title })}
           />
         )}
         <p>{selected.artist}</p>
@@ -142,11 +137,9 @@ export function NewsVinyl({ editions, labels, articles, selected, onSelect, onAr
         </dl>
         <p>{selected.description}</p>
         {labelFor(selected)?.website && (
-          <a href={labelFor(selected).website} target="_blank" rel="noopener noreferrer">
-            Sitio oficial de la discográfica ↗
-          </a>
+          <a href={labelFor(selected).website} target="_blank" rel="noopener noreferrer">{ui("Sitio oficial de la discográfica ↗")}</a>
         )}
-        <h3>Noticias de esta edición</h3>
+        <h3>{ui("Noticias de esta edición")}</h3>
         {newsFor(selected).map(article => (
           <button
             className="vinyl-news-link"
@@ -159,7 +152,7 @@ export function NewsVinyl({ editions, labels, articles, selected, onSelect, onAr
             {article.title} →
           </button>
         ))}
-        {!newsFor(selected).length && <p>Aún no hay noticias publicadas para esta edición.</p>}
+        {!newsFor(selected).length && <p>{ui("Aún no hay noticias publicadas para esta edición.")}</p>}
       </Modal>
     )}
   </>

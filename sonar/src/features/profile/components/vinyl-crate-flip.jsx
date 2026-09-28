@@ -1,8 +1,10 @@
+import { useUIText } from '../../../shared/i18n/use-ui-text.js';
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { DEFAULT_FALLBACK_COVER, handleImageFallbackError } from '../../../shared/services/recommendations-service';
 
 export const VinylCrateFlip = ({ albums = [], onPlayAlbum, onToggleSave }) => {
+  const ui = useUIText();
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isFlipped, setIsFlipped] = useState(false);
   const [goldmineGrades, setGoldmineGrades] = useState(() => {
@@ -37,10 +39,8 @@ export const VinylCrateFlip = ({ albums = [], onPlayAlbum, onToggleSave }) => {
     return (
       <div className="p-12 text-center rounded-3xl bg-white dark:bg-[#4B2840] border border-[#e6d5e2] dark:border-white/10">
         <span className="material-symbols-outlined text-[48px] text-[#5c435a] dark:text-[#B89CB0]">album</span>
-        <h4 className="text-lg font-bold text-[#231123] dark:text-white mt-3">Tu Caja de Vinilos está vacía</h4>
-        <p className="text-xs text-[#5c435a] dark:text-[#B89CB0] mt-1">
-          Guarda álbumes en tu colección para hojearlos en el visor 3D.
-        </p>
+        <h4 className="text-lg font-bold text-[#231123] dark:text-white mt-3">{ui("Tu Caja de Vinilos está vacía")}</h4>
+        <p className="text-xs text-[#5c435a] dark:text-[#B89CB0] mt-1">{ui("Guarda álbumes en tu colección para hojearlos en el visor 3D.")}</p>
       </div>
     );
   }
@@ -53,7 +53,7 @@ export const VinylCrateFlip = ({ albums = [], onPlayAlbum, onToggleSave }) => {
       <div className="absolute top-0 inset-x-0 h-1 bg-gradient-to-r from-transparent via-[#B80C09] to-transparent" />
       <div className="absolute top-2 right-4 text-[11px] font-mono text-pink-200/60 uppercase tracking-widest flex items-center gap-1.5">
         <span className="material-symbols-outlined text-[14px] text-[#B80C09]">3d_rotation</span>
-        <span>Modo Caja 3D • {currentIndex + 1} de {albums.length}</span>
+        <span>{ui("Modo Caja 3D •")} {currentIndex + 1} {ui("de")} {albums.length}</span>
       </div>
 
       {/* Contenedor 3D de la Carátula y el Disco */}
@@ -67,7 +67,7 @@ export const VinylCrateFlip = ({ albums = [], onPlayAlbum, onToggleSave }) => {
           transition={{ type: 'spring', stiffness: 200, damping: 25 }}
           className="absolute w-56 h-56 sm:w-64 sm:h-64 rounded-full bg-black border-4 border-gray-900 shadow-[0_10px_30px_rgba(0,0,0,0.8)] flex items-center justify-center z-0 cursor-pointer"
           onClick={() => onPlayAlbum && onPlayAlbum(currentAlbum)}
-          title="Haz clic para reproducir este vinilo"
+          title={ui("Haz clic para reproducir este vinilo")}
         >
           {/* Surcos del vinilo */}
           <div className="w-full h-full rounded-full border border-white/10 flex items-center justify-center p-6">
@@ -116,25 +116,25 @@ export const VinylCrateFlip = ({ albums = [], onPlayAlbum, onToggleSave }) => {
       {/* Información del Álbum Actual */}
       <div className="flex flex-col items-center text-center gap-1.5 z-10 max-w-md w-full">
         <h3 className="text-xl sm:text-2xl font-black text-white tracking-tight truncate w-full">
-          {currentAlbum?.title || 'Título del Álbum'}
+          {currentAlbum?.title || ui("Título del Álbum")}
         </h3>
         <p className="text-sm font-semibold text-pink-200/80">
-          {currentAlbum?.artist || 'Artista'} • {currentAlbum?.year || 'Edición Maestra'}
+          {currentAlbum?.artist || ui("Artista")} • {currentAlbum?.year || ui("Edición Maestra")}
         </p>
 
         {/* Selector de Estado Físico Goldmine */}
         <div className="flex items-center gap-2 mt-2">
-          <span className="text-[11px] text-white/70 font-medium">Estado Físico:</span>
+          <span className="text-[11px] text-white/70 font-medium">{ui("Estado Físico:")}</span>
           <select
             value={currentGrade}
             onChange={(e) => handleSetGrade(currentAlbum.id, e.target.value)}
             className="text-xs font-bold py-1 px-2.5 rounded-lg bg-white/10 hover:bg-white/20 border border-white/20 text-white focus:outline-hidden focus:border-[#B80C09] cursor-pointer"
           >
-            <option value="Mint (M)" className="bg-[#231123] text-white">Mint (M) - Impecable</option>
-            <option value="Near Mint (NM)" className="bg-[#231123] text-white">Near Mint (NM) - Casi Nuevo</option>
+            <option value="Mint (M)" className="bg-[#231123] text-white">{ui("Mint (M) - Impecable")}</option>
+            <option value="Near Mint (NM)" className="bg-[#231123] text-white">{ui("Near Mint (NM) - Casi Nuevo")}</option>
             <option value="Very Good Plus (VG+)" className="bg-[#231123] text-white">Very Good Plus (VG+)</option>
-            <option value="Very Good (VG)" className="bg-[#231123] text-white">Very Good (VG) - Buen Estado</option>
-            <option value="Good (G)" className="bg-[#231123] text-white">Good (G) - Con Desgaste</option>
+            <option value="Very Good (VG)" className="bg-[#231123] text-white">{ui("Very Good (VG) - Buen Estado")}</option>
+            <option value="Good (G)" className="bg-[#231123] text-white">{ui("Good (G) - Con Desgaste")}</option>
           </select>
         </div>
       </div>
@@ -145,7 +145,7 @@ export const VinylCrateFlip = ({ albums = [], onPlayAlbum, onToggleSave }) => {
           type="button"
           onClick={handlePrev}
           className="p-3 rounded-2xl bg-white/10 hover:bg-white/20 text-white transition-all border border-white/15 flex items-center justify-center cursor-pointer shadow-md hover:scale-105"
-          title="Vinilo anterior"
+          title={ui("Vinilo anterior")}
         >
           <span className="material-symbols-outlined text-[22px]">arrow_back</span>
         </button>
@@ -156,14 +156,14 @@ export const VinylCrateFlip = ({ albums = [], onPlayAlbum, onToggleSave }) => {
           className="px-6 py-3 rounded-2xl bg-[#B80C09] hover:bg-[#960a07] text-white text-xs font-black tracking-wider uppercase transition-all shadow-[0_0_20px_rgba(184,12,9,0.5)] flex items-center gap-2 cursor-pointer hover:scale-105"
         >
           <span className="material-symbols-outlined text-[20px]">play_arrow</span>
-          <span>Poner en Tornamesa</span>
+          <span>{ui("Poner en Tornamesa")}</span>
         </button>
 
         <button
           type="button"
           onClick={handleNext}
           className="p-3 rounded-2xl bg-white/10 hover:bg-white/20 text-white transition-all border border-white/15 flex items-center justify-center cursor-pointer shadow-md hover:scale-105"
-          title="Siguiente vinilo"
+          title={ui("Siguiente vinilo")}
         >
           <span className="material-symbols-outlined text-[22px]">arrow_forward</span>
         </button>

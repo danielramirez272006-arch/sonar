@@ -1,6 +1,10 @@
+import { useUIText } from '../../shared/i18n/use-ui-text.js';
 import { useState } from 'react'
+import { useTranslation } from '../../shared/context/language-context.jsx'
 
 export function CatalogImage({ value, onChange, onBusy }) {
+  const ui = useUIText();
+  const { t } = useTranslation()
   const [error, setError] = useState('')
   async function upload(event) {
     const file = event.target.files[0]
@@ -9,8 +13,8 @@ export function CatalogImage({ value, onChange, onBusy }) {
     setError(''); onBusy(true)
     let bitmap
     try {
-      if (!['image/jpeg', 'image/png', 'image/webp'].includes(file.type)) throw new Error('Elige una imagen JPG, PNG o WebP.')
-      if (file.size > 5 * 1024 * 1024) throw new Error('La imagen debe pesar menos de 5 MB.')
+      if (!['image/jpeg', 'image/png', 'image/webp'].includes(file.type)) throw new Error(t('admin.catalog.imageFormat'))
+      if (file.size > 5 * 1024 * 1024) throw new Error(t('admin.catalog.imageTooLarge'))
       bitmap = await createImageBitmap(file)
       const canvas = document.createElement('canvas')
       const scale = Math.min(1, 600 / Math.max(bitmap.width, bitmap.height))
@@ -20,10 +24,10 @@ export function CatalogImage({ value, onChange, onBusy }) {
       context.drawImage(bitmap, 0, 0, canvas.width, canvas.height)
       let data
       for (const quality of [0.85, 0.65, 0.45, 0.25, 0.1]) { data = canvas.toDataURL('image/jpeg', quality); if (data.length <= 60000) break }
-      if (data.length > 60000) throw new Error('La imagen contiene demasiado detalle. Prueba una imagen más pequeña.')
+      if (data.length > 60000) throw new Error(t('admin.catalog.imageDetail'))
       onChange(data)
-    } catch (cause) { setError(cause.message || 'No se pudo leer la imagen.') }
+    } catch (cause) { setError(cause.message || t('admin.catalog.imageReadError')) }
     finally { bitmap?.close(); onBusy(false) }
   }
-  return <div className="catalog-image"><label>URL de la imagen<input type="url" value={value?.startsWith('data:') ? '' : value || ''} placeholder="https://…" onChange={event => onChange(event.target.value)} /></label><label className="catalog-upload"><strong>↑ Importar una imagen</strong><span>Selecciona una foto de tu equipo</span><input aria-label="Importar una imagen" type="file" accept="image/jpeg,image/png,image/webp" onChange={upload} /></label><small>JPG, PNG o WebP, hasta 5 MB. La imagen se optimiza al importarla y se conserva al guardar.</small>{value && <><img src={value} alt="Vista previa de la imagen" /><button type="button" onClick={() => onChange('')}>Quitar imagen</button></>}{error && <p role="alert">{error}</p>}</div>
+  return <div className="catalog-image"><label>{t('admin.catalog.imageUrl')}<input type="url" value={value?.startsWith('data:') ? '' : value || ''} placeholder="https://…" onChange={event => onChange(event.target.value)} /></label><label className="catalog-upload"><strong>↑ {t('admin.catalog.importImage')}</strong><span>{t('admin.catalog.selectPhoto')}</span><input aria-label={t('admin.catalog.importImage')} type="file" accept="image/jpeg,image/png,image/webp" onChange={upload} /></label><small>{ui("JPG, PNG o WebP, hasta 5 MB.")} {t('admin.catalog.imageOptimize')}</small>{value && <><img src={value} alt={t('admin.catalog.previewImage')} /><button type="button" onClick={() => onChange('')}>{t('admin.catalog.removeImage')}</button></>}{error && <p role="alert">{error}</p>}</div>
 }

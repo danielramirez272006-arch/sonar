@@ -1,3 +1,4 @@
+import { useUIText } from '../../../shared/i18n/use-ui-text.js';
 import React, { useState, useMemo, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { DEFAULT_DEEZER_ALBUMS } from '../../../shared/services/deezer-service';
@@ -14,6 +15,7 @@ import { interactionsService } from '../../../shared/services/interactions-servi
 import Toast from '../../../shared/components/ui/toast';
 
 export const TrendingGrid = () => {
+  const ui = useUIText();
   const { user, isJunior, isParentalControlActive } = useAuth() || {};
   const { t } = useTranslation();
   const [activeTab, setActiveTab] = useState(() => (isJunior || isParentalControlActive ? 'junior-safe' : (user ? 'for-you' : 'week')));
@@ -377,13 +379,13 @@ export const TrendingGrid = () => {
                     <button
                       type="button"
                       onClick={(e) => handleToggleBookmark(album, e)}
-                      aria-label="Guardar álbum"
+                      aria-label={ui("Guardar álbum")}
                       className={`absolute top-2.5 right-2.5 z-30 pointer-events-auto w-8 h-8 rounded-full flex items-center justify-center transition-all cursor-pointer shadow-md ${
                         isSaved
                           ? 'bg-[#B80C09] text-white shadow-[#B80C09]/50'
                           : 'bg-black/60 text-white hover:bg-[#B80C09] hover:scale-110'
                       }`}
-                      title={isSaved ? 'Quitar de tu colección' : 'Guardar en tu colección'}
+                      title={isSaved ? ui("Quitar de tu colección") : ui("Guardar en tu colección")}
                     >
                       <span
                         className="material-symbols-outlined text-[16px]"
@@ -399,15 +401,15 @@ export const TrendingGrid = () => {
                         onClick={() => openReviewModal(album)}
                         className="pointer-events-auto px-3 py-1.5 rounded-lg bg-white/20 hover:bg-[#B80C09] text-white text-xs uppercase font-bold flex items-center gap-1 shadow-md backdrop-blur-md transition-colors cursor-pointer"
                         type="button"
-                        title="Escribir crítica"
+                        title={ui("Escribir crítica")}
                       >
                         <span className="material-symbols-outlined text-[16px]">rate_review</span>
                         <span>{t('explore.review_btn', 'Criticar')}</span>
                       </button>
                       <button
                         onClick={() => handlePlayAlbum(album)}
-                        aria-label={`Reproducir muestra de ${album.title}`}
-                        title={isItemPlaying ? t('player.pause', 'Pausar') : 'Escuchar muestra'}
+                        aria-label={ui("Reproducir muestra de {{value0}}", { value0: album.title })}
+                        title={isItemPlaying ? t('player.pause', 'Pausar') : ui("Escuchar muestra")}
                         className={`pointer-events-auto w-9 h-9 rounded-full ${
                           isItemPlaying ? 'bg-[#B80C09] text-white' : 'bg-white text-[#231123]'
                         } flex items-center justify-center hover:scale-110 transition-transform shadow-md cursor-pointer`}
@@ -531,7 +533,7 @@ export const TrendingGrid = () => {
                         className={`p-1.5 rounded-xl transition-colors cursor-pointer ${
                           isSaved ? 'text-[#B80C09]' : 'text-gray-400 hover:text-[#B80C09]'
                         }`}
-                        title={isSaved ? 'Quitar de colección' : 'Guardar en colección'}
+                        title={isSaved ? ui("Quitar de colección") : ui("Guardar en colección")}
                         type="button"
                       >
                         <span

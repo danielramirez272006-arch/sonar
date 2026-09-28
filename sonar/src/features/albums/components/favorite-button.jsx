@@ -1,6 +1,8 @@
+import { useUIText } from '../../../shared/i18n/use-ui-text.js';
 import React, { useState } from 'react';
 
 export const FavoriteButton = ({ initialFavorite = false, onToggle = () => {} }) => {
+  const ui = useUIText();
   const [isFavorite, setIsFavorite] = useState(initialFavorite);
 
   const handleClick = () => {
@@ -13,7 +15,7 @@ export const FavoriteButton = ({ initialFavorite = false, onToggle = () => {} })
     <button
       type="button"
       onClick={handleClick}
-      aria-label={isFavorite ? 'Eliminar de favoritos' : 'Guardar en favoritos'}
+      aria-label={isFavorite ? ui("Eliminar de favoritos") : ui("Guardar en favoritos")}
       className={`p-3 rounded-full border transition-all cursor-pointer ${
         isFavorite
           ? 'bg-[#B80C09] text-white border-[#B80C09] shadow-md'

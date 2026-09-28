@@ -1,3 +1,4 @@
+import { useUIText } from '../../i18n/use-ui-text.js';
 import React from 'react';
 
 /**
@@ -5,6 +6,7 @@ import React from 'react';
  * Permite a usuarios de teclado y lectores de pantalla saltar la barra de navegación.
  */
 export const SkipToContent = ({ targetId = 'main-content' }) => {
+  const ui = useUIText();
   const handleClick = (e) => {
     e.preventDefault();
     const target = document.getElementById(targetId) || document.querySelector('main');
@@ -20,10 +22,8 @@ export const SkipToContent = ({ targetId = 'main-content' }) => {
       href={`#${targetId}`}
       onClick={handleClick}
       className="sonar-skip-link"
-      aria-label="Saltar navegación e ir directamente al contenido principal"
-    >
-      Saltar al contenido principal
-    </a>
+      aria-label={ui("Saltar navegación e ir directamente al contenido principal")}
+    >{ui("Saltar al contenido principal")}</a>
   );
 };
 

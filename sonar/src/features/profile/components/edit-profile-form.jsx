@@ -1,3 +1,4 @@
+import { useUIText } from '../../../shared/i18n/use-ui-text.js';
 import React, { useState, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
@@ -112,6 +113,7 @@ export const ICON_CHOICES = [
 ];
 
 export const EditProfileForm = ({ initialData = {}, onSave = () => {} }) => {
+  const ui = useUIText();
   const { changePassword, deleteAccount } = useAuth();
   const [activeTab, setActiveTab] = useState(() => {
     try {
@@ -325,7 +327,7 @@ export const EditProfileForm = ({ initialData = {}, onSave = () => {} }) => {
           }`}
         >
           <Palette size={16} />
-          <span>Perfil & Avatar Studio</span>
+          <span>{ui("Perfil & Avatar Studio")}</span>
         </button>
 
         <button
@@ -338,7 +340,7 @@ export const EditProfileForm = ({ initialData = {}, onSave = () => {} }) => {
           }`}
         >
           <Headphones size={16} />
-          <span>Equipamiento Audiófilo</span>
+          <span>{ui("Equipamiento Audiófilo")}</span>
         </button>
 
         <button
@@ -351,7 +353,7 @@ export const EditProfileForm = ({ initialData = {}, onSave = () => {} }) => {
           }`}
         >
           <Lock size={16} />
-          <span>Seguridad & Cifrado</span>
+          <span>{ui("Seguridad & Cifrado")}</span>
         </button>
 
         <button
@@ -364,7 +366,7 @@ export const EditProfileForm = ({ initialData = {}, onSave = () => {} }) => {
           }`}
         >
           <Trash2 size={16} />
-          <span>Eliminar Cuenta</span>
+          <span>{ui("Eliminar Cuenta")}</span>
         </button>
       </div>
 
@@ -372,7 +374,7 @@ export const EditProfileForm = ({ initialData = {}, onSave = () => {} }) => {
       {activeTab === 'profile' && (
         <form onSubmit={handleSubmit} className="flex flex-col gap-6">
           <Input
-            label="Nombre de Usuario / Firma"
+            label={ui("Nombre de Usuario / Firma")}
             value={formData.username}
             onChange={(e) => setFormData({ ...formData, username: e.target.value })}
             placeholder="ej. Mateo Rivaes"
@@ -380,14 +382,12 @@ export const EditProfileForm = ({ initialData = {}, onSave = () => {} }) => {
           />
 
           <div className="flex flex-col gap-1.5">
-            <label className="text-xs font-extrabold uppercase tracking-wider text-[#342632] dark:text-gray-300">
-              Biografía / Manifiesto Musical
-            </label>
+            <label className="text-xs font-extrabold uppercase tracking-wider text-[#342632] dark:text-gray-300">{ui("Biografía / Manifiesto Musical")}</label>
             <textarea
               rows={3}
               value={formData.bio}
               onChange={(e) => setFormData({ ...formData, bio: e.target.value })}
-              placeholder="Cuéntale a la comunidad tus discos de cabecera o qué buscas en una masterización..."
+              placeholder={ui("Cuéntale a la comunidad tus discos de cabecera o qué buscas en una masterización...")}
               className="w-full p-3.5 rounded-2xl border border-[#e6d5e2] dark:border-white/10 bg-[#fbedf9] dark:bg-[#231123] text-sm text-[#231123] dark:text-white placeholder-[#876a84] focus:outline-none focus:border-[#B80C09] transition-all resize-none"
             />
           </div>
@@ -410,12 +410,8 @@ export const EditProfileForm = ({ initialData = {}, onSave = () => {} }) => {
                   <span className="text-xs font-black uppercase tracking-wider text-[#B80C09] flex items-center gap-1">
                     <Sparkles className="w-3.5 h-3.5" /> Avatar Studio
                   </span>
-                  <h4 className="text-base font-extrabold text-[#231123] dark:text-white">
-                    Identidad Visual
-                  </h4>
-                  <p className="text-xs text-[#5c435a] dark:text-[#B89CB0]">
-                    Personaliza tu avatar con más de 34 combinaciones cromáticas.
-                  </p>
+                  <h4 className="text-base font-extrabold text-[#231123] dark:text-white">{ui("Identidad Visual")}</h4>
+                  <p className="text-xs text-[#5c435a] dark:text-[#B89CB0]">{ui("Personaliza tu avatar con más de 34 combinaciones cromáticas.")}</p>
                 </div>
               </div>
 
@@ -426,7 +422,7 @@ export const EditProfileForm = ({ initialData = {}, onSave = () => {} }) => {
                   className="px-3.5 py-2 rounded-xl bg-white dark:bg-[#4B2840] hover:bg-[#f8e9f6] text-[#5c1d5e] dark:text-pink-200 border border-[#e6d5e2] dark:border-white/10 text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 shadow-2xs"
                 >
                   <Dices className="w-4 h-4" />
-                  <span>Generar Aleatorio</span>
+                  <span>{ui("Generar Aleatorio")}</span>
                 </button>
               )}
             </div>
@@ -473,17 +469,14 @@ export const EditProfileForm = ({ initialData = {}, onSave = () => {} }) => {
                       <div className="w-16 h-16 rounded-2xl overflow-hidden border-2 border-[#B80C09] shrink-0 bg-gray-100 dark:bg-black/40 shadow-xs">
                         <img
                           src={formData.avatarUrl}
-                          alt="Vista previa del avatar subido"
+                          alt={ui("Vista previa del avatar subido")}
                           className="w-full h-full object-cover"
                         />
                       </div>
                       <div className="flex flex-col">
                         <span className="text-sm font-bold text-[#231123] dark:text-white flex items-center gap-1.5">
-                          <Check className="w-4 h-4 text-emerald-500" /> Imagen cargada con éxito
-                        </span>
-                        <span className="text-xs text-[#5c435a] dark:text-[#B89CB0]">
-                          Tu foto será visible en todas tus reseñas y perfil
-                        </span>
+                          <Check className="w-4 h-4 text-emerald-500" /> {ui("Imagen cargada con éxito")}</span>
+                        <span className="text-xs text-[#5c435a] dark:text-[#B89CB0]">{ui("Tu foto será visible en todas tus reseñas y perfil")}</span>
                       </div>
                     </div>
 
@@ -494,14 +487,14 @@ export const EditProfileForm = ({ initialData = {}, onSave = () => {} }) => {
                         className="px-3.5 py-2 rounded-xl text-xs font-bold bg-gray-100 dark:bg-white/10 hover:bg-[#B80C09] hover:text-white transition-colors cursor-pointer flex items-center gap-1.5"
                       >
                         <UploadCloud className="w-4 h-4" />
-                        <span>Cambiar Foto</span>
+                        <span>{ui("Cambiar Foto")}</span>
                       </button>
 
                       <button
                         type="button"
                         onClick={() => setFormData((prev) => ({ ...prev, avatarUrl: '', avatarStyle: 'blobatar' }))}
                         className="p-2 rounded-xl text-xs font-bold text-red-500 hover:bg-red-50 dark:hover:bg-red-950/40 transition-colors cursor-pointer"
-                        title="Eliminar foto"
+                        title={ui("Eliminar foto")}
                       >
                         <Trash2 className="w-4 h-4" />
                       </button>
@@ -526,12 +519,8 @@ export const EditProfileForm = ({ initialData = {}, onSave = () => {} }) => {
                       <UploadCloud className="w-6 h-6" />
                     </div>
                     <div>
-                      <span className="text-sm font-bold text-[#231123] dark:text-white block">
-                        Haz clic para seleccionar o arrastra tu foto aquí
-                      </span>
-                      <p className="text-xs text-[#5c435a] dark:text-[#B89CB0] mt-0.5">
-                        Archivos PNG, JPG, JPEG, WEBP o GIF (hasta 8MB)
-                      </p>
+                      <span className="text-sm font-bold text-[#231123] dark:text-white block">{ui("Haz clic para seleccionar o arrastra tu foto aquí")}</span>
+                      <p className="text-xs text-[#5c435a] dark:text-[#B89CB0] mt-0.5">{ui("Archivos PNG, JPG, JPEG, WEBP o GIF (hasta 8MB)")}</p>
                     </div>
                   </div>
                 )}
@@ -587,9 +576,7 @@ export const EditProfileForm = ({ initialData = {}, onSave = () => {} }) => {
             {/* Paletas de color (24 sólidos + 10 degradados) */}
             <div className="flex flex-col gap-3 pt-2 border-t border-[#e6d5e2] dark:border-white/10">
               <div className="flex items-center justify-between">
-                <span className="text-xs font-extrabold uppercase tracking-wider text-[#342632] dark:text-gray-300">
-                  Fondo del Avatar
-                </span>
+                <span className="text-xs font-extrabold uppercase tracking-wider text-[#342632] dark:text-gray-300">{ui("Fondo del Avatar")}</span>
                 <div className="flex gap-1">
                   <button
                     type="button"
@@ -597,18 +584,14 @@ export const EditProfileForm = ({ initialData = {}, onSave = () => {} }) => {
                     className={`px-2.5 py-1 rounded-lg text-xs font-bold ${
                       colorMode === 'solid' ? 'bg-[#B80C09] text-white' : 'bg-white dark:bg-[#4B2840] text-gray-500'
                     }`}
-                  >
-                    24 Sólidos
-                  </button>
+                  >{ui("24 Sólidos")}</button>
                   <button
                     type="button"
                     onClick={() => setColorMode('gradient')}
                     className={`px-2.5 py-1 rounded-lg text-xs font-bold ${
                       colorMode === 'gradient' ? 'bg-[#B80C09] text-white' : 'bg-white dark:bg-[#4B2840] text-gray-500'
                     }`}
-                  >
-                    10 Degradados
-                  </button>
+                  >{ui("10 Degradados")}</button>
                 </div>
               </div>
 
@@ -660,12 +643,8 @@ export const EditProfileForm = ({ initialData = {}, onSave = () => {} }) => {
                   <ImageIcon className="w-5 h-5" />
                 </span>
                 <div className="flex flex-col">
-                  <h4 className="text-base font-extrabold text-[#231123] dark:text-white">
-                    Portada de Perfil (Banner)
-                  </h4>
-                  <p className="text-xs text-[#5c435a] dark:text-[#B89CB0]">
-                    Personaliza la imagen o degradado de cabecera de tu perfil público.
-                  </p>
+                  <h4 className="text-base font-extrabold text-[#231123] dark:text-white">{ui("Portada de Perfil (Banner)")}</h4>
+                  <p className="text-xs text-[#5c435a] dark:text-[#B89CB0]">{ui("Personaliza la imagen o degradado de cabecera de tu perfil público.")}</p>
                 </div>
               </div>
 
@@ -688,16 +667,14 @@ export const EditProfileForm = ({ initialData = {}, onSave = () => {} }) => {
                   className="px-4 py-2 rounded-xl bg-[#B80C09] hover:bg-[#960a07] text-white text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 shadow-xs"
                 >
                   <UploadCloud className="w-4 h-4" />
-                  <span>Subir Imagen</span>
+                  <span>{ui("Subir Imagen")}</span>
                 </button>
                 {formData.bannerUrl && (
                   <button
                     type="button"
                     onClick={() => setFormData((prev) => ({ ...prev, bannerUrl: '' }))}
                     className="px-3 py-2 rounded-xl bg-gray-200 dark:bg-white/10 text-xs font-bold text-gray-700 dark:text-gray-300 hover:text-rose-500 transition-colors cursor-pointer"
-                  >
-                    Quitar
-                  </button>
+                  >{ui("Quitar")}</button>
                 )}
               </div>
             </div>
@@ -717,16 +694,14 @@ export const EditProfileForm = ({ initialData = {}, onSave = () => {} }) => {
             >
               <div className="absolute inset-0 bg-black/20 flex items-center justify-center">
                 <span className="text-xs font-bold text-white bg-black/40 px-3 py-1 rounded-full backdrop-blur-xs">
-                  {formData.bannerUrl ? 'Imagen personalizada activa' : 'Degradado predeterminado'}
+                  {formData.bannerUrl ? ui("Imagen personalizada activa") : ui("Degradado predeterminado")}
                 </span>
               </div>
             </div>
 
             {/* Selector rápido de degradados para el banner */}
             <div className="flex flex-col gap-2 pt-2">
-              <span className="text-xs font-bold text-[#5c435a] dark:text-[#B89CB0]">
-                O elige un estilo de atmósfera sonora:
-              </span>
+              <span className="text-xs font-bold text-[#5c435a] dark:text-[#B89CB0]">{ui("O elige un estilo de atmósfera sonora:")}</span>
               <div className="grid grid-cols-2 sm:grid-cols-5 gap-2">
                 {GRADIENT_PALETTES.slice(0, 5).map((item) => (
                   <button
@@ -755,9 +730,7 @@ export const EditProfileForm = ({ initialData = {}, onSave = () => {} }) => {
 
           {/* GÉNEROS MUSICALES */}
           <div className="flex flex-col gap-2.5 p-5 rounded-3xl bg-gray-50/80 dark:bg-[#231123]/70 border border-[#e6d5e2] dark:border-white/10">
-            <span className="text-xs font-extrabold uppercase tracking-wider text-[#B80C09]">
-              Gustos Musicales
-            </span>
+            <span className="text-xs font-extrabold uppercase tracking-wider text-[#B80C09]">{ui("Gustos Musicales")}</span>
             <div className="flex flex-wrap gap-2 pt-1">
               {GENRE_OPTIONS.map((genre) => {
                 const isSelected = formData.preferences?.includes(genre);
@@ -780,9 +753,7 @@ export const EditProfileForm = ({ initialData = {}, onSave = () => {} }) => {
             </div>
           </div>
 
-          <Button type="submit" variant="primary" className="self-end mt-2 px-7 py-3 cursor-pointer font-bold shadow-lg">
-            Guardar Perfil & Preferencias
-          </Button>
+          <Button type="submit" variant="primary" className="self-end mt-2 px-7 py-3 cursor-pointer font-bold shadow-lg">{ui("Guardar Perfil & Preferencias")}</Button>
         </form>
       )}
 
@@ -793,55 +764,49 @@ export const EditProfileForm = ({ initialData = {}, onSave = () => {} }) => {
             <div className="flex items-center gap-3 border-b border-[#e6d5e2] dark:border-white/10 pb-3">
               <Speaker className="w-6 h-6 text-[#B80C09]" />
               <div>
-                <h4 className="text-base font-black text-[#231123] dark:text-white">Equipamiento de Escucha</h4>
-                <p className="text-xs text-[#5c435a] dark:text-[#B89CB0]">
-                  Comparte tus dispositivos de alta fidelidad con la comunidad Sonar.
-                </p>
+                <h4 className="text-base font-black text-[#231123] dark:text-white">{ui("Equipamiento de Escucha")}</h4>
+                <p className="text-xs text-[#5c435a] dark:text-[#B89CB0]">{ui("Comparte tus dispositivos de alta fidelidad con la comunidad Sonar.")}</p>
               </div>
             </div>
 
             <Input
-              label="Auriculares / Monitores Principales"
+              label={ui("Auriculares / Monitores Principales")}
               value={formData.gear?.headphones || ''}
               onChange={(e) => setFormData({ ...formData, gear: { ...formData.gear, headphones: e.target.value } })}
               placeholder="ej. Sennheiser HD 600, Beyerdynamic DT 990 Pro, Focal Clear"
             />
 
             <Input
-              label="Tocadiscos / Tornamesa o DAC Principal"
+              label={ui("Tocadiscos / Tornamesa o DAC Principal")}
               value={formData.gear?.turntable || ''}
               onChange={(e) => setFormData({ ...formData, gear: { ...formData.gear, turntable: e.target.value } })}
               placeholder="ej. Technics SL-1200GR, Audio-Technica LP120X, Rega Planar 3"
             />
 
             <Input
-              label="Amplificador / DAC / Previo de Fono"
+              label={ui("Amplificador / DAC / Previo de Fono")}
               value={formData.gear?.dacAmp || ''}
               onChange={(e) => setFormData({ ...formData, gear: { ...formData.gear, dacAmp: e.target.value } })}
               placeholder="ej. Schiit Magni/Modi Stack, Marantz PM6007, Cambridge Audio"
             />
 
             <div className="flex flex-col gap-1.5">
-              <label className="text-xs font-extrabold uppercase tracking-wider text-[#342632] dark:text-gray-300">
-                Formato de Escucha Predilecto
-              </label>
+              <label className="text-xs font-extrabold uppercase tracking-wider text-[#342632] dark:text-gray-300">{ui("Formato de Escucha Predilecto")}</label>
               <select
                 value={formData.gear?.favoriteFormat || 'Vinilo 33⅓ RPM'}
                 onChange={(e) => setFormData({ ...formData, gear: { ...formData.gear, favoriteFormat: e.target.value } })}
                 className="w-full p-3 rounded-2xl border border-[#e6d5e2] dark:border-white/10 bg-[#fbedf9] dark:bg-[#231123] text-sm text-[#231123] dark:text-white font-bold"
               >
-                <option value="Vinilo 33⅓ RPM">Vinilo 33⅓ RPM (Prensaje Analógico)</option>
+                <option value="Vinilo 33⅓ RPM">{ui("Vinilo 33⅓ RPM (Prensaje Analógico)")}</option>
                 <option value="FLAC 24-bit/96kHz (Lossless)">FLAC 24-bit / 96kHz (Lossless Hi-Res)</option>
                 <option value="Streaming Hi-Fi">Streaming Hi-Fi (Deezer FLAC / Tidal Master)</option>
-                <option value="Cassette / Cinta Magnética">Cassette / Cinta Magnética Vintage</option>
+                <option value="Cassette / Cinta Magnética">{ui("Cassette / Cinta Magnética Vintage")}</option>
                 <option value="CD Audio Red Book 16-bit/44.1kHz">CD Audio Red Book (16-bit/44.1kHz)</option>
               </select>
             </div>
           </div>
 
-          <Button type="submit" variant="primary" className="self-end mt-2 px-7 py-3 cursor-pointer font-bold shadow-lg">
-            Guardar Equipamiento
-          </Button>
+          <Button type="submit" variant="primary" className="self-end mt-2 px-7 py-3 cursor-pointer font-bold shadow-lg">{ui("Guardar Equipamiento")}</Button>
         </form>
       )}
 
@@ -852,9 +817,8 @@ export const EditProfileForm = ({ initialData = {}, onSave = () => {} }) => {
             <div className="flex items-center gap-3 border-b border-[#e6d5e2] dark:border-white/10 pb-3">
               <ShieldCheck className="w-6 h-6 text-emerald-500" />
               <div>
-                <h4 className="text-base font-black text-[#231123] dark:text-white">Cifrado & Seguridad de la Cuenta</h4>
-                <p className="text-xs text-[#5c435a] dark:text-[#B89CB0]">
-                  Tu contraseña se procesa mediante algoritmo criptográfico <b>SHA-256 con Salt único</b>.
+                <h4 className="text-base font-black text-[#231123] dark:text-white">{ui("Cifrado & Seguridad de la Cuenta")}</h4>
+                <p className="text-xs text-[#5c435a] dark:text-[#B89CB0]">{ui("Tu contraseña se procesa mediante algoritmo criptográfico")} <b>{ui("SHA-256 con Salt único")}</b>.
                 </p>
               </div>
             </div>
@@ -872,15 +836,13 @@ export const EditProfileForm = ({ initialData = {}, onSave = () => {} }) => {
             )}
 
             <div className="flex flex-col gap-1.5 relative">
-              <label className="text-xs font-extrabold uppercase tracking-wider text-[#342632] dark:text-gray-300">
-                Contraseña Actual
-              </label>
+              <label className="text-xs font-extrabold uppercase tracking-wider text-[#342632] dark:text-gray-300">{ui("Contraseña Actual")}</label>
               <div className="relative">
                 <input
                   type={showOldPass ? 'text' : 'password'}
                   value={oldPassword}
                   onChange={(e) => setOldPassword(e.target.value)}
-                  placeholder="Ingresa tu contraseña actual"
+                  placeholder={ui("Ingresa tu contraseña actual")}
                   required
                   className="w-full pr-10 pl-3.5 py-2.5 rounded-2xl border border-[#e6d5e2] dark:border-white/10 bg-[#fbedf9] dark:bg-[#231123] text-sm text-[#231123] dark:text-white"
                 />
@@ -895,15 +857,13 @@ export const EditProfileForm = ({ initialData = {}, onSave = () => {} }) => {
             </div>
 
             <div className="flex flex-col gap-1.5 relative">
-              <label className="text-xs font-extrabold uppercase tracking-wider text-[#342632] dark:text-gray-300">
-                Nueva Contraseña (Mínimo 6 caracteres)
-              </label>
+              <label className="text-xs font-extrabold uppercase tracking-wider text-[#342632] dark:text-gray-300">{ui("Nueva Contraseña (Mínimo 6 caracteres)")}</label>
               <div className="relative">
                 <input
                   type={showNewPass ? 'text' : 'password'}
                   value={newPassword}
                   onChange={(e) => setNewPassword(e.target.value)}
-                  placeholder="Crea una contraseña segura"
+                  placeholder={ui("Crea una contraseña segura")}
                   required
                   className="w-full pr-10 pl-3.5 py-2.5 rounded-2xl border border-[#e6d5e2] dark:border-white/10 bg-[#fbedf9] dark:bg-[#231123] text-sm text-[#231123] dark:text-white"
                 />
@@ -918,14 +878,12 @@ export const EditProfileForm = ({ initialData = {}, onSave = () => {} }) => {
             </div>
 
             <div className="flex flex-col gap-1.5">
-              <label className="text-xs font-extrabold uppercase tracking-wider text-[#342632] dark:text-gray-300">
-                Confirmar Nueva Contraseña
-              </label>
+              <label className="text-xs font-extrabold uppercase tracking-wider text-[#342632] dark:text-gray-300">{ui("Confirmar Nueva Contraseña")}</label>
               <input
                 type="password"
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
-                placeholder="Repite tu nueva contraseña"
+                placeholder={ui("Repite tu nueva contraseña")}
                 required
                 className="w-full pl-3.5 py-2.5 rounded-2xl border border-[#e6d5e2] dark:border-white/10 bg-[#fbedf9] dark:bg-[#231123] text-sm text-[#231123] dark:text-white"
               />
@@ -938,7 +896,7 @@ export const EditProfileForm = ({ initialData = {}, onSave = () => {} }) => {
             disabled={isChangingPass}
             className="self-end mt-2 px-7 py-3 cursor-pointer font-bold shadow-lg"
           >
-            {isChangingPass ? 'Cifrando con SHA-256...' : 'Actualizar Contraseña Cifrada'}
+            {isChangingPass ? ui("Cifrando con SHA-256...") : ui("Actualizar Contraseña Cifrada")}
           </Button>
         </form>
       )}
@@ -951,10 +909,8 @@ export const EditProfileForm = ({ initialData = {}, onSave = () => {} }) => {
             <div className="flex items-center gap-3 text-[#231123] dark:text-white">
               <span className="material-symbols-outlined text-2xl text-[#B80C09]">download</span>
               <div>
-                <h4 className="text-base font-extrabold">Portabilidad: Exportar mis Datos (JSON)</h4>
-                <p className="text-xs text-[#5c435a] dark:text-[#B89CB0] mt-0.5">
-                  Descarga una copia completa de tu perfil, críticas publicadas, colecciones guardadas y preferencias.
-                </p>
+                <h4 className="text-base font-extrabold">{ui("Portabilidad: Exportar mis Datos (JSON)")}</h4>
+                <p className="text-xs text-[#5c435a] dark:text-[#B89CB0] mt-0.5">{ui("Descarga una copia completa de tu perfil, críticas publicadas, colecciones guardadas y preferencias.")}</p>
               </div>
             </div>
             <div className="flex justify-end">
@@ -978,7 +934,7 @@ export const EditProfileForm = ({ initialData = {}, onSave = () => {} }) => {
                 className="px-5 py-2 rounded-xl text-xs font-bold flex items-center gap-1.5 cursor-pointer shadow-2xs"
               >
                 <span className="material-symbols-outlined text-[16px]">file_download</span>
-                <span>Descargar Archivo JSON</span>
+                <span>{ui("Descargar Archivo JSON")}</span>
               </Button>
             </div>
           </div>
@@ -987,10 +943,8 @@ export const EditProfileForm = ({ initialData = {}, onSave = () => {} }) => {
             <div className="flex items-center gap-3 text-rose-600 dark:text-rose-400">
               <Trash2 className="w-6 h-6 shrink-0" />
               <div>
-                <h4 className="text-base font-black">Zona de Peligro: Eliminar Cuenta Permanentemente</h4>
-                <p className="text-xs text-rose-700/80 dark:text-rose-300/80 mt-0.5">
-                  Esta acción es irreversible. Se eliminará tu perfil, configuración, preferencias y registros de sesión en Sonar.
-                </p>
+                <h4 className="text-base font-black">{ui("Zona de Peligro: Eliminar Cuenta Permanentemente")}</h4>
+                <p className="text-xs text-rose-700/80 dark:text-rose-300/80 mt-0.5">{ui("Esta acción es irreversible. Se eliminará tu perfil, configuración, preferencias y registros de sesión en Sonar.")}</p>
               </div>
             </div>
 
@@ -1001,8 +955,7 @@ export const EditProfileForm = ({ initialData = {}, onSave = () => {} }) => {
             )}
 
             <div className="flex flex-col gap-2 pt-2 border-t border-rose-500/20">
-              <label className="text-xs font-bold text-[#231123] dark:text-gray-200">
-                Para confirmar la eliminación, escribe <span className="font-mono font-extrabold text-rose-600 dark:text-rose-400">ELIMINAR MI CUENTA</span>:
+              <label className="text-xs font-bold text-[#231123] dark:text-gray-200">{ui("Para confirmar la eliminación, escribe")} <span className="font-mono font-extrabold text-rose-600 dark:text-rose-400">ELIMINAR MI CUENTA</span>:
               </label>
               <input
                 type="text"
@@ -1019,9 +972,7 @@ export const EditProfileForm = ({ initialData = {}, onSave = () => {} }) => {
                 variant="outline"
                 onClick={() => setActiveTab('profile')}
                 className="cursor-pointer"
-              >
-                Cancelar
-              </Button>
+              >{ui("Cancelar")}</Button>
               <Button
                 type="button"
                 disabled={deleteConfirmText.trim() !== 'ELIMINAR MI CUENTA' || isDeleting}
@@ -1041,7 +992,7 @@ export const EditProfileForm = ({ initialData = {}, onSave = () => {} }) => {
                     : 'bg-gray-400 dark:bg-gray-700 opacity-50 cursor-not-allowed'
                 }`}
               >
-                {isDeleting ? 'Eliminando cuenta...' : 'Confirmar y Eliminar Definitivamente'}
+                {isDeleting ? ui("Eliminando cuenta...") : ui("Confirmar y Eliminar Definitivamente")}
               </Button>
             </div>
           </div>

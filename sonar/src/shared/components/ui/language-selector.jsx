@@ -1,9 +1,11 @@
+import { useUIText } from '../../i18n/use-ui-text.js';
 import React, { useState, useRef, useEffect } from 'react';
 import { Globe, ChevronDown, Check } from 'lucide-react';
 import { useLanguage } from '../../context/language-context';
 
 export function LanguageSelector({ variant = 'navbar', className = '' }) {
-  const { currentLang, changeLanguage, languages, currentLanguageObj } = useLanguage();
+  const ui = useUIText();
+  const { currentLang, changeLanguage, languages, currentLanguageObj, t } = useLanguage();
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef(null);
 
@@ -32,7 +34,7 @@ export function LanguageSelector({ variant = 'navbar', className = '' }) {
               type="button"
               className={`lang-option-pill ${currentLang === lang.code ? 'active' : ''}`}
               onClick={() => handleSelect(lang.code)}
-              aria-label={`Cambiar idioma a ${lang.label}`}
+              aria-label={ui("Cambiar idioma a {{value0}}", { value0: lang.label })}
             >
               <span>{lang.flag}</span>
               <span>{lang.label}</span>
@@ -50,7 +52,7 @@ export function LanguageSelector({ variant = 'navbar', className = '' }) {
         className="lang-selector-btn"
         onClick={() => setIsOpen(!isOpen)}
         aria-expanded={isOpen}
-        aria-label="Seleccionar idioma / Select language"
+        aria-label={t('common.select_language')}
       >
         <Globe size={18} className="lang-icon" />
         <span className="lang-flag">{currentLanguageObj.flag}</span>
@@ -60,7 +62,7 @@ export function LanguageSelector({ variant = 'navbar', className = '' }) {
 
       {isOpen && (
         <div className="lang-dropdown-menu">
-          <div className="lang-dropdown-header">Idioma / Language</div>
+          <div className="lang-dropdown-header">{t('common.language')}</div>
           {languages.map((lang) => (
             <button
               key={lang.code}

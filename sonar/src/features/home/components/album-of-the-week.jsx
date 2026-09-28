@@ -1,3 +1,4 @@
+import { useUIText } from '../../../shared/i18n/use-ui-text.js';
 import React, { useState, useEffect, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { usePlayer } from '../../../shared/context/player-context';
@@ -119,6 +120,7 @@ export const ALL_SPOTLIGHT_ALBUMS = [
 ];
 
 export const AlbumOfTheWeek = () => {
+  const ui = useUIText();
   const { user, isJunior, isParentalControlActive } = useAuth() || {};
   const isKidsActive = Boolean(isJunior || isParentalControlActive);
   const { playTrack, toggleTrack, currentTrack, isPlaying, openReviewModal } = usePlayer();
@@ -220,19 +222,17 @@ export const AlbumOfTheWeek = () => {
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-[#e6d5e2] dark:border-white/10 pb-4">
           <div className="flex items-center gap-2.5">
             <span className="w-2.5 h-2.5 rounded-full bg-[#B80C09] animate-pulse" />
-            <span className="text-xs uppercase tracking-widest text-[#5c1d5e] dark:text-pink-300 font-black">
-              VITRINA EDITORIAL AUDIÓFILA
-            </span>
+            <span className="text-xs uppercase tracking-widest text-[#5c1d5e] dark:text-pink-300 font-black">{ui("VITRINA EDITORIAL AUDIÓFILA")}</span>
           </div>
 
           <button
             type="button"
             onClick={handleSurpriseMe}
             className="self-start sm:self-auto flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-white dark:bg-[#4B2840] hover:bg-[#B80C09] hover:text-white dark:hover:bg-[#B80C09] border border-[#e6d5e2] dark:border-white/10 text-xs font-bold text-[#231123] dark:text-white shadow-xs transition-all cursor-pointer group"
-            title="Reproducir una joya musical aleatoria"
+            title={ui("Reproducir una joya musical aleatoria")}
           >
             <span className="text-sm group-hover:rotate-45 transition-transform">🎲</span>
-            <span>Sorpréndeme (Ruleta)</span>
+            <span>{ui("Sorpréndeme (Ruleta)")}</span>
           </button>
         </div>
 
@@ -261,7 +261,7 @@ export const AlbumOfTheWeek = () => {
                   })
                 }
                 className="relative group cursor-pointer select-none max-w-full"
-                title="Haz clic para escuchar la muestra de 30s"
+                title={ui("Haz clic para escuchar la muestra de 30s")}
               >
                 {/* Disco de Vinilo Deslizante con Surcos Analógicos */}
                 <div
@@ -380,7 +380,7 @@ export const AlbumOfTheWeek = () => {
                   {currentAlbum.quote}
                 </p>
                 <div className="mt-2.5 flex items-center justify-between text-xs text-[#5c435a] dark:text-gray-400 border-t border-[#e6d5e2]/60 dark:border-white/10 pt-2">
-                  <span>— Consejo Editorial Sonar</span>
+                  <span>{ui("— Consejo Editorial Sonar")}</span>
                   <span className="font-bold text-[#5c1d5e] dark:text-pink-300 uppercase tracking-wider text-[11px]">
                     {currentAlbum.editorialTag}
                   </span>
@@ -409,7 +409,7 @@ export const AlbumOfTheWeek = () => {
                   <span className="material-symbols-outlined text-[18px] sm:text-[20px]" style={{ fontVariationSettings: "'FILL' 1" }}>
                     {isCurrentPlaying ? 'pause' : 'play_arrow'}
                   </span>
-                  <span>{isCurrentPlaying ? 'Pausar Muestra' : 'Escuchar Ahora (30s)'}</span>
+                  <span>{isCurrentPlaying ? ui("Pausar Muestra") : ui("Escuchar Ahora (30s)")}</span>
                 </motion.button>
 
                 <motion.button
@@ -422,21 +422,21 @@ export const AlbumOfTheWeek = () => {
                   <span className="material-symbols-outlined text-[16px] text-[#B80C09]">
                     rate_review
                   </span>
-                  <span>Escribir Reseña</span>
+                  <span>{ui("Escribir Reseña")}</span>
                 </motion.button>
 
                 <motion.button
                   whileHover={{ scale: 1.08 }}
                   whileTap={{ scale: 0.92 }}
                   onClick={handleToggleSave}
-                  aria-label="Guardar álbum en colección"
+                  aria-label={ui("Guardar álbum en colección")}
                   className={`p-3 rounded-xl border transition-colors shadow-xs cursor-pointer flex items-center justify-center ${
                     isSaved
                       ? 'bg-[#B80C09] text-white border-[#B80C09]'
                       : 'bg-white dark:bg-[#4B2840] border-[#e6d5e2] dark:border-white/10 text-[#5c435a] dark:text-gray-300 hover:text-[#B80C09] hover:border-[#B80C09]'
                   }`}
                   type="button"
-                  title={isSaved ? 'Quitar de tu colección' : 'Guardar en tu colección'}
+                  title={isSaved ? ui("Quitar de tu colección") : ui("Guardar en tu colección")}
                 >
                   <span
                     className="material-symbols-outlined text-[20px]"

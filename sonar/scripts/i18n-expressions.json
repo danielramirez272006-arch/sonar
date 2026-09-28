@@ -1,0 +1,697 @@
+[
+  {
+    "file": "App.jsx",
+    "line": 199,
+    "text": "light_mode"
+  },
+  {
+    "file": "App.jsx",
+    "line": 199,
+    "text": "dark_mode"
+  },
+  {
+    "file": "pages/public/community-page.jsx",
+    "line": 812,
+    "text": "check"
+  },
+  {
+    "file": "pages/public/community-page.jsx",
+    "line": 812,
+    "text": "add"
+  },
+  {
+    "file": "pages/public/home-page.jsx",
+    "line": 226,
+    "text": "check_circle"
+  },
+  {
+    "file": "pages/public/home-page.jsx",
+    "line": 226,
+    "text": "filter_alt"
+  },
+  {
+    "file": "pages/public/home-page.jsx",
+    "line": 310,
+    "text": "pause"
+  },
+  {
+    "file": "pages/public/home-page.jsx",
+    "line": 310,
+    "text": "play_arrow"
+  },
+  {
+    "file": "pages/public/home-page.jsx",
+    "line": 328,
+    "text": "bookmark_added"
+  },
+  {
+    "file": "pages/public/home-page.jsx",
+    "line": 328,
+    "text": "bookmark_add"
+  },
+  {
+    "file": "pages/public/news-page.jsx",
+    "line": 611,
+    "text": "pause"
+  },
+  {
+    "file": "pages/public/news-page.jsx",
+    "line": 611,
+    "text": "headphones"
+  },
+  {
+    "file": "pages/public/news-page.jsx",
+    "line": 634,
+    "text": "pause"
+  },
+  {
+    "file": "pages/public/news-page.jsx",
+    "line": 634,
+    "text": "play_arrow"
+  },
+  {
+    "file": "pages/public/news-page.jsx",
+    "line": 952,
+    "text": "pause"
+  },
+  {
+    "file": "pages/public/news-page.jsx",
+    "line": 952,
+    "text": "headphones"
+  },
+  {
+    "file": "pages/public/news-page.jsx",
+    "line": 971,
+    "text": "pause"
+  },
+  {
+    "file": "pages/public/news-page.jsx",
+    "line": 971,
+    "text": "play_arrow"
+  },
+  {
+    "file": "pages/public/news-page.jsx",
+    "line": 996,
+    "text": "search_off"
+  },
+  {
+    "file": "pages/public/news-page.jsx",
+    "line": 996,
+    "text": "newspaper"
+  },
+  {
+    "file": "pages/public/news-page.jsx",
+    "line": 1257,
+    "text": "pause"
+  },
+  {
+    "file": "pages/public/news-page.jsx",
+    "line": 1257,
+    "text": "play_arrow"
+  },
+  {
+    "file": "pages/public/news-page.jsx",
+    "line": 1297,
+    "text": "pause"
+  },
+  {
+    "file": "pages/public/news-page.jsx",
+    "line": 1297,
+    "text": "play_arrow"
+  },
+  {
+    "file": "pages/public/news-page.jsx",
+    "line": 1323,
+    "text": "stop"
+  },
+  {
+    "file": "pages/public/news-page.jsx",
+    "line": 1323,
+    "text": "record_voice_over"
+  },
+  {
+    "file": "pages/public/news-page.jsx",
+    "line": 1456,
+    "text": "stop"
+  },
+  {
+    "file": "pages/public/news-page.jsx",
+    "line": 1456,
+    "text": "record_voice_over"
+  },
+  {
+    "file": "pages/public/podcasts-page.jsx",
+    "line": 348,
+    "text": "pause"
+  },
+  {
+    "file": "pages/public/podcasts-page.jsx",
+    "line": 348,
+    "text": "play_arrow"
+  },
+  {
+    "file": "pages/public/reviews-feed-page.jsx",
+    "line": 223,
+    "text": "pause"
+  },
+  {
+    "file": "pages/public/reviews-feed-page.jsx",
+    "line": 223,
+    "text": "play_arrow"
+  },
+  {
+    "file": "pages/public/vinyl-mode-page.jsx",
+    "line": 584,
+    "text": "bookmark_added"
+  },
+  {
+    "file": "pages/public/vinyl-mode-page.jsx",
+    "line": 584,
+    "text": "bookmark_add"
+  },
+  {
+    "file": "pages/public/vinyl-mode-page.jsx",
+    "line": 781,
+    "text": "ON"
+  },
+  {
+    "file": "pages/public/vinyl-mode-page.jsx",
+    "line": 781,
+    "text": "OFF"
+  },
+  {
+    "file": "pages/public/vinyl-mode-page.jsx",
+    "line": 796,
+    "text": "pause_circle"
+  },
+  {
+    "file": "pages/public/vinyl-mode-page.jsx",
+    "line": 796,
+    "text": "play_circle"
+  },
+  {
+    "file": "pages/public/vinyl-mode-page.jsx",
+    "line": 877,
+    "text": "bookmark_added"
+  },
+  {
+    "file": "pages/public/vinyl-mode-page.jsx",
+    "line": 877,
+    "text": "bookmark_add"
+  },
+  {
+    "file": "pages/public/vinyl-mode-page.jsx",
+    "line": 881,
+    "text": "30s"
+  },
+  {
+    "file": "pages/user/saved-albums-page.jsx",
+    "line": 160,
+    "text": "pause"
+  },
+  {
+    "file": "pages/user/saved-albums-page.jsx",
+    "line": 160,
+    "text": "play_arrow"
+  },
+  {
+    "file": "features/home/components/album-of-the-week.jsx",
+    "line": 321,
+    "text": "pause"
+  },
+  {
+    "file": "features/home/components/album-of-the-week.jsx",
+    "line": 321,
+    "text": "play_arrow"
+  },
+  {
+    "file": "features/home/components/album-of-the-week.jsx",
+    "line": 410,
+    "text": "pause"
+  },
+  {
+    "file": "features/home/components/album-of-the-week.jsx",
+    "line": 410,
+    "text": "play_arrow"
+  },
+  {
+    "file": "features/home/components/album-of-the-week.jsx",
+    "line": 445,
+    "text": "bookmark_added"
+  },
+  {
+    "file": "features/home/components/album-of-the-week.jsx",
+    "line": 445,
+    "text": "bookmark_add"
+  },
+  {
+    "file": "features/home/components/featured-reviews.jsx",
+    "line": 166,
+    "text": "star"
+  },
+  {
+    "file": "features/home/components/featured-reviews.jsx",
+    "line": 168,
+    "text": "star_half"
+  },
+  {
+    "file": "features/home/components/featured-reviews.jsx",
+    "line": 169,
+    "text": "star"
+  },
+  {
+    "file": "features/home/components/hero-search.jsx",
+    "line": 499,
+    "text": "mic"
+  },
+  {
+    "file": "features/home/components/hero-search.jsx",
+    "line": 499,
+    "text": "mic_none"
+  },
+  {
+    "file": "features/home/components/hero-search.jsx",
+    "line": 702,
+    "text": "progress_activity"
+  },
+  {
+    "file": "features/home/components/hero-search.jsx",
+    "line": 702,
+    "text": "queue_music"
+  },
+  {
+    "file": "features/home/components/hero-search.jsx",
+    "line": 732,
+    "text": "pause"
+  },
+  {
+    "file": "features/home/components/hero-search.jsx",
+    "line": 732,
+    "text": "play_arrow"
+  },
+  {
+    "file": "features/home/components/hero-search.jsx",
+    "line": 835,
+    "text": "expand_less"
+  },
+  {
+    "file": "features/home/components/hero-search.jsx",
+    "line": 835,
+    "text": "expand_more"
+  },
+  {
+    "file": "features/home/components/hero-search.jsx",
+    "line": 852,
+    "text": "expand_less"
+  },
+  {
+    "file": "features/home/components/hero-search.jsx",
+    "line": 852,
+    "text": "expand_more"
+  },
+  {
+    "file": "features/home/components/hero-search.jsx",
+    "line": 869,
+    "text": "expand_less"
+  },
+  {
+    "file": "features/home/components/hero-search.jsx",
+    "line": 869,
+    "text": "expand_more"
+  },
+  {
+    "file": "features/home/components/hero-search.jsx",
+    "line": 886,
+    "text": "expand_less"
+  },
+  {
+    "file": "features/home/components/hero-search.jsx",
+    "line": 886,
+    "text": "expand_more"
+  },
+  {
+    "file": "features/home/components/hero-search.jsx",
+    "line": 903,
+    "text": "expand_less"
+  },
+  {
+    "file": "features/home/components/hero-search.jsx",
+    "line": 903,
+    "text": "expand_more"
+  },
+  {
+    "file": "features/home/components/trending-grid.jsx",
+    "line": 394,
+    "text": "bookmark_added"
+  },
+  {
+    "file": "features/home/components/trending-grid.jsx",
+    "line": 394,
+    "text": "bookmark_add"
+  },
+  {
+    "file": "features/home/components/trending-grid.jsx",
+    "line": 419,
+    "text": "pause"
+  },
+  {
+    "file": "features/home/components/trending-grid.jsx",
+    "line": 419,
+    "text": "play_arrow"
+  },
+  {
+    "file": "features/home/components/trending-grid.jsx",
+    "line": 517,
+    "text": "pause"
+  },
+  {
+    "file": "features/home/components/trending-grid.jsx",
+    "line": 517,
+    "text": "play_arrow"
+  },
+  {
+    "file": "features/home/components/trending-grid.jsx",
+    "line": 543,
+    "text": "bookmark_added"
+  },
+  {
+    "file": "features/home/components/trending-grid.jsx",
+    "line": 543,
+    "text": "bookmark_add"
+  },
+  {
+    "file": "features/profile/components/audiophile-monthly-wrapped.jsx",
+    "line": 242,
+    "text": "hourglass_top"
+  },
+  {
+    "file": "features/profile/components/audiophile-monthly-wrapped.jsx",
+    "line": 242,
+    "text": "badge"
+  },
+  {
+    "file": "features/profile/components/audiophile-monthly-wrapped.jsx",
+    "line": 253,
+    "text": "check"
+  },
+  {
+    "file": "features/profile/components/audiophile-monthly-wrapped.jsx",
+    "line": 253,
+    "text": "ios_share"
+  },
+  {
+    "file": "features/profile/components/audiophile-monthly-wrapped.jsx",
+    "line": 409,
+    "text": "@usuario"
+  },
+  {
+    "file": "features/profile/components/audiophile-monthly-wrapped.jsx",
+    "line": 409,
+    "text": "audiophile@sonar.audio"
+  },
+  {
+    "file": "features/profile/components/audiophile-monthly-wrapped.jsx",
+    "line": 428,
+    "text": "Technics SL-1200"
+  },
+  {
+    "file": "features/profile/components/audiophile-monthly-wrapped.jsx",
+    "line": 431,
+    "text": "Sennheiser HD 660S"
+  },
+  {
+    "file": "features/profile/components/audiophile-passport-tab.jsx",
+    "line": 224,
+    "text": "@audiophile"
+  },
+  {
+    "file": "features/profile/components/audiophile-passport-tab.jsx",
+    "line": 232,
+    "text": "Technics Direct Drive"
+  },
+  {
+    "file": "features/profile/components/audiophile-passport-tab.jsx",
+    "line": 236,
+    "text": "Sennheiser Open-Back"
+  },
+  {
+    "file": "features/profile/components/audiophile-passport-tab.jsx",
+    "line": 251,
+    "text": "check_circle"
+  },
+  {
+    "file": "features/profile/components/audiophile-passport-tab.jsx",
+    "line": 251,
+    "text": "share"
+  },
+  {
+    "file": "features/profile/components/audiophile-passport-tab.jsx",
+    "line": 453,
+    "text": "Vinilo 180g Prensado Japonés"
+  },
+  {
+    "file": "features/profile/components/audiophile-passport-tab.jsx",
+    "line": 460,
+    "text": "Cambridge Audio DacMagic 200M"
+  },
+  {
+    "file": "features/profile/components/audiophile-passport-tab.jsx",
+    "line": 467,
+    "text": "Ortofon 2M Blue"
+  },
+  {
+    "file": "features/profile/components/enhanced-parental-control.jsx",
+    "line": 395,
+    "text": "child_care"
+  },
+  {
+    "file": "features/profile/components/enhanced-parental-control.jsx",
+    "line": 395,
+    "text": "pin"
+  },
+  {
+    "file": "features/profile/components/enhanced-parental-control.jsx",
+    "line": 395,
+    "text": "lock_open"
+  },
+  {
+    "file": "features/profile/components/enhanced-parental-control.jsx",
+    "line": 539,
+    "text": "pause"
+  },
+  {
+    "file": "features/profile/components/enhanced-parental-control.jsx",
+    "line": 539,
+    "text": "play_arrow"
+  },
+  {
+    "file": "features/profile/components/profile-header.jsx",
+    "line": 306,
+    "text": "person_remove"
+  },
+  {
+    "file": "features/profile/components/profile-header.jsx",
+    "line": 306,
+    "text": "person_add"
+  },
+  {
+    "file": "features/profile/components/rewards-store-tab.jsx",
+    "line": 569,
+    "text": "lock_open"
+  },
+  {
+    "file": "features/profile/components/rewards-store-tab.jsx",
+    "line": 569,
+    "text": "redeem"
+  },
+  {
+    "file": "features/profile/components/rewards-store-tab.jsx",
+    "line": 719,
+    "text": "check_circle"
+  },
+  {
+    "file": "features/profile/components/rewards-store-tab.jsx",
+    "line": 719,
+    "text": "vpn_key"
+  },
+  {
+    "file": "features/profile/components/rewards-store-tab.jsx",
+    "line": 719,
+    "text": "tune"
+  },
+  {
+    "file": "features/profile/components/sound-signature-selector.jsx",
+    "line": 93,
+    "text": "check"
+  },
+  {
+    "file": "features/profile/components/sound-signature-selector.jsx",
+    "line": 93,
+    "text": "save"
+  },
+  {
+    "file": "features/profile/components/vinyl-crate-flip.jsx",
+    "line": 79,
+    "text": "SONAR"
+  },
+  {
+    "file": "features/profile/components/vinyl-crate-flip.jsx",
+    "line": 102,
+    "text": "Vinilo"
+  },
+  {
+    "file": "features/reviews/components/comment-section.jsx",
+    "line": 326,
+    "text": "U"
+  },
+  {
+    "file": "features/reviews/components/comment-section.jsx",
+    "line": 465,
+    "text": "U"
+  },
+  {
+    "file": "features/reviews/components/review-feed-card.jsx",
+    "line": 287,
+    "text": "done"
+  },
+  {
+    "file": "features/reviews/components/review-feed-card.jsx",
+    "line": 287,
+    "text": "favorite"
+  },
+  {
+    "file": "features/reviews/components/review-form.jsx",
+    "line": 217,
+    "text": "music_note"
+  },
+  {
+    "file": "features/reviews/components/review-form.jsx",
+    "line": 217,
+    "text": "album"
+  },
+  {
+    "file": "shared/components/a11y/accessibility-widget.jsx",
+    "line": 363,
+    "text": "stop"
+  },
+  {
+    "file": "shared/components/a11y/accessibility-widget.jsx",
+    "line": 363,
+    "text": "volume_up"
+  },
+  {
+    "file": "shared/components/a11y/tts-button.jsx",
+    "line": 41,
+    "text": "volume_off"
+  },
+  {
+    "file": "shared/components/a11y/tts-button.jsx",
+    "line": 41,
+    "text": "volume_up"
+  },
+  {
+    "file": "shared/components/layout/global-audio-player.jsx",
+    "line": 471,
+    "text": "30s"
+  },
+  {
+    "file": "shared/components/layout/global-audio-player.jsx",
+    "line": 514,
+    "text": "pause"
+  },
+  {
+    "file": "shared/components/layout/global-audio-player.jsx",
+    "line": 514,
+    "text": "play_arrow"
+  },
+  {
+    "file": "shared/components/layout/global-audio-player.jsx",
+    "line": 628,
+    "text": "expand_more"
+  },
+  {
+    "file": "shared/components/layout/global-audio-player.jsx",
+    "line": 628,
+    "text": "queue_music"
+  },
+  {
+    "file": "shared/components/layout/global-audio-player.jsx",
+    "line": 674,
+    "text": "pause"
+  },
+  {
+    "file": "shared/components/layout/global-audio-player.jsx",
+    "line": 674,
+    "text": "play_arrow"
+  },
+  {
+    "file": "shared/components/layout/global-audio-player.jsx",
+    "line": 722,
+    "text": "Podcast Sonar"
+  },
+  {
+    "file": "shared/components/layout/global-audio-player.jsx",
+    "line": 798,
+    "text": "stop"
+  },
+  {
+    "file": "shared/components/layout/global-audio-player.jsx",
+    "line": 798,
+    "text": "record_voice_over"
+  },
+  {
+    "file": "shared/components/layout/global-audio-player.jsx",
+    "line": 819,
+    "text": "check"
+  },
+  {
+    "file": "shared/components/layout/global-audio-player.jsx",
+    "line": 819,
+    "text": "content_copy"
+  },
+  {
+    "file": "shared/components/layout/global-audio-player.jsx",
+    "line": 909,
+    "text": "Episodio curado de Sonar Podcast. Debate acústico, dinámica de mezcla y análisis de producción."
+  },
+  {
+    "file": "shared/components/layout/global-audio-player.jsx",
+    "line": 910,
+    "text": "`Composición musical de ${currentTrack.artist} en el álbum \"${currentTrack.album || currentTrack.title}\". Grabación masterizada en alta fidelidad.`"
+  },
+  {
+    "file": "shared/components/layout/global-audio-player.jsx",
+    "line": 1060,
+    "text": "pause"
+  },
+  {
+    "file": "shared/components/layout/global-audio-player.jsx",
+    "line": 1060,
+    "text": "play_arrow"
+  },
+  {
+    "file": "shared/components/layout/navbar.jsx",
+    "line": 492,
+    "text": "pause"
+  },
+  {
+    "file": "shared/components/layout/navbar.jsx",
+    "line": 492,
+    "text": "play_arrow"
+  },
+  {
+    "file": "shared/components/layout/navbar.jsx",
+    "line": 646,
+    "text": "light_mode"
+  },
+  {
+    "file": "shared/components/layout/navbar.jsx",
+    "line": 646,
+    "text": "dark_mode"
+  },
+  {
+    "file": "shared/components/ui/report-modal.jsx",
+    "line": 251,
+    "text": "U"
+  }
+]

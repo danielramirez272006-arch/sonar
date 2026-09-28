@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Navbar from '../../shared/components/layout/navbar';
 import Footer from '../../shared/components/layout/footer';
+import { useTranslation } from '../../shared/context/language-context.jsx';
 
 const BLOG_POSTS = [
   {
@@ -56,6 +57,7 @@ A través de sintetizadores modulares analógicos y ritmos sincopados matemátic
 ];
 
 export const BlogPage = () => {
+  const { t } = useTranslation();
   const [selectedArticle, setSelectedArticle] = useState(null);
 
   return (
@@ -67,14 +69,14 @@ export const BlogPage = () => {
           <div className="flex items-center gap-2 mb-2">
             <span className="w-2.5 h-2.5 rounded-full bg-[#B80C09] animate-pulse" />
             <span className="text-xs uppercase tracking-widest font-black text-[#5c1d5e] dark:text-pink-300">
-              BITÁCORA SÓNICA & PERIODISMO AUDIÓFILO
+              {t('page.blog.eyebrow')}
             </span>
           </div>
           <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-[#231123] dark:text-white">
-            Blog Sonar
+            {t('footer.blog')}
           </h1>
           <p className="text-sm sm:text-base text-[#5c435a] dark:text-[#B89CB0] max-w-2xl mt-2 font-medium">
-            Reflexiones sobre cultura musical, guías de hardware analógico de alta fidelidad e historias fascinantes detrás de las mejores grabaciones del canon moderno.
+            {t('page.blog.description')}
           </p>
         </header>
 
@@ -103,7 +105,7 @@ export const BlogPage = () => {
                   <div className="flex items-center gap-2 text-xs text-[#5c435a] dark:text-[#B89CB0] font-semibold mb-2">
                     <span>{post.date}</span>
                     <span>·</span>
-                    <span>{post.readTime}</span>
+                    <span>{t('page.blog.readTime', { count: Number.parseInt(post.readTime, 10) })}</span>
                   </div>
 
                   <h3 className="text-lg sm:text-xl font-bold text-[#231123] dark:text-white mb-3 group-hover:text-[#B80C09] transition-colors leading-snug">
@@ -117,9 +119,9 @@ export const BlogPage = () => {
               </div>
 
               <div className="p-6 pt-0 border-t border-[#e6d5e2]/60 dark:border-white/10 flex items-center justify-between text-xs font-bold text-[#5c1d5e] dark:text-pink-300">
-                <span>Por {post.author}</span>
+                <span>{t('page.blog.by', { author: post.author })}</span>
                 <span className="flex items-center gap-1 group-hover:translate-x-1 transition-transform">
-                  <span>Leer completo</span>
+                  <span>{t('page.blog.readFull')}</span>
                   <span className="material-symbols-outlined text-[14px]">arrow_forward</span>
                 </span>
               </div>
@@ -140,6 +142,8 @@ export const BlogPage = () => {
             >
               <button
                 onClick={() => setSelectedArticle(null)}
+                aria-label={t('page.blog.close')}
+                title={t('page.blog.close')}
                 className="absolute top-5 right-5 p-2 rounded-full bg-gray-100 dark:bg-white/10 hover:bg-[#B80C09] hover:text-white transition-colors cursor-pointer"
               >
                 <span className="material-symbols-outlined text-[20px]">close</span>

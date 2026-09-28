@@ -1,3 +1,4 @@
+import { useUIText } from '../../../shared/i18n/use-ui-text.js';
 import React, { useState, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Avatar } from '../../../shared/components/ui/avatar';
@@ -16,6 +17,7 @@ export const AudiophilePassportTab = ({
   gearSetup = {},
   onExportBackup,
 }) => {
+  const ui = useUIText();
   const { t } = useLanguage();
   const [copiedLink, setCopiedLink] = useState(false);
   const [selectedBadge, setSelectedBadge] = useState(null);
@@ -219,7 +221,7 @@ export const AudiophilePassportTab = ({
                 {user?.name || t('passport.melomane_sonar', 'Melómano Sonar')}
               </h2>
               <p className="text-sm font-medium text-pink-200/80">
-                {user?.username ? `@${user.username.replace('@', '')}` : '@audiophile'} • Rango:{' '}
+                {user?.username ? `@${user.username.replace('@', '')}` : '@audiophile'} {ui("• Rango:")}{' '}
                 <span className="text-white font-bold">{stats.rankTitle}</span>
               </p>
 
@@ -256,7 +258,7 @@ export const AudiophilePassportTab = ({
                   type="button"
                   onClick={onExportBackup}
                   className="p-2.5 rounded-xl bg-white/10 hover:bg-white/20 text-white font-bold text-xs transition-all border border-white/15 flex items-center justify-center cursor-pointer"
-                  title="Descargar Respaldo JSON"
+                  title={ui("Descargar Respaldo JSON")}
                 >
                   <span className="material-symbols-outlined text-[18px]">download</span>
                 </button>
@@ -545,9 +547,7 @@ export const AudiophilePassportTab = ({
                 </div>
 
                 {badge.unlocked ? (
-                  <span className="text-[10px] font-black uppercase text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/50 px-2 py-0.5 rounded-md border border-emerald-500/20">
-                    Obtenido
-                  </span>
+                  <span className="text-[10px] font-black uppercase text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/50 px-2 py-0.5 rounded-md border border-emerald-500/20">{ui("Obtenido")}</span>
                 ) : (
                   <span className="text-[10px] font-bold text-gray-500 dark:text-gray-400 bg-gray-100 dark:bg-white/5 px-2 py-0.5 rounded-md">
                     {badge.progress}%
@@ -602,7 +602,7 @@ export const AudiophilePassportTab = ({
                   </span>
                   <h3 className="text-lg font-black">{selectedBadge.title}</h3>
                   <span className="text-xs font-medium text-emerald-600 dark:text-emerald-400">
-                    {selectedBadge.unlocked ? 'Logro Desbloqueado' : `Progreso actual: ${selectedBadge.progress}%`}
+                    {selectedBadge.unlocked ? ui("Logro Desbloqueado") : ui("Progreso actual: {{value0}}%", { value0: selectedBadge.progress })}
                   </span>
                 </div>
               </div>
@@ -612,7 +612,7 @@ export const AudiophilePassportTab = ({
               </p>
 
               <div className="p-4 rounded-2xl bg-gray-50 dark:bg-black/30 border border-[#e6d5e2] dark:border-white/10 flex flex-col gap-1.5">
-                <span className="text-[11px] font-bold text-gray-400 uppercase">Recompensa Acústica</span>
+                <span className="text-[11px] font-bold text-gray-400 uppercase">{ui("Recompensa Acústica")}</span>
                 <span className="text-sm font-bold text-[#B80C09] dark:text-pink-200">
                   {selectedBadge.rewardText}
                 </span>
@@ -622,9 +622,7 @@ export const AudiophilePassportTab = ({
                 type="button"
                 onClick={() => setSelectedBadge(null)}
                 className="w-full py-3 rounded-xl bg-[#B80C09] hover:bg-[#960a07] text-white text-xs font-bold transition-all cursor-pointer shadow-md"
-              >
-                Entendido
-              </button>
+              >{ui("Entendido")}</button>
             </motion.div>
           </div>
         )}

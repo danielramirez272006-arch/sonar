@@ -1,3 +1,4 @@
+import { useUIText } from '../../shared/i18n/use-ui-text.js';
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Navbar from '../../shared/components/layout/navbar';
@@ -52,6 +53,7 @@ const VINYL_EDITIONS = [
 ];
 
 export const VinylModePage = () => {
+  const ui = useUIText();
   const { currentTrack, isPlaying, currentTime = 0, duration = 30, toggleTrack, playTrack, seek } = usePlayer();
   const [rpmSpeed, setRpmSpeed] = useState('33'); // '33' | '45'
   const [pitch, setPitch] = useState(0); // -8% to +8%
@@ -358,15 +360,9 @@ export const VinylModePage = () => {
         {/* Encabezado Principal */}
         <div className="text-center mb-8 max-w-3xl">
           <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-[#f0e2ee] dark:bg-white/5 border border-[#ddcadb] dark:border-white/10 text-[11px] uppercase tracking-widest font-black text-[#B80C09] dark:text-rose-400 mb-3 shadow-2xs">
-            <span className="w-2 h-2 rounded-full bg-[#B80C09] animate-pulse" />
-            SISTEMA AUDIÓFILO DE ALTA PRECISIÓN · SERIE SL-2026 HI-FI
-          </div>
-          <h1 className="text-3xl sm:text-5xl font-black tracking-tight text-[#231123] dark:text-white drop-shadow-sm">
-            Tocadiscos Analógico Sonar
-          </h1>
-          <p className="text-xs sm:text-sm text-[#4e344b] dark:text-[#d4bed0] mt-2 max-w-xl mx-auto leading-relaxed font-medium">
-            Brazo en S balanceado, aguja fonocaptora interactiva con desplazamiento en tiempo real, vúmetros balísticos y buscador de vinilos.
-          </p>
+            <span className="w-2 h-2 rounded-full bg-[#B80C09] animate-pulse" />{ui("SISTEMA AUDIÓFILO DE ALTA PRECISIÓN · SERIE SL-2026 HI-FI")}</div>
+          <h1 className="text-3xl sm:text-5xl font-black tracking-tight text-[#231123] dark:text-white drop-shadow-sm">{ui("Tocadiscos Analógico Sonar")}</h1>
+          <p className="text-xs sm:text-sm text-[#4e344b] dark:text-[#d4bed0] mt-2 max-w-xl mx-auto leading-relaxed font-medium">{ui("Brazo en S balanceado, aguja fonocaptora interactiva con desplazamiento en tiempo real, vúmetros balísticos y buscador de vinilos.")}</p>
         </div>
 
         {/* CHASIS PRINCIPAL DEL TOCADISCOS HI-FI */}
@@ -382,7 +378,7 @@ export const VinylModePage = () => {
               }`}
             />
             <span className="text-[10px] font-black uppercase tracking-wider text-white/60">
-              {isCurrentPlaying ? 'MOTOR ACTIVO · QUARTZ LOCK' : 'STANDBY · PLATO EN PAUSA'}
+              {isCurrentPlaying ? ui("MOTOR ACTIVO · QUARTZ LOCK") : ui("STANDBY · PLATO EN PAUSA")}
             </span>
           </div>
 
@@ -400,7 +396,7 @@ export const VinylModePage = () => {
             <div
               ref={vinylPlatterRef}
               onClick={handleGrooveClick}
-              title="Haz clic en cualquier surco del disco para soltar la aguja en ese punto"
+              title={ui("Haz clic en cualquier surco del disco para soltar la aguja en ese punto")}
               className="relative w-[300px] h-[300px] xs:w-[360px] xs:h-[360px] sm:w-[430px] sm:h-[430px] rounded-full bg-[#18141c] border-[7px] border-[#342b38] shadow-[inset_0_0_40px_rgba(0,0,0,0.95),0_20px_50px_rgba(0,0,0,0.85)] flex items-center justify-center p-4 cursor-pointer group"
             >
               {/* Borde Estroboscópico de Puntos Plateados (Banda de 33 y 45 RPM) */}
@@ -560,9 +556,7 @@ export const VinylModePage = () => {
             {/* TARJETA DEL DISCO EN REPRODUCCIÓN */}
             <div className="p-4 sm:p-5 rounded-2xl bg-black/40 border border-white/10 shadow-lg flex items-center justify-between gap-3">
               <div className="flex flex-col min-w-0">
-                <span className="text-[10px] uppercase font-black tracking-widest text-[#B80C09] block mb-0.5">
-                  DISCO EN EL PLATO
-                </span>
+                <span className="text-[10px] uppercase font-black tracking-widest text-[#B80C09] block mb-0.5">{ui("DISCO EN EL PLATO")}</span>
                 <h3 className="text-base sm:text-lg font-black text-white truncate drop-shadow-sm">
                   {albumData.title}
                 </h3>
@@ -581,7 +575,7 @@ export const VinylModePage = () => {
                       ? 'bg-[#B80C09]/30 text-rose-300 border-[#B80C09]/60 shadow-[0_0_12px_rgba(184,12,9,0.3)]'
                       : 'bg-white/10 hover:bg-white/15 text-white border-white/10'
                   }`}
-                  title={isCurrentAlbumSaved ? 'Quitar de tu colección' : 'Guardar álbum en tu colección'}
+                  title={isCurrentAlbumSaved ? ui("Quitar de tu colección") : ui("Guardar álbum en tu colección")}
                 >
                   <span
                     className="material-symbols-outlined text-[16px]"
@@ -589,7 +583,7 @@ export const VinylModePage = () => {
                   >
                     {isCurrentAlbumSaved ? 'bookmark_added' : 'bookmark_add'}
                   </span>
-                  <span className="hidden xs:inline">{isCurrentAlbumSaved ? 'En Colección' : 'Guardar'}</span>
+                  <span className="hidden xs:inline">{isCurrentAlbumSaved ? ui("En Colección") : ui("Guardar")}</span>
                 </button>
 
                 {/* Botón Pistas del Álbum */}
@@ -597,10 +591,10 @@ export const VinylModePage = () => {
                   type="button"
                   onClick={() => setIsTracklistOpen(!isTracklistOpen)}
                   className="px-2.5 py-2 rounded-xl bg-white/10 hover:bg-white/15 text-white text-xs font-bold transition-all cursor-pointer flex items-center gap-1 border border-white/10 shadow-sm"
-                  title="Ver canciones del disco"
+                  title={ui("Ver canciones del disco")}
                 >
                   <span className="material-symbols-outlined text-[16px]">queue_music</span>
-                  <span className="hidden xs:inline">Pistas</span>
+                  <span className="hidden xs:inline">{ui("Pistas")}</span>
                 </button>
 
                 {/* Botón Cambiar Vinilo (Crate) */}
@@ -608,10 +602,10 @@ export const VinylModePage = () => {
                   type="button"
                   onClick={() => setIsCrateOpen(true)}
                   className="px-3 py-2 rounded-xl bg-[#B80C09] hover:bg-[#9c0a07] text-white text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 border border-white/10 shadow-sm"
-                  title="Buscar o cambiar vinilo"
+                  title={ui("Buscar o cambiar vinilo")}
                 >
                   <span className="material-symbols-outlined text-[16px]">album</span>
-                  <span>Cambiar</span>
+                  <span>{ui("Cambiar")}</span>
                 </button>
               </div>
             </div>
@@ -620,7 +614,7 @@ export const VinylModePage = () => {
             <div className="p-3.5 rounded-2xl bg-gradient-to-b from-[#110813] to-[#080309] border border-white/10 shadow-inner flex flex-col gap-2">
               <div className="flex items-center justify-between text-[9px] font-mono tracking-widest text-amber-400">
                 <span>VFD TAPE COUNTER</span>
-                <span>{isCurrentPlaying ? 'PLAYING · CARA A' : 'PAUSED'}</span>
+                <span>{isCurrentPlaying ? ui("PLAYING · CARA A") : ui("PAUSED")}</span>
               </div>
               
               <div className="flex items-baseline justify-between">
@@ -642,7 +636,7 @@ export const VinylModePage = () => {
                   value={currentTime}
                   onChange={(e) => seek(Number(e.target.value))}
                   className="w-full h-1.5 bg-white/10 rounded-lg appearance-none cursor-pointer accent-amber-400"
-                  title="Arrastra para mover la aguja a otro minuto"
+                  title={ui("Arrastra para mover la aguja a otro minuto")}
                 />
               </div>
             </div>
@@ -650,7 +644,7 @@ export const VinylModePage = () => {
             {/* MEDIDORES VÚMETROS ANALÓGICOS DUALES RETRO (VU METERS) */}
             <div className="p-4 rounded-2xl bg-gradient-to-b from-[#180f19] to-[#0c060d] border border-white/10 shadow-inner flex flex-col gap-2">
               <div className="flex items-center justify-between text-[10px] font-black tracking-wider text-white/50">
-                <span>VÚMETRO ESTÉREO dB</span>
+                <span>{ui("VÚMETRO ESTÉREO dB")}</span>
                 <span className="text-amber-400 font-mono">ANALOG LEVEL</span>
               </div>
 
@@ -671,7 +665,7 @@ export const VinylModePage = () => {
                       }}
                     />
                   </div>
-                  <span className="text-[8px] font-bold text-amber-300">CANAL L</span>
+                  <span className="text-[8px] font-bold text-amber-300">{ui("CANAL L")}</span>
                 </div>
 
                 {/* Canal Derecho */}
@@ -690,7 +684,7 @@ export const VinylModePage = () => {
                       }}
                     />
                   </div>
-                  <span className="text-[8px] font-bold text-amber-300">CANAL R</span>
+                  <span className="text-[8px] font-bold text-amber-300">{ui("CANAL R")}</span>
                 </div>
               </div>
             </div>
@@ -699,7 +693,7 @@ export const VinylModePage = () => {
             <div className="grid grid-cols-2 gap-3">
               {/* Velocidad 33 / 45 RPM */}
               <div className="p-3 rounded-2xl bg-black/40 border border-white/5 flex flex-col justify-between gap-2">
-                <span className="text-[10px] font-bold text-gray-300 uppercase tracking-wider">Velocidad</span>
+                <span className="text-[10px] font-bold text-gray-300 uppercase tracking-wider">{ui("Velocidad")}</span>
                 <div className="flex gap-1.5">
                   <button
                     type="button"
@@ -749,7 +743,7 @@ export const VinylModePage = () => {
             {/* SELECTOR DE EDICIÓN / COLOR DE VINILO */}
             <div className="p-3 rounded-2xl bg-black/40 border border-white/5 flex items-center justify-between gap-3">
               <div className="flex flex-col">
-                <span className="text-[10px] font-bold text-gray-300 uppercase tracking-wider">Edición Vinilo</span>
+                <span className="text-[10px] font-bold text-gray-300 uppercase tracking-wider">{ui("Edición Vinilo")}</span>
                 <span className="text-[11px] text-gray-400 font-medium truncate max-w-[140px]">{selectedEdition.name}</span>
               </div>
               <div className="flex items-center gap-1.5">
@@ -773,8 +767,8 @@ export const VinylModePage = () => {
               <div className="flex items-center gap-2">
                 <span className="material-symbols-outlined text-[18px] text-amber-400">graphic_eq</span>
                 <div className="flex flex-col">
-                  <span className="text-xs font-bold text-white">Calidez Analógica</span>
-                  <span className="text-[10px] text-gray-400">Chasquido y crepitar de púa</span>
+                  <span className="text-xs font-bold text-white">{ui("Calidez Analógica")}</span>
+                  <span className="text-[10px] text-gray-400">{ui("Chasquido y crepitar de púa")}</span>
                 </div>
               </div>
               <button
@@ -801,7 +795,7 @@ export const VinylModePage = () => {
               <span className="material-symbols-outlined text-[24px]">
                 {isCurrentPlaying ? 'pause_circle' : 'play_circle'}
               </span>
-              <span>{isCurrentPlaying ? 'Levantar Aguja / Pausar' : 'Bajar Aguja al Surco'}</span>
+              <span>{isCurrentPlaying ? ui("Levantar Aguja / Pausar") : ui("Bajar Aguja al Surco")}</span>
             </button>
 
           </div>
@@ -828,8 +822,8 @@ export const VinylModePage = () => {
                   <div className="flex items-center gap-2.5">
                     <span className="material-symbols-outlined text-[#B80C09] text-[24px]">queue_music</span>
                     <div>
-                      <h3 className="text-base font-black text-white">Pistas de {albumData.title}</h3>
-                      <p className="text-xs text-gray-400">Selecciona una pista para bajar la aguja</p>
+                      <h3 className="text-base font-black text-white">{ui("Pistas de")} {albumData.title}</h3>
+                      <p className="text-xs text-gray-400">{ui("Selecciona una pista para bajar la aguja")}</p>
                     </div>
                   </div>
                   <button
@@ -843,7 +837,7 @@ export const VinylModePage = () => {
 
                   <div className="flex-1 overflow-y-auto flex flex-col gap-2 pr-1 max-h-[50vh]">
                     {isLoadingTracks ? (
-                      <div className="p-8 text-center text-gray-400 text-xs animate-pulse">Cargando pistas del disco…</div>
+                      <div className="p-8 text-center text-gray-400 text-xs animate-pulse">{ui("Cargando pistas del disco…")}</div>
                     ) : albumTracks.length > 0 ? (
                       albumTracks.map((tr, idx) => {
                         const isTrSaved = Boolean(
@@ -874,7 +868,7 @@ export const VinylModePage = () => {
                                     ? 'text-[#B80C09] hover:text-rose-400'
                                     : 'text-gray-500 hover:text-white'
                                 }`}
-                                title={isTrSaved ? 'Quitar de canciones guardadas' : 'Guardar canción'}
+                                title={isTrSaved ? ui("Quitar de canciones guardadas") : ui("Guardar canción")}
                               >
                                 <span
                                   className="material-symbols-outlined text-[16px]"
@@ -891,8 +885,7 @@ export const VinylModePage = () => {
                         );
                       })
                     ) : (
-                      <div className="p-8 text-center text-gray-400 text-xs">
-                        Pista principal activa: {albumData.title}
+                      <div className="p-8 text-center text-gray-400 text-xs">{ui("Pista principal activa:")} {albumData.title}
                       </div>
                     )}
                   </div>
@@ -938,8 +931,8 @@ export const VinylModePage = () => {
                   <div className="flex items-center gap-2.5">
                     <span className="material-symbols-outlined text-[#B80C09] text-[24px]">library_music</span>
                     <div>
-                      <h3 className="text-lg font-black text-white">Caja de Vinilos (Crate)</h3>
-                      <p className="text-xs text-gray-400">Busca en Deezer o elige un disco para poner en el tocadiscos</p>
+                      <h3 className="text-lg font-black text-white">{ui("Caja de Vinilos (Crate)")}</h3>
+                      <p className="text-xs text-gray-400">{ui("Busca en Deezer o elige un disco para poner en el tocadiscos")}</p>
                     </div>
                   </div>
                   <button
@@ -958,7 +951,7 @@ export const VinylModePage = () => {
                   </span>
                   <input
                     type="text"
-                    placeholder="Buscar artista o álbum (ej. Radiohead, Daft Punk, Tame Impala, Rosalía)..."
+                    placeholder={ui("Buscar artista o álbum (ej. Radiohead, Daft Punk, Tame Impala, Rosalía)...")}
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                     autoFocus
@@ -996,20 +989,15 @@ export const VinylModePage = () => {
                         <button
                           type="button"
                           className="px-3 py-1.5 rounded-xl bg-[#B80C09] text-white text-xs font-bold shadow-sm group-hover:scale-105 transition-transform shrink-0"
-                        >
-                          Cargar Vinilo
-                        </button>
+                        >{ui("Cargar Vinilo")}</button>
                       </div>
                     ))
                   ) : searchQuery.trim() && !isSearching ? (
-                    <div className="p-8 text-center text-gray-400 text-sm">
-                      No se encontraron álbumes para &ldquo;{searchQuery}&rdquo;.
+                    <div className="p-8 text-center text-gray-400 text-sm">{ui("No se encontraron álbumes para “")}{searchQuery}&rdquo;.
                     </div>
                   ) : (
                     <>
-                      <span className="text-[11px] font-black uppercase tracking-wider text-gray-400 mt-1 mb-1">
-                        COLECCIÓN DE VINILOS DESTACADOS
-                      </span>
+                      <span className="text-[11px] font-black uppercase tracking-wider text-gray-400 mt-1 mb-1">{ui("COLECCIÓN DE VINILOS DESTACADOS")}</span>
                       {DEFAULT_DEEZER_ALBUMS.map((alb) => (
                         <div
                           key={alb.id}
@@ -1034,9 +1022,7 @@ export const VinylModePage = () => {
                           <button
                             type="button"
                             className="px-3 py-1.5 rounded-xl bg-white/10 group-hover:bg-[#B80C09] text-white text-xs font-bold shadow-sm transition-all shrink-0"
-                          >
-                            Poner en Plato
-                          </button>
+                          >{ui("Poner en Plato")}</button>
                         </div>
                       ))}
                     </>

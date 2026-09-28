@@ -1,0 +1,321 @@
+{
+  "name": "SONAR - Moderación IA de Reseñas (Agente Gemini)",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "review-moderation",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "mod-webhook-001",
+      "name": "Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [220, 300],
+      "webhookId": "review-moderation"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "mod-cond-content",
+              "leftValue": "={{ $json.body?.content }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            },
+            {
+              "id": "mod-cond-reviewId",
+              "leftValue": "={{ $json.body?.reviewId }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "mod-validate-001",
+      "name": "Validar Datos",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [440, 300]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "{\n  \"success\": false,\n  \"message\": \"Debes proporcionar el contenido de la reseña y su ID.\"\n}",
+        "options": {
+          "responseCode": 400
+        }
+      },
+      "id": "mod-error-001",
+      "name": "Respond Error",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [680, 500]
+    },
+    {
+      "parameters": {
+        "jsCode": "const body = $input.first().json.body || {};\nconst content = (body.content || '').trim();\nconst reviewId = body.reviewId || '';\nconst userId = body.userId || '';\nconst albumId = body.albumId || '';\nconst adminEmail = body.adminEmail || 'admin@sonar.audio';\n\nreturn [\n  {\n    json: {\n      content,\n      reviewId,\n      userId,\n      albumId,\n      adminEmail\n    }\n  }\n];"
+      },
+      "id": "mod-prepare-001",
+      "name": "Preparar Datos",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [680, 240]
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Analiza la siguiente reseña musical y determina si contiene contenido ofensivo:\n\n\"{{ $json.content }}\"\n\nReseña ID: {{ $json.reviewId }}\nUsuario: {{ $json.userId }}\nÁlbum: {{ $json.albumId }}",
+        "options": {
+          "systemMessage": "Eres el Moderador de Contenido e IA de la plataforma musical SONAR. Tu misión es proteger a la comunidad aplicando una política ESTRICTA contra groserías, malas palabras, insultos, palabras mal sonantes y discurso de odio.\n\nCRITERIOS ESTRICTOS DE MODERACIÓN:\n1. MALAS PALABRAS Y LENGUAJE SOEZ (TOLERANCIA CERO):\n   - Cualquier grosería, palabrota, palabra mal sonante o vulgaridad en español o inglés (ej: \"mierda\", \"puto\", \"puta\", \"verga\", \"pendejo\", \"cabrón\", \"coño\", \"carajo\", \"chingar\", etc.) DEBE SER MARCADA INMEDIATAMENTE con aiFlagged: true.\n2. DISCURSO DE ODIO Y DISCRIMINACIÓN (MÁXIMA SEVERIDAD):\n   - Ataques o uso despectivo/discriminatorio sobre raza, color de piel, etnia, género, orientación sexual o religión (ej: discriminación racial, insultos xenófobos o racistas). DEBE MARCARSE CON aiFlagged: true y severity: \"high\".\n3. INSULTOS Y ATAQUES PERSONALES:\n   - Descalificaciones dirigidas hacia artistas o usuarios (ej: \"idiota\", \"estúpido\", \"basura\").\n4. EVASIONES Y LEETSPEAK:\n   - Detecta groserías disfrazadas con símbolos, números o faltas de ortografía (ej: \"p3ndejo\", \"m!erda\", \"n3gro\" usado como insulto).\n\nDIFERENCIACIÓN CLAVE:\n- ACEPTABLE: \"El álbum me pareció aburrido y la producción de bajo nivel.\" (Crítica técnica o musical negativa pero respetuosa) -> aiFlagged: false\n- PROHIBIDO: \"Qué disco de mierda\", \"artista imbécil\", o cualquier término discriminatorio/insultante -> aiFlagged: true\n\nREGLA DE ORO: Si la reseña contiene CUALQUIER palabra mal sonante, insulto o sesgo discriminatorio, MARCA SIEMPRE aiFlagged: true.\n\nResponde SIEMPRE con un JSON válido con esta estructura exacta:\n{\n  \"aiFlagged\": true o false,\n  \"severity\": \"none\" | \"low\" | \"medium\" | \"high\",\n  \"flaggedWords\": [\"lista\", \"de\", \"palabras\", \"detectadas\"],\n  \"reason\": \"Explicación breve en español de la infracción\",\n  \"sentiment\": \"positive\" | \"neutral\" | \"negative\" | \"hostile\"\n}"
+        }
+      },
+      "id": "mod-agent-001",
+      "name": "Agente Moderador IA",
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.7,
+      "position": [940, 240]
+    },
+    {
+      "parameters": {
+        "modelName": "models/gemini-2.0-flash",
+        "options": {
+          "temperature": 0.1,
+          "maxOutputTokens": 400,
+          "topP": 0.8
+        }
+      },
+      "id": "mod-gemini-model-001",
+      "name": "Google Gemini",
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [940, 460],
+      "credentials": {
+        "googleGeminiApi": {
+          "id": "",
+          "name": "Google Gemini API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const input = $input.first().json;\nconst prevData = $('Preparar Datos').first().json;\n\nlet analysis = {\n  aiFlagged: false,\n  severity: 'none',\n  flaggedWords: [],\n  reason: null,\n  sentiment: 'neutral'\n};\n\ntry {\n  const agentOutput = typeof input.output === 'string' ? input.output : JSON.stringify(input.output || '{}');\n  // Limpiar posible markdown del response\n  const cleanText = agentOutput.replace(/```json\\n?/g, '').replace(/```\\n?/g, '').trim();\n  const parsed = JSON.parse(cleanText);\n  \n  analysis.aiFlagged = parsed.aiFlagged === true;\n  analysis.severity = ['none', 'low', 'medium', 'high'].includes(parsed.severity) ? parsed.severity : 'none';\n  analysis.flaggedWords = Array.isArray(parsed.flaggedWords) ? parsed.flaggedWords : [];\n  analysis.reason = typeof parsed.reason === 'string' ? parsed.reason : null;\n  analysis.sentiment = ['positive', 'neutral', 'negative', 'hostile'].includes(parsed.sentiment) ? parsed.sentiment : 'neutral';\n} catch (e) {\n  analysis.reason = 'No se pudo interpretar la respuesta del agente IA. Revisión manual recomendada.';\n}\n\nreturn [\n  {\n    json: {\n      ...analysis,\n      reviewId: prevData.reviewId,\n      userId: prevData.userId,\n      albumId: prevData.albumId,\n      content: prevData.content,\n      adminEmail: prevData.adminEmail || 'admin@sonar.audio',\n      analyzedAt: new Date().toISOString(),\n      model: 'gemini-2.0-flash',\n      agent: true\n    }\n  }\n];"
+      },
+      "id": "mod-parse-001",
+      "name": "Parsear Respuesta IA",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1220, 240]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "mod-cond-flagged",
+              "leftValue": "={{ $json.aiFlagged }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "mod-check-flag-001",
+      "name": "¿Contenido Marcado?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [1500, 240]
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $json.adminEmail || 'admin@sonar.audio' }}",
+        "subject": "=[SONAR IA] ⚠️ Reseña #{{ $json.reviewId }} marcada por Agente Gemini — Severidad {{ $json.severity }}",
+        "message": "=<!DOCTYPE html>\n<html lang=\"es\">\n<head>\n  <meta charset=\"UTF-8\">\n  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n  <title>SONAR - Alerta de Moderación IA</title>\n</head>\n<body style=\"margin: 0; padding: 0; background-color: #1a0c1a; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; color: #DCDCDD;\">\n  <table align=\"center\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\" style=\"background-color: #1a0c1a; padding: 36px 14px;\">\n    <tr>\n      <td align=\"center\">\n        <table align=\"center\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\" style=\"max-width: 540px; background-color: #2e1628; border: 1px solid rgba(220,220,221,0.2); border-radius: 24px; overflow: hidden; box-shadow: 0 20px 50px rgba(0,0,0,0.7);\">\n          <!-- Cabecera -->\n          <tr>\n            <td align=\"center\" style=\"padding: 38px 24px 20px; background: linear-gradient(180deg, rgba(184,12,9,0.3) 0%, rgba(46,22,40,0) 100%);\">\n              <table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" style=\"margin: 0 auto; text-align: center;\">\n                <tr>\n                  <td align=\"center\" style=\"padding-bottom: 12px;\">\n                    <svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 120 120\" width=\"76\" height=\"76\" fill=\"none\" style=\"display: block; margin: 0 auto;\">\n                      <defs>\n                        <radialGradient id=\"topPetalMod\" cx=\"50%\" cy=\"35%\" r=\"65%\">\n                          <stop offset=\"0%\" stop-color=\"#9E1B29\" stop-opacity=\"0.9\" />\n                          <stop offset=\"100%\" stop-color=\"#4A0E18\" stop-opacity=\"0.8\" />\n                        </radialGradient>\n                        <radialGradient id=\"leftPetalMod\" cx=\"35%\" cy=\"50%\" r=\"65%\">\n                          <stop offset=\"0%\" stop-color=\"#C51613\" stop-opacity=\"0.9\" />\n                          <stop offset=\"100%\" stop-color=\"#6B0907\" stop-opacity=\"0.8\" />\n                        </radialGradient>\n                        <radialGradient id=\"bottomPetalMod\" cx=\"50%\" cy=\"65%\" r=\"65%\">\n                          <stop offset=\"0%\" stop-color=\"#1B324B\" stop-opacity=\"0.9\" />\n                          <stop offset=\"100%\" stop-color=\"#0E1A29\" stop-opacity=\"0.85\" />\n                        </radialGradient>\n                        <radialGradient id=\"rightPetalMod\" cx=\"65%\" cy=\"50%\" r=\"65%\">\n                          <stop offset=\"0%\" stop-color=\"#4B2A5E\" stop-opacity=\"0.9\" />\n                          <stop offset=\"100%\" stop-color=\"#231130\" stop-opacity=\"0.85\" />\n                        </radialGradient>\n                      </defs>\n                      <g>\n                        <circle cx=\"60\" cy=\"38\" r=\"27\" fill=\"url(#topPetalMod)\" />\n                        <circle cx=\"38\" cy=\"60\" r=\"27\" fill=\"url(#leftPetalMod)\" />\n                        <circle cx=\"60\" cy=\"82\" r=\"27\" fill=\"url(#bottomPetalMod)\" />\n                        <circle cx=\"82\" cy=\"60\" r=\"27\" fill=\"url(#rightPetalMod)\" />\n                      </g>\n                      <circle cx=\"60\" cy=\"60\" r=\"37\" stroke=\"rgba(255, 255, 255, 0.45)\" stroke-width=\"1.2\" stroke-dasharray=\"3.5 3.5\" fill=\"none\" />\n                      <circle cx=\"60\" cy=\"60\" r=\"21\" stroke=\"rgba(255, 255, 255, 0.55)\" stroke-width=\"1\" fill=\"none\" />\n                      <circle cx=\"60\" cy=\"60\" r=\"7.5\" fill=\"#B80C09\" />\n                      <circle cx=\"60\" cy=\"60\" r=\"2.8\" fill=\"#ffffff\" />\n                    </svg>\n                  </td>\n                </tr>\n                <tr>\n                  <td align=\"center\">\n                    <div style=\"display: inline-block; background: #1C0D1C; border: 1.5px solid #B80C09; border-radius: 50px; padding: 6px 20px; text-align: center;\">\n                      <span style=\"font-size: 18px; font-weight: 900; letter-spacing: 5px; color: #ffffff; text-transform: uppercase; vertical-align: middle;\">SONAR</span>\n                      <span style=\"font-size: 9px; font-weight: 700; color: #DCDCDD; letter-spacing: 2px; text-transform: uppercase; margin-left: 8px; padding-left: 8px; border-left: 1px solid rgba(220,220,221,0.3); vertical-align: middle;\">AGENTE GEMINI IA</span>\n                    </div>\n                  </td>\n                </tr>\n              </table>\n              <h1 style=\"color: #ffffff; font-size: 24px; font-weight: 800; margin: 22px 0 6px; letter-spacing: -0.5px;\">⚠️ Contenido Marcado por Agente IA</h1>\n              <p style=\"color: #DCDCDD; font-size: 14px; margin: 0; opacity: 0.9;\">El agente de inteligencia artificial Gemini ha detectado contenido que requiere tu revisión.</p>\n            </td>\n          </tr>\n\n          <!-- Detalle de la reseña -->\n          <tr>\n            <td style=\"padding: 10px 28px 28px;\">\n              <table width=\"100%\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\" style=\"background: #1C0D1C; border: 1px solid rgba(184, 12, 9, 0.4); border-radius: 14px; padding: 18px; margin-bottom: 16px;\">\n                <tr>\n                  <td>\n                    <p style=\"font-size: 11px; text-transform: uppercase; letter-spacing: 2px; color: #B80C09; font-weight: 700; margin: 0 0 8px;\">Reseña #{{ $json.reviewId }}</p>\n                    <p style=\"font-size: 14px; color: #DCDCDD; line-height: 1.6; margin: 0;\">\"{{ $json.content }}\"</p>\n                  </td>\n                </tr>\n              </table>\n\n              <!-- Métricas de análisis -->\n              <table width=\"100%\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\" style=\"margin-bottom: 16px;\">\n                <tr>\n                  <td width=\"33%\" style=\"padding-right: 6px;\">\n                    <table width=\"100%\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\" style=\"background: rgba(184, 12, 9, 0.15); border: 1px solid rgba(184, 12, 9, 0.3); border-radius: 10px; padding: 14px;\">\n                      <tr>\n                        <td>\n                          <p style=\"font-size: 10px; text-transform: uppercase; letter-spacing: 1.5px; color: #DCDCDD; opacity: 0.7; margin: 0 0 4px;\">Severidad</p>\n                          <p style=\"font-size: 16px; font-weight: 900; color: #ffffff; margin: 0;\">{{ $json.severity === 'high' ? '🔴 ALTA' : $json.severity === 'medium' ? '🟡 MEDIA' : '🟠 BAJA' }}</p>\n                        </td>\n                      </tr>\n                    </table>\n                  </td>\n                  <td width=\"33%\" style=\"padding: 0 3px;\">\n                    <table width=\"100%\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\" style=\"background: rgba(184, 12, 9, 0.15); border: 1px solid rgba(184, 12, 9, 0.3); border-radius: 10px; padding: 14px;\">\n                      <tr>\n                        <td>\n                          <p style=\"font-size: 10px; text-transform: uppercase; letter-spacing: 1.5px; color: #DCDCDD; opacity: 0.7; margin: 0 0 4px;\">Sentimiento</p>\n                          <p style=\"font-size: 16px; font-weight: 900; color: #ffffff; margin: 0;\">{{ $json.sentiment === 'hostile' ? '💀' : $json.sentiment === 'negative' ? '😤' : '😐' }} {{ $json.sentiment }}</p>\n                        </td>\n                      </tr>\n                    </table>\n                  </td>\n                  <td width=\"33%\" style=\"padding-left: 6px;\">\n                    <table width=\"100%\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\" style=\"background: rgba(184, 12, 9, 0.15); border: 1px solid rgba(184, 12, 9, 0.3); border-radius: 10px; padding: 14px;\">\n                      <tr>\n                        <td>\n                          <p style=\"font-size: 10px; text-transform: uppercase; letter-spacing: 1.5px; color: #DCDCDD; opacity: 0.7; margin: 0 0 4px;\">Palabras</p>\n                          <p style=\"font-size: 13px; font-weight: 700; color: #ff4d4a; margin: 0;\">{{ $json.flaggedWords.join(', ') || '—' }}</p>\n                        </td>\n                      </tr>\n                    </table>\n                  </td>\n                </tr>\n              </table>\n\n              <!-- Razón del Agente IA -->\n              <table width=\"100%\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\" style=\"background: rgba(75, 40, 64, 0.5); border: 1px solid rgba(220,220,221,0.15); border-radius: 10px; padding: 14px; margin-bottom: 16px;\">\n                <tr>\n                  <td>\n                    <p style=\"font-size: 10px; text-transform: uppercase; letter-spacing: 1.5px; color: #B80C09; font-weight: 700; margin: 0 0 6px;\">✧ Análisis del Agente Gemini</p>\n                    <p style=\"font-size: 13px; color: #DCDCDD; line-height: 1.5; margin: 0;\">{{ $json.reason }}</p>\n                  </td>\n                </tr>\n              </table>\n\n              <!-- Info del usuario -->\n              <table width=\"100%\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\" style=\"background: #003844; border-radius: 10px; padding: 12px 16px;\">\n                <tr>\n                  <td style=\"font-size: 12px; color: #ffffff; line-height: 1.5; text-align: center;\">\n                    🎧 <strong>Usuario:</strong> {{ $json.userId }} &nbsp;|&nbsp; 💿 <strong>Álbum:</strong> {{ $json.albumId }} &nbsp;|&nbsp; 🤖 <strong>Agente:</strong> {{ $json.model }}\n                  </td>\n                </tr>\n              </table>\n\n              <p style=\"font-size: 13px; color: #DCDCDD; text-align: center; margin: 18px 0 0; opacity: 0.8;\">\n                Revisa la reseña en el panel de moderación de SONAR para aprobar, rechazar o aplicar una sanción.\n              </p>\n            </td>\n          </tr>\n\n          <!-- Pie de página -->\n          <tr>\n            <td style=\"background-color: #1C0D1C; border-top: 1px solid rgba(220,220,221,0.15); padding: 22px 28px; text-align: center;\">\n              <p style=\"font-size: 11px; color: #DCDCDD; opacity: 0.7; margin: 0 0 6px;\">Análisis realizado por Agente IA con Google Gemini 2.0 Flash.</p>\n              <p style=\"font-size: 11px; color: #DCDCDD; opacity: 0.5; margin: 0;\">© 2026 SONAR Music Ecosystem • Moderación con Agente de Inteligencia Artificial</p>\n            </td>\n          </tr>\n        </table>\n      </td>\n    </tr>\n  </table>\n</body>\n</html>"
+      },
+      "id": "mod-gmail-001",
+      "name": "Notificar Admin por Gmail",
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [1780, 140],
+      "onError": "continueRegularOutput",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "",
+          "name": "Gmail OAuth2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ JSON.stringify({\n  success: true,\n  aiFlagged: $('Parsear Respuesta IA').first().json.aiFlagged ?? true,\n  severity: $('Parsear Respuesta IA').first().json.severity || 'medium',\n  flaggedWords: $('Parsear Respuesta IA').first().json.flaggedWords || [],\n  reason: $('Parsear Respuesta IA').first().json.reason || null,\n  sentiment: $('Parsear Respuesta IA').first().json.sentiment || 'hostile',\n  status: 'pending_moderation',\n  analyzedAt: $('Parsear Respuesta IA').first().json.analyzedAt || new Date().toISOString(),\n  model: $('Parsear Respuesta IA').first().json.model || 'gemini-2.0-flash',\n  agent: true,\n  notified: true\n}) }}",
+        "options": {
+          "responseCode": 200
+        }
+      },
+      "id": "mod-respond-flagged-001",
+      "name": "Respond Flagged",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [2020, 140]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ JSON.stringify({\n  success: true,\n  aiFlagged: false,\n  severity: $('Parsear Respuesta IA').first().json.severity || 'none',\n  flaggedWords: [],\n  reason: null,\n  sentiment: $('Parsear Respuesta IA').first().json.sentiment || 'neutral',\n  status: 'pending_moderation',\n  analyzedAt: $('Parsear Respuesta IA').first().json.analyzedAt || new Date().toISOString(),\n  model: $('Parsear Respuesta IA').first().json.model || 'gemini-2.0-flash',\n  agent: true,\n  notified: false\n}) }}",
+        "options": {
+          "responseCode": 200
+        }
+      },
+      "id": "mod-respond-clean-001",
+      "name": "Respond Clean",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [1780, 420]
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Validar Datos",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Validar Datos": {
+      "main": [
+        [
+          {
+            "node": "Preparar Datos",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Respond Error",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Preparar Datos": {
+      "main": [
+        [
+          {
+            "node": "Agente Moderador IA",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Agente Moderador IA",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Agente Moderador IA": {
+      "main": [
+        [
+          {
+            "node": "Parsear Respuesta IA",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Parsear Respuesta IA": {
+      "main": [
+        [
+          {
+            "node": "¿Contenido Marcado?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "¿Contenido Marcado?": {
+      "main": [
+        [
+          {
+            "node": "Notificar Admin por Gmail",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Respond Clean",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Notificar Admin por Gmail": {
+      "main": [
+        [
+          {
+            "node": "Respond Flagged",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "sonar-ia-moderation-agent-gemini-v1",
+  "meta": {
+    "instanceId": "sonar-n8n-agent-moderation"
+  },
+  "id": "sonar-review-moderation-agent-gemini",
+  "tags": []
+}

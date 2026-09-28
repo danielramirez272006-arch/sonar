@@ -1,13 +1,15 @@
 import React from 'react';
 import Navbar from '../../shared/components/layout/navbar';
+import { useTranslation } from '../../shared/context/language-context.jsx';
 
 export const SettingsPage = () => {
+  const { t } = useTranslation();
   return (
     <div className="min-h-screen flex flex-col bg-white dark:bg-[#231123] text-[#231123] dark:text-[#FAF5F8]">
       <Navbar />
       <main className="flex-1 max-w-7xl mx-auto px-4 py-8 w-full">
-        <h1 className="text-3xl font-black text-[#B80C09] mb-4">Configuración de la Consola</h1>
-        <p className="text-[#5c435a] dark:text-[#B89CB0]">Ajusta parámetros de moderación, webhooks de n8n y llaves de IA.</p>
+        <h1 className="text-3xl font-black text-[#B80C09] mb-4">{t('admin.settings.title')}</h1>
+        <p className="text-[#5c435a] dark:text-[#B89CB0]">{t('admin.settings.description')}</p>
       </main>
     </div>
   );

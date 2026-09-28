@@ -1,0 +1,1937 @@
+[
+  {
+    "file": "pages/admin/catalog-page.jsx",
+    "line": 57,
+    "text": "Crónicas"
+  },
+  {
+    "file": "pages/public/album-detail-page.jsx",
+    "line": 21,
+    "text": "In Rainbows"
+  },
+  {
+    "file": "pages/public/album-detail-page.jsx",
+    "line": 34,
+    "text": "15 Step"
+  },
+  {
+    "file": "pages/public/album-detail-page.jsx",
+    "line": 37,
+    "text": "Weird Fishes / Arpeggi"
+  },
+  {
+    "file": "pages/public/album-detail-page.jsx",
+    "line": 38,
+    "text": "All I Need"
+  },
+  {
+    "file": "pages/public/album-detail-page.jsx",
+    "line": 39,
+    "text": "Faust Arp"
+  },
+  {
+    "file": "pages/public/album-detail-page.jsx",
+    "line": 41,
+    "text": "House of Cards"
+  },
+  {
+    "file": "pages/public/album-detail-page.jsx",
+    "line": 42,
+    "text": "Jigsaw Falling Into Place"
+  },
+  {
+    "file": "pages/public/album-detail-page.jsx",
+    "line": 452,
+    "text": "15 Step"
+  },
+  {
+    "file": "pages/public/blog-page.jsx",
+    "line": 10,
+    "text": "El Arte de la Escucha Atenta en la Era del Algoritmo Acelerado"
+  },
+  {
+    "file": "pages/public/blog-page.jsx",
+    "line": 15,
+    "text": "Filosofía & Ensayo"
+  },
+  {
+    "file": "pages/public/blog-page.jsx",
+    "line": 26,
+    "text": "Guía Definitiva: Cómo Calibrar la Cápsula Fonocaptora de tu Tocadiscos"
+  },
+  {
+    "file": "pages/public/blog-page.jsx",
+    "line": 31,
+    "text": "Hardware & Audio"
+  },
+  {
+    "file": "pages/public/blog-page.jsx",
+    "line": 45,
+    "text": "Warp Records y la Invención de la Electrónica Inteligente (IDM)"
+  },
+  {
+    "file": "pages/public/blog-page.jsx",
+    "line": 50,
+    "text": "Historia Discográfica"
+  },
+  {
+    "file": "pages/public/community-page.jsx",
+    "line": 224,
+    "text": "Mateo Rivaes"
+  },
+  {
+    "file": "pages/public/community-page.jsx",
+    "line": 225,
+    "text": "Valeria Moreno"
+  },
+  {
+    "file": "pages/public/community-page.jsx",
+    "line": 226,
+    "text": "Rodrigo Bass"
+  },
+  {
+    "file": "pages/public/community-page.jsx",
+    "line": 396,
+    "text": "Tu cr?tica fue enviada a moderaci?n."
+  },
+  {
+    "file": "pages/public/community-page.jsx",
+    "line": 633,
+    "text": "En Vivo"
+  },
+  {
+    "file": "pages/public/community-page.jsx",
+    "line": 787,
+    "text": "Tame Impala"
+  },
+  {
+    "file": "pages/public/community-page.jsx",
+    "line": 788,
+    "text": "Daft Punk"
+  },
+  {
+    "file": "pages/public/community-page.jsx",
+    "line": 789,
+    "text": "Rosalía"
+  },
+  {
+    "file": "pages/public/community-page.jsx",
+    "line": 790,
+    "text": "Kendrick Lamar"
+  },
+  {
+    "file": "pages/public/community-page.jsx",
+    "line": 856,
+    "text": "In Rainbows"
+  },
+  {
+    "file": "pages/public/curated-lists-page.jsx",
+    "line": 11,
+    "text": "50 Obras Maestras del Art Rock & Vanguardia"
+  },
+  {
+    "file": "pages/public/curated-lists-page.jsx",
+    "line": 14,
+    "text": "De las experimentaciones analógicas de los 70s hasta la deconstrucción digital contemporánea. Discos que redefinieron los límites sonoros del rock."
+  },
+  {
+    "file": "pages/public/curated-lists-page.jsx",
+    "line": 19,
+    "text": "In Rainbows"
+  },
+  {
+    "file": "pages/public/curated-lists-page.jsx",
+    "line": 20,
+    "text": "To Pimp a Butterfly"
+  },
+  {
+    "file": "pages/public/curated-lists-page.jsx",
+    "line": 26,
+    "text": "Top 25: La Arquitectura del Silencio & Ambient"
+  },
+  {
+    "file": "pages/public/curated-lists-page.jsx",
+    "line": 29,
+    "text": "Paisajes sonoros generativos, texturas minimalistas y grabaciones de campo diseñadas para la escucha en auriculares de campo abierto."
+  },
+  {
+    "file": "pages/public/curated-lists-page.jsx",
+    "line": 41,
+    "text": "Prensajes de Vinilo con Rango Dinámico Excepcional"
+  },
+  {
+    "file": "pages/public/curated-lists-page.jsx",
+    "line": 44,
+    "text": "Álbumes masterizados a media velocidad (half-speed mastering) y cortados directamente desde las cintas maestras analógicas."
+  },
+  {
+    "file": "pages/public/curated-lists-page.jsx",
+    "line": 49,
+    "text": "In Rainbows"
+  },
+  {
+    "file": "pages/public/developer-api-page.jsx",
+    "line": 11,
+    "text": "Obtener Catálogo de Álbumes"
+  },
+  {
+    "file": "pages/public/developer-api-page.jsx",
+    "line": 12,
+    "text": "Devuelve la lista paginada de álbumes indexados con calificaciones, géneros y enlaces Deezer."
+  },
+  {
+    "file": "pages/public/developer-api-page.jsx",
+    "line": 20,
+    "text": "In Rainbows"
+  },
+  {
+    "file": "pages/public/developer-api-page.jsx",
+    "line": 34,
+    "text": "Obtener Reseñas Recientes"
+  },
+  {
+    "file": "pages/public/developer-api-page.jsx",
+    "line": 35,
+    "text": "Recupera las críticas aprobadas de la comunidad con análisis de IA y puntuaciones."
+  },
+  {
+    "file": "pages/public/developer-api-page.jsx",
+    "line": 55,
+    "text": "Crear Nueva Crítica"
+  },
+  {
+    "file": "pages/public/developer-api-page.jsx",
+    "line": 56,
+    "text": "Permite a los clientes autenticados publicar una reseña con calificación y texto."
+  },
+  {
+    "file": "pages/public/editorial-guidelines-page.jsx",
+    "line": 9,
+    "text": "Obra Maestra Incontestable"
+  },
+  {
+    "file": "pages/public/editorial-guidelines-page.jsx",
+    "line": 10,
+    "text": "Excelente / Imprescindible"
+  },
+  {
+    "file": "pages/public/editorial-guidelines-page.jsx",
+    "line": 11,
+    "text": "Notable / Recomendado"
+  },
+  {
+    "file": "pages/public/editorial-guidelines-page.jsx",
+    "line": 12,
+    "text": "Mediocre / Derivativo"
+  },
+  {
+    "file": "pages/public/editorial-guidelines-page.jsx",
+    "line": 13,
+    "text": "Deficiente / Fallido"
+  },
+  {
+    "file": "pages/public/news-page.jsx",
+    "line": 42,
+    "text": "Radiohead Anuncia Reedición Audiófila de \"In Rainbows\" en Doble Vinilo de 45 RPM Masterizado en Abbey Road"
+  },
+  {
+    "file": "pages/public/news-page.jsx",
+    "line": 60,
+    "text": "La Reedición Audiófila del In Rainbows"
+  },
+  {
+    "file": "pages/public/news-page.jsx",
+    "line": 69,
+    "text": "15 Step"
+  },
+  {
+    "file": "pages/public/news-page.jsx",
+    "line": 77,
+    "text": "Festivales Revelan Carteles con Actos Estelares de Electrónica Experimental y Post-Punk"
+  },
+  {
+    "file": "pages/public/news-page.jsx",
+    "line": 93,
+    "text": "El Sonido L-ISA Llega a los Festivales"
+  },
+  {
+    "file": "pages/public/news-page.jsx",
+    "line": 110,
+    "text": "Pro-Ject y Audio-Technica Presentan Nueva Línea de Tocadiscos con Conexión Balanceada True XLR"
+  },
+  {
+    "file": "pages/public/news-page.jsx",
+    "line": 111,
+    "text": "Hi-Fi & Hardware"
+  },
+  {
+    "file": "pages/public/news-page.jsx",
+    "line": 126,
+    "text": "Adiós al Zumbido en tus Vinilos"
+  },
+  {
+    "file": "pages/public/news-page.jsx",
+    "line": 137,
+    "text": "Pink Floyd: La Disección Acústica de las Cintas Maestras de \"Wish You Were Here\""
+  },
+  {
+    "file": "pages/public/news-page.jsx",
+    "line": 138,
+    "text": "Crónicas"
+  },
+  {
+    "file": "pages/public/news-page.jsx",
+    "line": 152,
+    "text": "Las Cintas de Wish You Were Here"
+  },
+  {
+    "file": "pages/public/news-page.jsx",
+    "line": 161,
+    "text": "Wish You Were Here"
+  },
+  {
+    "file": "pages/public/news-page.jsx",
+    "line": 169,
+    "text": "Warp, Ninja Tune y 4AD Reportan Récord en Soporte Físico y Firman Manifiesto Contra la Hipercompresión"
+  },
+  {
+    "file": "pages/public/news-page.jsx",
+    "line": 170,
+    "text": "Industria & Sellos"
+  },
+  {
+    "file": "pages/public/news-page.jsx",
+    "line": 182,
+    "text": "El Vinilo Gana la Guerra del Volumen"
+  },
+  {
+    "file": "pages/public/news-page.jsx",
+    "line": 193,
+    "text": "El Legado Técnico de Daft Punk: El Sampler E-mu SP-1200 y el Sonido Francés"
+  },
+  {
+    "file": "pages/public/news-page.jsx",
+    "line": 194,
+    "text": "Crónicas"
+  },
+  {
+    "file": "pages/public/news-page.jsx",
+    "line": 206,
+    "text": "Las Máquinas que Esculpieron Discovery"
+  },
+  {
+    "file": "pages/public/news-page.jsx",
+    "line": 215,
+    "text": "One More Time"
+  },
+  {
+    "file": "pages/public/news-page.jsx",
+    "line": 223,
+    "text": "Masterclass Acústica: La Ingeniería Sonora tras Daft Punk y Radiohead"
+  },
+  {
+    "file": "pages/public/news-page.jsx",
+    "line": 224,
+    "text": "Crónicas"
+  },
+  {
+    "file": "pages/public/news-page.jsx",
+    "line": 236,
+    "text": "Ingeniería Sonora tras Daft Punk y Radiohead"
+  },
+  {
+    "file": "pages/public/news-page.jsx",
+    "line": 245,
+    "text": "15 Step"
+  },
+  {
+    "file": "pages/public/news-page.jsx",
+    "line": 253,
+    "text": "To Pimp a Butterfly: La Orquestación Jazz y la Producción de Referencia"
+  },
+  {
+    "file": "pages/public/news-page.jsx",
+    "line": 266,
+    "text": "La Orquestación de To Pimp a Butterfly"
+  },
+  {
+    "file": "pages/public/news-page.jsx",
+    "line": 277,
+    "text": "Psicoacústica y Física: ¿Por Qué el Vinilo Suena Más Cálido que el Streaming?"
+  },
+  {
+    "file": "pages/public/news-page.jsx",
+    "line": 278,
+    "text": "Hi-Fi & Hardware"
+  },
+  {
+    "file": "pages/public/news-page.jsx",
+    "line": 290,
+    "text": "Por Qué el Vinilo Suena Más Cálido"
+  },
+  {
+    "file": "pages/public/news-page.jsx",
+    "line": 1062,
+    "text": "💿 Estrenos & Álbumes"
+  },
+  {
+    "file": "pages/public/news-page.jsx",
+    "line": 1063,
+    "text": "🎛️ Hi-Fi & Tocadiscos"
+  },
+  {
+    "file": "pages/public/news-page.jsx",
+    "line": 1064,
+    "text": "🎟️ Festivales & Giras"
+  },
+  {
+    "file": "pages/public/news-page.jsx",
+    "line": 1065,
+    "text": "🏛️ Sellos & Crónicas"
+  },
+  {
+    "file": "pages/public/news-vinyl.jsx",
+    "line": 40,
+    "text": "Catálogo"
+  },
+  {
+    "file": "pages/public/podcasts-page.jsx",
+    "line": 13,
+    "text": "Ep. 44: La orquestación del Free Jazz en \"To Pimp a Butterfly\""
+  },
+  {
+    "file": "pages/public/podcasts-page.jsx",
+    "line": 18,
+    "text": "Análisis de la presencia de Thundercat en el bajo, los arreglos de vientos de Kamasi Washington y cómo se mezcló para mantener la pegada del hip-hop con la dinámica del jazz en vivo."
+  },
+  {
+    "file": "pages/public/podcasts-page.jsx",
+    "line": 25,
+    "text": "Ep. 43: Compresión analógica y sampleo vintage en \"Discovery\""
+  },
+  {
+    "file": "pages/public/podcasts-page.jsx",
+    "line": 30,
+    "text": "Daft Punk y el arte de usar compresores Alesis 3630 para crear el efecto de bombeo del French House y cómo aislar micro-samples de vinilos de los 70s y 80s."
+  },
+  {
+    "file": "pages/public/podcasts-page.jsx",
+    "line": 37,
+    "text": "Ep. 42: La ingeniería secreta detrás de \"In Rainbows\""
+  },
+  {
+    "file": "pages/public/podcasts-page.jsx",
+    "line": 42,
+    "text": "Analizamos las cintas multipista de 2007: el uso de sintetizadores analógicos, la compresión de la caja de Phil Selway y la reverberación de placa de Thom Yorke."
+  },
+  {
+    "file": "pages/public/podcasts-page.jsx",
+    "line": 49,
+    "text": "Ep. 41: ¿Por qué el vinilo sigue sonando más cálido?"
+  },
+  {
+    "file": "pages/public/podcasts-page.jsx",
+    "line": 54,
+    "text": "Mitos y verdades sobre la distorsión armónica de segundo orden, la curva de ecualización RIAA y las ventajas físicas de prensar a 45 RPM."
+  },
+  {
+    "file": "pages/public/podcasts-page.jsx",
+    "line": 61,
+    "text": "Ep. 40: De Sheffield al infinito — El legado sonoro tras Daft Punk y Radiohead"
+  },
+  {
+    "file": "pages/public/podcasts-page.jsx",
+    "line": 66,
+    "text": "Un recorrido sonoro por las técnicas de producción analógica, compresión sidechain y micro-texturas acústicas."
+  },
+  {
+    "file": "pages/public/record-labels-page.jsx",
+    "line": 11,
+    "text": "Warp Records"
+  },
+  {
+    "file": "pages/public/record-labels-page.jsx",
+    "line": 15,
+    "text": "Pioneros del sonido electrónico de vanguardia. Casa de artistas revolucionarios como Aphex Twin, Boards of Canada, Flying Lotus y Battles."
+  },
+  {
+    "file": "pages/public/record-labels-page.jsx",
+    "line": 20,
+    "text": "Selected Ambient Works"
+  },
+  {
+    "file": "pages/public/record-labels-page.jsx",
+    "line": 29,
+    "text": "El sello que definió la estética etérea del Dream Pop y el Post-Punk británico. Hogar de Cocteau Twins, Pixies, The National y Big Thief."
+  },
+  {
+    "file": "pages/public/record-labels-page.jsx",
+    "line": 33,
+    "text": "Heaven or Las Vegas"
+  },
+  {
+    "file": "pages/public/record-labels-page.jsx",
+    "line": 39,
+    "text": "Blue Note Records"
+  },
+  {
+    "file": "pages/public/record-labels-page.jsx",
+    "line": 43,
+    "text": "El sello de jazz más legendario de la historia. Famoso por la impecable ingeniería de sonido de Rudy Van Gelder y el diseño gráfico de Reid Miles."
+  },
+  {
+    "file": "pages/public/record-labels-page.jsx",
+    "line": 47,
+    "text": "Blue Train"
+  },
+  {
+    "file": "pages/public/record-labels-page.jsx",
+    "line": 48,
+    "text": "Maiden Voyage"
+  },
+  {
+    "file": "pages/public/record-labels-page.jsx",
+    "line": 53,
+    "text": "Ninja Tune"
+  },
+  {
+    "file": "pages/public/record-labels-page.jsx",
+    "line": 57,
+    "text": "Fundado por Coldcut como un bastión de independencia creativa y sampleo de vanguardia. Casa de Bonobo, Bicep y The Cinematic Orchestra."
+  },
+  {
+    "file": "pages/public/record-labels-page.jsx",
+    "line": 61,
+    "text": "Black Sands"
+  },
+  {
+    "file": "pages/public/reviews-feed-page.jsx",
+    "line": 24,
+    "text": "La cima del balance analógico-digital en el siglo XXI"
+  },
+  {
+    "file": "pages/public/reviews-feed-page.jsx",
+    "line": 44,
+    "text": "Psicodelia sintética con compresión milimétrica"
+  },
+  {
+    "file": "pages/public/reviews-feed-page.jsx",
+    "line": 64,
+    "text": "Monumento sociopolítico con orquestación de Free Jazz"
+  },
+  {
+    "file": "pages/public/reviews-feed-page.jsx",
+    "line": 84,
+    "text": "Microrritmos domésticos y arpas celestiales"
+  },
+  {
+    "file": "pages/public/vinyl-collections-page.jsx",
+    "line": 12,
+    "text": "In Rainbows (Discbox Edition)"
+  },
+  {
+    "file": "pages/public/vinyl-collections-page.jsx",
+    "line": 22,
+    "text": "El legendario Boxset que incluye dos LPs de 180 gramos cortados a 45 RPM para maximizar la velocidad tangencial de lectura de aguja y reducir la distorsión en los surcos internos."
+  },
+  {
+    "file": "pages/public/vinyl-collections-page.jsx",
+    "line": 27,
+    "text": "Blonde (Black Friday Promo)"
+  },
+  {
+    "file": "pages/public/vinyl-collections-page.jsx",
+    "line": 37,
+    "text": "Prensaje original lanzado exclusivamente durante 24 horas en el Black Friday de 2016. Masterizado con amplio rango dinámico y funda gatefold texturizada."
+  },
+  {
+    "file": "pages/public/vinyl-collections-page.jsx",
+    "line": 42,
+    "text": "Discovery (Japanese Gatefold Press)"
+  },
+  {
+    "file": "pages/public/vinyl-collections-page.jsx",
+    "line": 52,
+    "text": "Vinilo prensado en compuesto de vinilo virgen silencioso con tira OBI de colección y masterización analógica que respeta los transientes del bajo comprimido de 1999-2001."
+  },
+  {
+    "file": "pages/public/vinyl-mode-page.jsx",
+    "line": 15,
+    "text": "Obsidiana Clásico"
+  },
+  {
+    "file": "pages/public/vinyl-mode-page.jsx",
+    "line": 23,
+    "text": "Rojo Carmesí Translúcido"
+  },
+  {
+    "file": "pages/public/vinyl-mode-page.jsx",
+    "line": 31,
+    "text": "Oro Champagne Edición Limitada"
+  },
+  {
+    "file": "pages/public/vinyl-mode-page.jsx",
+    "line": 39,
+    "text": "Azul Cobalto Profundo"
+  },
+  {
+    "file": "pages/public/vinyl-mode-page.jsx",
+    "line": 47,
+    "text": "Humo Marmolado"
+  },
+  {
+    "file": "pages/public/vinyl-mode-page.jsx",
+    "line": 81,
+    "text": "In Rainbows"
+  },
+  {
+    "file": "pages/user/user-dashboard-page.jsx",
+    "line": 963,
+    "text": "⭐⭐⭐⭐⭐ 5"
+  },
+  {
+    "file": "pages/user/user-dashboard-page.jsx",
+    "line": 964,
+    "text": "⭐⭐⭐⭐ 4"
+  },
+  {
+    "file": "pages/user/user-dashboard-page.jsx",
+    "line": 965,
+    "text": "⭐⭐⭐ 3"
+  },
+  {
+    "file": "pages/user/user-dashboard-page.jsx",
+    "line": 966,
+    "text": "⭐⭐ 2"
+  },
+  {
+    "file": "pages/user/user-dashboard-page.jsx",
+    "line": 967,
+    "text": "⭐ 1"
+  },
+  {
+    "file": "pages/user/user-dashboard-page.jsx",
+    "line": 988,
+    "text": "💿 Álbumes"
+  },
+  {
+    "file": "pages/user/user-dashboard-page.jsx",
+    "line": 989,
+    "text": "🎵 Canciones"
+  },
+  {
+    "file": "shared/context/player-context.jsx",
+    "line": 440,
+    "text": "In Rainbows"
+  },
+  {
+    "file": "features/albums/components/deezer-player.jsx",
+    "line": 15,
+    "text": "15 Step"
+  },
+  {
+    "file": "features/auth/components/forgot-password-form.jsx",
+    "line": 154,
+    "text": "Débil (mínimo 6)"
+  },
+  {
+    "file": "features/auth/components/forgot-password-form.jsx",
+    "line": 156,
+    "text": "Excelente (Cifrado SHA-256)"
+  },
+  {
+    "file": "features/auth/components/register-form.jsx",
+    "line": 15,
+    "text": "Carmesí Vinilo"
+  },
+  {
+    "file": "features/auth/components/register-form.jsx",
+    "line": 16,
+    "text": "Púrpura Sonar"
+  },
+  {
+    "file": "features/auth/components/register-form.jsx",
+    "line": 17,
+    "text": "Azul Eléctrico"
+  },
+  {
+    "file": "features/auth/components/register-form.jsx",
+    "line": 18,
+    "text": "Verde Esmeralda"
+  },
+  {
+    "file": "features/auth/components/register-form.jsx",
+    "line": 19,
+    "text": "Ámbar Vintage"
+  },
+  {
+    "file": "features/auth/components/register-form.jsx",
+    "line": 20,
+    "text": "Violeta Neón"
+  },
+  {
+    "file": "features/auth/components/register-form.jsx",
+    "line": 21,
+    "text": "Rosa Synth"
+  },
+  {
+    "file": "features/auth/components/register-form.jsx",
+    "line": 121,
+    "text": "Débil (mínimo 6)"
+  },
+  {
+    "file": "features/auth/components/register-form.jsx",
+    "line": 123,
+    "text": "Excelente (Cifrado SHA-256)"
+  },
+  {
+    "file": "features/home/components/album-of-the-week.jsx",
+    "line": 16,
+    "text": "In Rainbows"
+  },
+  {
+    "file": "features/home/components/album-of-the-week.jsx",
+    "line": 88,
+    "text": "To Pimp a Butterfly"
+  },
+  {
+    "file": "features/home/components/featured-reviews.jsx",
+    "line": 25,
+    "text": "In Rainbows"
+  },
+  {
+    "file": "features/home/components/hero-search.jsx",
+    "line": 21,
+    "text": "Día lluvioso / Café"
+  },
+  {
+    "file": "features/home/components/hero-search.jsx",
+    "line": 22,
+    "text": "Conducir de noche"
+  },
+  {
+    "file": "features/home/components/hero-search.jsx",
+    "line": 23,
+    "text": "Auriculares de estudio"
+  },
+  {
+    "file": "features/home/components/hero-search.jsx",
+    "line": 24,
+    "text": "Euforia & Concentración"
+  },
+  {
+    "file": "features/home/components/hero-search.jsx",
+    "line": 28,
+    "text": "Warp Records"
+  },
+  {
+    "file": "features/home/components/hero-search.jsx",
+    "line": 29,
+    "text": "Blue Note"
+  },
+  {
+    "file": "features/home/components/hero-search.jsx",
+    "line": 30,
+    "text": "XL Recordings"
+  },
+  {
+    "file": "features/home/components/hero-search.jsx",
+    "line": 32,
+    "text": "Brian Eno (Prod.)"
+  },
+  {
+    "file": "features/home/components/hero-search.jsx",
+    "line": 33,
+    "text": "Nigel Godrich (Prod.)"
+  },
+  {
+    "file": "features/home/components/hero-search.jsx",
+    "line": 34,
+    "text": "Rick Rubin (Prod.)"
+  },
+  {
+    "file": "features/home/components/hero-search.jsx",
+    "line": 38,
+    "text": "Todas las épocas"
+  },
+  {
+    "file": "features/home/components/hero-search.jsx",
+    "line": 39,
+    "text": "70s Clásicos"
+  },
+  {
+    "file": "features/home/components/hero-search.jsx",
+    "line": 40,
+    "text": "80s Sintes"
+  },
+  {
+    "file": "features/home/components/hero-search.jsx",
+    "line": 41,
+    "text": "90s Grunge / IDM"
+  },
+  {
+    "file": "features/home/components/hero-search.jsx",
+    "line": 42,
+    "text": "2000s Art Rock"
+  },
+  {
+    "file": "features/home/components/hero-search.jsx",
+    "line": 44,
+    "text": "2020s Actual"
+  },
+  {
+    "file": "features/home/components/hero-search.jsx",
+    "line": 48,
+    "text": "Art Rock"
+  },
+  {
+    "file": "features/home/components/hero-search.jsx",
+    "line": 49,
+    "text": "Jazz & Soul"
+  },
+  {
+    "file": "features/home/components/hero-search.jsx",
+    "line": 50,
+    "text": "Electrónica / IDM"
+  },
+  {
+    "file": "features/home/components/hero-search.jsx",
+    "line": 51,
+    "text": "Hip Hop Clásico"
+  },
+  {
+    "file": "features/home/components/hero-search.jsx",
+    "line": 52,
+    "text": "Indie & Psicodelia"
+  },
+  {
+    "file": "features/home/components/hero-search.jsx",
+    "line": 53,
+    "text": "Ambient & Chill"
+  },
+  {
+    "file": "features/profile/components/audiophile-monthly-wrapped.jsx",
+    "line": 55,
+    "text": "Vinilo 180g Prensado"
+  },
+  {
+    "file": "features/profile/components/audiophile-monthly-wrapped.jsx",
+    "line": 56,
+    "text": "Master Hi-Res 24-bit FLAC"
+  },
+  {
+    "file": "features/profile/components/audiophile-monthly-wrapped.jsx",
+    "line": 57,
+    "text": "Cinta Magnética / Cassette"
+  },
+  {
+    "file": "features/profile/components/audiophile-passport-tab.jsx",
+    "line": 103,
+    "text": "Oído de Alta Fidelidad"
+  },
+  {
+    "file": "features/profile/components/audiophile-passport-tab.jsx",
+    "line": 106,
+    "text": "Configuraste tu setup de audición Hi-Fi (Tornamesa, DAC o Audífonos de referencia)."
+  },
+  {
+    "file": "features/profile/components/audiophile-passport-tab.jsx",
+    "line": 113,
+    "text": "Coleccionista 180g"
+  },
+  {
+    "file": "features/profile/components/audiophile-passport-tab.jsx",
+    "line": 116,
+    "text": "Has guardado más de 3 álbumes en tus colecciones de sonido maestro."
+  },
+  {
+    "file": "features/profile/components/audiophile-passport-tab.jsx",
+    "line": 123,
+    "text": "Crítico Verificado"
+  },
+  {
+    "file": "features/profile/components/audiophile-passport-tab.jsx",
+    "line": 124,
+    "text": "Reseñas"
+  },
+  {
+    "file": "features/profile/components/audiophile-passport-tab.jsx",
+    "line": 126,
+    "text": "Publicaste al menos 2 reseñas analíticas en la comunidad de SONAR."
+  },
+  {
+    "file": "features/profile/components/audiophile-passport-tab.jsx",
+    "line": 133,
+    "text": "Radar de Vanguardia"
+  },
+  {
+    "file": "features/profile/components/audiophile-passport-tab.jsx",
+    "line": 134,
+    "text": "Exploración"
+  },
+  {
+    "file": "features/profile/components/audiophile-passport-tab.jsx",
+    "line": 136,
+    "text": "Sigues a 2 o más artistas de diferentes corrientes sonoras."
+  },
+  {
+    "file": "features/profile/components/audiophile-passport-tab.jsx",
+    "line": 143,
+    "text": "Conector de Onda"
+  },
+  {
+    "file": "features/profile/components/audiophile-passport-tab.jsx",
+    "line": 146,
+    "text": "Conectaste con otros audiófilos siguiendo sus perfiles."
+  },
+  {
+    "file": "features/profile/components/audiophile-passport-tab.jsx",
+    "line": 153,
+    "text": "Gusto Exquisito"
+  },
+  {
+    "file": "features/profile/components/audiophile-passport-tab.jsx",
+    "line": 156,
+    "text": "Mantienes un estándar crítico refinado en tus valoraciones musicales."
+  },
+  {
+    "file": "features/profile/components/audiophile-quests.jsx",
+    "line": 9,
+    "text": "Viaje a la Era Dorada del Jazz"
+  },
+  {
+    "file": "features/profile/components/audiophile-quests.jsx",
+    "line": 10,
+    "text": "Escucha al menos 3 pistas completas de la época 1955-1965 sin interrupciones."
+  },
+  {
+    "file": "features/profile/components/audiophile-quests.jsx",
+    "line": 14,
+    "text": "+120 Puntos & Medalla Bebop"
+  },
+  {
+    "file": "features/profile/components/audiophile-quests.jsx",
+    "line": 23,
+    "text": "Crítica de Alta Resolución"
+  },
+  {
+    "file": "features/profile/components/audiophile-quests.jsx",
+    "line": 24,
+    "text": "Escribe una reseña analizando el rango dinámico y mastering de un álbum."
+  },
+  {
+    "file": "features/profile/components/audiophile-quests.jsx",
+    "line": 27,
+    "text": "reseña"
+  },
+  {
+    "file": "features/profile/components/audiophile-quests.jsx",
+    "line": 28,
+    "text": "+200 Puntos & Insignia Platinada"
+  },
+  {
+    "file": "features/profile/components/audiophile-quests.jsx",
+    "line": 37,
+    "text": "Calibración de Sistema Acústico"
+  },
+  {
+    "file": "features/profile/components/audiophile-quests.jsx",
+    "line": 38,
+    "text": "Configura tu cadena de señal completa y ajusta tu ecualizador DSP."
+  },
+  {
+    "file": "features/profile/components/audiophile-quests.jsx",
+    "line": 42,
+    "text": "+200 Puntos de Prestigio"
+  },
+  {
+    "file": "features/profile/components/audiophile-quests.jsx",
+    "line": 51,
+    "text": "Explorador de Sellos de Culto"
+  },
+  {
+    "file": "features/profile/components/audiophile-quests.jsx",
+    "line": 52,
+    "text": "Descubre y guarda 2 discos de sellos discográficos independientes."
+  },
+  {
+    "file": "features/profile/components/audiophile-quests.jsx",
+    "line": 55,
+    "text": "álbumes"
+  },
+  {
+    "file": "features/profile/components/audiophile-quests.jsx",
+    "line": 56,
+    "text": "+150 Puntos & Acceso Anticipado"
+  },
+  {
+    "file": "features/profile/components/audiophile-signal-chain.jsx",
+    "line": 7,
+    "text": "Ortofon 2M Blue (Elíptica Desnuda)"
+  },
+  {
+    "file": "features/profile/components/audiophile-signal-chain.jsx",
+    "line": 8,
+    "text": "Audio-Technica VM540ML (MicroLine)"
+  },
+  {
+    "file": "features/profile/components/audiophile-signal-chain.jsx",
+    "line": 9,
+    "text": "Nagaoka MP-110 (Moving Permalloy)"
+  },
+  {
+    "file": "features/profile/components/audiophile-signal-chain.jsx",
+    "line": 12,
+    "text": "Cambridge Audio Alva Duo (MM/MC)"
+  },
+  {
+    "file": "features/profile/components/audiophile-signal-chain.jsx",
+    "line": 13,
+    "text": "Schiit Mani 2 (Ultra Low Noise)"
+  },
+  {
+    "file": "features/profile/components/audiophile-signal-chain.jsx",
+    "line": 14,
+    "text": "Pro-Ject Tube Box S2 (Valvular)"
+  },
+  {
+    "file": "features/profile/components/audiophile-signal-chain.jsx",
+    "line": 17,
+    "text": "Cambridge Audio DacMagic 200M (Dual ESS)"
+  },
+  {
+    "file": "features/profile/components/audiophile-signal-chain.jsx",
+    "line": 18,
+    "text": "Chord Mojo 2 (FPGA Custom Filter)"
+  },
+  {
+    "file": "features/profile/components/audiophile-signal-chain.jsx",
+    "line": 19,
+    "text": "Topping DX3 Pro+ (ES9038Q2M)"
+  },
+  {
+    "file": "features/profile/components/audiophile-signal-chain.jsx",
+    "line": 22,
+    "text": "Woo Audio WA7 Fireflies (Tubo Preamplificado)"
+  },
+  {
+    "file": "features/profile/components/audiophile-signal-chain.jsx",
+    "line": 23,
+    "text": "Schiit Magni+ (Discreto Clase AB)"
+  },
+  {
+    "file": "features/profile/components/audiophile-signal-chain.jsx",
+    "line": 24,
+    "text": "Marantz PM6007 (Toroidal Current Feedback)"
+  },
+  {
+    "file": "features/profile/components/audiophile-signal-chain.jsx",
+    "line": 27,
+    "text": "Sennheiser HD 660S (Dinámico Abierto)"
+  },
+  {
+    "file": "features/profile/components/audiophile-signal-chain.jsx",
+    "line": 28,
+    "text": "Hifiman Sundara (Planar Magnetic)"
+  },
+  {
+    "file": "features/profile/components/audiophile-signal-chain.jsx",
+    "line": 29,
+    "text": "Focal Clear Mg (Magnesio Hi-Res)"
+  },
+  {
+    "file": "features/profile/components/audiophile-signal-chain.jsx",
+    "line": 66,
+    "text": "1. Fonocaptor"
+  },
+  {
+    "file": "features/profile/components/audiophile-signal-chain.jsx",
+    "line": 67,
+    "text": "2. Preamplificador"
+  },
+  {
+    "file": "features/profile/components/audiophile-signal-chain.jsx",
+    "line": 68,
+    "text": "3. DAC Procesador"
+  },
+  {
+    "file": "features/profile/components/audiophile-signal-chain.jsx",
+    "line": 69,
+    "text": "4. Amplificación"
+  },
+  {
+    "file": "features/profile/components/audiophile-signal-chain.jsx",
+    "line": 70,
+    "text": "5. Monitoreo"
+  },
+  {
+    "file": "features/profile/components/edit-profile-form.jsx",
+    "line": 39,
+    "text": "Sonar Crimson"
+  },
+  {
+    "file": "features/profile/components/edit-profile-form.jsx",
+    "line": 40,
+    "text": "Ruby Flame"
+  },
+  {
+    "file": "features/profile/components/edit-profile-form.jsx",
+    "line": 42,
+    "text": "Velvet Burgundy"
+  },
+  {
+    "file": "features/profile/components/edit-profile-form.jsx",
+    "line": 45,
+    "text": "Deep Purple"
+  },
+  {
+    "file": "features/profile/components/edit-profile-form.jsx",
+    "line": 46,
+    "text": "Electric Violet"
+  },
+  {
+    "file": "features/profile/components/edit-profile-form.jsx",
+    "line": 47,
+    "text": "Cyber Magenta"
+  },
+  {
+    "file": "features/profile/components/edit-profile-form.jsx",
+    "line": 48,
+    "text": "Midnight Plum"
+  },
+  {
+    "file": "features/profile/components/edit-profile-form.jsx",
+    "line": 51,
+    "text": "Neon Cyan"
+  },
+  {
+    "file": "features/profile/components/edit-profile-form.jsx",
+    "line": 52,
+    "text": "Ocean Sky"
+  },
+  {
+    "file": "features/profile/components/edit-profile-form.jsx",
+    "line": 53,
+    "text": "Electric Indigo"
+  },
+  {
+    "file": "features/profile/components/edit-profile-form.jsx",
+    "line": 54,
+    "text": "Deep Navy"
+  },
+  {
+    "file": "features/profile/components/edit-profile-form.jsx",
+    "line": 57,
+    "text": "Emerald Forest"
+  },
+  {
+    "file": "features/profile/components/edit-profile-form.jsx",
+    "line": 58,
+    "text": "Mint Wave"
+  },
+  {
+    "file": "features/profile/components/edit-profile-form.jsx",
+    "line": 59,
+    "text": "Acid Lime"
+  },
+  {
+    "file": "features/profile/components/edit-profile-form.jsx",
+    "line": 60,
+    "text": "Dark Moss"
+  },
+  {
+    "file": "features/profile/components/edit-profile-form.jsx",
+    "line": 63,
+    "text": "Sunset Amber"
+  },
+  {
+    "file": "features/profile/components/edit-profile-form.jsx",
+    "line": 64,
+    "text": "Warm Orange"
+  },
+  {
+    "file": "features/profile/components/edit-profile-form.jsx",
+    "line": 65,
+    "text": "Tangerine Glow"
+  },
+  {
+    "file": "features/profile/components/edit-profile-form.jsx",
+    "line": 66,
+    "text": "Golden Sun"
+  },
+  {
+    "file": "features/profile/components/edit-profile-form.jsx",
+    "line": 69,
+    "text": "Midnight Velvet"
+  },
+  {
+    "file": "features/profile/components/edit-profile-form.jsx",
+    "line": 70,
+    "text": "Obsidian Slate"
+  },
+  {
+    "file": "features/profile/components/edit-profile-form.jsx",
+    "line": 71,
+    "text": "Titanium Grey"
+  },
+  {
+    "file": "features/profile/components/edit-profile-form.jsx",
+    "line": 72,
+    "text": "Charcoal Black"
+  },
+  {
+    "file": "features/profile/components/edit-profile-form.jsx",
+    "line": 77,
+    "text": "Crimson Velvet"
+  },
+  {
+    "file": "features/profile/components/edit-profile-form.jsx",
+    "line": 78,
+    "text": "Cyber Neon"
+  },
+  {
+    "file": "features/profile/components/edit-profile-form.jsx",
+    "line": 79,
+    "text": "Electric Space"
+  },
+  {
+    "file": "features/profile/components/edit-profile-form.jsx",
+    "line": 80,
+    "text": "Sunset Heat"
+  },
+  {
+    "file": "features/profile/components/edit-profile-form.jsx",
+    "line": 81,
+    "text": "Aurora Mist"
+  },
+  {
+    "file": "features/profile/components/edit-profile-form.jsx",
+    "line": 82,
+    "text": "Solar Flare"
+  },
+  {
+    "file": "features/profile/components/edit-profile-form.jsx",
+    "line": 83,
+    "text": "Cosmic Indigo"
+  },
+  {
+    "file": "features/profile/components/edit-profile-form.jsx",
+    "line": 84,
+    "text": "Golden Ember"
+  },
+  {
+    "file": "features/profile/components/edit-profile-form.jsx",
+    "line": 85,
+    "text": "Velvet Night"
+  },
+  {
+    "file": "features/profile/components/edit-profile-form.jsx",
+    "line": 86,
+    "text": "Dark Nebula"
+  },
+  {
+    "file": "features/profile/components/edit-profile-form.jsx",
+    "line": 91,
+    "text": "Vinilófilo"
+  },
+  {
+    "file": "features/profile/components/edit-profile-form.jsx",
+    "line": 92,
+    "text": "Synth Master"
+  },
+  {
+    "file": "features/profile/components/edit-profile-form.jsx",
+    "line": 95,
+    "text": "DJ Modular"
+  },
+  {
+    "file": "features/profile/components/edit-profile-form.jsx",
+    "line": 96,
+    "text": "Acústico"
+  },
+  {
+    "file": "features/profile/components/edit-profile-form.jsx",
+    "line": 97,
+    "text": "Noctámbulo"
+  },
+  {
+    "file": "features/profile/components/edit-profile-form.jsx",
+    "line": 98,
+    "text": "Dream Pop"
+  },
+  {
+    "file": "features/profile/components/edit-profile-form.jsx",
+    "line": 100,
+    "text": "Vocal Star"
+  },
+  {
+    "file": "features/profile/components/edit-profile-form.jsx",
+    "line": 107,
+    "text": "Auriculares Hi-Fi"
+  },
+  {
+    "file": "features/profile/components/edit-profile-form.jsx",
+    "line": 108,
+    "text": "Vinilo / Disco"
+  },
+  {
+    "file": "features/profile/components/edit-profile-form.jsx",
+    "line": 109,
+    "text": "Radio Retro"
+  },
+  {
+    "file": "features/profile/components/edit-profile-form.jsx",
+    "line": 110,
+    "text": "Onda Sonora"
+  },
+  {
+    "file": "features/profile/components/edit-profile-form.jsx",
+    "line": 111,
+    "text": "Micrófono Estudio"
+  },
+  {
+    "file": "features/profile/components/edit-profile-form.jsx",
+    "line": 112,
+    "text": "Fuego / Top"
+  },
+  {
+    "file": "features/profile/components/edit-profile-form.jsx",
+    "line": 433,
+    "text": "Caras Blobatar"
+  },
+  {
+    "file": "features/profile/components/edit-profile-form.jsx",
+    "line": 434,
+    "text": "Inicial Tipográfica"
+  },
+  {
+    "file": "features/profile/components/edit-profile-form.jsx",
+    "line": 435,
+    "text": "Ícono de Género"
+  },
+  {
+    "file": "features/profile/components/edit-profile-form.jsx",
+    "line": 436,
+    "text": "Subir Imagen"
+  },
+  {
+    "file": "features/profile/components/enhanced-parental-control.jsx",
+    "line": 10,
+    "text": "Mozart & Clásicos para Niños"
+  },
+  {
+    "file": "features/profile/components/enhanced-parental-control.jsx",
+    "line": 11,
+    "text": "Composiciones sinfónicas relajantes y enriquecedoras."
+  },
+  {
+    "file": "features/profile/components/enhanced-parental-control.jsx",
+    "line": 17,
+    "text": "Eine kleine Nachtmusik"
+  },
+  {
+    "file": "features/profile/components/enhanced-parental-control.jsx",
+    "line": 26,
+    "text": "Bandas Sonoras & Animación"
+  },
+  {
+    "file": "features/profile/components/enhanced-parental-control.jsx",
+    "line": 27,
+    "text": "Música orquestal inspiradora de grandes aventuras."
+  },
+  {
+    "file": "features/profile/components/enhanced-parental-control.jsx",
+    "line": 33,
+    "text": "One More Time (Kids Animation Mix)"
+  },
+  {
+    "file": "features/profile/components/enhanced-parental-control.jsx",
+    "line": 42,
+    "text": "Lo-Fi para Concentración & Tareas"
+  },
+  {
+    "file": "features/profile/components/enhanced-parental-control.jsx",
+    "line": 43,
+    "text": "Beats instrumentales suaves sin letras distractoras."
+  },
+  {
+    "file": "features/profile/components/enhanced-parental-control.jsx",
+    "line": 49,
+    "text": "Quiet Study Beats"
+  },
+  {
+    "file": "features/profile/components/enhanced-parental-control.jsx",
+    "line": 58,
+    "text": "Canciones de Cuna & Sueño Profundo"
+  },
+  {
+    "file": "features/profile/components/enhanced-parental-control.jsx",
+    "line": 59,
+    "text": "Melodías acústicas en piano y arpa para dormir."
+  },
+  {
+    "file": "features/profile/components/enhanced-parental-control.jsx",
+    "line": 65,
+    "text": "Here Comes The Sun (Lullaby)"
+  },
+  {
+    "file": "features/profile/components/enhanced-parental-control.jsx",
+    "line": 77,
+    "text": "Eine kleine Nachtmusik (Serenata)"
+  },
+  {
+    "file": "features/profile/components/enhanced-parental-control.jsx",
+    "line": 86,
+    "text": "Para Elisa (Bagatela en La menor)"
+  },
+  {
+    "file": "features/profile/components/enhanced-parental-control.jsx",
+    "line": 95,
+    "text": "Here Comes The Sun"
+  },
+  {
+    "file": "features/profile/components/enhanced-parental-control.jsx",
+    "line": 104,
+    "text": "One More Time"
+  },
+  {
+    "file": "features/profile/components/enhanced-parental-control.jsx",
+    "line": 113,
+    "text": "Quiet Study Beats (Lo-Fi)"
+  },
+  {
+    "file": "features/profile/components/enhanced-parental-control.jsx",
+    "line": 122,
+    "text": "Nocturne Lullaby (Canción de Cuna)"
+  },
+  {
+    "file": "features/profile/components/enhanced-parental-control.jsx",
+    "line": 132,
+    "text": "🌧️ Lluvia Suave en la Ventana"
+  },
+  {
+    "file": "features/profile/components/enhanced-parental-control.jsx",
+    "line": 133,
+    "text": "🌲 Bosque & Pájaros Cantores"
+  },
+  {
+    "file": "features/profile/components/enhanced-parental-control.jsx",
+    "line": 134,
+    "text": "🌊 Olas de Mar Tranquilas"
+  },
+  {
+    "file": "features/profile/components/enhanced-parental-control.jsx",
+    "line": 135,
+    "text": "📻 Sonido Blanco Acústico"
+  },
+  {
+    "file": "features/profile/components/enhanced-parental-control.jsx",
+    "line": 912,
+    "text": "To Pimp A Butterfly (Muestra Explícita)"
+  },
+  {
+    "file": "features/profile/components/profile-header.jsx",
+    "line": 20,
+    "text": "Mateo Rivaes"
+  },
+  {
+    "file": "features/profile/components/rewards-store-tab.jsx",
+    "line": 10,
+    "text": "Marco Vinilo de Oro 24K"
+  },
+  {
+    "file": "features/profile/components/rewards-store-tab.jsx",
+    "line": 11,
+    "text": "Marcos de Avatar"
+  },
+  {
+    "file": "features/profile/components/rewards-store-tab.jsx",
+    "line": 15,
+    "text": "Borde dorado reluciente con textura de microsurcos de vinilo para tu avatar."
+  },
+  {
+    "file": "features/profile/components/rewards-store-tab.jsx",
+    "line": 21,
+    "text": "Marco Neón Hi-Fi Cyberpunk"
+  },
+  {
+    "file": "features/profile/components/rewards-store-tab.jsx",
+    "line": 22,
+    "text": "Marcos de Avatar"
+  },
+  {
+    "file": "features/profile/components/rewards-store-tab.jsx",
+    "line": 26,
+    "text": "Aura electromagnética de neón cian y magenta con pulso de audio."
+  },
+  {
+    "file": "features/profile/components/rewards-store-tab.jsx",
+    "line": 32,
+    "text": "Marco Tubo Valvular Retro"
+  },
+  {
+    "file": "features/profile/components/rewards-store-tab.jsx",
+    "line": 33,
+    "text": "Marcos de Avatar"
+  },
+  {
+    "file": "features/profile/components/rewards-store-tab.jsx",
+    "line": 37,
+    "text": "Resplandor cálido de filamento de bulbo termoiónico vintage para audiófilos analógicos."
+  },
+  {
+    "file": "features/profile/components/rewards-store-tab.jsx",
+    "line": 43,
+    "text": "Marco Holográfico Espectral"
+  },
+  {
+    "file": "features/profile/components/rewards-store-tab.jsx",
+    "line": 44,
+    "text": "Marcos de Avatar"
+  },
+  {
+    "file": "features/profile/components/rewards-store-tab.jsx",
+    "line": 48,
+    "text": "Efecto tornasolado iridiscente que reacciona a los reflejos de luz."
+  },
+  {
+    "file": "features/profile/components/rewards-store-tab.jsx",
+    "line": 54,
+    "text": "Marco Prisma Óptico Pink Floyd"
+  },
+  {
+    "file": "features/profile/components/rewards-store-tab.jsx",
+    "line": 55,
+    "text": "Marcos de Avatar"
+  },
+  {
+    "file": "features/profile/components/rewards-store-tab.jsx",
+    "line": 59,
+    "text": "Halo refractario de espectro visible con haz de luz continua."
+  },
+  {
+    "file": "features/profile/components/rewards-store-tab.jsx",
+    "line": 65,
+    "text": "Marco Caoba Analógica Vintage"
+  },
+  {
+    "file": "features/profile/components/rewards-store-tab.jsx",
+    "line": 66,
+    "text": "Marcos de Avatar"
+  },
+  {
+    "file": "features/profile/components/rewards-store-tab.jsx",
+    "line": 70,
+    "text": "Acabado en madera noble lacada de gabinete acústico artesanal."
+  },
+  {
+    "file": "features/profile/components/rewards-store-tab.jsx",
+    "line": 76,
+    "text": "Skin Reproductor Cassette 1984"
+  },
+  {
+    "file": "features/profile/components/rewards-store-tab.jsx",
+    "line": 77,
+    "text": "Skins de Audio"
+  },
+  {
+    "file": "features/profile/components/rewards-store-tab.jsx",
+    "line": 81,
+    "text": "Diseño retro con carretes giratorios analógicos para el reproductor global de Sonar."
+  },
+  {
+    "file": "features/profile/components/rewards-store-tab.jsx",
+    "line": 87,
+    "text": "Skin VU Meter Aguja Analógica"
+  },
+  {
+    "file": "features/profile/components/rewards-store-tab.jsx",
+    "line": 88,
+    "text": "Skins de Audio"
+  },
+  {
+    "file": "features/profile/components/rewards-store-tab.jsx",
+    "line": 92,
+    "text": "Vúmetro balístico retroiluminado en ámbar que mide la dinámica sonora."
+  },
+  {
+    "file": "features/profile/components/rewards-store-tab.jsx",
+    "line": 98,
+    "text": "Skin Tornamesa Direct Drive 33/45"
+  },
+  {
+    "file": "features/profile/components/rewards-store-tab.jsx",
+    "line": 99,
+    "text": "Skins de Audio"
+  },
+  {
+    "file": "features/profile/components/rewards-store-tab.jsx",
+    "line": 103,
+    "text": "Plato giratorio estroboscópico de cuarzo con brazo fonocaptor dinámico."
+  },
+  {
+    "file": "features/profile/components/rewards-store-tab.jsx",
+    "line": 109,
+    "text": "Skin Bulbos Valvulares Hi-End"
+  },
+  {
+    "file": "features/profile/components/rewards-store-tab.jsx",
+    "line": 110,
+    "text": "Skins de Audio"
+  },
+  {
+    "file": "features/profile/components/rewards-store-tab.jsx",
+    "line": 114,
+    "text": "Preamplificador con filamentos incandescentes y saturación armónica par."
+  },
+  {
+    "file": "features/profile/components/rewards-store-tab.jsx",
+    "line": 120,
+    "text": "Título: Oído Absoluto"
+  },
+  {
+    "file": "features/profile/components/rewards-store-tab.jsx",
+    "line": 121,
+    "text": "Títulos de Prestigio"
+  },
+  {
+    "file": "features/profile/components/rewards-store-tab.jsx",
+    "line": 125,
+    "text": "Insignia exclusiva que se muestra en tu perfil público y comentarios de reseñas."
+  },
+  {
+    "file": "features/profile/components/rewards-store-tab.jsx",
+    "line": 130,
+    "text": "Título: Maestro del Mastering"
+  },
+  {
+    "file": "features/profile/components/rewards-store-tab.jsx",
+    "line": 131,
+    "text": "Títulos de Prestigio"
+  },
+  {
+    "file": "features/profile/components/rewards-store-tab.jsx",
+    "line": 135,
+    "text": "Reconocimiento de máxima autoridad acústica en la comunidad de Sonar."
+  },
+  {
+    "file": "features/profile/components/rewards-store-tab.jsx",
+    "line": 140,
+    "text": "Título: Arqueólogo del Vinilo"
+  },
+  {
+    "file": "features/profile/components/rewards-store-tab.jsx",
+    "line": 141,
+    "text": "Títulos de Prestigio"
+  },
+  {
+    "file": "features/profile/components/rewards-store-tab.jsx",
+    "line": 145,
+    "text": "Distintivo de coleccionista experto en prensados originales y primeras ediciones."
+  },
+  {
+    "file": "features/profile/components/rewards-store-tab.jsx",
+    "line": 150,
+    "text": "Título: Purista Hi-Res 192kHz"
+  },
+  {
+    "file": "features/profile/components/rewards-store-tab.jsx",
+    "line": 151,
+    "text": "Títulos de Prestigio"
+  },
+  {
+    "file": "features/profile/components/rewards-store-tab.jsx",
+    "line": 155,
+    "text": "Para quienes no aceptan nada por debajo de la fidelidad Bit-Perfect de estudio."
+  },
+  {
+    "file": "features/profile/components/rewards-store-tab.jsx",
+    "line": 160,
+    "text": "Pase VIP Salón de Debate Acústico"
+  },
+  {
+    "file": "features/profile/components/rewards-store-tab.jsx",
+    "line": 161,
+    "text": "Pases & Beneficios"
+  },
+  {
+    "file": "features/profile/components/rewards-store-tab.jsx",
+    "line": 165,
+    "text": "Acceso ilimitado a salas de escucha privadas con audiófilos y críticos certificados."
+  },
+  {
+    "file": "features/profile/components/rewards-store-tab.jsx",
+    "line": 170,
+    "text": "Pase Bitrate Master Lossless"
+  },
+  {
+    "file": "features/profile/components/rewards-store-tab.jsx",
+    "line": 171,
+    "text": "Pases & Beneficios"
+  },
+  {
+    "file": "features/profile/components/rewards-store-tab.jsx",
+    "line": 175,
+    "text": "Transmisión directa de audio sin compresión con rango dinámico expandido."
+  },
+  {
+    "file": "features/profile/components/rewards-store-tab.jsx",
+    "line": 180,
+    "text": "Pase Asistente Crítico IA Ilimitado"
+  },
+  {
+    "file": "features/profile/components/rewards-store-tab.jsx",
+    "line": 181,
+    "text": "Pases & Beneficios"
+  },
+  {
+    "file": "features/profile/components/rewards-store-tab.jsx",
+    "line": 185,
+    "text": "Análisis ilimitados de poética de letras y correlaciones musicales por IA."
+  },
+  {
+    "file": "features/profile/components/rewards-store-tab.jsx",
+    "line": 192,
+    "text": "Sesión Inmersiva sin Pausas"
+  },
+  {
+    "file": "features/profile/components/rewards-store-tab.jsx",
+    "line": 202,
+    "text": "Crítica de Rango Dinámico"
+  },
+  {
+    "file": "features/profile/components/rewards-store-tab.jsx",
+    "line": 212,
+    "text": "Fidelidad Diaria Constante"
+  },
+  {
+    "file": "features/profile/components/rewards-store-tab.jsx",
+    "line": 222,
+    "text": "Curador de Vinilos Independientes"
+  },
+  {
+    "file": "features/profile/components/rewards-store-tab.jsx",
+    "line": 363,
+    "text": "🎁 +150 Sonar Coins & Racha Dorada"
+  },
+  {
+    "file": "features/profile/components/rewards-store-tab.jsx",
+    "line": 364,
+    "text": "⭐ ¡Gran Golpe de Suerte! +250 Sonar Coins"
+  },
+  {
+    "file": "features/profile/components/rewards-store-tab.jsx",
+    "line": 365,
+    "text": "⚡ +300 XP de Prestigio Acústico"
+  },
+  {
+    "file": "features/profile/components/rewards-store-tab.jsx",
+    "line": 366,
+    "text": "🔥 Pack Combo: +100 Monedas & +200 XP"
+  },
+  {
+    "file": "features/profile/components/rewards-store-tab.jsx",
+    "line": 621,
+    "text": "👑 Marcos"
+  },
+  {
+    "file": "features/profile/components/rewards-store-tab.jsx",
+    "line": 622,
+    "text": "🎛️ Skins Audio"
+  },
+  {
+    "file": "features/profile/components/rewards-store-tab.jsx",
+    "line": 623,
+    "text": "🎖️ Títulos"
+  },
+  {
+    "file": "features/profile/components/rewards-store-tab.jsx",
+    "line": 624,
+    "text": "🎟️ Pases"
+  },
+  {
+    "file": "features/profile/components/sound-signature-selector.jsx",
+    "line": 8,
+    "text": "Cálido Analógico (Tubos)"
+  },
+  {
+    "file": "features/profile/components/sound-signature-selector.jsx",
+    "line": 16,
+    "text": "Plano / Monitor Analítico"
+  },
+  {
+    "file": "features/profile/components/sound-signature-selector.jsx",
+    "line": 24,
+    "text": "Presencia Vocal & Jazz"
+  },
+  {
+    "file": "features/profile/components/sound-signature-selector.jsx",
+    "line": 32,
+    "text": "Graves Profundos Hi-Fi"
+  },
+  {
+    "file": "shared/components/a11y/accessibility-widget.jsx",
+    "line": 23,
+    "text": "Estándar"
+  },
+  {
+    "file": "shared/components/a11y/accessibility-widget.jsx",
+    "line": 24,
+    "text": "Protanopía (Rojo)"
+  },
+  {
+    "file": "shared/components/a11y/accessibility-widget.jsx",
+    "line": 25,
+    "text": "Deuteranopía (Verde)"
+  },
+  {
+    "file": "shared/components/a11y/accessibility-widget.jsx",
+    "line": 26,
+    "text": "Tritanopía (Azul)"
+  },
+  {
+    "file": "shared/components/a11y/accessibility-widget.jsx",
+    "line": 27,
+    "text": "Monocromático"
+  },
+  {
+    "file": "shared/components/a11y/accessibility-widget.jsx",
+    "line": 103,
+    "text": "A (Normal)"
+  },
+  {
+    "file": "shared/components/a11y/accessibility-widget.jsx",
+    "line": 104,
+    "text": "A+ (Grande)"
+  },
+  {
+    "file": "shared/components/a11y/accessibility-widget.jsx",
+    "line": 105,
+    "text": "A++ (Extra)"
+  },
+  {
+    "file": "shared/components/a11y/accessibility-widget.jsx",
+    "line": 134,
+    "text": "Estándar"
+  },
+  {
+    "file": "shared/components/a11y/accessibility-widget.jsx",
+    "line": 135,
+    "text": "Relajado (1.8x)"
+  },
+  {
+    "file": "shared/components/a11y/accessibility-widget.jsx",
+    "line": 136,
+    "text": "Amplio (2.2x)"
+  },
+  {
+    "file": "shared/components/a11y/keyboard-shortcuts-modal.jsx",
+    "line": 18,
+    "text": "Abrir / Cerrar Panel de Accesibilidad"
+  },
+  {
+    "file": "shared/components/a11y/keyboard-shortcuts-modal.jsx",
+    "line": 19,
+    "text": "Abrir esta guía de atajos de teclado"
+  },
+  {
+    "file": "shared/components/a11y/keyboard-shortcuts-modal.jsx",
+    "line": 20,
+    "text": "Navegar hacia el siguiente elemento interactivo"
+  },
+  {
+    "file": "shared/components/a11y/keyboard-shortcuts-modal.jsx",
+    "line": 21,
+    "text": "Navegar hacia el elemento interactivo anterior"
+  },
+  {
+    "file": "shared/components/a11y/keyboard-shortcuts-modal.jsx",
+    "line": 22,
+    "text": "Cerrar cualquier ventana modal o menú abierto"
+  },
+  {
+    "file": "shared/components/a11y/keyboard-shortcuts-modal.jsx",
+    "line": 28,
+    "text": "Reproducir / Pausar muestra de audio activa"
+  },
+  {
+    "file": "shared/components/a11y/keyboard-shortcuts-modal.jsx",
+    "line": 29,
+    "text": "Silenciar / Restaurar volumen del reproductor"
+  },
+  {
+    "file": "shared/components/a11y/keyboard-shortcuts-modal.jsx",
+    "line": 30,
+    "text": "Enfocar barra de búsqueda global"
+  },
+  {
+    "file": "shared/components/a11y/keyboard-shortcuts-modal.jsx",
+    "line": 36,
+    "text": "Activar botón, reproducir tarjeta o entrar a perfil"
+  },
+  {
+    "file": "shared/components/a11y/keyboard-shortcuts-modal.jsx",
+    "line": 37,
+    "text": "Ir al principio o final de la página"
+  },
+  {
+    "file": "shared/components/layout/admin-sidebar.jsx",
+    "line": 8,
+    "text": "Moderación"
+  },
+  {
+    "file": "shared/components/layout/admin-sidebar.jsx",
+    "line": 10,
+    "text": "Configuración"
+  },
+  {
+    "file": "shared/components/ui/report-modal.jsx",
+    "line": 22,
+    "text": "Lenguaje de odio o discriminación"
+  },
+  {
+    "file": "shared/components/ui/report-modal.jsx",
+    "line": 23,
+    "text": "Insultos, agresiones verbales, racismo, xenofobia u odio dirigido."
+  },
+  {
+    "file": "shared/components/ui/report-modal.jsx",
+    "line": 30,
+    "text": "Acoso o intimidación"
+  },
+  {
+    "file": "shared/components/ui/report-modal.jsx",
+    "line": 31,
+    "text": "Ataques personales hacia un usuario, amenazas o provocaciones continuas."
+  },
+  {
+    "file": "shared/components/ui/report-modal.jsx",
+    "line": 38,
+    "text": "Spam o enlaces fraudulentos"
+  },
+  {
+    "file": "shared/components/ui/report-modal.jsx",
+    "line": 39,
+    "text": "Publicidad no autorizada, mensajes repetitivos, bots o enlaces sospechosos."
+  },
+  {
+    "file": "shared/components/ui/report-modal.jsx",
+    "line": 46,
+    "text": "Contenido fuera de lugar / No musical"
+  },
+  {
+    "file": "shared/components/ui/report-modal.jsx",
+    "line": 47,
+    "text": "Mensajes totalmente ajenos a la reseña, trolling o ruido comunitario."
+  },
+  {
+    "file": "shared/components/ui/report-modal.jsx",
+    "line": 54,
+    "text": "Otro motivo de infracción"
+  },
+  {
+    "file": "shared/components/ui/report-modal.jsx",
+    "line": 55,
+    "text": "Cualquier otra vulneración a los lineamientos y políticas de Sonar."
+  }
+]

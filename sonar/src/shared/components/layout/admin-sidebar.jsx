@@ -1,6 +1,8 @@
+import { useUIText } from '../../i18n/use-ui-text.js';
 import React from 'react';
 
 export const AdminSidebar = ({ activeTab = 'dashboard', onSelectTab = () => {} }) => {
+  const ui = useUIText();
   const links = [
     { id: 'dashboard', label: 'Dashboard', icon: '◫' },
     { id: 'moderacion', label: 'Moderación', icon: '≋' },
@@ -10,9 +12,7 @@ export const AdminSidebar = ({ activeTab = 'dashboard', onSelectTab = () => {} }
 
   return (
     <aside className="w-full md:w-64 flex flex-col gap-2 p-4 bg-white dark:bg-[#4B2840] border border-[#e6d5e2] dark:border-white/10 rounded-3xl">
-      <div className="px-3 py-2 text-xs font-bold uppercase tracking-wider text-[#5c435a] dark:text-[#B89CB0]">
-        Consola de Administración
-      </div>
+      <div className="px-3 py-2 text-xs font-bold uppercase tracking-wider text-[#5c435a] dark:text-[#B89CB0]">{ui("Consola de Administración")}</div>
       <nav className="flex flex-col gap-1">
         {links.map((link) => (
           <button

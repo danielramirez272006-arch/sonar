@@ -1,3 +1,4 @@
+import { useUIText } from '../../shared/i18n/use-ui-text.js';
 import React, { useState } from 'react';
 import Navbar from '../../shared/components/layout/navbar';
 import Footer from '../../shared/components/layout/footer';
@@ -7,6 +8,7 @@ import { useAuth } from '../../shared/context/auth-context';
 import { useRouter } from '../../shared/routing/app-router';
 
 export const ProfileSettingsPage = () => {
+  const ui = useUIText();
   const { user, updateUser } = useAuth();
   const router = useRouter?.();
   const [toastMessage, setToastMessage] = useState(null);
@@ -28,15 +30,9 @@ export const ProfileSettingsPage = () => {
       <Navbar />
       <main className="flex-1 max-w-3xl mx-auto px-4 sm:px-6 py-10 w-full flex flex-col gap-6">
         <div className="border-b border-[#e6d5e2] dark:border-white/10 pb-4">
-          <span className="text-xs uppercase tracking-widest text-[#B80C09] font-extrabold">
-            CONFIGURACIÓN
-          </span>
-          <h1 className="text-3xl font-black text-[#231123] dark:text-white tracking-tight mt-1">
-            Personalizar Perfil & Preferencias
-          </h1>
-          <p className="text-sm text-[#5c435a] dark:text-[#B89CB0] mt-1">
-            Ajusta tu biografía, avatar y géneros preferidos para calibrar tus recomendaciones acústicas en Sonar.
-          </p>
+          <span className="text-xs uppercase tracking-widest text-[#B80C09] font-extrabold">{ui("CONFIGURACIÓN")}</span>
+          <h1 className="text-3xl font-black text-[#231123] dark:text-white tracking-tight mt-1">{ui("Personalizar Perfil & Preferencias")}</h1>
+          <p className="text-sm text-[#5c435a] dark:text-[#B89CB0] mt-1">{ui("Ajusta tu biografía, avatar y géneros preferidos para calibrar tus recomendaciones acústicas en Sonar.")}</p>
         </div>
 
         <div className="p-6 sm:p-8 rounded-3xl bg-white dark:bg-[#4B2840] border border-[#e6d5e2] dark:border-white/10 shadow-md">

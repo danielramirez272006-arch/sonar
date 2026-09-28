@@ -1,3 +1,4 @@
+import { useUIText } from '../../i18n/use-ui-text.js';
 import React from 'react';
 import { useAccessibility } from '../../context/accessibility-context';
 
@@ -8,6 +9,7 @@ export const TTSButton = ({
   className = '',
   label = 'Escuchar',
 }) => {
+  const ui = useUIText();
   const { speak, stopSpeaking, isSpeaking, currentSpeakingText } = useAccessibility();
 
   const isCurrentSpeaking = isSpeaking && currentSpeakingText === text;
@@ -27,8 +29,8 @@ export const TTSButton = ({
     <button
       type="button"
       onClick={handleToggle}
-      aria-label={isCurrentSpeaking ? 'Detener lectura en voz alta' : `Escuchar ${title || 'texto'} en voz alta`}
-      title={isCurrentSpeaking ? 'Detener lectura en voz alta' : 'Escuchar en voz alta (Text-to-Speech)'}
+      aria-label={isCurrentSpeaking ? ui("Detener lectura en voz alta") : `Escuchar ${title || 'texto'} en voz alta`}
+      title={isCurrentSpeaking ? ui("Detener lectura en voz alta") : ui("Escuchar en voz alta (Text-to-Speech)")}
       className={`inline-flex items-center gap-1.5 rounded-full font-bold transition-all cursor-pointer ${
         isCurrentSpeaking
           ? 'bg-[#B80C09] text-white shadow-md animate-pulse'
@@ -38,7 +40,7 @@ export const TTSButton = ({
       <span className="material-symbols-outlined text-[15px]">
         {isCurrentSpeaking ? 'volume_off' : 'volume_up'}
       </span>
-      {label && <span>{isCurrentSpeaking ? 'Detener' : label}</span>}
+      {label && <span>{isCurrentSpeaking ? ui("Detener") : label}</span>}
     </button>
   );
 };

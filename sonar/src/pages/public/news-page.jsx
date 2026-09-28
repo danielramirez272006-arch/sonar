@@ -1,8 +1,10 @@
+import { useUIText } from '../../shared/i18n/use-ui-text.js';
 import '../../Styles/news-catalog.css';
 import { matchesNewsSearch } from '../../shared/services/news-search.js';
 import { NewsVinyl } from './news-vinyl.jsx';
 import { NewsLabels } from './news-labels.jsx';
 import { useAuth } from '../../shared/context/auth-context.jsx';
+import { useTranslation } from '../../shared/context/language-context.jsx';
 import { useState, useMemo, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Navbar from '../../shared/components/layout/navbar';
@@ -297,6 +299,8 @@ En este artículo analizamos además cómo la ligera mezcla de canales (crosstal
 ];
 
 export const NewsPage = () => {
+  const ui = useUIText();
+    const { t } = useTranslation();
   const { user } = useAuth();
   const [articles, setArticles] = useState(NEWS_ARTICLES);
   const [editions, setEditions] = useState([]);
@@ -449,7 +453,7 @@ export const NewsPage = () => {
   const handleNewsletterSubmit = async (e) => {
     e.preventDefault();
     if (!newsletterEmail || !newsletterEmail.includes('@')) {
-      setSubscriptionError('Por favor ingresa un correo electrónico válido.');
+      setSubscriptionError(t('auth.invalid_email', 'Por favor ingresa un correo electrónico válido.'));
       return;
     }
 
@@ -467,16 +471,16 @@ export const NewsPage = () => {
 
       if (response && response.success) {
         playAudioCue('success');
-        setSubscriptionSuccess(response.message || '¡Te has suscrito con éxito al boletín semanal!');
+        setSubscriptionSuccess(response.message || t('page.news.newsletterSuccess', '¡Te has suscrito con éxito al boletín semanal!'));
         announce('Suscripción a la newsletter confirmada con éxito.');
         setNewsletterEmail('');
         setNewsletterName('');
       } else {
-        throw new Error(response?.message || 'No se pudo procesar la suscripción.');
+        throw new Error(response?.message || t('page.news.newsletterError', 'No se pudo procesar la suscripción.'));
       }
     } catch (err) {
       console.warn('Error en suscripción a newsletter:', err);
-      setSubscriptionError(err.message || 'Error al conectar con el servicio de boletín.');
+      setSubscriptionError(err.message || t('page.news.newsletterConnectionError', 'Error al conectar con el servicio de boletín.'));
     } finally {
       setIsSubscribing(false);
     }
@@ -500,14 +504,14 @@ export const NewsPage = () => {
             <div className="flex items-center gap-2">
               <span className="w-2.5 h-2.5 rounded-full bg-[#B80C09] animate-pulse" />
               <span className="text-xs uppercase tracking-widest font-black text-[#5c1d5e] dark:text-pink-300">
-                PERIODISMO & CRÓNICA AUDIÓFILA
+                {t('page.news.eyebrow')}
               </span>
             </div>
             <h1 className="text-3xl sm:text-4xl lg:text-5xl font-black tracking-tight text-[#231123] dark:text-white">
-              Radar Musical & Actualidad
+              {t('page.news.title')}
             </h1>
             <p className="text-sm sm:text-base text-[#5c435a] dark:text-[#B89CB0] max-w-2xl font-medium leading-relaxed">
-              Nuevos lanzamientos, reediciones de referencia analógica, tecnología de alta fidelidad y movimientos clave en el canon moderno.
+              {t('page.news.description')}
             </p>
           </div>
 
@@ -519,8 +523,8 @@ export const NewsPage = () => {
               </span>
               <input
                 type="search"
-                placeholder="Buscar noticias, artistas, sellos o vinilos…"
-                aria-label="Buscar en Noticias"
+                placeholder={t('page.news.searchPlaceholder')}
+                aria-label={t('page.news.searchLabel')}
                 value={searchQuery}
                 onChange={(e) => { setSearchQuery(e.target.value); setSelectedLabel(''); setSelectedCategory('Todas'); }}
                 className="w-full pl-11 pr-11 py-3 rounded-2xl text-sm font-semibold bg-white dark:bg-[#4B2840]/60 border border-[#e6d5e2] dark:border-white/10 text-[#231123] dark:text-white placeholder-[#a186a0] dark:placeholder-gray-400 focus:outline-none focus:border-[#B80C09] focus:shadow-[0_0_0_4px_rgba(184,12,9,0.12)] shadow-xs transition-all"
@@ -529,7 +533,7 @@ export const NewsPage = () => {
                 <button
                   type="button"
                   onClick={() => { setSearchQuery(''); setSelectedLabel(''); setSelectedCategory('Todas'); }}
-                  aria-label="Limpiar búsqueda de noticias"
+                  aria-label={t('page.news.clearSearch')}
                   className="absolute right-2.5 top-1/2 -translate-y-1/2 w-7 h-7 rounded-full grid place-items-center text-[#a186a0] dark:text-[#B89CB0] hover:text-[#B80C09] hover:bg-[#f8e9f6] dark:hover:bg-white/10 transition-colors cursor-pointer"
                 >
                   <span className="material-symbols-outlined text-[16px]">close</span>
@@ -539,13 +543,13 @@ export const NewsPage = () => {
             <p className="mt-2 text-[11px] font-semibold text-[#5c435a] dark:text-[#B89CB0]">
               {searchQuery.trim()
                 ? `${resultCount} ${resultCount === 1 ? 'coincidencia' : 'coincidencias'} para “${searchQuery.trim()}”`
-                : 'Busca dentro del contenido de las noticias, sellos y ediciones de vinilo.'}
+                : t('page.news.searchHelp')}
             </p>
           </div>
         </header>
-        {user?.role === 'admin' && <a href="#admin-catalog-announcements" className="primary-button">Administrar noticias en Anuncios</a>}
-        {newsLoading && <p role="status">Cargando noticias…</p>}
-        {newsError && <div role="alert"><p>No se pudieron cargar las noticias: {newsError}</p><button onClick={() => { setNewsLoading(true); setNewsRefresh(value => value + 1) }}>Reintentar</button></div>}
+        {user?.role === 'admin' && <a href="#admin-catalog-announcements" className="primary-button">{t('page.news.manage')}</a>}
+        {newsLoading && <p role="status">{t('page.news.loading')}</p>}
+        {newsError && <div role="alert"><p>{t('page.news.loadError')} {newsError}</p><button onClick={() => { setNewsLoading(true); setNewsRefresh(value => value + 1) }}>{t('page.news.retry')}</button></div>}
 
         {/* SECCIÓN EDITORIAL DE PORTADA (REVISTA / EDITORIAL HERO) */}
         {featuredArticle && !searchQuery && selectedCategory === 'Todas' && (
@@ -565,14 +569,14 @@ export const NewsPage = () => {
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/30 to-transparent" />
                 <div className="absolute top-4 left-4 px-3.5 py-1.5 rounded-full bg-[#B80C09] text-white text-[11px] font-black uppercase tracking-wider shadow-md">
-                  PORTADA DE LA SEMANA · {featuredArticle.category}
+                  {t('page.news.coverStory')} · {featuredArticle.category}
                 </div>
 
                 <div className="absolute bottom-4 left-4 sm:left-6 right-4 sm:right-6 text-white space-y-2">
                   <div className="flex items-center gap-2 text-xs text-gray-300 font-semibold">
                     <span>{featuredArticle.date}</span>
                     <span>•</span>
-                    <span>{featuredArticle.readTime} de lectura</span>
+                    <span>{featuredArticle.readTime} {ui("de lectura")}</span>
                     <span>•</span>
                     <span className="text-rose-300 font-bold">{featuredArticle.author}</span>
                   </div>
@@ -601,13 +605,13 @@ export const NewsPage = () => {
                         }
                       }}
                       className="px-3.5 py-2 rounded-xl bg-[#B80C09] text-white hover:bg-[#960a07] text-xs font-black uppercase tracking-wider transition-all cursor-pointer flex items-center gap-1.5 shadow-md"
-                      title="Escuchar crónica sonora en audio"
+                      title={t('page.news.listenNarration')}
                     >
                       <span className="material-symbols-outlined text-[16px]">
                         {currentTrack?.id === featuredArticle.audioNarration.id && isPlaying ? 'pause' : 'headphones'}
                       </span>
                       <span className="hidden sm:inline">
-                        {currentTrack?.id === featuredArticle.audioNarration.id && isPlaying ? 'Pausar Crónica' : 'Escuchar Crónica'}
+                        {currentTrack?.id === featuredArticle.audioNarration.id && isPlaying ? t('page.news.pauseStory') : t('page.news.playStory')}
                       </span>
                     </button>
                   )}
@@ -624,12 +628,12 @@ export const NewsPage = () => {
                         }
                       }}
                       className="px-3 py-2 rounded-xl bg-[#f8e9f6] dark:bg-white/10 hover:bg-[#B80C09] hover:text-white text-[#B80C09] dark:text-rose-200 text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 border border-rose-200 dark:border-white/10"
-                      title="Escuchar muestra de audio"
+                      title={t('page.news.listenSample')}
                     >
                       <span className="material-symbols-outlined text-[16px]">
                         {currentTrack?.title === featuredArticle.trackPreview.title && isPlaying ? 'pause' : 'play_arrow'}
                       </span>
-                      <span className="hidden sm:inline">Muestra</span>
+                      <span className="hidden sm:inline">{t('page.news.sample')}</span>
                     </button>
                   )}
 
@@ -638,7 +642,7 @@ export const NewsPage = () => {
                     onClick={() => setActiveArticleModal(featuredArticle)}
                     className="px-4 py-2 rounded-xl bg-[#231123] dark:bg-white/10 hover:bg-[#B80C09] text-white text-xs font-extrabold uppercase tracking-wider transition-all cursor-pointer shadow-sm flex items-center gap-1.5"
                   >
-                    <span>Leer</span>
+                    <span>{t('page.news.read')}</span>
                     <span className="material-symbols-outlined text-[15px]">arrow_forward</span>
                   </button>
                 </div>
@@ -650,9 +654,9 @@ export const NewsPage = () => {
               <div className="flex items-center justify-between pb-2 border-b border-[#e6d5e2] dark:border-white/10">
                 <span className="text-xs font-black uppercase tracking-wider text-[#B80C09] dark:text-rose-400 flex items-center gap-1.5">
                   <span className="material-symbols-outlined text-[16px]">trending_up</span>
-                  <span>Tendencias Sónicas</span>
+                  <span>{ui("Tendencias Sónicas")}</span>
                 </span>
-                <span className="text-[11px] font-bold text-gray-500">Últimas 48h</span>
+                <span className="text-[11px] font-bold text-gray-500">{ui("Últimas 48h")}</span>
               </div>
 
               {sideArticles.map((article) => (
@@ -676,7 +680,7 @@ export const NewsPage = () => {
                         {article.audioNarration && (
                           <span className="text-[9px] font-bold px-1.5 py-0.2 rounded-md bg-emerald-500/15 text-emerald-600 dark:text-emerald-300 flex items-center gap-0.5">
                             <span className="material-symbols-outlined text-[11px]">headphones</span>
-                            <span>Audio</span>
+                            <span>{ui("Audio")}</span>
                           </span>
                         )}
                       </div>
@@ -706,13 +710,13 @@ export const NewsPage = () => {
                   <span className="material-symbols-outlined text-[16px] text-[#B80C09]">new_releases</span>
                 </span>
                 <div>
-                  <span className="text-xs font-black uppercase tracking-widest text-[#B80C09] dark:text-rose-400">LANZAMIENTOS DESTACADOS</span>
-                  <p className="text-[11px] text-[#5c435a] dark:text-[#B89CB0] font-medium">Selección editorial · Actualizado por el equipo Sonar</p>
+                  <span className="text-xs font-black uppercase tracking-widest text-[#B80C09] dark:text-rose-400">{ui("LANZAMIENTOS DESTACADOS")}</span>
+                  <p className="text-[11px] text-[#5c435a] dark:text-[#B89CB0] font-medium">{ui("Selección editorial · Actualizado por el equipo Sonar")}</p>
                 </div>
               </div>
               {!releasesLoading && visibleReleases.length > 0 && (
                 <span className="px-2.5 py-1 rounded-full bg-[#B80C09]/10 text-[#B80C09] dark:text-rose-300 text-[10px] font-black">
-                  {visibleReleases.length} {visibleReleases.length === 1 ? 'lanzamiento' : 'lanzamientos'}
+                  {visibleReleases.length} {visibleReleases.length === 1 ? ui("lanzamiento") : ui("lanzamientos")}
                 </span>
               )}
             </div>
@@ -750,7 +754,7 @@ export const NewsPage = () => {
                         {release.cover ? (
                           <img
                             src={release.cover}
-                            alt={`Portada de ${release.title}`}
+                            alt={ui("Portada de {{value0}}", { value0: release.title })}
                             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                             onError={(e) => { e.target.style.display = 'none'; }}
                           />
@@ -768,9 +772,7 @@ export const NewsPage = () => {
                         {/* Indicador de ver detalle al hover */}
                         <div className="absolute inset-0 bg-black/30 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center pointer-events-none">
                           <span className="px-3 py-1.5 rounded-full bg-white/90 dark:bg-black/80 text-xs font-black text-[#231123] dark:text-white shadow-md flex items-center gap-1">
-                            <span className="material-symbols-outlined text-[15px]">visibility</span>
-                            Ver descripción
-                          </span>
+                            <span className="material-symbols-outlined text-[15px]">visibility</span>{ui("Ver descripción")}</span>
                         </div>
 
                         {/* Botón reproducir si tiene enlace */}
@@ -821,9 +823,7 @@ export const NewsPage = () => {
                             </span>
                           )}
                           <span className="px-2.5 py-1 rounded-lg bg-[#f8e9f6] dark:bg-white/10 group-hover:bg-[#B80C09] group-hover:text-white text-[#B80C09] dark:text-rose-300 text-[10px] font-black transition-colors flex items-center gap-1 border border-rose-200/50 dark:border-white/10">
-                            <span className="material-symbols-outlined text-[12px]">info</span>
-                            Ver más
-                          </span>
+                            <span className="material-symbols-outlined text-[12px]">info</span>{ui("Ver más")}</span>
                         </div>
                       </div>
                     </motion.article>
@@ -834,7 +834,7 @@ export const NewsPage = () => {
           </section>
         )}
 
-        {searchQuery.trim() && !newsLoading && !releasesLoading && <div className="news-search-summary" role="status"><span>{resultCount} resultados para <strong>«{searchQuery.trim()}»</strong></span><button onClick={() => { setSearchQuery(''); setSelectedLabel(''); setSelectedCategory('Todas'); }}>Limpiar búsqueda</button></div>}
+        {searchQuery.trim() && !newsLoading && !releasesLoading && <div className="news-search-summary" role="status"><span>{resultCount} {ui("resultados para")} <strong>«{searchQuery.trim()}»</strong></span><button onClick={() => { setSearchQuery(''); setSelectedLabel(''); setSelectedCategory('Todas'); }}>{ui("Limpiar búsqueda")}</button></div>}
         <NewsVinyl editions={visibleEditions} labels={labels} articles={articles} selected={selectedEdition} onSelect={setSelectedEdition} onArticle={setActiveArticleModal} />
         <NewsLabels
           labels={visibleLabels}
@@ -896,12 +896,12 @@ export const NewsPage = () => {
                     {article.audioNarration ? (
                       <span className="absolute bottom-3 right-3 px-2.5 py-1 rounded-lg bg-black/80 backdrop-blur-xs text-white text-[10px] font-black flex items-center gap-1.5 border border-rose-500/30">
                         <span className="material-symbols-outlined text-[14px] text-rose-400">headphones</span>
-                        <span>Audiocrónica</span>
+                        <span>{t('page.news.audioChronicle')}</span>
                       </span>
                     ) : article.trackPreview ? (
                       <span className="absolute bottom-3 right-3 px-2 py-1 rounded-lg bg-black/75 backdrop-blur-xs text-white text-[10px] font-bold flex items-center gap-1">
                         <span className="material-symbols-outlined text-[13px] text-rose-400">audiotrack</span>
-                        <span>Muestra</span>
+                        <span>{t('page.news.sample')}</span>
                       </span>
                     ) : null}
                   </div>
@@ -910,7 +910,7 @@ export const NewsPage = () => {
                   <div className="p-5 sm:p-6 space-y-3">
                     <div className="flex items-center justify-between text-[11px] font-bold text-[#5c435a] dark:text-[#B89CB0]">
                       <span>{article.date}</span>
-                      <span>{article.readTime}</span>
+                      <span>{t('page.news.readTime', { time: article.readTime })}</span>
                     </div>
 
                     <h3
@@ -929,7 +929,7 @@ export const NewsPage = () => {
                 {/* Pie de Tarjeta */}
                 <div className="p-5 sm:p-6 pt-0 flex items-center justify-between border-t border-gray-100 dark:border-white/5 mt-2">
                   <span className="text-[11px] font-bold text-[#231123] dark:text-gray-300">
-                    {article.labelName && <span className="block font-bold">Sello: {article.labelName}</span>}{article.artist && <span className="block">Artistas: {article.artist}</span>}Por {article.author}{user?.role === 'admin' && <a href={`#admin-catalog-announcements?edit=${encodeURIComponent(article.id)}`} onClick={event => event.stopPropagation()} className="block underline mt-2">Editar noticia</a>}
+                    {article.labelName && <span className="block font-bold">{t('page.news.label')} {article.labelName}</span>}{article.artist && <span className="block">{t('page.news.artists')} {article.artist}</span>}{t('page.news.byAuthor', { author: article.author })}{user?.role === 'admin' && <a href={`#admin-catalog-announcements?edit=${encodeURIComponent(article.id)}`} onClick={event => event.stopPropagation()} className="block underline mt-2">{t('page.news.edit')}</a>}
                   </span>
 
                   <div className="flex items-center gap-2">
@@ -946,12 +946,12 @@ export const NewsPage = () => {
                           }
                         }}
                         className="px-2.5 py-1.5 rounded-xl bg-[#f8e9f6] dark:bg-white/10 hover:bg-[#B80C09] hover:text-white text-[#B80C09] dark:text-rose-300 flex items-center gap-1 text-[11px] font-black transition-colors cursor-pointer border border-rose-200 dark:border-white/10"
-                        title="Escuchar audiocrónica narrada"
+                        title={t('page.news.listenNarration')}
                       >
                         <span className="material-symbols-outlined text-[15px]">
                           {isArticleAudioPlaying ? 'pause' : 'headphones'}
                         </span>
-                        <span className="hidden sm:inline">Audio</span>
+                        <span className="hidden sm:inline">{t('page.news.audio')}</span>
                       </button>
                     ) : article.trackPreview ? (
                       <button
@@ -965,7 +965,7 @@ export const NewsPage = () => {
                           }
                         }}
                         className="w-8 h-8 rounded-full bg-[#f8e9f6] dark:bg-white/10 hover:bg-[#B80C09] hover:text-white text-[#B80C09] dark:text-rose-300 flex items-center justify-center transition-colors cursor-pointer shadow-2xs"
-                        title={`Escuchar muestra de ${article.trackPreview.title}`}
+                        title={ui("Escuchar muestra de {{value0}}", { value0: article.trackPreview.title })}
                       >
                         <span className="material-symbols-outlined text-[16px]">
                           {isArticleAudioPlaying ? 'pause' : 'play_arrow'}
@@ -978,7 +978,7 @@ export const NewsPage = () => {
                       onClick={() => setActiveArticleModal(article)}
                       className="px-3 py-1.5 rounded-xl bg-gray-100 dark:bg-white/10 hover:bg-[#B80C09] hover:text-white text-[11px] font-extrabold text-[#231123] dark:text-white transition-colors cursor-pointer"
                     >
-                      Leer
+                      {t('page.news.read')}
                     </button>
                   </div>
                 </div>
@@ -999,13 +999,13 @@ export const NewsPage = () => {
               <div className="space-y-2 max-w-xl">
                 <h3 className="text-xl sm:text-2xl font-black tracking-tight text-[var(--text-main)]">
                   {searchQuery.trim()
-                    ? <>No existe contenido para &ldquo;{searchQuery.trim()}&rdquo;</>
-                    : 'Todavía no hay noticias publicadas'}
+                    ? t('page.news.noSearchResults', { query: searchQuery.trim() })
+                    : t('page.news.noNewsYet')}
                 </h3>
                 <p className="text-sm text-[var(--text-secondary)] leading-relaxed">
                   {searchQuery.trim()
-                    ? 'Prueba con otros términos como «vinilo», «Radiohead», «festivales» o «Daft Punk», o selecciona la categoría «Todas».'
-                    : 'Cuando el equipo editorial publique anuncios, lanzamientos y reediciones aparecerán en este radar.'}
+                    ? t('page.news.tryOtherTerms')
+                    : t('page.news.waitingForStories')}
                 </p>
               </div>
               <div className="flex flex-wrap items-center justify-center gap-2 pt-1">
@@ -1025,7 +1025,7 @@ export const NewsPage = () => {
                     onClick={() => { setSearchQuery(''); setSelectedLabel(''); setSelectedCategory('Todas'); }}
                     className="px-4 py-2 rounded-full bg-[var(--color-accent)] hover:bg-[var(--color-accent-hover)] text-white text-xs font-black transition-colors cursor-pointer"
                   >
-                    Ver todas las noticias
+                    {t('page.news.viewAll')}
                   </button>
                 )}
               </div>
@@ -1041,28 +1041,22 @@ export const NewsPage = () => {
             <div className="flex flex-wrap items-center gap-2">
               <span className="px-3 py-1 rounded-full bg-[#B80C09] text-white text-xs font-black uppercase tracking-widest shadow-md flex items-center gap-1.5">
                 <span className="material-symbols-outlined text-[14px]">mail</span>
-                <span>BOLETÍN SEMANAL SONAR</span>
+                <span>{t('page.news.newsletterTitle')}</span>
               </span>
               <span className="px-2.5 py-0.5 rounded-full bg-white/10 text-[10px] font-bold text-rose-200 border border-white/10 flex items-center gap-1">
                 <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-                <span>n8n Webhook Automatizado</span>
+                <span>{t('page.news.automatedService', 'n8n Webhook Automatizado')}</span>
               </span>
             </div>
 
             <div className="space-y-2">
-              <h2 className="text-2xl sm:text-3xl lg:text-4xl font-black tracking-tight">
-                Recibe el Radar Audiófilo en tu Correo
-              </h2>
-              <p className="text-xs sm:text-sm text-gray-300 max-w-2xl leading-relaxed">
-                Cada viernes enviamos una selección con los 5 mejores lanzamientos en alta fidelidad, crónicas de conciertos, comparativas de hardware analógico y avisos de preventas de vinilos limitados.
-              </p>
+              <h2 className="text-2xl sm:text-3xl lg:text-4xl font-black tracking-tight">{ui("Recibe el Radar Audiófilo en tu Correo")}</h2>
+              <p className="text-xs sm:text-sm text-gray-300 max-w-2xl leading-relaxed">{ui("Cada viernes enviamos una selección con los 5 mejores lanzamientos en alta fidelidad, crónicas de conciertos, comparativas de hardware analógico y avisos de preventas de vinilos limitados.")}</p>
             </div>
 
             {/* Selector de Temas */}
             <div className="space-y-2">
-              <span className="text-xs font-bold text-rose-200 uppercase tracking-wider block">
-                Selecciona los temas que te interesan:
-              </span>
+              <span className="text-xs font-bold text-rose-200 uppercase tracking-wider block">{ui("Selecciona los temas que te interesan:")}</span>
               <div className="flex flex-wrap gap-2">
                 {[
                   { id: 'Lanzamientos', label: '💿 Estrenos & Álbumes' },
@@ -1095,7 +1089,7 @@ export const NewsPage = () => {
               <div className="grid grid-cols-1 sm:grid-cols-12 gap-3">
                 <input
                   type="text"
-                  placeholder="Tu nombre o alias melómano (opcional)"
+                  placeholder={ui("Tu nombre o alias melómano (opcional)")}
                   value={newsletterName}
                   onChange={(e) => setNewsletterName(e.target.value)}
                   className="sm:col-span-4 px-4 py-3 rounded-2xl text-xs sm:text-sm bg-white/10 border border-white/20 text-white placeholder-gray-400 focus:outline-none focus:border-[#B80C09] focus:bg-white/15 transition-all"
@@ -1104,7 +1098,7 @@ export const NewsPage = () => {
                 <input
                   type="email"
                   required
-                  placeholder="tu_correo@ejemplo.com"
+                  placeholder={ui("tu_correo@ejemplo.com")}
                   value={newsletterEmail}
                   onChange={(e) => setNewsletterEmail(e.target.value)}
                   className="sm:col-span-5 px-4 py-3 rounded-2xl text-xs sm:text-sm bg-white/10 border border-white/20 text-white placeholder-gray-400 focus:outline-none focus:border-[#B80C09] focus:bg-white/15 transition-all"
@@ -1118,11 +1112,11 @@ export const NewsPage = () => {
                   {isSubscribing ? (
                     <>
                       <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                      <span>Enviando...</span>
+                      <span>{ui("Enviando...")}</span>
                     </>
                   ) : (
                     <>
-                      <span>Suscribirme</span>
+                      <span>{t('page.news.subscribe')}</span>
                       <span className="material-symbols-outlined text-[16px]">send</span>
                     </>
                   )}
@@ -1152,9 +1146,7 @@ export const NewsPage = () => {
                 </motion.div>
               )}
 
-              <p className="text-[11px] text-gray-400">
-                🔒 Cero spam. Solo criterio sonoro y curaduría audiófila de calidad. Puedes darte de baja con un clic cuando quieras.
-              </p>
+              <p className="text-[11px] text-gray-400">{ui("🔒 Cero spam. Solo criterio sonoro y curaduría audiófila de calidad. Puedes darte de baja con un clic cuando quieras.")}</p>
             </form>
           </div>
         </section>
@@ -1186,7 +1178,7 @@ export const NewsPage = () => {
                   type="button"
                   onClick={() => setActiveArticleModal(null)}
                   className="absolute top-4 right-4 w-9 h-9 rounded-full bg-black/60 text-white hover:bg-[#B80C09] flex items-center justify-center transition-colors cursor-pointer shadow-md"
-                  aria-label="Cerrar noticia"
+                  aria-label={t('page.news.closeArticle')}
                 >
                   <span className="material-symbols-outlined text-[18px]">close</span>
                 </button>
@@ -1203,12 +1195,12 @@ export const NewsPage = () => {
 
               {/* Contenido del Artículo */}
               <div className="flex-1 overflow-y-auto p-6 sm:p-8 space-y-6 text-sm leading-relaxed text-[#231123]/90 dark:text-gray-200">
-                {editions.some(edition => String(edition.id) === String(activeArticleModal.vinylId)) && <button className="vinyl-news-link" onClick={() => { setSelectedEdition(editions.find(edition => String(edition.id) === String(activeArticleModal.vinylId))); setActiveArticleModal(null) }}>Ver edición de vinilo →</button>}
-                {activeArticleModal.labelName && <p><strong>Sello discográfico:</strong> {activeArticleModal.labelName}</p>}
-                {activeArticleModal.artist && <p><strong>Artistas:</strong> {activeArticleModal.artist}</p>}
-                {activeArticleModal.album && <p><strong>Álbum:</strong> {activeArticleModal.album}</p>}
-                {activeArticleModal.eventDate && <p><strong>Fecha del lanzamiento o fichaje:</strong> {activeArticleModal.eventDate}</p>}
-                {activeArticleModal.sourceUrl && <a href={activeArticleModal.sourceUrl} target="_blank" rel="noopener noreferrer" className="underline">Consultar anuncio oficial ↗</a>}
+                {editions.some(edition => String(edition.id) === String(activeArticleModal.vinylId)) && <button className="vinyl-news-link" onClick={() => { setSelectedEdition(editions.find(edition => String(edition.id) === String(activeArticleModal.vinylId))); setActiveArticleModal(null) }}>{ui("Ver edición de vinilo →")}</button>}
+                {activeArticleModal.labelName && <p><strong>{ui("Sello discográfico:")}</strong> {activeArticleModal.labelName}</p>}
+                {activeArticleModal.artist && <p><strong>{ui("Artistas:")}</strong> {activeArticleModal.artist}</p>}
+                {activeArticleModal.album && <p><strong>{ui("Álbum:")}</strong> {activeArticleModal.album}</p>}
+                {activeArticleModal.eventDate && <p><strong>{ui("Fecha del lanzamiento o fichaje:")}</strong> {activeArticleModal.eventDate}</p>}
+                {activeArticleModal.sourceUrl && <a href={activeArticleModal.sourceUrl} target="_blank" rel="noopener noreferrer" className="underline">{ui("Consultar anuncio oficial ↗")}</a>}
                 {/* Metadatos */}
                 <div className="flex flex-wrap items-center justify-between gap-3 pb-4 border-b border-gray-200 dark:border-white/10 text-xs text-[#5c435a] dark:text-[#B89CB0]">
                   <div className="flex items-center gap-2">
@@ -1238,7 +1230,7 @@ export const NewsPage = () => {
                       <div className="flex flex-col min-w-0">
                         <span className="text-[10px] uppercase font-black tracking-wider text-[#B80C09] dark:text-rose-300 flex items-center gap-1.5">
                           <span className="w-2 h-2 rounded-full bg-[#B80C09] animate-pulse" />
-                          <span>Audiocrónica Narrada (Sonido de Estudio)</span>
+                          <span>{ui("Audiocrónica Narrada (Sonido de Estudio)")}</span>
                         </span>
                         <span className="text-sm font-black text-[#231123] dark:text-white truncate">
                           {activeArticleModal.audioNarration.title}
@@ -1264,7 +1256,7 @@ export const NewsPage = () => {
                       <span className="material-symbols-outlined text-[18px]">
                         {currentTrack?.id === activeArticleModal.audioNarration.id && isPlaying ? 'pause' : 'play_arrow'}
                       </span>
-                      <span>{currentTrack?.id === activeArticleModal.audioNarration.id && isPlaying ? 'Pausar' : 'Escuchar Crónica'}</span>
+                      <span>{currentTrack?.id === activeArticleModal.audioNarration.id ? t('page.news.pauseStory') : t('page.news.playStory')}</span>
                     </button>
                   </div>
                 )}
@@ -1279,7 +1271,7 @@ export const NewsPage = () => {
                         className="w-12 h-12 rounded-xl object-cover shadow-sm shrink-0"
                       />
                       <div className="flex flex-col min-w-0">
-                        <span className="text-xs uppercase font-bold text-[#B80C09] dark:text-rose-300">Pista / Muestra Musical</span>
+                        <span className="text-xs uppercase font-bold text-[#B80C09] dark:text-rose-300">{t('page.news.audioSample')}</span>
                         <span className="text-sm font-black text-[#231123] dark:text-white truncate">
                           {activeArticleModal.trackPreview.title}
                         </span>
@@ -1304,7 +1296,7 @@ export const NewsPage = () => {
                       <span className="material-symbols-outlined text-[16px]">
                         {currentTrack?.title === activeArticleModal.trackPreview.title && isPlaying ? 'pause' : 'play_arrow'}
                       </span>
-                      <span>Muestra</span>
+                      <span>{t('page.news.sample')}</span>
                     </button>
                   </div>
                 )}
@@ -1330,7 +1322,7 @@ export const NewsPage = () => {
                   <span className="material-symbols-outlined text-[16px]">
                     {isSpeaking ? 'stop' : 'record_voice_over'}
                   </span>
-                  <span>{isSpeaking ? 'Detener Lectura' : 'Escuchar Noticia'}</span>
+                  <span>{isSpeaking ? t('page.news.stopReading') : t('page.news.listenArticle')}</span>
                 </button>
 
                 <button
@@ -1338,7 +1330,7 @@ export const NewsPage = () => {
                   onClick={() => setActiveArticleModal(null)}
                   className="px-5 py-2 rounded-xl bg-[#B80C09] text-white text-xs font-bold hover:bg-[#960a07] transition-colors cursor-pointer"
                 >
-                  Cerrar
+                  {t('page.news.close')}
                 </button>
               </div>
             </motion.div>
@@ -1377,7 +1369,7 @@ export const NewsPage = () => {
                   type="button"
                   onClick={() => setActiveReleaseModal(null)}
                   className="absolute top-4 right-4 w-9 h-9 rounded-full bg-black/60 text-white hover:bg-[#B80C09] flex items-center justify-center transition-colors cursor-pointer shadow-md"
-                  aria-label="Cerrar modal"
+                  aria-label={t('page.news.closeModal')}
                 >
                   <span className="material-symbols-outlined text-[18px]">close</span>
                 </button>
@@ -1386,7 +1378,7 @@ export const NewsPage = () => {
                 <div className="absolute bottom-4 left-5 right-5 space-y-1.5">
                   <div className="flex flex-wrap items-center gap-2">
                     <span className="px-2.5 py-0.5 rounded-md bg-[#B80C09] text-white text-[10px] font-black uppercase tracking-wider">
-                      {activeReleaseModal.type || 'Lanzamiento'}
+                      {activeReleaseModal.type || ui("Lanzamiento")}
                     </span>
                     {activeReleaseModal.genre && (
                       <span className="px-2.5 py-0.5 rounded-md bg-white/20 backdrop-blur-md text-white text-[10px] font-bold uppercase tracking-wider">
@@ -1408,16 +1400,16 @@ export const NewsPage = () => {
                 {activeReleaseModal.releaseDate && (
                   <div className="flex items-center gap-2 text-xs font-bold text-[#876a84] dark:text-[#B89CB0]">
                     <span className="material-symbols-outlined text-[16px] text-[#B80C09]">calendar_today</span>
-                    <span>Fecha de Lanzamiento: {new Date(activeReleaseModal.releaseDate).toLocaleDateString('es-MX', { year: 'numeric', month: 'long', day: 'numeric' })}</span>
+                    <span>{t('page.news.releaseDate')} {new Date(activeReleaseModal.releaseDate).toLocaleDateString(undefined, { year: 'numeric', month: 'long', day: 'numeric' })}</span>
                   </div>
                 )}
 
                 <div className="space-y-2">
                   <h3 className="text-xs font-black uppercase tracking-widest text-[#B80C09] dark:text-rose-400">
-                    Descripción Editorial
+                    {t('page.news.editorialDescription')}
                   </h3>
                   <div className="whitespace-pre-line text-sm sm:text-base font-medium text-[#231123]/90 dark:text-gray-200 leading-relaxed bg-[#f8e9f6]/40 dark:bg-white/5 p-4 rounded-2xl border border-rose-200/40 dark:border-white/5">
-                    {activeReleaseModal.description || 'No hay descripción detallada disponible para este lanzamiento.'}
+                    {activeReleaseModal.description || t('page.news.noReleaseDescription')}
                   </div>
                 </div>
 
@@ -1426,8 +1418,8 @@ export const NewsPage = () => {
                     <div className="flex items-center gap-3 min-w-0">
                       <span className="material-symbols-outlined text-3xl text-[#B80C09]">headphones</span>
                       <div className="min-w-0">
-                        <p className="text-xs font-black uppercase text-[#B80C09] dark:text-rose-300">Escuchar en Plataformas</p>
-                        <p className="text-xs text-[#5c435a] dark:text-gray-300 truncate">Sigue el enlace externo para reproducir el álbum/sencillo</p>
+                        <p className="text-xs font-black uppercase text-[#B80C09] dark:text-rose-300">{ui("Escuchar en Plataformas")}</p>
+                        <p className="text-xs text-[#5c435a] dark:text-gray-300 truncate">{ui("Sigue el enlace externo para reproducir el álbum/sencillo")}</p>
                       </div>
                     </div>
                     <a
@@ -1436,7 +1428,7 @@ export const NewsPage = () => {
                       rel="noopener noreferrer"
                       className="px-4 py-2 rounded-xl bg-[#B80C09] hover:bg-[#960a07] text-white text-xs font-black uppercase tracking-wider flex items-center gap-1.5 shrink-0 transition-transform hover:scale-105"
                     >
-                      <span>Escuchar</span>
+                      <span>{ui("Escuchar")}</span>
                       <span className="material-symbols-outlined text-[16px]">open_in_new</span>
                     </a>
                   </div>
@@ -1463,16 +1455,14 @@ export const NewsPage = () => {
                   <span className="material-symbols-outlined text-[16px]">
                     {isSpeaking ? 'stop' : 'record_voice_over'}
                   </span>
-                  <span>{isSpeaking ? 'Detener Lectura' : 'Escuchar Descripción'}</span>
+                  <span>{isSpeaking ? ui("Detener Lectura") : ui("Escuchar Descripción")}</span>
                 </button>
 
                 <button
                   type="button"
                   onClick={() => setActiveReleaseModal(null)}
                   className="px-5 py-2 rounded-xl bg-[#B80C09] text-white text-xs font-extrabold hover:bg-[#960a07] transition-colors cursor-pointer"
-                >
-                  Cerrar
-                </button>
+                >{ui("Cerrar")}</button>
               </div>
             </motion.div>
           </div>

@@ -3,8 +3,10 @@ import { useRef, useState } from 'react'
 import { Modal } from '../../shared/components/ui/modal.jsx'
 import { catalogTemplate, readCatalogExcel } from '../../shared/services/catalog-excel.js'
 import { catalogTypes } from '../../shared/services/catalog-service.js'
+import { useTranslation } from '../../shared/context/language-context.jsx'
 
 export function CatalogImport({ type, user, onSaved, onClose }) {
+  const { t } = useTranslation()
   const [status, setStatus] = useState('draft')
   const [items, setItems] = useState([])
   const [busy, setBusy] = useState(false)
@@ -15,7 +17,7 @@ export function CatalogImport({ type, user, onSaved, onClose }) {
   async function run(action) {
     if (lock.current) return
     lock.current = true; setBusy(true); setError('')
-    try { await action() } catch (cause) { setError(cause.message || 'No se pudo procesar el archivo.') }
+    try { await action() } catch (cause) { setError(cause.message || t('admin.catalog.processError')) }
     finally { lock.current = false; setBusy(false) }
   }
   function template() {
@@ -32,8 +34,8 @@ export function CatalogImport({ type, user, onSaved, onClose }) {
     if (!file) return
     run(async () => {
       setItems([]); setNotice(''); setFilename(file.name)
-      if (!/\.xlsx$/i.test(file.name)) throw new Error('Selecciona un archivo Excel .xlsx.')
-      if (file.size > 5 * 1024 * 1024) throw new Error('El archivo debe pesar menos de 5 MB.')
+      if (!/\.xlsx$/i.test(file.name)) throw new Error(t('admin.catalog.xlsxOnly'))
+      if (file.size > 5 * 1024 * 1024) throw new Error(t('admin.catalog.fileTooLarge'))
       setItems((await readCatalogExcel(type, await file.arrayBuffer())).map(item => ({ ...item, importId: crypto.randomUUID() })))
     })
   }
@@ -52,13 +54,13 @@ export function CatalogImport({ type, user, onSaved, onClose }) {
       if (failures.length) setError(`${failures.join(' · ')} Reintenta los pendientes; los guardados no se duplicarán.`)
     })
   }
-  return <Modal isOpen title="Importar desde Excel" className="catalog-import" onClose={() => { if (!busy) onClose() }}>
-    <p>Añade varios registros a <strong>{catalogTypes[type].title}</strong>. Elige si quieres guardarlos como borradores o publicarlos.</p>
-    <ol className="catalog-import-steps"><li><strong>Descarga y completa la plantilla</strong><p>Conserva los encabezados. Escribe las fechas como AAAA-MM-DD.</p><button disabled={busy} onClick={template}>Descargar plantilla Excel</button></li><li><strong>Selecciona tu archivo</strong><p>Excel .xlsx · Hasta 200 registros · Máximo 5 MB. Se lee la primera hoja.</p><label className="catalog-upload"><strong>↑ Seleccionar archivo Excel</strong><span>{filename || 'Haz clic aquí para elegir tu archivo .xlsx'}</span><input aria-label="Archivo Excel" type="file" accept=".xlsx" disabled={busy} onChange={select} /></label></li></ol>
-    <label>Estado al importar<select disabled={busy} value={status} onChange={event => setStatus(event.target.value)}><option value="draft">Borrador (oculto en Noticias)</option><option value="published">Publicado (visible en Noticias según sus fechas)</option></select></label>
-    {filename && <p className="catalog-import-filename">Archivo: {filename}</p>}
-    {error && <p role="alert">{error}</p>}{notice && <p role="status">{notice}</p>}{busy && <p role="status">Procesando…</p>}
-    {items.length > 0 && <><h3>Vista previa · {items.length} registros pendientes</h3><div className="catalog-import-preview"><table><thead><tr><th>Fila</th><th>Título / Nombre</th><th>Artista / País</th><th>Estado</th></tr></thead><tbody>{items.map(item => <tr key={item.row}><td>{item.row}</td><td>{item.data.title || item.data.name}</td><td>{item.data.artist || item.data.country || '—'}</td><td>{status === 'published' ? 'Publicado' : 'Borrador'}</td></tr>)}</tbody></table></div><p>Se añadirán registros nuevos. Comprueba que no existan ya en el catálogo.</p></>}
-    <div className="catalog-form-actions"><button disabled={busy} onClick={onClose}>Cerrar</button><button className="primary-button" disabled={busy || !items.length} onClick={save}>Importar {items.length || ''} registros</button></div>
+  return <Modal isOpen title={t('admin.catalog.importTitle')} className="catalog-import" onClose={() => { if (!busy) onClose() }}>
+    <p>{t('admin.catalog.importDescription', { catalog: t(`admin.catalog.type.${type}`, { defaultValue: catalogTypes[type].title }) })}</p>
+    <ol className="catalog-import-steps"><li><strong>{t('admin.catalog.stepTemplate')}</strong><p>{t('admin.catalog.keepHeaders')}</p><button disabled={busy} onClick={template}>{t('admin.catalog.downloadTemplate')}</button></li><li><strong>{t('admin.catalog.stepFile')}</strong><p>{t('admin.catalog.xlsxLimits')}</p><label className="catalog-upload"><strong>{t('admin.catalog.selectExcel')}</strong><span>{filename || t('admin.catalog.chooseFile')}</span><input aria-label={t('admin.catalog.selectExcel')} type="file" accept=".xlsx" disabled={busy} onChange={select} /></label></li></ol>
+    <label>{t('admin.catalog.importStatus')}<select disabled={busy} value={status} onChange={event => setStatus(event.target.value)}><option value="draft">{t('admin.catalog.draftHidden')}</option><option value="published">{t('admin.catalog.publishedVisible')}</option></select></label>
+    {filename && <p className="catalog-import-filename">{t('admin.catalog.file')} {filename}</p>}
+    {error && <p role="alert">{error}</p>}{notice && <p role="status">{notice}</p>}{busy && <p role="status">{t('admin.catalog.processing')}</p>}
+    {items.length > 0 && <><h3>{t('admin.catalog.preview')} · {t('admin.catalog.pendingRecords', { count: items.length })}</h3><div className="catalog-import-preview"><table><thead><tr><th>{t('admin.catalog.row')}</th><th>{t('admin.catalog.titleName')}</th><th>{t('admin.catalog.artistCountry')}</th><th>{t('admin.catalog.status')}</th></tr></thead><tbody>{items.map(item => <tr key={item.row}><td>{item.row}</td><td>{item.data.title || item.data.name}</td><td>{item.data.artist || item.data.country || '—'}</td><td>{status === 'published' ? t('admin.catalog.publishedStatus') : t('admin.catalog.draftStatus')}</td></tr>)}</tbody></table></div><p>{t('admin.catalog.importPreviewNote')}</p></>}
+    <div className="catalog-form-actions"><button disabled={busy} onClick={onClose}>{t('admin.catalog.close')}</button><button className="primary-button" disabled={busy || !items.length} onClick={save}>{t('admin.catalog.importRecords', { count: items.length || '' })}</button></div>
   </Modal>
 }

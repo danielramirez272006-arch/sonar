@@ -1,3 +1,4 @@
+import { useUIText } from '../../shared/i18n/use-ui-text.js';
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Navbar from '../../shared/components/layout/navbar';
@@ -67,6 +68,7 @@ const HomePageSkeleton = () => {
 };
 
 export const HomePage = () => {
+  const ui = useUIText();
   const { user, isJunior, isParentalControlActive } = useAuth();
   const userId = user?.id || '1';
   const isKidsActive = Boolean(isJunior || isParentalControlActive);
@@ -206,8 +208,7 @@ export const HomePage = () => {
                   <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6 border-b border-[#e6d5e2] dark:border-white/10 pb-3">
                     <div className="flex items-center gap-2">
                       <span className="w-2.5 h-2.5 rounded-full bg-[#B80C09] animate-pulse" />
-                      <h3 className="text-xl sm:text-2xl font-extrabold text-[#231123] dark:text-[#FAF5F8]">
-                        Canciones en Deezer para &ldquo;{searchQuery}&rdquo;
+                      <h3 className="text-xl sm:text-2xl font-extrabold text-[#231123] dark:text-[#FAF5F8]">{ui("Canciones en Deezer para “")}{searchQuery}&rdquo;
                       </h3>
                     </div>
                     <div className="flex items-center gap-3">
@@ -224,12 +225,11 @@ export const HomePage = () => {
                           <span className="material-symbols-outlined text-[14px]">
                             {hideExplicitInSearch ? 'check_circle' : 'filter_alt'}
                           </span>
-                          <span>{hideExplicitInSearch ? 'Ocultando 18+ (Activo)' : 'Ocultar explícitas [18+]'}</span>
+                          <span>{hideExplicitInSearch ? ui("Ocultando 18+ (Activo)") : ui("Ocultar explícitas [18+]")}</span>
                         </button>
                       )}
                       <span className="text-xs text-[#5c435a] dark:text-[#B89CB0] font-semibold">
-                        {searchResults.filter(s => !hideExplicitInSearch || (!s.explicit && !s.explicit_lyrics)).length} canciones
-                      </span>
+                        {searchResults.filter(s => !hideExplicitInSearch || (!s.explicit && !s.explicit_lyrics)).length} {ui("canciones")}</span>
                     </div>
                   </div>
 
@@ -238,7 +238,7 @@ export const HomePage = () => {
                       <span className="material-symbols-outlined animate-spin text-[32px] text-[#B80C09] mr-2">
                         progress_activity
                       </span>
-                      <span>Buscando canciones en la biblioteca de Deezer...</span>
+                      <span>{ui("Buscando canciones en la biblioteca de Deezer...")}</span>
                     </div>
                   ) : searchResults.length === 0 ? (
                     <div className="relative overflow-hidden py-14 px-6 text-center rounded-[32px] bg-gradient-to-br from-white via-[#fdf4fa] to-[#f9e9f4] dark:from-[#2c1829] dark:via-[#241026] dark:to-[#1b0a1a] border border-[#ecd9e8] dark:border-[#4d3050]">
@@ -247,13 +247,8 @@ export const HomePage = () => {
                         <span className="w-16 h-16 rounded-2xl bg-white dark:bg-white/5 border border-[#f0dcea] dark:border-white/10 grid place-items-center shadow-md">
                           <span className="material-symbols-outlined text-[32px] text-[#B80C09]">search_off</span>
                         </span>
-                        <h4 className="text-lg sm:text-xl font-black tracking-tight text-[#231123] dark:text-white">
-                          No existe &ldquo;{searchQuery}&rdquo; en el catálogo de Deezer
-                        </h4>
-                        <p className="text-xs sm:text-sm text-[#5c435a] dark:text-[#B89CB0] max-w-md leading-relaxed">
-                          Revisa la escritura o prueba con el nombre de un artista o canción. También puedes buscar
-                          este término dentro de las noticias del radar musical.
-                        </p>
+                        <h4 className="text-lg sm:text-xl font-black tracking-tight text-[#231123] dark:text-white">{ui("No existe “")}{searchQuery}{ui("” en el catálogo de Deezer")}</h4>
+                        <p className="text-xs sm:text-sm text-[#5c435a] dark:text-[#B89CB0] max-w-md leading-relaxed">{ui("Revisa la escritura o prueba con el nombre de un artista o canción. También puedes buscar este término dentro de las noticias del radar musical.")}</p>
                         <div className="flex flex-wrap items-center justify-center gap-2 pt-1">
                           <button
                             type="button"
@@ -261,16 +256,12 @@ export const HomePage = () => {
                               window.location.hash = `#noticias?q=${encodeURIComponent(searchQuery)}`;
                             }}
                             className="px-4 py-2 rounded-full bg-[#B80C09] hover:bg-[#9c0a07] text-white text-xs font-black transition-colors cursor-pointer"
-                          >
-                            Buscar en Noticias
-                          </button>
+                          >{ui("Buscar en Noticias")}</button>
                           <button
                             type="button"
                             onClick={() => handleSearch('')}
                             className="px-4 py-2 rounded-full bg-white dark:bg-white/10 border border-[#e6d5e2] dark:border-white/10 text-xs font-bold text-[#231123] dark:text-white hover:border-[#B80C09] transition-colors cursor-pointer"
-                          >
-                            Limpiar búsqueda
-                          </button>
+                          >{ui("Limpiar búsqueda")}</button>
                         </div>
                       </div>
                     </div>
@@ -313,7 +304,7 @@ export const HomePage = () => {
                                 <button
                                   onClick={() => handlePlaySearchResult(song)}
                                   className="w-9 h-9 rounded-full bg-[#B80C09] text-white flex items-center justify-center shadow-md hover:scale-110 transition-transform cursor-pointer"
-                                  title="Escuchar muestra (30s)"
+                                  title={ui("Escuchar muestra (30s)")}
                                 >
                                   <span className="material-symbols-outlined text-[20px]">
                                     {(currentTrack?.id === song.id || currentTrack?.title === song.title) && isPlaying ? 'pause' : 'play_arrow'}
@@ -322,7 +313,7 @@ export const HomePage = () => {
                                 <button
                                   onClick={() => openReviewModal(song)}
                                   className="w-9 h-9 rounded-full bg-white text-[#231123] flex items-center justify-center shadow-md hover:scale-110 transition-transform cursor-pointer"
-                                  title="Escribir crítica"
+                                  title={ui("Escribir crítica")}
                                 >
                                   <span className="material-symbols-outlined text-[18px]">rate_review</span>
                                 </button>
@@ -331,7 +322,7 @@ export const HomePage = () => {
                                   className={`w-9 h-9 rounded-full flex items-center justify-center shadow-md hover:scale-110 transition-transform cursor-pointer ${
                                     isSaved ? 'bg-[#B80C09] text-white' : 'bg-white text-[#231123]'
                                   }`}
-                                  title={isSaved ? 'Quitar de favoritos' : 'Guardar canción en favoritos'}
+                                  title={isSaved ? ui("Quitar de favoritos") : ui("Guardar canción en favoritos")}
                                 >
                                   <span className="material-symbols-outlined text-[18px]">
                                     {isSaved ? 'bookmark_added' : 'bookmark_add'}

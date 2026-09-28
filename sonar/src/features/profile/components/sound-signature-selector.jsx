@@ -1,3 +1,4 @@
+import { useUIText } from '../../../shared/i18n/use-ui-text.js';
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 
@@ -37,6 +38,7 @@ const PRESETS = [
 ];
 
 export const SoundSignatureSelector = ({ initialProfile = 'tube-warmth', onSaveProfile }) => {
+  const ui = useUIText();
   const [activePreset, setActivePreset] = useState(initialProfile);
   const [customBands, setCustomBands] = useState(() => {
     const current = PRESETS.find((p) => p.id === initialProfile) || PRESETS[0];
@@ -77,15 +79,9 @@ export const SoundSignatureSelector = ({ initialProfile = 'tube-warmth', onSaveP
     <div className="p-6 sm:p-8 rounded-3xl bg-white dark:bg-[#4B2840] border border-[#e6d5e2] dark:border-white/10 shadow-xs flex flex-col gap-6 text-[#231123] dark:text-white">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div>
-          <span className="text-xs font-bold uppercase tracking-wider text-[#B80C09]">
-            Procesamiento Digital de Audio (DSP)
-          </span>
-          <h3 className="text-xl font-black tracking-tight mt-0.5">
-            Firma de Sonido & Ecualizador
-          </h3>
-          <p className="text-xs text-[#5c435a] dark:text-[#B89CB0] mt-1">
-            Personaliza cómo responde la curva acústica de la plataforma a tu equipamiento y oídos.
-          </p>
+          <span className="text-xs font-bold uppercase tracking-wider text-[#B80C09]">{ui("Procesamiento Digital de Audio (DSP)")}</span>
+          <h3 className="text-xl font-black tracking-tight mt-0.5">{ui("Firma de Sonido & Ecualizador")}</h3>
+          <p className="text-xs text-[#5c435a] dark:text-[#B89CB0] mt-1">{ui("Personaliza cómo responde la curva acústica de la plataforma a tu equipamiento y oídos.")}</p>
         </div>
 
         <button
@@ -96,7 +92,7 @@ export const SoundSignatureSelector = ({ initialProfile = 'tube-warmth', onSaveP
           <span className="material-symbols-outlined text-[16px]">
             {savedNotice ? 'check' : 'save'}
           </span>
-          <span>{savedNotice ? '¡Firma Guardada!' : 'Aplicar al Perfil'}</span>
+          <span>{savedNotice ? ui("¡Firma Guardada!") : ui("Aplicar al Perfil")}</span>
         </button>
       </div>
 
@@ -124,9 +120,7 @@ export const SoundSignatureSelector = ({ initialProfile = 'tube-warmth', onSaveP
                   <span className="material-symbols-outlined text-[18px]">{preset.icon}</span>
                 </span>
                 {isSelected && (
-                  <span className="text-[10px] font-black uppercase text-amber-300 bg-black/40 px-2 py-0.5 rounded-full border border-amber-300/30">
-                    Activo
-                  </span>
+                  <span className="text-[10px] font-black uppercase text-amber-300 bg-black/40 px-2 py-0.5 rounded-full border border-amber-300/30">{ui("Activo")}</span>
                 )}
               </div>
 
@@ -146,11 +140,9 @@ export const SoundSignatureSelector = ({ initialProfile = 'tube-warmth', onSaveP
         <div className="flex items-center justify-between">
           <span className="text-xs font-bold text-[#5c435a] dark:text-pink-200 uppercase tracking-wider flex items-center gap-1.5">
             <span className="material-symbols-outlined text-[16px] text-[#B80C09]">tune</span>
-            <span>Ajuste de Bandas de Frecuencia (dB)</span>
+            <span>{ui("Ajuste de Bandas de Frecuencia (dB)")}</span>
           </span>
-          <span className="text-[11px] font-mono text-gray-500 dark:text-gray-400">
-            Rango: -6 dB a +6 dB
-          </span>
+          <span className="text-[11px] font-mono text-gray-500 dark:text-gray-400">{ui("Rango: -6 dB a +6 dB")}</span>
         </div>
 
         <div className="grid grid-cols-5 gap-3 sm:gap-6 pt-4 pb-2">

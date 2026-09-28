@@ -1,9 +1,11 @@
+import { useUIText } from '../../i18n/use-ui-text.js';
 import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAccessibility } from '../../context/accessibility-context';
 import { LanguageSelector } from '../ui/language-selector';
 
 export const AccessibilityWidget = () => {
+  const ui = useUIText();
   const {
     settings,
     updateSetting,
@@ -31,14 +33,14 @@ export const AccessibilityWidget = () => {
       <button
         type="button"
         onClick={toggleA11yWidget}
-        aria-label="Abrir opciones de accesibilidad (Atajo: Alt + A)"
-        title="Opciones de Accesibilidad (Alt + A)"
+        aria-label={ui("Abrir opciones de accesibilidad (Atajo: Alt + A)")}
+        title={ui("Opciones de Accesibilidad (Alt + A)")}
         className="fixed top-1/2 -translate-y-1/2 left-0 z-[9990] pl-2 pr-2.5 py-3 rounded-r-2xl bg-[#231123]/90 hover:bg-[#B80C09] text-white backdrop-blur-md shadow-xl border-y border-r border-white/20 transition-all duration-300 hover:translate-x-1 cursor-pointer group focus:outline-2 focus:outline-[#B80C09]"
       >
         <span className="material-symbols-outlined text-[20px] text-[#B80C09] group-hover:text-white transition-colors">
           accessibility_new
         </span>
-        <span className="sr-only">Opciones de Accesibilidad</span>
+        <span className="sr-only">{ui("Opciones de Accesibilidad")}</span>
       </button>
 
       {/* Modal / Panel de Accesibilidad */}
@@ -61,15 +63,11 @@ export const AccessibilityWidget = () => {
                     <span className="material-symbols-outlined text-[24px]">accessibility_new</span>
                   </div>
                   <div>
-                    <h2 id="a11y-title" className="text-xl sm:text-2xl font-black tracking-tight flex items-center gap-2">
-                      Accesibilidad Universal
-                      <span className="text-[10px] uppercase tracking-wider px-2 py-0.5 rounded-full bg-[#B80C09]/15 text-[#B80C09] font-extrabold">
+                    <h2 id="a11y-title" className="text-xl sm:text-2xl font-black tracking-tight flex items-center gap-2">{ui("Accesibilidad Universal")}<span className="text-[10px] uppercase tracking-wider px-2 py-0.5 rounded-full bg-[#B80C09]/15 text-[#B80C09] font-extrabold">
                         WCAG 2.1
                       </span>
                     </h2>
-                    <p className="text-xs text-[#5c435a] dark:text-[#B89CB0]">
-                      Personaliza el contraste, tipografía, audio y lectura para tu comodidad.
-                    </p>
+                    <p className="text-xs text-[#5c435a] dark:text-[#B89CB0]">{ui("Personaliza el contraste, tipografía, audio y lectura para tu comodidad.")}</p>
                   </div>
                 </div>
 
@@ -77,7 +75,7 @@ export const AccessibilityWidget = () => {
                   type="button"
                   onClick={() => setIsA11yWidgetOpen(false)}
                   className="w-9 h-9 rounded-full bg-gray-100 dark:bg-white/10 hover:bg-[#B80C09] hover:text-white flex items-center justify-center transition-colors cursor-pointer"
-                  aria-label="Cerrar panel de accesibilidad"
+                  aria-label={ui("Cerrar panel de accesibilidad")}
                 >
                   <span className="material-symbols-outlined text-[18px]">close</span>
                 </button>
@@ -89,19 +87,15 @@ export const AccessibilityWidget = () => {
                 {/* SECCIÓN 1: Tipografía y Lectura */}
                 <div className="space-y-3">
                   <h3 className="text-xs font-black uppercase tracking-wider text-[#B80C09] flex items-center gap-1.5">
-                    <span className="material-symbols-outlined text-[16px]">menu_book</span>
-                    Lectura y Tipografía
-                  </h3>
+                    <span className="material-symbols-outlined text-[16px]">menu_book</span>{ui("Lectura y Tipografía")}</h3>
 
                   {/* 1.1 Tamaño del Texto */}
                   <div className="p-3.5 rounded-2xl bg-gray-50 dark:bg-white/5 border border-gray-100 dark:border-white/5 flex flex-col gap-2.5">
                     <div className="flex items-center justify-between">
                       <span className="font-bold flex items-center gap-2">
-                        <span className="material-symbols-outlined text-[18px] text-[#B80C09]">format_size</span>
-                        Tamaño del Texto
-                      </span>
+                        <span className="material-symbols-outlined text-[18px] text-[#B80C09]">format_size</span>{ui("Tamaño del Texto")}</span>
                       <span className="text-xs font-bold text-[#5c435a] dark:text-[#B89CB0]">
-                        {settings.fontSize === 'normal' ? '100% (Normal)' : settings.fontSize === 'large' ? '115% (Grande)' : '130% (Extra)'}
+                        {settings.fontSize === 'normal' ? ui("100% (Normal)") : settings.fontSize === 'large' ? ui("115% (Grande)") : ui("130% (Extra)")}
                       </span>
                     </div>
                     <div className="grid grid-cols-3 gap-2">
@@ -130,11 +124,9 @@ export const AccessibilityWidget = () => {
                   <div className="p-3.5 rounded-2xl bg-gray-50 dark:bg-white/5 border border-gray-100 dark:border-white/5 flex flex-col gap-2.5">
                     <div className="flex items-center justify-between">
                       <span className="font-bold flex items-center gap-2">
-                        <span className="material-symbols-outlined text-[18px] text-indigo-500">format_line_spacing</span>
-                        Interlineado y Espaciado
-                      </span>
+                        <span className="material-symbols-outlined text-[18px] text-indigo-500">format_line_spacing</span>{ui("Interlineado y Espaciado")}</span>
                       <span className="text-xs font-bold text-[#5c435a] dark:text-[#B89CB0]">
-                        {settings.lineSpacing === 'normal' ? 'Estándar' : settings.lineSpacing === 'relaxed' ? 'Relajado' : 'Amplio'}
+                        {settings.lineSpacing === 'normal' ? ui("Estándar") : settings.lineSpacing === 'relaxed' ? ui("Relajado") : ui("Amplio")}
                       </span>
                     </div>
                     <div className="grid grid-cols-3 gap-2">
@@ -164,10 +156,8 @@ export const AccessibilityWidget = () => {
                     <div className="flex items-center gap-3">
                       <span className="material-symbols-outlined text-[20px] text-amber-500">chrome_reader_mode</span>
                       <div>
-                        <div className="font-bold text-sm">Guía de Enfoque / Regla de Lectura</div>
-                        <div className="text-xs text-[#5c435a] dark:text-[#B89CB0]">
-                          Barra horizontal de seguimiento para no perder la línea al leer
-                        </div>
+                        <div className="font-bold text-sm">{ui("Guía de Enfoque / Regla de Lectura")}</div>
+                        <div className="text-xs text-[#5c435a] dark:text-[#B89CB0]">{ui("Barra horizontal de seguimiento para no perder la línea al leer")}</div>
                       </div>
                     </div>
                     <input
@@ -183,10 +173,8 @@ export const AccessibilityWidget = () => {
                     <div className="flex items-center gap-3">
                       <span className="material-symbols-outlined text-[20px] text-blue-500">font_download</span>
                       <div>
-                        <div className="font-bold text-sm">Fuente Adaptada para Dislexia</div>
-                        <div className="text-xs text-[#5c435a] dark:text-[#B89CB0]">
-                          Mayor espaciado entre letras y palabras para evitar confusión visual
-                        </div>
+                        <div className="font-bold text-sm">{ui("Fuente Adaptada para Dislexia")}</div>
+                        <div className="text-xs text-[#5c435a] dark:text-[#B89CB0]">{ui("Mayor espaciado entre letras y palabras para evitar confusión visual")}</div>
                       </div>
                     </div>
                     <input
@@ -201,19 +189,15 @@ export const AccessibilityWidget = () => {
                 {/* SECCIÓN 2: Visión, Confort y Contraste */}
                 <div className="space-y-3">
                   <h3 className="text-xs font-black uppercase tracking-wider text-[#B80C09] flex items-center gap-1.5">
-                    <span className="material-symbols-outlined text-[16px]">visibility</span>
-                    Visión y Contraste
-                  </h3>
+                    <span className="material-symbols-outlined text-[16px]">visibility</span>{ui("Visión y Contraste")}</h3>
 
                   {/* 2.1 Alto Contraste */}
                   <label className="flex items-center justify-between p-3.5 rounded-2xl bg-gray-50 dark:bg-white/5 border border-gray-100 dark:border-white/5 cursor-pointer hover:border-[#B80C09]/40 transition-colors">
                     <div className="flex items-center gap-3">
                       <span className="material-symbols-outlined text-[20px] text-amber-500">contrast</span>
                       <div>
-                        <div className="font-bold text-sm">Modo Alto Contraste (AAA)</div>
-                        <div className="text-xs text-[#5c435a] dark:text-[#B89CB0]">
-                          Fondo negro absoluto con bordes y tipografía de máxima visibilidad
-                        </div>
+                        <div className="font-bold text-sm">{ui("Modo Alto Contraste (AAA)")}</div>
+                        <div className="text-xs text-[#5c435a] dark:text-[#B89CB0]">{ui("Fondo negro absoluto con bordes y tipografía de máxima visibilidad")}</div>
                       </div>
                     </div>
                     <input
@@ -229,10 +213,8 @@ export const AccessibilityWidget = () => {
                     <div className="flex items-center gap-3">
                       <span className="material-symbols-outlined text-[20px] text-orange-400">wb_sunny</span>
                       <div>
-                        <div className="font-bold text-sm">Modo Sepia / Calidez Visual</div>
-                        <div className="text-xs text-[#5c435a] dark:text-[#B89CB0]">
-                          Filtro cálido relajante contra la fatiga visual y luz azul
-                        </div>
+                        <div className="font-bold text-sm">{ui("Modo Sepia / Calidez Visual")}</div>
+                        <div className="text-xs text-[#5c435a] dark:text-[#B89CB0]">{ui("Filtro cálido relajante contra la fatiga visual y luz azul")}</div>
                       </div>
                     </div>
                     <input
@@ -248,10 +230,8 @@ export const AccessibilityWidget = () => {
                     <div className="flex items-center gap-3">
                       <span className="material-symbols-outlined text-[20px] text-gray-400">filter_b_and_w</span>
                       <div>
-                        <div className="font-bold text-sm">Modo Monocromático (Escala de Grises)</div>
-                        <div className="text-xs text-[#5c435a] dark:text-[#B89CB0]">
-                          Elimina la saturación para una experiencia visual de bajo estímulo
-                        </div>
+                        <div className="font-bold text-sm">{ui("Modo Monocromático (Escala de Grises)")}</div>
+                        <div className="text-xs text-[#5c435a] dark:text-[#B89CB0]">{ui("Elimina la saturación para una experiencia visual de bajo estímulo")}</div>
                       </div>
                     </div>
                     <input
@@ -267,10 +247,8 @@ export const AccessibilityWidget = () => {
                     <div className="flex items-center gap-3">
                       <span className="material-symbols-outlined text-[20px] text-purple-500">link</span>
                       <div>
-                        <div className="font-bold text-sm">Resaltar Elementos Interactivos</div>
-                        <div className="text-xs text-[#5c435a] dark:text-[#B89CB0]">
-                          Distingue botones, enlaces y campos con bordes llamativos
-                        </div>
+                        <div className="font-bold text-sm">{ui("Resaltar Elementos Interactivos")}</div>
+                        <div className="text-xs text-[#5c435a] dark:text-[#B89CB0]">{ui("Distingue botones, enlaces y campos con bordes llamativos")}</div>
                       </div>
                     </div>
                     <input
@@ -286,10 +264,8 @@ export const AccessibilityWidget = () => {
                     <div className="flex items-center gap-3">
                       <span className="material-symbols-outlined text-[20px] text-rose-500">near_me</span>
                       <div>
-                        <div className="font-bold text-sm">Puntero / Cursor Agrandado</div>
-                        <div className="text-xs text-[#5c435a] dark:text-[#B89CB0]">
-                          Aumenta el tamaño del ratón para no perder el foco
-                        </div>
+                        <div className="font-bold text-sm">{ui("Puntero / Cursor Agrandado")}</div>
+                        <div className="text-xs text-[#5c435a] dark:text-[#B89CB0]">{ui("Aumenta el tamaño del ratón para no perder el foco")}</div>
                       </div>
                     </div>
                     <input
@@ -303,9 +279,7 @@ export const AccessibilityWidget = () => {
                   {/* 2.6 Filtros para Daltonismo */}
                   <div className="p-3.5 rounded-2xl bg-gray-50 dark:bg-white/5 border border-gray-100 dark:border-white/5 flex flex-col gap-2.5">
                     <span className="font-bold flex items-center gap-2">
-                      <span className="material-symbols-outlined text-[18px] text-[#B80C09]">palette</span>
-                      Filtros para Daltonismo
-                    </span>
+                      <span className="material-symbols-outlined text-[18px] text-[#B80C09]">palette</span>{ui("Filtros para Daltonismo")}</span>
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                       {colorBlindOptions.map((opt) => (
                         <button
@@ -331,19 +305,15 @@ export const AccessibilityWidget = () => {
                 {/* SECCIÓN 3: Audio, Movimiento y Voz */}
                 <div className="space-y-3">
                   <h3 className="text-xs font-black uppercase tracking-wider text-[#B80C09] flex items-center gap-1.5">
-                    <span className="material-symbols-outlined text-[16px]">volume_up</span>
-                    Audio, Movimiento y Asistencia
-                  </h3>
+                    <span className="material-symbols-outlined text-[16px]">volume_up</span>{ui("Audio, Movimiento y Asistencia")}</h3>
 
                   {/* 3.1 Micro-sonidos de Navegación (Audio Cues) */}
                   <div className="p-3.5 rounded-2xl bg-gray-50 dark:bg-white/5 border border-gray-100 dark:border-white/5 flex items-center justify-between">
                     <div className="flex items-center gap-3">
                       <span className="material-symbols-outlined text-[20px] text-teal-500">graphic_eq</span>
                       <div>
-                        <div className="font-bold text-sm">Micro-Sonidos de Navegación (Audio Cues)</div>
-                        <div className="text-xs text-[#5c435a] dark:text-[#B89CB0]">
-                          Tonos sutiles al interactuar con botones, favoritos y reproductor
-                        </div>
+                        <div className="font-bold text-sm">{ui("Micro-Sonidos de Navegación (Audio Cues)")}</div>
+                        <div className="text-xs text-[#5c435a] dark:text-[#B89CB0]">{ui("Tonos sutiles al interactuar con botones, favoritos y reproductor")}</div>
                       </div>
                     </div>
                     <input
@@ -359,10 +329,8 @@ export const AccessibilityWidget = () => {
                     <div className="flex items-center gap-3">
                       <span className="material-symbols-outlined text-[20px] text-emerald-500">motion_photos_off</span>
                       <div>
-                        <div className="font-bold text-sm">Pausar Animaciones y Giros</div>
-                        <div className="text-xs text-[#5c435a] dark:text-[#B89CB0]">
-                          Para personas con sensibilidad vestibular o mareos por movimiento
-                        </div>
+                        <div className="font-bold text-sm">{ui("Pausar Animaciones y Giros")}</div>
+                        <div className="text-xs text-[#5c435a] dark:text-[#B89CB0]">{ui("Para personas con sensibilidad vestibular o mareos por movimiento")}</div>
                       </div>
                     </div>
                     <input
@@ -377,9 +345,7 @@ export const AccessibilityWidget = () => {
                   <div className="p-3.5 rounded-2xl bg-gray-50 dark:bg-white/5 border border-gray-100 dark:border-white/5 flex flex-col gap-3">
                     <div className="flex items-center justify-between">
                       <span className="font-bold flex items-center gap-2">
-                        <span className="material-symbols-outlined text-[18px] text-[#B80C09]">record_voice_over</span>
-                        Lector de Reseñas por Voz (TTS)
-                      </span>
+                        <span className="material-symbols-outlined text-[18px] text-[#B80C09]">record_voice_over</span>{ui("Lector de Reseñas por Voz (TTS)")}</span>
                       <button
                         type="button"
                         onClick={() =>
@@ -396,11 +362,11 @@ export const AccessibilityWidget = () => {
                         <span className="material-symbols-outlined text-[14px]">
                           {isSpeaking ? 'stop' : 'volume_up'}
                         </span>
-                        <span>{isSpeaking ? 'Detener Voz' : 'Probar Voz'}</span>
+                        <span>{isSpeaking ? ui("Detener Voz") : ui("Probar Voz")}</span>
                       </button>
                     </div>
                     <div className="flex items-center gap-3 text-xs text-[#5c435a] dark:text-[#B89CB0]">
-                      <span>Velocidad de Lectura:</span>
+                      <span>{ui("Velocidad de Lectura:")}</span>
                       {[0.8, 1, 1.25].map((rate) => (
                         <button
                           key={rate}
@@ -422,13 +388,9 @@ export const AccessibilityWidget = () => {
                 {/* SECCIÓN 4: Idioma y Región / Language & Region */}
                 <div className="space-y-3">
                   <h3 className="text-xs font-black uppercase tracking-wider text-[#B80C09] flex items-center gap-1.5">
-                    <span className="material-symbols-outlined text-[16px]">translate</span>
-                    Idioma y Región / Language & Region
-                  </h3>
+                    <span className="material-symbols-outlined text-[16px]">translate</span>{ui("Idioma y Región / Language & Region")}</h3>
                   <div className="p-3.5 rounded-2xl bg-gray-50 dark:bg-white/5 border border-gray-100 dark:border-white/5 flex flex-col gap-2">
-                    <div className="text-xs text-[#5c435a] dark:text-[#B89CB0] font-medium">
-                      Selecciona tu idioma preferido para la interfaz, navegación y controles:
-                    </div>
+                    <div className="text-xs text-[#5c435a] dark:text-[#B89CB0] font-medium">{ui("Selecciona tu idioma preferido para la interfaz, navegación y controles:")}</div>
                     <LanguageSelector variant="footer" />
                   </div>
                 </div>
@@ -443,7 +405,7 @@ export const AccessibilityWidget = () => {
                   className="px-3 py-2 rounded-xl bg-gray-100 dark:bg-white/10 hover:bg-[#B80C09] hover:text-white text-xs font-bold transition-colors cursor-pointer flex items-center gap-1.5"
                 >
                   <span className="material-symbols-outlined text-[16px]">keyboard</span>
-                  <span>Ver Atajos de Teclado (?)</span>
+                  <span>{ui("Ver Atajos de Teclado (?)")}</span>
                 </button>
 
                 <div className="flex items-center gap-2">
@@ -451,17 +413,13 @@ export const AccessibilityWidget = () => {
                     type="button"
                     onClick={resetAllSettings}
                     className="px-3 py-2 rounded-xl text-xs font-bold text-gray-500 hover:text-[#B80C09] transition-colors cursor-pointer"
-                  >
-                    Restablecer
-                  </button>
+                  >{ui("Restablecer")}</button>
 
                   <button
                     type="button"
                     onClick={() => setIsA11yWidgetOpen(false)}
                     className="px-4 py-2 rounded-xl bg-[#B80C09] text-white text-xs font-bold hover:bg-[#960a07] transition-colors cursor-pointer"
-                  >
-                    Guardar y Cerrar
-                  </button>
+                  >{ui("Guardar y Cerrar")}</button>
                 </div>
               </div>
             </motion.div>

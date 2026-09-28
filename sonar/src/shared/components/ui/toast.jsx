@@ -1,3 +1,4 @@
+import { useUIText } from '../../i18n/use-ui-text.js';
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -9,6 +10,7 @@ export const Toast = ({
   duration = 3500,
   onClose = () => {},
 }) => {
+  const ui = useUIText();
   const [isVisible, setIsVisible] = useState(true);
 
   const displayTitle = title || (message ? message : 'Notificación de Sonar');
@@ -87,7 +89,7 @@ export const Toast = ({
           <button
             type="button"
             onClick={handleClose}
-            aria-label="Cerrar notificación"
+            aria-label={ui("Cerrar notificación")}
             className="text-[#81737e] dark:text-[#B89CB0] hover:text-[#B80C09] dark:hover:text-white transition-colors cursor-pointer p-1 rounded-lg shrink-0"
           >
             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">

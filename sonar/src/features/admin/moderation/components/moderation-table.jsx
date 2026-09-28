@@ -1,29 +1,32 @@
+import { useUIText } from '../../../../shared/i18n/use-ui-text.js';
 import { useState } from 'react'
+import { useTranslation } from '../../../../shared/context/language-context.jsx'
 import { ReviewAlbum } from './review-album.jsx'
 
-const statuses = { pending_moderation: 'Pendiente', approved: 'Aprobada', rejected: 'Rechazada' }
-
 export function ModerationTable({ reviews, users, query, busy, onAction, analyses, compact = false, error, initialFilter = 'all', userFilterId = null }) {
+  const ui = useUIText();
+  const { t } = useTranslation()
   const [filter, setFilter] = useState(initialFilter)
   const [rejectId, setRejectId] = useState(null)
-  const options = compact ? [['all', 'Todas'], ['pending_moderation', 'Pendientes'], ['approved', 'Aprobadas'], ['rejected', 'Rechazadas'], ['flagged', 'Marcadas']] : [['all', 'Todas'], ['flagged', 'Marcadas por IA']]
+  const statuses = { pending_moderation: t('admin.reviews.pending'), approved: t('admin.reviews.approved'), rejected: t('admin.reviews.rejected') }
+  const options = compact ? [['all', t('admin.reviews.all')], ['pending_moderation', t('admin.reviews.pending')], ['approved', t('admin.reviews.approved')], ['rejected', t('admin.reviews.rejected')], ['flagged', t('admin.reviews.flagged')]] : [['all', t('admin.reviews.all')], ['flagged', t('admin.reviews.flaggedByAI')]]
   const visible = reviews.filter(review => {
     if (userFilterId !== null && String(review.userId) !== String(userFilterId)) return false
     const user = users.find(item => String(item.id) === String(review.userId))
     return (filter === 'all' || (filter === 'flagged' ? review.aiFlagged : review.status === filter)) && `${user?.username ?? ''} ${review.userId} ${review.albumId} ${review.content}`.toLocaleLowerCase().includes(query.trim().toLocaleLowerCase())
   })
   return (
-    <section className="review-feed" aria-label={compact ? 'Reseñas registradas' : 'Cola de moderación'} aria-busy={busy}>
-      {userFilterId !== null && <p className="users-review-filter">Reseñas de <strong>{users.find(user => String(user.id) === String(userFilterId))?.username || `Usuario ${userFilterId}`}</strong> · <a href="#admin-reviews">Quitar filtro de usuario</a> · <a href="#usuarios">Volver a usuarios</a></p>}
+    <section className="review-feed" aria-label={compact ? ui("Reseñas registradas") : ui("Cola de moderación")} aria-busy={busy}>
+      {userFilterId !== null && <p className="users-review-filter">{t('admin.reviews.userReviews', { username: users.find(user => String(user.id) === String(userFilterId))?.username || `Usuario ${userFilterId}` })} · <a href="#admin-reviews">{t('admin.reviews.removeUserFilter')}</a> · <a href="#usuarios">{t('admin.reviews.backToUsers')}</a></p>}
       <div className="feed-heading flex items-center justify-between gap-3 mb-5">
         <h2 className="text-xl font-bold text-gray-900 dark:text-sonar-text">
-          {compact ? 'Las voces de la comunidad' : 'Cola de revisión'}
+          {compact ? t('admin.reviews.communityVoices') : t('admin.reviews.queueTitle')}
         </h2>
         <span className="eyebrow text-xs font-semibold text-gray-500 dark:text-sonar-text/70">
-          {visible.length} RESEÑAS
+          {t('admin.reviews.count', { count: visible.length })}
         </span>
       </div>
-      <div className="filter-tabs flex flex-wrap gap-2 pb-4 mb-5 border-b border-gray-200 dark:border-sonar-surface" aria-label="Filtrar reseñas">
+      <div className="filter-tabs flex flex-wrap gap-2 pb-4 mb-5 border-b border-gray-200 dark:border-sonar-surface" aria-label={t('admin.reviews.filterLabel')}>
         {options.map(([value, label]) => {
           const isSelected = filter === value
           return (
@@ -51,10 +54,10 @@ export function ModerationTable({ reviews, users, query, busy, onAction, analyse
         <div className="empty-state p-12 text-center rounded-xl border border-dashed border-gray-300 dark:border-sonar-surface bg-white dark:bg-sonar-surface text-gray-700 dark:text-sonar-text">
           <span aria-hidden="true" className="text-3xl block mb-3 text-[#B80C09] dark:text-[#ff4d4a]">◎</span>
           <h3 className="text-lg font-serif dark:text-sonar-text">
-            {busy ? 'Afinando la selección…' : error ? 'No se pudieron cargar las reseñas' : query || filter !== 'all' ? 'No hay coincidencias' : 'Todo en armonía'}
+            {busy ? t('admin.reviews.emptyLoading') : error ? t('admin.reviews.emptyError') : query || filter !== 'all' ? t('admin.reviews.emptyMatch') : t('admin.reviews.emptyReady')}
           </h3>
           <p className="text-xs text-gray-500 dark:text-sonar-text/70 mt-2 max-w-sm mx-auto">
-            {busy ? 'Estamos consultando las reseñas.' : error ? 'Reintenta la consulta desde el aviso superior.' : query || filter !== 'all' ? 'Prueba otra búsqueda o cambia el filtro.' : 'No hay reseñas pendientes en esta selección.'}
+            {busy ? t('admin.reviews.loading') : error ? t('admin.reviews.retry') : query || filter !== 'all' ? t('admin.reviews.tryFilter') : t('admin.reviews.nonePending')}
           </p>
         </div>
       )}
@@ -83,7 +86,7 @@ export function ModerationTable({ reviews, users, query, busy, onAction, analyse
                       {name}
                     </strong>
                     <small className="text-[11px] text-gray-500 dark:text-[#DCDCDD]/70 block">
-                      COMUNIDAD SONAR <span className="text-gray-400 dark:text-[#DCDCDD]/50">· Reseña #{review.id}</span>
+                      {t('admin.users.eyebrow')} <span className="text-gray-400 dark:text-[#DCDCDD]/50">· {t('admin.reviews.reviewLabel')} #{review.id}</span>
                     </small>
                   </div>
                 </div>
@@ -96,7 +99,7 @@ export function ModerationTable({ reviews, users, query, busy, onAction, analyse
                       : 'bg-gray-100 dark:bg-[#231123] text-gray-700 dark:text-[#DCDCDD] border border-gray-200 dark:border-white/15'
                   }`}
                 >
-                  {review.aiFlagged ? '✧ Marcada por IA' : statuses[review.status] || review.status}
+                  {review.aiFlagged ? `✧ ${t('admin.reviews.flaggedByAI')}` : statuses[review.status] || review.status}
                 </span>
               </div>
               <ReviewAlbum review={review} />
@@ -111,14 +114,14 @@ export function ModerationTable({ reviews, users, query, busy, onAction, analyse
                   <span aria-hidden="true" className="text-lg text-[#B80C09] dark:text-[#ff4d4a]">✧</span>
                   <div>
                     <strong className="text-xs tracking-wider uppercase block text-gray-900 dark:text-[#DCDCDD]">
-                      LECTURA ASISTIDA <span className="text-[10px] text-gray-500 dark:text-[#DCDCDD]/60 ml-2 pl-2 border-l border-gray-300 dark:border-white/15">MOCK LOCAL</span>
+                      {t('admin.reviews.analysisTitle')} <span className="text-[10px] text-gray-500 dark:text-[#DCDCDD]/60 ml-2 pl-2 border-l border-gray-300 dark:border-white/15">{t('admin.reviews.mock')}</span>
                     </strong>
                     <p className="text-xs text-gray-600 dark:text-[#DCDCDD]/80 mt-1 leading-relaxed">
                       {analysis
-                        ? analysis.reason || 'No se detectaron palabras de la lista ofensiva. La decisión final es tuya.'
+                        ? analysis.reason || t('admin.reviews.analysisClear')
                         : review.aiFlagged
-                        ? 'Esta reseña está marcada. Revisa su contenido antes de tomar una decisión.'
-                        : 'Una segunda lectura puede ayudar. El análisis local no aprueba ni rechaza reseñas.'}
+                        ? t('admin.reviews.analysisFlagged')
+                        : t('admin.reviews.analysisSecondLook')}
                     </p>
                   </div>
                 </div>
@@ -127,7 +130,7 @@ export function ModerationTable({ reviews, users, query, busy, onAction, analyse
                 <div className="review-actions flex flex-wrap items-center gap-3 pt-4 border-t border-gray-100 dark:border-white/10">
                   {rejectId === review.id ? (
                     <>
-                      <span className="text-xs font-semibold text-red-600 dark:text-[#ff4d4a]">¿Rechazar esta reseña?</span>
+                      <span className="text-xs font-semibold text-red-600 dark:text-[#ff4d4a]">{t('admin.reviews.confirmReject')}</span>
                       <button
                         className="px-3 py-1.5 rounded-lg bg-[#B80C09] hover:bg-[#9c0a07] text-white font-semibold text-xs transition-colors cursor-pointer border-transparent"
                         disabled={busy}
@@ -135,14 +138,14 @@ export function ModerationTable({ reviews, users, query, busy, onAction, analyse
                           if (await onAction('reject', review)) setRejectId(null)
                         }}
                       >
-                        Confirmar rechazo
+                        {t('admin.reviews.confirm')}
                       </button>
                       <button
                         className="px-3 py-1.5 rounded-lg bg-gray-100 dark:bg-[#231123] hover:bg-gray-200 dark:hover:bg-white/10 text-gray-700 dark:text-[#DCDCDD] font-semibold text-xs transition-colors cursor-pointer border border-gray-200 dark:border-white/15"
                         disabled={busy}
                         onClick={() => setRejectId(null)}
                       >
-                        Cancelar
+                        {t('admin.reviews.cancel')}
                       </button>
                     </>
                   ) : (
@@ -152,21 +155,21 @@ export function ModerationTable({ reviews, users, query, busy, onAction, analyse
                         disabled={busy}
                         onClick={() => onAction('approve', review)}
                       >
-                        ✓ Aprobar reseña
+                        ✓ {t('admin.reviews.approve')}
                       </button>
                       <button
                         className="px-3.5 py-2 rounded-lg bg-gray-100 dark:bg-[#231123] hover:bg-gray-200 dark:hover:bg-white/10 text-gray-700 dark:text-[#DCDCDD] font-semibold text-xs transition-colors cursor-pointer border border-gray-200 dark:border-white/15"
                         disabled={busy}
                         onClick={() => setRejectId(review.id)}
                       >
-                        Rechazar
+                        {t('admin.reviews.reject')}
                       </button>
                       <button
                         className="px-3.5 py-2 rounded-lg bg-transparent hover:bg-[#B80C09]/10 dark:hover:bg-white/5 text-[#B80C09] dark:text-[#ff4d4a] font-semibold text-xs transition-colors cursor-pointer border border-gray-200 dark:border-white/15 ml-auto"
                         disabled={busy}
                         onClick={() => onAction('analyze', review)}
                       >
-                        ✧ Revisar con IA
+                        ✧ {t('admin.reviews.reviewAI')}
                       </button>
                     </>
                   )}

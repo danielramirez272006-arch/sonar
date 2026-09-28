@@ -1,3 +1,4 @@
+import { useUIText } from '../../../shared/i18n/use-ui-text.js';
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '../../../shared/context/auth-context';
@@ -7,6 +8,7 @@ import { ReportModal } from '../../../shared/components/ui/report-modal';
 import { submitCommunityReport } from '../../../shared/services/report-service.js';
 
 export const CommentSection = ({ reviewId, onCommentCountChange }) => {
+  const ui = useUIText();
   const { user } = useAuth();
   const { playAudioCue } = useAccessibility();
   const [comments, setComments] = useState([]);
@@ -256,7 +258,7 @@ export const CommentSection = ({ reviewId, onCommentCountChange }) => {
           >
             <div className="flex items-center gap-2">
               <span className="material-symbols-outlined text-[18px]">verified</span>
-              <span>Comentario reportado para moderación. ¡Gracias por mantener la comunidad segura!</span>
+              <span>{ui("Comentario reportado para moderación. ¡Gracias por mantener la comunidad segura!")}</span>
             </div>
             <button
               onClick={() => setReportSubmittedToast(false)}
@@ -282,14 +284,14 @@ export const CommentSection = ({ reviewId, onCommentCountChange }) => {
             type="text"
             value={newCommentText}
             onChange={(e) => setNewCommentText(e.target.value)}
-            placeholder="Escribe un comentario o apreciación acústica..."
+            placeholder={ui("Escribe un comentario o apreciación acústica...")}
             className="w-full py-2 px-3.5 pr-10 text-xs sm:text-sm rounded-xl bg-gray-100 dark:bg-[#1f1020] border border-[#e6d5e2] dark:border-white/10 text-[#231123] dark:text-white placeholder:text-[#5c435a]/60 dark:placeholder:text-[#B89CB0]/60 outline-hidden focus:border-[#B80C09] focus:ring-1 focus:ring-[#B80C09]/30 transition-all"
           />
           <button
             type="submit"
             disabled={!newCommentText.trim() || isSubmitting}
             className="absolute right-1.5 top-1/2 -translate-y-1/2 p-1.5 rounded-lg text-[#B80C09] hover:bg-[#B80C09]/10 disabled:opacity-40 disabled:hover:bg-transparent transition-colors cursor-pointer"
-            title="Publicar comentario"
+            title={ui("Publicar comentario")}
           >
             <span className="material-symbols-outlined text-[18px]">send</span>
           </button>
@@ -299,9 +301,7 @@ export const CommentSection = ({ reviewId, onCommentCountChange }) => {
       {/* Lista de comentarios */}
       <div className="flex flex-col gap-3 mt-1 max-h-96 overflow-y-auto pr-1">
         {comments.length === 0 ? (
-          <p className="text-xs text-[#5c435a] dark:text-[#B89CB0] italic py-2 text-center">
-            Sé el primero en comentar esta reseña.
-          </p>
+          <p className="text-xs text-[#5c435a] dark:text-[#B89CB0] italic py-2 text-center">{ui("Sé el primero en comentar esta reseña.")}</p>
         ) : (
           <AnimatePresence initial={false}>
             {comments.map((comment) => {
@@ -338,9 +338,7 @@ export const CommentSection = ({ reviewId, onCommentCountChange }) => {
                         </div>
                         <div className="flex items-center gap-1.5 shrink-0">
                           {isReported && (
-                            <span className="text-[9px] font-bold px-1.5 py-0.5 rounded bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20">
-                              Reportado
-                            </span>
+                            <span className="text-[9px] font-bold px-1.5 py-0.5 rounded bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20">{ui("Reportado")}</span>
                           )}
                           <span className="text-[10px] text-[#81737e] dark:text-[#B89CB0]/70">
                             {comment.timestamp}
@@ -369,7 +367,7 @@ export const CommentSection = ({ reviewId, onCommentCountChange }) => {
                                 ? 'bg-rose-500/15 dark:bg-rose-500/25 text-[#B80C09] dark:text-rose-300 border border-rose-500/30 shadow-xs font-black'
                                 : 'bg-black/5 dark:bg-white/5 hover:bg-rose-50 dark:hover:bg-rose-950/40 text-[#5c435a] dark:text-[#B89CB0] hover:text-[#B80C09] dark:hover:text-rose-400 border border-black/5 dark:border-white/10 hover:border-rose-200 dark:hover:border-rose-900/40'
                             }`}
-                            title="Me gusta (Corazón)"
+                            title={ui("Me gusta (Corazón)")}
                           >
                             <span
                               className="material-symbols-outlined text-[15px] transition-transform duration-200"
@@ -394,7 +392,7 @@ export const CommentSection = ({ reviewId, onCommentCountChange }) => {
                                 ? 'bg-purple-500/15 dark:bg-purple-500/25 text-purple-600 dark:text-purple-300 border border-purple-500/30 shadow-xs font-black'
                                 : 'bg-black/5 dark:bg-white/5 hover:bg-purple-50 dark:hover:bg-purple-950/40 text-[#5c435a]/80 dark:text-[#B89CB0]/80 hover:text-purple-600 dark:hover:text-purple-300 border border-black/5 dark:border-white/10 hover:border-purple-200 dark:hover:border-purple-900/40'
                             }`}
-                            title="No me gusta (Corazón roto)"
+                            title={ui("No me gusta (Corazón roto)")}
                           >
                             <span
                               className="material-symbols-outlined text-[15px] transition-transform duration-200"
@@ -423,7 +421,7 @@ export const CommentSection = ({ reviewId, onCommentCountChange }) => {
                             }`}
                           >
                             <span className="material-symbols-outlined text-[14px]">reply</span>
-                            <span>{isReplying ? 'Cancelar' : 'Responder'}</span>
+                            <span>{isReplying ? ui("Cancelar") : ui("Responder")}</span>
                           </button>
                         </div>
 
@@ -432,8 +430,8 @@ export const CommentSection = ({ reviewId, onCommentCountChange }) => {
                           type="button"
                           onClick={() => handleOpenReport(comment)}
                           disabled={isReported}
-                          title={isReported ? 'Comentario reportado a moderación' : 'Reportar comentario'}
-                          aria-label={isReported ? 'Comentario reportado' : 'Reportar comentario'}
+                          title={isReported ? ui("Comentario reportado a moderación") : ui("Reportar comentario")}
+                          aria-label={isReported ? ui("Comentario reportado") : ui("Reportar comentario")}
                           className={`flex items-center gap-1 text-[11px] font-semibold transition-all px-2 py-1 rounded-lg cursor-pointer shrink-0 ${
                             isReported
                               ? 'bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20 cursor-not-allowed'
@@ -441,7 +439,7 @@ export const CommentSection = ({ reviewId, onCommentCountChange }) => {
                           }`}
                         >
                           <span className="material-symbols-outlined text-[15px] text-[#B80C09] shrink-0">flag</span>
-                          <span>{isReported ? 'Reportado' : 'Reportar'}</span>
+                          <span>{isReported ? ui("Reportado") : ui("Reportar")}</span>
                         </button>
                       </div>
                     </div>
@@ -479,9 +477,7 @@ export const CommentSection = ({ reviewId, onCommentCountChange }) => {
                                 </div>
                                 <div className="flex items-center gap-1.5 shrink-0">
                                   {isReplyReported && (
-                                    <span className="text-[8px] font-bold px-1.5 py-0.2 rounded bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20">
-                                      Reportado
-                                    </span>
+                                    <span className="text-[8px] font-bold px-1.5 py-0.2 rounded bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20">{ui("Reportado")}</span>
                                   )}
                                   <span className="text-[9px] text-[#81737e] dark:text-[#B89CB0]/70">
                                     {reply.timestamp}
@@ -510,7 +506,7 @@ export const CommentSection = ({ reviewId, onCommentCountChange }) => {
                                         ? 'bg-rose-500/15 dark:bg-rose-500/25 text-[#B80C09] dark:text-rose-300 border border-rose-500/30 font-black'
                                         : 'bg-black/5 dark:bg-white/5 hover:bg-rose-50 dark:hover:bg-rose-950/40 text-[#5c435a] dark:text-[#B89CB0] hover:text-[#B80C09] dark:hover:text-rose-400 border border-black/5 dark:border-white/10'
                                     }`}
-                                    title="Me gusta"
+                                    title={ui("Me gusta")}
                                   >
                                     <span
                                       className="material-symbols-outlined text-[13px]"
@@ -535,7 +531,7 @@ export const CommentSection = ({ reviewId, onCommentCountChange }) => {
                                         ? 'bg-purple-500/15 dark:bg-purple-500/25 text-purple-600 dark:text-purple-300 border border-purple-500/30 font-black'
                                         : 'bg-black/5 dark:bg-white/5 hover:bg-purple-50 dark:hover:bg-purple-950/40 text-[#5c435a]/80 dark:text-[#B89CB0]/80 hover:text-purple-600 dark:hover:text-purple-300 border border-black/5 dark:border-white/10'
                                     }`}
-                                    title="No me gusta"
+                                    title={ui("No me gusta")}
                                   >
                                     <span
                                       className="material-symbols-outlined text-[13px]"
@@ -551,10 +547,10 @@ export const CommentSection = ({ reviewId, onCommentCountChange }) => {
                                     type="button"
                                     onClick={() => handleStartReply(comment.id, reply)}
                                     className="flex items-center gap-0.5 text-[10px] font-bold text-[#5c435a] dark:text-[#B89CB0] hover:text-[#B80C09] px-1.5 py-0.5 rounded transition-colors cursor-pointer"
-                                    title={`Responder a ${reply.userName}`}
+                                    title={ui("Responder a {{value0}}", { value0: reply.userName })}
                                   >
                                     <span className="material-symbols-outlined text-[12px]">reply</span>
-                                    <span>Responder</span>
+                                    <span>{ui("Responder")}</span>
                                   </button>
                                 </div>
 
@@ -563,8 +559,8 @@ export const CommentSection = ({ reviewId, onCommentCountChange }) => {
                                   type="button"
                                   onClick={() => handleOpenReport({ ...reply, isReply: true })}
                                   disabled={isReplyReported}
-                                  title={isReplyReported ? 'Respuesta reportada a moderación' : 'Reportar respuesta'}
-                                  aria-label={isReplyReported ? 'Respuesta reportada' : 'Reportar respuesta'}
+                                  title={isReplyReported ? ui("Respuesta reportada a moderación") : ui("Reportar respuesta")}
+                                  aria-label={isReplyReported ? ui("Respuesta reportada") : ui("Reportar respuesta")}
                                   className={`flex items-center gap-1 text-[10px] font-semibold transition-all px-1.5 py-0.5 rounded-md cursor-pointer shrink-0 ${
                                     isReplyReported
                                       ? 'bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20 cursor-not-allowed'
@@ -572,7 +568,7 @@ export const CommentSection = ({ reviewId, onCommentCountChange }) => {
                                   }`}
                                 >
                                   <span className="material-symbols-outlined text-[13px] text-[#B80C09] shrink-0">flag</span>
-                                  <span>{isReplyReported ? 'Reportado' : 'Reportar'}</span>
+                                  <span>{isReplyReported ? ui("Reportado") : ui("Reportar")}</span>
                                 </button>
                               </div>
                             </div>
@@ -593,14 +589,13 @@ export const CommentSection = ({ reviewId, onCommentCountChange }) => {
                       {replyTargetUser && (
                         <div className="flex items-center justify-between text-[11px] text-[#B80C09] font-bold px-1">
                           <span className="flex items-center gap-1">
-                            <span className="material-symbols-outlined text-[14px]">reply</span>
-                            Respondiendo a {replyTargetUser.userName} ({replyTargetUser.userHandle})
+                            <span className="material-symbols-outlined text-[14px]">reply</span>{ui("Respondiendo a")} {replyTargetUser.userName} ({replyTargetUser.userHandle})
                           </span>
                           <button
                             type="button"
                             onClick={() => setReplyTargetUser(null)}
                             className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 cursor-pointer"
-                            title="Quitar mención directa"
+                            title={ui("Quitar mención directa")}
                           >
                             <span className="material-symbols-outlined text-[14px]">close</span>
                           </button>
@@ -613,8 +608,8 @@ export const CommentSection = ({ reviewId, onCommentCountChange }) => {
                           onChange={(e) => setReplyText(e.target.value)}
                           placeholder={
                             replyTargetUser
-                              ? `Escribe tu respuesta para ${replyTargetUser.userName}...`
-                              : `Respondiendo al hilo de ${comment.userName}...`
+                              ? ui("Escribe tu respuesta para {{value0}}...", { value0: replyTargetUser.userName })
+                              : ui("Respondiendo al hilo de {{value0}}...", { value0: comment.userName })
                           }
                           autoFocus
                           className="flex-1 text-xs bg-transparent border-none text-[#231123] dark:text-white placeholder:text-[#5c435a]/60 dark:placeholder:text-[#B89CB0]/60 outline-hidden"
@@ -626,16 +621,12 @@ export const CommentSection = ({ reviewId, onCommentCountChange }) => {
                             setReplyTargetUser(null);
                           }}
                           className="px-2.5 py-1 text-[11px] text-gray-500 hover:text-gray-700 dark:text-gray-400 cursor-pointer font-medium"
-                        >
-                          Cancelar
-                        </button>
+                        >{ui("Cancelar")}</button>
                         <button
                           type="submit"
                           disabled={!replyText.trim() || isSubmittingReply}
                           className="px-3 py-1 rounded-lg bg-[#B80C09] text-white text-[11px] font-bold hover:bg-[#B80C09]/90 disabled:opacity-40 transition-colors cursor-pointer"
-                        >
-                          Responder
-                        </button>
+                        >{ui("Responder")}</button>
                       </div>
                     </motion.form>
                   )}

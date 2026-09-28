@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import i18n, { LANGUAGES } from '../config/i18n';
+import i18n, { LANGUAGES } from '../i18n';
 
 export { LANGUAGES, useTranslation };
 
@@ -55,6 +55,8 @@ export function LanguageProvider({ children }) {
 
 export function useLanguage() {
   const context = useContext(LanguageContext);
+  // Subscribe even when the component is rendered without LanguageProvider.
+  const { t } = useTranslation('translation', { i18n });
   if (!context) {
     const lang = (i18n.language || 'es').split('-')[0];
     return {
@@ -65,10 +67,7 @@ export function useLanguage() {
         document.documentElement.lang = code;
         window.dispatchEvent(new CustomEvent('sonar:language-changed', { detail: code }));
       },
-      t: (key, fallback) => {
-        const result = i18n.t(key, typeof fallback === 'string' ? { defaultValue: fallback } : fallback);
-        return result || (typeof fallback === 'string' ? fallback : key);
-      },
+      t,
       languages: LANGUAGES,
       currentLanguageObj: LANGUAGES.find((l) => l.code === lang) || LANGUAGES[0],
       i18n,

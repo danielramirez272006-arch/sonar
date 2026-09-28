@@ -10,7 +10,57 @@ export async function sendReviewToModeration(review) {
     throw new Error('La reseña debe ser un objeto válido para enviarla a moderación.')
   }
 
-  // Sustituir esta espera por el envío al webhook cuando esté disponible.
+  const configuredUrl =
+    typeof import.meta !== 'undefined' && import.meta.env?.VITE_N8N_REVIEW_MODERATION_WEBHOOK_URL
+
+  const endpoints = configuredUrl
+    ? [configuredUrl]
+    : [
+        'http://localhost:5678/webhook-test/review-moderation',
+        'http://localhost:5678/webhook/review-moderation',
+      ]
+
+  for (const endpoint of endpoints) {
+    try {
+      console.log(
+        '%c[n8n Webhook - Moderación] Enviando reseña a moderación:',
+        'color: #B80C09; font-weight: bold;',
+        { reviewId: review.id, endpoint }
+      )
+
+      const controller = new AbortController()
+      const timeoutId = setTimeout(() => controller.abort(), 3000)
+
+      const response = await fetch(endpoint, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          content: review.content || '',
+          reviewId: review.id || '',
+          userId: review.userId || '',
+          albumId: review.albumId || '',
+          adminEmail: 'admin@sonar.audio',
+        }),
+        signal: controller.signal,
+      })
+      clearTimeout(timeoutId)
+
+      if (response.ok) {
+        const data = await response.json()
+        return {
+          success: true,
+          queued: true,
+          reviewId: review.id ?? null,
+          message: 'La reseña fue enviada a moderación vía n8n.',
+          ...data,
+        }
+      }
+    } catch {
+      // Intentar siguiente endpoint o fallback
+    }
+  }
+
+  // Fallback: simulación local si n8n no está disponible
   await delay(500)
 
   return {
@@ -18,6 +68,7 @@ export async function sendReviewToModeration(review) {
     queued: true,
     reviewId: review.id ?? null,
     message: 'La reseña fue enviada a moderación.',
+    simulated: true,
   }
 }
 
