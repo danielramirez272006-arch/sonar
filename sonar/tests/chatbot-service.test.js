@@ -44,16 +44,15 @@ describe('Sonar AI Sommelier Chatbot Service', () => {
   it('utiliza el motor de contingencia local inteligente si n8n no responde', async () => {
     global.fetch = vi.fn().mockRejectedValue(new Error('Network error'))
 
-    const result = await sendChatMessage('Recomiéndame algo de jazz japones', 'test-local-session')
+    const result = await sendChatMessage('¿Cómo ganar Sonar Coins?', 'test-local-session')
 
     expect(result.success).toBe(true)
     expect(result.source).toBe('local-sommelier')
-    expect(result.message).toContain('Jazz')
-    expect(result.suggestions.length).toBeGreaterThan(0)
+    expect(result.message).toContain('Sonar Coins')
     expect(result.quickReplies.length).toBeGreaterThan(0)
   })
 
-  it('brinda respuesta de bienvenida y sugerencias generales ante preguntas abiertas', async () => {
+  it('brinda respuesta de bienvenida y orientación sobre SONAR ante preguntas abiertas', async () => {
     global.fetch = vi.fn().mockRejectedValue(new Error('Network error'))
 
     const result = await sendChatMessage('Hola qué tal', 'test-greeting')
@@ -61,6 +60,7 @@ describe('Sonar AI Sommelier Chatbot Service', () => {
     expect(result.success).toBe(true)
     expect(result.source).toBe('local-sommelier')
     expect(result.message).toContain('Sonaria')
+    expect(result.message).toContain('SONAR')
     expect(result.suggestions).toHaveLength(2)
   })
 })

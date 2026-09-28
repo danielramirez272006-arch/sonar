@@ -14,230 +14,126 @@ const DEFAULT_ENDPOINTS = [
   'http://localhost:5678/webhook-test/sonar-chatbot',
 ].filter(Boolean)
 
-// Base de conocimiento local para contingencia inteligente por temas
+// Base de conocimiento específica de la plataforma SONAR
 const LOCAL_KNOWLEDGE = [
   {
-    keywords: ['jazz', 'japon', 'japones', 'fusion', 'casiopea', 'ryo fukui', 't-square', 'masayoshi'],
+    keywords: ['que es sonar', 'plataforma', 'pagina', 'app', 'web', 'funciones', 'herramientas', 'que puedo hacer', 'ayuda'],
     reply:
-      '¡El Jazz y City Pop japonés de los 70s y 80s son joyas absolutas de la ingeniería sonora! Sellos como Three Blind Mice y Alfa Records utilizaron prensado en vinilo virgen silencioso con microfonía Neumann de condensador para capturar cada matiz armónico.',
+      '¡Bienvenido a **SONAR**! 🎧 Somos la plataforma web definitiva para melómanos y amantes del audio de alta fidelidad. En SONAR puedes:\n\n1. 💿 **Explorar el Catálogo Hi-Fi**: Descubre álbumes legendarios con preescuchas y datos de masterización.\n2. ⭐ **Publicar Reseñas y Críticas**: Califica del 1 al 10 y analiza la dinámica de sonido con moderación IA.\n3. 🪙 **Ganar Sonar Coins**: Acumula monedas escuchando música (+5), publicando reseñas (+50) y abriendo tu Caja Diaria (+100).\n4. 🛒 **Boutique de Skins**: Canjea skins de Casetes y Medidores VU analógicos.\n5. 🔒 **Control Parental**: Protege a los más jóvenes con perfiles Junior y PIN de 4 dígitos.\n6. 📰 **Noticias y Newsletter**: Suscríbete al boletín semanal de audio y vinilos.',
     suggestions: [
       {
-        title: 'Scenery',
-        artist: 'Ryo Fukui',
-        year: '1976',
-        genre: 'Modal Jazz / Hard Bop',
-        reason: 'Grabación de piano acústico con microfonía cercana, calidez analógica y ataque percusivo nítido.',
-        deezerQuery: 'Ryo Fukui Scenery',
+        title: 'Aja',
+        artist: 'Steely Dan',
+        year: '1977',
+        genre: 'Jazz Rock / Hi-Fi',
+        reason: 'Álbum destacado en el catálogo de SONAR por su legendaria fidelidad acústica.',
+        deezerQuery: 'Steely Dan Aja',
       },
       {
-        title: 'Mint Jams',
-        artist: 'Casiopea',
-        year: '1982',
-        genre: 'Jazz Fusion',
-        reason: 'Grabación en vivo mítica en el Chuo Kaikan de Tokio con balance estéreo magistral.',
-        deezerQuery: 'Casiopea Mint Jams',
+        title: 'Random Access Memories',
+        artist: 'Daft Punk',
+        year: '2013',
+        genre: 'Nu-Disco / Hi-Fi',
+        reason: 'Masterizado por Bob Ludwig. Uno de los discos más escuchados en la plataforma.',
+        deezerQuery: 'Daft Punk Random Access Memories',
       },
     ],
-    quickReplies: ['🎸 Recomiéndame Rock Progresivo', '🎧 ¿Qué es el rango dinámico?', '💿 Ver más Jazz'],
+    quickReplies: [
+      '🪙 ¿Cómo ganar Sonar Coins?',
+      '⭐ ¿Cómo publicar una reseña?',
+      '🛒 Ver Boutique de Skins',
+      '🔒 ¿Cómo activar Control Parental?',
+    ],
   },
   {
-    keywords: ['rock', 'progresivo', 'pink floyd', 'led zeppelin', 'king crimson', 'queen', 'rush', 'guitarra'],
+    keywords: ['resena', 'reseña', 'critica', 'calificar', 'estrellas', 'opinar', 'escribir reseña', 'comentario', 'moderacion'],
     reply:
-      'En el Rock Clásico y Progresivo, la riqueza sonora proviene del uso de cintas analógicas de 24 pistas y salas con acústica viva. Discos grabados en Abbey Road, Trident o Sound City capturan la pegada natural de la batería y la reverberación de amplificadores de bulbos.',
+      'En **SONAR**, publicar tus reseñas es muy sencillo y te otorga **+50 Sonar Coins**:\n\n1. Dirígete a cualquier álbum en el **Catálogo** o presiona el botón **"Reseñar"** en las sugerencias.\n2. Asigna una calificación de **1 a 10 estrellas**.\n3. Escribe tu análisis sobre la calidad de sonido, producción y dinámica.\n4. Al enviar, nuestro sistema de moderación automática mediante **IA en n8n** evaluará la reseña para publicarla en la comunidad.',
     suggestions: [
       {
         title: 'The Dark Side of the Moon',
         artist: 'Pink Floyd',
         year: '1973',
         genre: 'Progressive Rock',
-        reason: 'Ingeniería de Alan Parsons con sintetizadores EMS VCS3, paneos estéreo envolventes y relojes mecánicos.',
+        reason: 'El álbum con más reseñas y debates técnicos en la comunidad de SONAR.',
         deezerQuery: 'Pink Floyd Dark Side of the Moon',
       },
-      {
-        title: 'In the Court of the Crimson King',
-        artist: 'King Crimson',
-        year: '1969',
-        genre: 'Progressive Rock',
-        reason: 'Dinámica orquestal con Mellotron e intensidad rítmica legendaria.',
-        deezerQuery: 'King Crimson In the Court of the Crimson King',
-      },
     ],
-    quickReplies: ['💿 Recomiéndame Jazz japonés', '🎛️ Discos con mejor masterización', '🎧 Probar con auriculares'],
+    quickReplies: ['🪙 ¿Para qué sirven las Sonar Coins?', '💿 Ir al Catálogo de Álbumes', '👤 Ver mi Perfil'],
   },
   {
-    keywords: ['electronica', 'techno', 'house', 'daft punk', 'kraftwerk', 'ambient', 'sintetizador', 'aphex twin', 'brian eno'],
+    keywords: ['coins', 'monedas', 'sonar coins', 'puntos', 'recompensas', 'ganar', 'dinero', 'xp', 'nivel'],
     reply:
-      'La música electrónica de alta gama destaca por la respuesta en frecuencias subgraves (20Hz-60Hz) y la separación de capas tímbricas sintéticas mediante secuenciadores analógicos como el Minimoog o Roland TB-303.',
-    suggestions: [
-      {
-        title: 'Random Access Memories',
-        artist: 'Daft Punk',
-        year: '2013',
-        genre: 'Nu-Disco / Electronic',
-        reason: 'Masterizado por Bob Ludwig. Grabado combinando sintetizadores modulares con músicos de sesión en vivo.',
-        deezerQuery: 'Daft Punk Random Access Memories',
-      },
-      {
-        title: 'Music for Airports',
-        artist: 'Brian Eno',
-        year: '1978',
-        genre: 'Ambient',
-        reason: 'Loops de cinta analógica con capas polifónicas sutiles y espacialidad tridimensional.',
-        deezerQuery: 'Brian Eno Music for Airports',
-      },
-    ],
-    quickReplies: ['🎛️ Discos con mejor masterización', '🎸 Recomiéndame Rock Clásico', '💿 Ver Jazz'],
-  },
-  {
-    keywords: ['metal', 'heavy', 'metallica', 'iron maiden', 'black sabbath', 'tool', 'opeth', 'bateria'],
-    reply:
-      'Para el Metal audiófilo, busca álbumes con baterías orgánicas (sin reemplazo por samples sintéticos aplastados) y separación nítida entre guitarras afinadas en graves y la línea de bajo.',
-    suggestions: [
-      {
-        title: 'Lateralus',
-        artist: 'Tool',
-        year: '2001',
-        genre: 'Progressive Metal',
-        reason: 'Ingeniería de Joe Barresi con batería de Danny Carey en tomas acústicas de sala gigantesca.',
-        deezerQuery: 'Tool Lateralus',
-      },
-      {
-        title: 'Blackwater Park',
-        artist: 'Opeth',
-        year: '2001',
-        genre: 'Progressive Death Metal',
-        reason: 'Producido por Steven Wilson, con transiciones impecables entre pasajes acústicos y distorsión pesada.',
-        deezerQuery: 'Opeth Blackwater Park',
-      },
-    ],
-    quickReplies: ['🎸 Rock Progresivo', '🎛️ Discos con mejor masterización', '🎧 Calibrar sonido'],
-  },
-  {
-    keywords: ['hip hop', 'rap', 'kendrick', 'kanye', 'madlib', 'mf doom', 'graves', 'subwoofer', 'sample'],
-    reply:
-      'El Hip-Hop de producción refinada utiliza técnicas de sampling desde vinilos oscuros combinados con cajas de ritmo analógicas (E-mu SP-1200, Akai MPC3000) e instrumentación orquestal en vivo.',
-    suggestions: [
-      {
-        title: 'To Pimp a Butterfly',
-        artist: 'Kendrick Lamar',
-        year: '2015',
-        genre: 'Conscious Hip-Hop / Jazz',
-        reason: 'Mezcla analógica por MixedByAli con Thundercat en bajo y arreglos de vientos en vivo.',
-        deezerQuery: 'Kendrick Lamar To Pimp a Butterfly',
-      },
-      {
-        title: 'Madvillainy',
-        artist: 'Madvillain (MF DOOM & Madlib)',
-        year: '2004',
-        genre: 'Underground Hip-Hop',
-        reason: 'Collage de texturas analógicas y samples de vinilo con calidez cruda inconfundible.',
-        deezerQuery: 'Madvillain Madvillainy',
-      },
-    ],
-    quickReplies: ['💿 Recomiéndame Jazz japonés', '🎛️ Discos con mejor masterización', '🎁 Ganar Sonar Coins'],
-  },
-  {
-    keywords: ['triste', 'tristeza', 'depre', 'desanimo', 'melancolia', 'llorar', 'bajon', 'solo', 'soledad'],
-    reply:
-      'Lamento que te sientas así. La música tiene un poder sanador y catártico único. Para momentos reflexivos o de melancolía, estas obras grabadas con calidez orgánica y guitarras acústicas profundas son un abrazo sonoro.',
-    suggestions: [
-      {
-        title: 'Sea Change',
-        artist: 'Beck',
-        year: '2002',
-        genre: 'Chamber Folk / Acoustic',
-        reason: 'Masterizado por Bob Ludwig con arreglos de cuerdas de David Campbell y una intimidad vocal conmovedora.',
-        deezerQuery: 'Beck Sea Change',
-      },
-      {
-        title: 'Blue',
-        artist: 'Joni Mitchell',
-        year: '1971',
-        genre: 'Folk / Singer-Songwriter',
-        reason: 'Grabación pura y despojada con dulcimer acústico y piano con un rango dinámico ultrasensible.',
-        deezerQuery: 'Joni Mitchell Blue',
-      },
-      {
-        title: 'Kid A',
-        artist: 'Radiohead',
-        year: '2000',
-        genre: 'Art Rock / Ambient',
-        reason: 'Paisajes sonoros reflexivos con sintetizadores etéreos y la voz vulnerable de Thom Yorke.',
-        deezerQuery: 'Radiohead Kid A',
-      },
-    ],
-    quickReplies: ['💿 Recomiéndame algo más relajante', '🎸 Álbumes con mejor acústica', '🎧 Escuchar con audífonos'],
-  },
-  {
-    keywords: ['feliz', 'alegre', 'animo', 'fiesta', 'bailar', 'motivacion', 'energia'],
-    reply:
-      '¡Qué gran vibra! Para elevar la energía y disfrutar con máximo impacto dinámico y ritmo contagioso, estas producciones brillantes te harán moverte al instante.',
-    suggestions: [
-      {
-        title: 'Off the Wall',
-        artist: 'Michael Jackson',
-        year: '1979',
-        genre: 'Disco / Funk',
-        reason: 'Producción dorada de Quincy Jones con mezcla de Bruce Swedien y sección de metales brillante.',
-        deezerQuery: 'Michael Jackson Off the Wall',
-      },
-      {
-        title: 'Discovery',
-        artist: 'Daft Punk',
-        year: '2001',
-        genre: 'French House',
-        reason: 'Samples eufóricos con sintetizadores y líneas de bajo sumamente enérgicas.',
-        deezerQuery: 'Daft Punk Discovery',
-      },
-    ],
-    quickReplies: ['🎸 Recomiéndame Funk clásico', '💿 Ver más producciones de Quincy Jones'],
-  },
-  {
-    keywords: ['master', 'masterizacion', 'ingeniero', 'sonido', 'calidad', 'hi-fi', 'audiophile', 'dinamica', 'rango'],
-    reply:
-      'Para apreciar la máxima fidelidad sonora, busca masterizaciones que respeten el rango dinámico sin compresión agresiva (sin la guerra del volumen o *loudness war*). Ingenieros legendarios como Bernie Grundman, Bob Ludwig y Kevin Gray son garantía de sonido puro y transparente.',
-    suggestions: [
-      {
-        title: 'Aja',
-        artist: 'Steely Dan',
-        year: '1977',
-        genre: 'Jazz Rock / Yacht Rock',
-        reason: 'El estándar de oro para probar la claridad tímbrica y respuesta de bajos en sistemas Hi-Fi.',
-        deezerQuery: 'Steely Dan Aja',
-      },
-      {
-        title: 'The Nightfly',
-        artist: 'Donald Fagen',
-        year: '1982',
-        genre: 'Jazz Pop / Soft Rock',
-        reason: 'Una de las primeras grabaciones digitales multitrack (3M 32-track) con una limpieza acústica quirúrgica.',
-        deezerQuery: 'Donald Fagen The Nightfly',
-      },
-    ],
-    quickReplies: ['💿 Recomiéndame Jazz japonés', '🎛️ ¿Cómo calibrar mi tornamesa?', '⭐ ¿Cómo publicar una reseña?'],
-  },
-  {
-    keywords: ['tornamesa', 'tocadiscos', 'aguja', 'calibrar', 'vinilo', 'anti-skating', 'peso', 'capsula'],
-    reply:
-      'Para calibrar tu tornamesa correctamente:\n1. Ajusta el contrapeso a cero con el brazo flotando horizontalmente.\n2. Aplica la fuerza de tracking recomendada por el fabricante de tu cápsula (ej: 1.75g - 2.0g para Audio-Technica / Ortofon).\n3. Ajusta el *anti-skating* al mismo valor que el peso de la aguja para evitar desgaste asimétrico del surco.',
-    suggestions: [
-      {
-        title: 'Discovery',
-        artist: 'Daft Punk',
-        year: '2001',
-        genre: 'French House',
-        reason: 'Excelente para probar la respuesta transitoria y pegada rítmica de tu cápsula.',
-        deezerQuery: 'Daft Punk Discovery',
-      },
-    ],
-    quickReplies: ['💿 Recomiéndame Jazz japonés', '🎸 Álbumes con mejor masterización', '🏆 ¿Cómo ganar Sonar Coins?'],
-  },
-  {
-    keywords: ['coins', 'monedas', 'sonar coins', 'puntos', 'recompensas', 'skins', 'tienda', 'nivel'],
-    reply:
-      'Puedes ganar **Sonar Coins** y experiencia XP en SONAR de varias formas:\n1. 🎧 Escuchando canciones completas en el reproductor.\n2. ⭐ Publicando reseñas y críticas de álbumes.\n3. 🎁 Abriendo tu Caja Diaria (*Daily Crate Drop*) en tu Perfil.\n4. 🛒 Luego puedes canjear skins de Casete y VU Meter en la Boutique.',
+      'Las **Sonar Coins** 🪙 son la moneda oficial de la plataforma SONAR. Puedes conseguirlas de las siguientes formas:\n\n• 🎧 **+5 Coins**: Por cada canción que escuches en el reproductor.\n• ⭐ **+50 Coins**: Por cada reseña o crítica publicada.\n• 🎁 **+100 Coins**: Al abrir tu **Caja Diaria (*Daily Crate Drop*)** en tu Perfil.\n• 🔥 **Racha diaria**: Bonificación multiplicadora por entrar días consecutivos.\n\nPuedes gastar tus monedas en la **Boutique** para desbloquear skins de Casete y VU Meters.',
     suggestions: [],
-    quickReplies: ['💿 Recomiéndame un álbum', '🔒 ¿Cómo funciona el Control Parental?', '⭐ Escribir reseña'],
+    quickReplies: ['🛒 ¿Qué hay en la Boutique?', '🎁 ¿Cómo abrir la Caja Diaria?', '⭐ Publicar una reseña'],
+  },
+  {
+    keywords: ['boutique', 'tienda', 'skin', 'skins', 'casete', 'cassette', 'vu meter', 'personalizar', 'comprar'],
+    reply:
+      'En la **Boutique de SONAR** 🛒 puedes personalizar tu reproductor y perfil con cosméticos exclusivos:\n\n• 📼 **Skins de Casete Vintage**: Diseños retro de cintas de cromo, metal y ediciones limitadas.\n• 🎛️ **Medidores VU Analógicos**: Estilos retro con agujas retroiluminadas en ámbar, cian y carmesí.\n• 👑 **Insignias de Melómano**: Títulos de prestigio para lucir en tus reseñas públicas.',
+    suggestions: [],
+    quickReplies: ['🪙 ¿Cómo ganar más Sonar Coins?', '💿 Escuchar música en el Reproductor', '👤 Ir a mi Perfil'],
+  },
+  {
+    keywords: ['caja', 'crate', 'daily', 'diaria', 'recompensa diaria', 'drop', 'regalo'],
+    reply:
+      'El **Daily Crate Drop** 🎁 es una recompensa gratuita que puedes reclamar una vez al día en tu **Perfil de Usuario**.\n\nAl abrirla obtendrás **100 Sonar Coins**, puntos de experiencia XP para subir de nivel y la oportunidad de conseguir cosméticos exclusivos para tu casete de audio.',
+    suggestions: [],
+    quickReplies: ['👤 Ir a mi Perfil', '🪙 Ver saldo de Sonar Coins', '🛒 Ir a la Boutique'],
+  },
+  {
+    keywords: ['parental', 'junior', 'ninos', 'hijos', 'pin', 'filtro', 'explicito', 'familiar'],
+    reply:
+      'El **Control Parental y Modo Junior** 🔒 de SONAR garantiza un entorno musical seguro:\n\n1. **Perfil Junior**: Oculta automáticamente portadas, álbumes y letras con lenguaje o temáticas explícitas.\n2. **PIN de Seguridad**: Protegido por una clave de 4 dígitos para que solo los padres puedan modificar la configuración.\n3. **Activación rápida**: Puedes activarlo durante el registro o en los ajustes de tu cuenta.',
+    suggestions: [],
+    quickReplies: ['⚙️ Ajustes de Cuenta', '💿 Explorar Música Familiar', '📰 Ver Noticias de SONAR'],
+  },
+  {
+    keywords: ['reproductor', 'musica', 'escuchar', 'player', 'play', 'cancion', 'track', 'audio', 'preescucha'],
+    reply:
+      'El **Reproductor Hi-Fi de SONAR** 🎧 está ubicado en la barra inferior de la pantalla:\n\n• Incluye preescuchas de alta fidelidad sincronizadas con Deezer.\n• Botones de control: Play/Pausa, anterior, siguiente y control deslizante de volumen.\n• Modo inmersivo con visualización de VU Meter dinámico.\n• ¡Cada pista escuchada suma **+5 Sonar Coins** a tu balance!',
+    suggestions: [
+      {
+        title: 'Scenery',
+        artist: 'Ryo Fukui',
+        year: '1976',
+        genre: 'Modal Jazz',
+        reason: 'Perfecto para probar la respuesta del reproductor Hi-Fi de SONAR.',
+        deezerQuery: 'Ryo Fukui Scenery',
+      },
+    ],
+    quickReplies: ['💿 Buscar en el Catálogo', '🛒 Ver Skins de VU Meter', '🪙 Ver mis Coins'],
+  },
+  {
+    keywords: ['catalogo', 'buscar', 'filtros', 'albumes', 'artistas', 'generos', 'disco', 'vinilo'],
+    reply:
+      'El **Catálogo de SONAR** 💿 reúne miles de obras maestras organizadas por:\n\n• **Géneros**: Jazz, Rock Clásico, Electrónica, City Pop, Clásica, Hip-Hop, Metal y más.\n• **Filtros Audíofilos**: Masterización Hi-Fi, prensados en vinilo y dinamismo acústico.\n• **Buscador Inteligente**: Escribe el nombre del álbum o artista en la barra superior para escucharlo de inmediato.',
+    suggestions: [
+      {
+        title: 'Mint Jams',
+        artist: 'Casiopea',
+        year: '1982',
+        genre: 'Jazz Fusion',
+        reason: 'Grabación en vivo recomendada en el catálogo de SONAR.',
+        deezerQuery: 'Casiopea Mint Jams',
+      },
+    ],
+    quickReplies: ['⭐ Escribir una Reseña', '🎧 Probar Reproductor', '🪙 Ganar Sonar Coins'],
+  },
+  {
+    keywords: ['noticias', 'newsletter', 'boletin', 'correo', 'suscripcion', 'articulos'],
+    reply:
+      'La sección de **Noticias y Boletín** 📰 de SONAR te mantiene al día con la vanguardia musical:\n\n• Artículos editoriales sobre historia del vinilo, acústica e ingeniería de sonido.\n• Suscripción al **Boletín Semanal** mediante integración directa con n8n para recibir lanzamientos y guías en tu correo.',
+    suggestions: [],
+    quickReplies: ['📰 Ir a Noticias', '💿 Ver Catálogo', '⭐ Publicar Reseña'],
+  },
+  {
+    keywords: ['login', 'registro', 'cuenta', 'perfil', 'password', 'recuperar', 'otp', 'clave', 'seguridad'],
+    reply:
+      'La seguridad en **SONAR** 🛡️ cuenta con:\n\n• **Alertas de Inicio de Sesión**: Notificación inmediata ante nuevos accesos mediante n8n.\n• **Recuperación con Código OTP**: Envío de código de 6 dígitos a tu correo electrónico para restablecer tu contraseña en segundos.\n• **Perfil Personalizado**: Gestión de biografía, avatar, nivel XP y colecciones.',
+    suggestions: [],
+    quickReplies: ['👤 Ver mi Perfil', '🔒 Control Parental', '🪙 Ver mis Sonar Coins'],
   },
 ]
 
@@ -276,9 +172,10 @@ export async function sendChatMessage(message, sessionId = 'default-session', co
             message: data.message,
             suggestions: data.suggestions || [],
             quickReplies: data.quickReplies || [
-              '💿 Recomiéndame Jazz japonés',
-              '🎸 Álbumes con mejor masterización',
-              '🎧 ¿Cómo calibrar mi tornamesa?',
+              '🪙 ¿Cómo ganar Sonar Coins?',
+              '⭐ ¿Cómo publicar una reseña?',
+              '💿 Explorar Catálogo Hi-Fi',
+              '🔒 ¿Cómo activar el Control Parental?',
             ],
             sessionId: data.sessionId || sessionId,
             timestamp: data.timestamp || new Date().toISOString(),
@@ -292,8 +189,8 @@ export async function sendChatMessage(message, sessionId = 'default-session', co
     }
   }
 
-  // 2. Fallback Inteligente Local
-  await new Promise((r) => setTimeout(r, 450))
+  // 2. Fallback Inteligente Local centrado en la plataforma SONAR
+  await new Promise((r) => setTimeout(r, 350))
 
   const lower = cleanMsg.toLowerCase()
   const match = LOCAL_KNOWLEDGE.find((item) =>
@@ -312,56 +209,34 @@ export async function sendChatMessage(message, sessionId = 'default-session', co
     }
   }
 
-  // Generador de respuesta dinámica contextual para consultas generales
-  const suggestionsPool = [
-    {
-      title: 'Aja',
-      artist: 'Steely Dan',
-      year: '1977',
-      genre: 'Jazz Rock / Hi-Fi',
-      reason: 'Mezcla legendaria considerada el estándar de oro para probar la transparencia en sistemas de sonido.',
-      deezerQuery: 'Steely Dan Aja',
-    },
-    {
-      title: 'Scenery',
-      artist: 'Ryo Fukui',
-      year: '1976',
-      genre: 'Modal Jazz',
-      reason: 'Grabación de trío acústico con piano brillante y microfonía que capta cada armónico del contrabajo.',
-      deezerQuery: 'Ryo Fukui Scenery',
-    },
-    {
-      title: 'In Rainbows',
-      artist: 'Radiohead',
-      year: '2007',
-      genre: 'Art Rock',
-      reason: 'Espacialidad acústica y calidez en cinta analógica de 2 pulgadas grabada en Covent Garden.',
-      deezerQuery: 'Radiohead In Rainbows',
-    },
-    {
-      title: 'Random Access Memories',
-      artist: 'Daft Punk',
-      year: '2013',
-      genre: 'Nu-Disco / Electronic',
-      reason: 'Masterización premiada con Grammy por Bob Ludwig con batería acústica e instrumentos vintage.',
-      deezerQuery: 'Daft Punk Random Access Memories',
-    },
-  ]
-
-  // Seleccionar 2 sugerencias aleatorias para que cada respuesta sea única
-  const shuffled = [...suggestionsPool].sort(() => 0.5 - Math.random())
-  const selectedSuggestions = shuffled.slice(0, 2)
-
+  // Respuesta predeterminada centrada exclusivamente en SONAR
   return {
     success: true,
     source: 'local-sommelier',
-    message: `¡Excelente consulta! Como **Sonaria**, analizo la música desde la producción, la calidez analógica y el rango dinámico.\n\nPara explorar en profundidad lo que me preguntas sobre *"${cleanMsg.length > 50 ? cleanMsg.slice(0, 50) + '...' : cleanMsg}"*, te recomiendo sumergirte en estas obras con fidelidad acústica superior:`,
-    suggestions: selectedSuggestions,
+    message: `¡Hola! Soy **Sonaria**, tu asistente oficial de la plataforma **SONAR**. 🎧\n\nEstoy aquí para guiarte en todo lo relacionado con la aplicación: navegar por el catálogo de alta fidelidad, publicar reseñas, ganar **Sonar Coins**, canjear skins en la **Boutique** o configurar el **Control Parental**.\n\n¿En qué herramienta o sección de SONAR te puedo ayudar hoy?`,
+    suggestions: [
+      {
+        title: 'Aja',
+        artist: 'Steely Dan',
+        year: '1977',
+        genre: 'Jazz Rock / Hi-Fi',
+        reason: 'Álbum de referencia en el catálogo de SONAR con preescucha disponible.',
+        deezerQuery: 'Steely Dan Aja',
+      },
+      {
+        title: 'Random Access Memories',
+        artist: 'Daft Punk',
+        year: '2013',
+        genre: 'Nu-Disco / Hi-Fi',
+        reason: 'Producción multipremiada disponible para reproducir y reseñar.',
+        deezerQuery: 'Daft Punk Random Access Memories',
+      },
+    ],
     quickReplies: [
-      '💿 Recomiéndame Jazz japonés',
-      '🎸 Álbumes de Rock Progresivo',
-      '🎛️ ¿Qué es el rango dinámico?',
-      '🎧 ¿Cómo calibrar mi tornamesa?',
+      '🪙 ¿Cómo ganar Sonar Coins?',
+      '⭐ ¿Cómo publicar una reseña?',
+      '🛒 Ver Boutique de Skins',
+      '🔒 ¿Cómo activar el Control Parental?',
     ],
     sessionId,
     timestamp: new Date().toISOString(),
