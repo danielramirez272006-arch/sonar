@@ -1,15 +1,17 @@
 import { useUIText } from '../../shared/i18n/use-ui-text.js';
+import { useTranslation } from '../../shared/context/language-context.jsx';
 import { Modal } from '../../shared/components/ui/modal.jsx'
 
-const formatReleaseDate = value => {
+const formatReleaseDate = (value, locale) => {
   if (!value) return ''
   const date = new Date(`${String(value).slice(0, 10)}T12:00:00`)
   if (Number.isNaN(date.getTime())) return String(value)
-  return date.toLocaleDateString('es-MX', { day: 'numeric', month: 'short', year: 'numeric' })
+  return date.toLocaleDateString(locale, { day: 'numeric', month: 'short', year: 'numeric' })
 }
 
 export function NewsVinyl({ editions, labels, articles, selected, onSelect, onArticle }) {
   const ui = useUIText();
+  const { i18n } = useTranslation();
   const labelFor = edition => labels.find(label => String(label.id) === String(edition.labelId))
   const newsFor = edition => articles.filter(article => String(article.vinylId) === String(edition.id))
 
@@ -35,10 +37,10 @@ export function NewsVinyl({ editions, labels, articles, selected, onSelect, onAr
             const label = labelFor(edition)
             const relatedNews = newsFor(edition)
             const specs = [
-              edition.format && { icon: 'album', label: 'Formato', value: edition.format },
-              edition.color && { icon: 'palette', label: 'Color', value: edition.color },
-              edition.catalogNumber && { icon: 'tag', label: 'Catálogo', value: edition.catalogNumber },
-              edition.releaseDate && { icon: 'event', label: 'Lanzamiento', value: formatReleaseDate(edition.releaseDate) },
+              edition.format && { icon: 'album', label: ui('Formato'), value: edition.format },
+              edition.color && { icon: 'palette', label: ui('Color'), value: edition.color },
+              edition.catalogNumber && { icon: 'tag', label: ui('Catálogo'), value: edition.catalogNumber },
+              edition.releaseDate && { icon: 'event', label: ui('Lanzamiento'), value: formatReleaseDate(edition.releaseDate, i18n.language) },
             ].filter(Boolean)
 
             return (
@@ -119,13 +121,13 @@ export function NewsVinyl({ editions, labels, articles, selected, onSelect, onAr
         <p>{selected.artist}</p>
         <dl className="vinyl-facts">
           {[
-            ['Año', selected.year],
-            ['Lanzamiento', selected.releaseDate],
-            ['Edición', selected.editionType],
-            ['Formato', selected.format],
-            ['Color', selected.color],
-            ['Número de catálogo', selected.catalogNumber],
-            ['Discográfica', labelFor(selected)?.name],
+            [ui('Año'), selected.year],
+            [ui('Lanzamiento'), formatReleaseDate(selected.releaseDate, i18n.language)],
+            [ui('Edición'), selected.editionType],
+            [ui('Formato'), selected.format],
+            [ui('Color'), selected.color],
+            [ui('Número de catálogo'), selected.catalogNumber],
+            [ui('Discográfica'), labelFor(selected)?.name],
           ]
             .filter(([, value]) => value)
             .map(([name, value]) => (

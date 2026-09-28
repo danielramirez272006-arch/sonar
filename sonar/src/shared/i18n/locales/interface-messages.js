@@ -135,6 +135,14 @@ Obras Maestras|Masterpieces|Chefs-d’œuvre|Capolavori|杰作|名作
 Resumen de la noticia|News summary|Résumé de l’actualité|Riassunto della notizia|新闻摘要|ニュースの概要
 Título de la canción|Track title|Titre du morceau|Titolo della traccia|歌曲标题|曲名
 Texto editorial|Editorial text|Texte éditorial|Testo editoriale|编辑文字|編集テキスト
+A (Normal)|A (Normal)|A (Normal)|A (Normale)|A（标准）|A（標準）
+A+ (Grande)|A+ (Large)|A+ (Grand)|A+ (Grande)|A+（大）|A+（大）
+A++ (Extra)|A++ (Extra)|A++ (Très grand)|A++ (Extra)|A++（特大）|A++（特大）
+Relajado (1.8x)|Relaxed (1.8x)|Détendu (1.8x)|Morbido (1.8x)|宽松（1.8x）|ゆったり（1.8x）
+Amplio (2.2x)|Wide (2.2x)|Large (2.2x)|Ampio (2.2x)|宽幅（2.2x）|広幅（2.2x）
+Bienvenido a SONAR. Esta es una prueba de lectura en voz alta para tus reseñas y análisis líricos.|Welcome to SONAR. This is a read-aloud test for your reviews and lyric analyses.|Bienvenue sur SONAR. Voici un test de lecture à voix haute pour vos critiques et analyses de paroles.|Benvenuto in SONAR. Questa è una prova di lettura ad alta voce per le tue recensioni e analisi dei testi.|欢迎使用 SONAR。这是一项朗读测试，用于您的评论和歌词分析。|SONAR へようこそ。これはレビューと歌詞分析の読み上げテストです。
+Escuchar {{value0}} en voz alta|Listen to {{value0}} aloud|Écouter {{value0}} à voix haute|Ascolta {{value0}} ad alta voce|朗读 {{value0}}|{{value0}} を読み上げる
+texto|text|texte|testo|文本|テキスト
 `.trim().split('\n').map(row => row.split('|'));
 export const INTERFACE_TRANSLATIONS = Object.fromEntries(
   ['es', 'en', 'fr', 'it', 'zh', 'ja'].map((language, index) => [language, Object.fromEntries(rows.map(values => [values[0], values[index]]))]),

@@ -166,5 +166,15 @@
   "shortcuts.media_group": "再生とメディア操作",
   "shortcuts.nav_group": "クイックナビゲーション",
   "shortcuts.title": "キーボードショートカット",
-  "shortcuts.subtitle": "マウスなしでSONARをすばやく操作できます。"
+  "shortcuts.subtitle": "マウスなしでSONARをすばやく操作できます。",
+  "shortcuts.toggleA11yPanel": "アクセシビリティパネルを開く/閉じる",
+  "shortcuts.openShortcutsGuide": "このキーボードショートカットガイドを開く",
+  "shortcuts.nextInteractive": "次のインタラクティブ要素に移動",
+  "shortcuts.previousInteractive": "前のインタラクティブ要素に移動",
+  "shortcuts.closeModal": "開いているモーダルウィンドウやメニューを閉じる",
+  "shortcuts.toggleAudioPreview": "現在のオーディオプレビューを再生/一時停止",
+  "shortcuts.toggleVolume": "プレーヤーの音量をミュート/復帰",
+  "shortcuts.focusSearch": "グローバル検索バーをフォーカス",
+  "shortcuts.activate": "ボタンの有効化、カードの再生、プロフィールの表示",
+  "shortcuts.jumpToEdge": "ページの先頭または末尾へ移動"
 }

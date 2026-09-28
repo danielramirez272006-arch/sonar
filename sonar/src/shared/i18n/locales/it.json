@@ -166,5 +166,15 @@
   "shortcuts.media_group": "Riproduzione e controlli multimediali",
   "shortcuts.nav_group": "Navigazione rapida",
   "shortcuts.title": "Scorciatoie da tastiera",
-  "shortcuts.subtitle": "Naviga in SONAR rapidamente senza mouse."
+  "shortcuts.subtitle": "Naviga in SONAR rapidamente senza mouse.",
+  "shortcuts.toggleA11yPanel": "Apri / Chiudi il pannello di accessibilità",
+  "shortcuts.openShortcutsGuide": "Apri questa guida alle scorciatoie da tastiera",
+  "shortcuts.nextInteractive": "Vai al successivo elemento interattivo",
+  "shortcuts.previousInteractive": "Vai al precedente elemento interattivo",
+  "shortcuts.closeModal": "Chiudi qualsiasi finestra modale o menu aperto",
+  "shortcuts.toggleAudioPreview": "Riproduci / metti in pausa l’anteprima audio attiva",
+  "shortcuts.toggleVolume": "Silenzia / ripristina il volume del lettore",
+  "shortcuts.focusSearch": "Attiva la barra di ricerca globale",
+  "shortcuts.activate": "Attiva un pulsante, riproduci una scheda o apri un profilo",
+  "shortcuts.jumpToEdge": "Vai all’inizio o alla fine della pagina"
 }

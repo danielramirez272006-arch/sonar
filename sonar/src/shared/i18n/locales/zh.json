@@ -166,5 +166,15 @@
   "shortcuts.media_group": "播放与媒体控制",
   "shortcuts.nav_group": "快速导航",
   "shortcuts.title": "键盘快捷键",
-  "shortcuts.subtitle": "无需鼠标即可快速便捷地浏览 SONAR。"
+  "shortcuts.subtitle": "无需鼠标即可快速便捷地浏览 SONAR。",
+  "shortcuts.toggleA11yPanel": "打开/关闭无障碍面板",
+  "shortcuts.openShortcutsGuide": "打开此键盘快捷键指南",
+  "shortcuts.nextInteractive": "移动到下一个可交互元素",
+  "shortcuts.previousInteractive": "移动到上一个可交互元素",
+  "shortcuts.closeModal": "关闭任何打开的模态窗口或菜单",
+  "shortcuts.toggleAudioPreview": "播放/暂停当前音频预览",
+  "shortcuts.toggleVolume": "静音/恢复播放器音量",
+  "shortcuts.focusSearch": "聚焦全局搜索栏",
+  "shortcuts.activate": "激活按钮、播放卡片或进入个人资料",
+  "shortcuts.jumpToEdge": "跳转到页面顶部或底部"
 }

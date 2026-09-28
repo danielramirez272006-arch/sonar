@@ -166,5 +166,15 @@
   "shortcuts.media_group": "Lecture et commandes multimédias",
   "shortcuts.nav_group": "Navigation rapide",
   "shortcuts.title": "Raccourcis clavier",
-  "shortcuts.subtitle": "Naviguez rapidement dans SONAR sans souris."
+  "shortcuts.subtitle": "Naviguez rapidement dans SONAR sans souris.",
+  "shortcuts.toggleA11yPanel": "Ouvrir / Fermer le panneau d’accessibilité",
+  "shortcuts.openShortcutsGuide": "Ouvrir ce guide des raccourcis clavier",
+  "shortcuts.nextInteractive": "Aller vers l’élément interactif suivant",
+  "shortcuts.previousInteractive": "Aller vers l’élément interactif précédent",
+  "shortcuts.closeModal": "Fermer toute fenêtre modale ou menu ouvert",
+  "shortcuts.toggleAudioPreview": "Lire / mettre en pause l’extrait audio actif",
+  "shortcuts.toggleVolume": "Couper / rétablir le volume du lecteur",
+  "shortcuts.focusSearch": "Activer la barre de recherche globale",
+  "shortcuts.activate": "Activer un bouton, lire une carte ou ouvrir un profil",
+  "shortcuts.jumpToEdge": "Aller en haut ou en bas de la page"
 }

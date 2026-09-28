@@ -300,7 +300,7 @@ En este artículo analizamos además cómo la ligera mezcla de canales (crosstal
 
 export const NewsPage = () => {
   const ui = useUIText();
-    const { t } = useTranslation();
+    const { t, i18n } = useTranslation();
   const { user } = useAuth();
   const [articles, setArticles] = useState(NEWS_ARTICLES);
   const [editions, setEditions] = useState([]);
@@ -472,7 +472,7 @@ export const NewsPage = () => {
       if (response && response.success) {
         playAudioCue('success');
         setSubscriptionSuccess(response.message || t('page.news.newsletterSuccess', '¡Te has suscrito con éxito al boletín semanal!'));
-        announce('Suscripción a la newsletter confirmada con éxito.');
+        announce(t('page.news.newsletterAnnounce'));
         setNewsletterEmail('');
         setNewsletterName('');
       } else {
@@ -542,7 +542,7 @@ export const NewsPage = () => {
             </div>
             <p className="mt-2 text-[11px] font-semibold text-[#5c435a] dark:text-[#B89CB0]">
               {searchQuery.trim()
-                ? `${resultCount} ${resultCount === 1 ? 'coincidencia' : 'coincidencias'} para “${searchQuery.trim()}”`
+                ? t(resultCount === 1 ? 'page.news.matches.one' : 'page.news.matches.many', { value0: resultCount, value1: searchQuery.trim() })
                 : t('page.news.searchHelp')}
             </p>
           </div>
@@ -732,7 +732,7 @@ export const NewsPage = () => {
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
                 {visibleReleases.map((release) => {
                   const releaseDate = release.releaseDate
-                    ? new Date(release.releaseDate).toLocaleDateString('es-MX', { year: 'numeric', month: 'long', day: 'numeric' })
+                    ? new Date(release.releaseDate).toLocaleDateString(i18n.language, { year: 'numeric', month: 'long', day: 'numeric' })
                     : null;
                   const typeLabel = release.type || 'Álbum';
                   const typeColor = {
@@ -766,7 +766,7 @@ export const NewsPage = () => {
 
                         {/* Badge de tipo */}
                         <span className={`absolute top-2.5 left-2.5 px-2 py-0.5 rounded-md text-[9px] font-black uppercase tracking-wider border ${typeColor}`}>
-                          {typeLabel === 'Vinilo' ? '💿' : typeLabel === 'Sencillo' ? '🎵' : typeLabel === 'EP' ? '🎶' : '📀'} {typeLabel}
+                          {typeLabel === 'Vinilo' ? '💿' : typeLabel === 'Sencillo' ? '🎵' : typeLabel === 'EP' ? '🎶' : '📀'} {ui(typeLabel)}
                         </span>
 
                         {/* Indicador de ver detalle al hover */}
@@ -782,7 +782,7 @@ export const NewsPage = () => {
                             target="_blank"
                             rel="noopener noreferrer"
                             className="absolute bottom-2.5 right-2.5 w-9 h-9 rounded-full bg-black/70 backdrop-blur-sm text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity hover:bg-[#B80C09] z-10"
-                            title={`Escuchar ${release.title} en Deezer/Spotify`}
+                            title={ui("Escuchar {{value0}} en Deezer/Spotify", { value0: release.title })}
                             onClick={(e) => e.stopPropagation()}
                           >
                             <span className="material-symbols-outlined text-[18px]">open_in_new</span>
@@ -1059,10 +1059,10 @@ export const NewsPage = () => {
               <span className="text-xs font-bold text-rose-200 uppercase tracking-wider block">{ui("Selecciona los temas que te interesan:")}</span>
               <div className="flex flex-wrap gap-2">
                 {[
-                  { id: 'Lanzamientos', label: '💿 Estrenos & Álbumes' },
-                  { id: 'Hi-Fi & Hardware', label: '🎛️ Hi-Fi & Tocadiscos' },
-                  { id: 'Festivales', label: '🎟️ Festivales & Giras' },
-                  { id: 'Industria', label: '🏛️ Sellos & Crónicas' },
+                  { id: 'Lanzamientos', label: ui("💿 Estrenos & Álbumes") },
+                  { id: 'Hi-Fi & Hardware', label: ui("🎛️ Hi-Fi & Tocadiscos") },
+                  { id: 'Festivales', label: ui("🎟️ Festivales & Giras") },
+                  { id: 'Industria', label: ui("🏛️ Sellos & Crónicas") },
                 ].map((topic) => {
                   const isChecked = selectedTopics.includes(topic.id);
                   return (
@@ -1443,7 +1443,7 @@ export const NewsPage = () => {
                     if (isSpeaking) {
                       stopSpeaking();
                     } else {
-                      speak(`${activeReleaseModal.title} de ${activeReleaseModal.artist}. ${activeReleaseModal.description || ''}`, activeReleaseModal.title);
+                      speak(ui('{{value0}} de {{value1}}. {{value2}}', { value0: activeReleaseModal.title, value1: activeReleaseModal.artist, value2: activeReleaseModal.description || '' }), activeReleaseModal.title);
                     }
                   }}
                   className={`px-3.5 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 ${
