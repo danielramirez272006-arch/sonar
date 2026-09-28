@@ -8,7 +8,7 @@ import { RotatingReview } from './rotating-review';
 import { GENRE_OPTIONS } from '../../../shared/services/recommendations-service';
 import { requestRegisterOtpWebhook } from '../../../shared/services/n8n-webhooks';
 import { getUserByEmail } from '../../../shared/services/api-client';
-import { useGoogleLogin } from '@react-oauth/google';
+import { useSafeGoogleLogin } from '../../../shared/hooks/use-safe-google-login';
 
 const AVATAR_PALETTES = [
   { color: '#B80C09', label: 'Carmesí Vinilo' },
@@ -262,11 +262,9 @@ export const RegisterForm = () => {
    * Si el correo ya existe en la BD, redirige a login (#login).
    * Si es nuevo, redirige a la página de usuario (#usuario).
    */
-  let handleGoogleRegister = () => {};
-  try {
-    handleGoogleRegister = useGoogleLogin({
-      onSuccess: async (tokenResponse) => {
-        setErrorMessage('');
+  const handleGoogleRegister = useSafeGoogleLogin({
+    onSuccess: async (tokenResponse) => {
+      setErrorMessage('');
       try {
         const res = await fetch('https://www.googleapis.com/oauth2/v3/userinfo', {
           headers: { Authorization: `Bearer ${tokenResponse.access_token}` },
@@ -306,9 +304,6 @@ export const RegisterForm = () => {
     onError: () => setErrorMessage('No se pudo conectar con Google. Intenta de nuevo.'),
     flow: 'implicit',
   });
-  } catch {
-    handleGoogleRegister = () => {};
-  }
 
   return (
     <div className="auth-shell">

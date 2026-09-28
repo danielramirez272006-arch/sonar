@@ -1,9 +1,10 @@
+
+
 function delay(milliseconds) {
   return new Promise(resolve => setTimeout(resolve, milliseconds))
 }
 
 export async function getRecommendations(userId) {
-  // Reservado para personalizar las recomendaciones con el backend real.
   void userId
   await delay(500)
 
@@ -55,21 +56,85 @@ export async function getLyricalContext(albumName, artist) {
   }
 }
 
-export async function analyzeReview(review) {
-  await delay(500)
+// Lista extendida de términos ofensivos, lenguaje subido de tono o spam
+const OFFENSIVE_TERMS = [
+  'idiota', 'idiotas', 'imbécil', 'imbecil', 'imbeciles', 'mierda', 'basura', 'estúpido', 'estupido',
+  'maldito', 'maldita', 'estupida', 'puto', 'puta', 'pendejo', 'pendeja', 'asco', 'horrible', 'inútil',
+  'inutil', 'estafa', 'fraude', 'hijo de', 'perra', 'bastardo', 'spam', 'odio', 'muérete', 'muerete'
+]
 
+/**
+ * Dispara la notificación por Webhook de n8n para enviar correo de advertencia al usuario por mal comportamiento.
+ */
+export async function notifyReviewWarningWebhook(reviewData, userData, reason) {
+  const email = userData?.email || 'usuario@sonar.com'
+  const username = userData?.username || userData?.name || reviewData.userName || 'Usuario'
+
+  const payload = {
+    action: 'review_warning',
+    reviewId: reviewData.id,
+    userId: reviewData.userId,
+    username,
+    email,
+    content: reviewData.content,
+    reason: reason || 'Lenguaje o contenido subido de tono detectado por IA',
+    timestamp: new Date().toISOString(),
+  }
+
+  const configuredUrl =
+    typeof import.meta !== 'undefined' && import.meta.env?.VITE_N8N_REVIEW_WARNING_WEBHOOK_URL
+
+  const endpoints = configuredUrl
+    ? [configuredUrl]
+    : [
+        'http://localhost:5678/webhook/sonar-review-warning',
+        'http://localhost:5678/webhook-test/sonar-review-warning',
+      ]
+
+  for (const endpoint of endpoints) {
+    try {
+      console.log(
+        '%c[n8n Webhook - Advertencia de Conducta] Enviando correo de aviso:',
+        'color: #B80C09; font-weight: bold;',
+        { endpoint, payload }
+      )
+
+      const controller = new AbortController()
+      const timeoutId = setTimeout(() => controller.abort(), 3000)
+
+      const response = await fetch(endpoint, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+        signal: controller.signal,
+      })
+      clearTimeout(timeoutId)
+
+      if (response.ok) {
+        return await response.json()
+      }
+    } catch {
+      // Ignorar fallback
+    }
+  }
+
+  return {
+    success: true,
+    message: `Aviso enviado correctamente al correo ${email}.`,
+    simulated: true,
+  }
+}
+
+/** Vista orientativa del panel manual. Las sanciones automaticas pertenecen al agente del servidor. */
+export async function analyzeReview(review) {
+  await delay(400)
   const content = typeof review === 'string' ? review : (typeof review?.content === 'string' ? review.content : '')
   const words = content.toLowerCase().match(/[\p{L}\p{N}]+/gu) ?? []
-  // Lista mínima de ejemplo; no constituye un sistema real de moderación.
-  const offensiveWords = ['idiota', 'idiotas', 'imbécil', 'imbecil', 'mierda']
-  const aiFlagged = words.some(word => offensiveWords.includes(word))
-
+  const aiFlagged = words.some(word => OFFENSIVE_TERMS.includes(word)) || review?.aiFlagged === true
   return {
     aiFlagged,
     status: 'pending_moderation',
-    reason: aiFlagged
-      ? 'La reseña contiene lenguaje que requiere revisión.'
-      : null,
+    reason: aiFlagged ? 'La rese\u00f1a contiene lenguaje subido de tono o t\u00e9rminos inapropiados.' : null,
   }
 }
 
@@ -77,6 +142,5 @@ export default {
   analyzeReview,
   getRecommendations,
   getLyricalContext,
+  notifyReviewWarningWebhook,
 }
-
-

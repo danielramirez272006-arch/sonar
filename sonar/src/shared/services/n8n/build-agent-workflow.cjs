@@ -1,0 +1,21 @@
+const fs = require('node:fs');
+const path = require('node:path');
+const nodes = [], connections = {};
+function add(name,type,version,parameters,x,extra={}) { nodes.push({id:`agent-${nodes.length}`,name,type:`n8n-nodes-base.${type}`,typeVersion:version,position:[x,300],parameters,...extra}); }
+function link(a,b) { connections[a]={main:[[{node:b,type:'main',index:0}]]}; }
+const credential = {httpHeaderAuth:{name:'SONAR agente servidor'}};
+add('Leer antes de activar','stickyNote',1,{width:900,height:340,content:'## Agente real de SONAR\nEl agente vive en server/moderation-agent.cjs y usa herramientas buscar_resenas, leer_resena y registrar_decision. Gemini es principal y OpenRouter gratuito es respaldo. El servidor verifica permisos, suspende y elimina en la base real.\n\n1. Ejecuta npm run api con .env.server.local configurado.\n2. Credencial SONAR agente servidor: Header Auth, Authorization = Bearer seguido de SONAR_AGENT_TOKEN.\n3. Selecciona Gmail OAuth2 en Gmail administrador.\n4. Ajusta apiBase: localhost si n8n corre en esta PC; host.docker.internal si corre en Docker con acceso al servidor; URL HTTPS accesible si es remoto.\n5. Prueba con Ejecutar manualmente. Activa para revisar cada minuto.\n\nLas claves IA se guardan solo en .env.server.local. Un fallo IA deja pendientes sin sancionar; los fallos de Gmail dejan avisos pendientes. No se han enviado correos durante la construccion.'},0);
+nodes[0].position=[0,-160];
+add('Ejecutar manualmente','manualTrigger',1,{},0);
+add('Revisar cada minuto','scheduleTrigger',1.2,{rule:{interval:[{field:'minutes',minutesInterval:1}]}},0); nodes.at(-1).position=[0,520];
+add('Configuracion','code',2,{jsCode:"return [{json:{apiBase:'http://127.0.0.1:3001'}}];"},240);
+add('Agente buscar leer y moderar','httpRequest',4.2,{method:'POST',url:"={{ $('Configuracion').first().json.apiBase + '/admin/moderation/run-agent' }}",authentication:'genericCredentialType',genericAuthType:'httpHeaderAuth',options:{timeout:900000}},480,{credentials:credential,onError:'continueRegularOutput'});
+add('Buscar avisos pendientes','httpRequest',4.2,{method:'POST',url:"={{ $('Configuracion').first().json.apiBase + '/admin/moderation/notifications/claim' }}",authentication:'genericCredentialType',genericAuthType:'httpHeaderAuth',options:{timeout:30000}},720,{credentials:credential});
+add('Validar avisos','code',2,{jsCode:"return $input.all().flatMap(i => Array.isArray(i.json) ? i.json : [i.json]).filter(n => n.status === 'pending').map((n,index) => { if (typeof n.id !== 'string' || !/^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/.test(n.email || '') || !Number.isFinite(Date.parse(n.suspendedUntil))) throw new Error('Aviso incompleto en servidor'); return {json:n,pairedItem:{item:index}}; });"},960);
+add('Gmail administrador','gmail',2.1,{resource:'message',operation:'send',sendTo:'={{ $json.email }}',subject:'SONAR: suspension temporal de tu cuenta',emailType:'text',message:"={{ 'Tu cuenta de SONAR ha sido suspendida hasta ' + $json.suspendedUntil + '. La resena ' + $json.reviewId + ' fue eliminada. Motivo: ' + $json.reason + '\\nResponde a este correo si deseas solicitar una revision.' }}",options:{appendAttribution:false}},1200,{credentials:{gmailOAuth2:{name:'Gmail administrador SONAR'}}});
+add('Confirmar aviso enviado','httpRequest',4.2,{method:'POST',url:"={{ $('Configuracion').first().json.apiBase + '/admin/moderation/notifications/' + encodeURIComponent($('Validar avisos').item.json.id) + '/sent' }}",authentication:'genericCredentialType',genericAuthType:'httpHeaderAuth',sendBody:true,specifyBody:'json',jsonBody:'={{ {messageId:$json.id} }}',options:{timeout:30000}},1440,{credentials:credential});
+link('Ejecutar manualmente','Configuracion'); link('Revisar cada minuto','Configuracion');
+const seq=['Configuracion','Agente buscar leer y moderar','Buscar avisos pendientes','Validar avisos','Gmail administrador','Confirmar aviso enviado'];
+for(let i=1;i<seq.length;i++) link(seq[i-1],seq[i]);
+const workflow={name:'SONAR - Agente real de moderacion y Gmail',nodes,connections,active:false,settings:{executionOrder:'v1'},pinData:{},tags:[]};
+fs.writeFileSync(path.join(__dirname,'sonar-moderacion-automatica-v3.json'),JSON.stringify(workflow,null,2)+'\n');

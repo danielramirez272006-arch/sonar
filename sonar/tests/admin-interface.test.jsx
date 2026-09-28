@@ -12,7 +12,7 @@ vi.mock('../src/shared/services/api-client.js', () => ({
 
 beforeEach(() => {
   vi.resetAllMocks()
-  apiRequest.mockResolvedValue([])
+  apiRequest.mockImplementation(async path => path === '/auth/me' ? { id: '1', username: 'Mateo', role: 'admin' } : [])
   window.localStorage.setItem('sonar_auth_user', JSON.stringify({ id: '1', username: 'Mateo', role: 'admin' }))
   window.history.replaceState(null, '', '/#admin')
   const reviews = [{ id: '101', userId: '1', albumId: 'album_01', rating: 4.7, content: 'Una gran escucha.', status: 'pending_moderation', aiFlagged: false }]

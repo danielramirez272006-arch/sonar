@@ -8,6 +8,7 @@ import { useAuth } from '../../shared/context/auth-context';
 import { usePlayer } from '../../shared/context/player-context';
 import { useLanguage } from '../../shared/context/language-context';
 import { interactionsService } from '../../shared/services/interactions-service';
+import { getReviewsByUser } from '../../shared/services/api-client';
 import { socialService } from '../../shared/services/social-service';
 import {
   getRecommendationsForUser,
@@ -224,8 +225,17 @@ export const UserDashboardPage = () => {
     setRecommendations(recs);
 
     // 3. Reseñas del usuario (dinámicas según ID de usuario)
-    const reviews = interactionsService.getUserReviews(userId);
-    setUserReviews(reviews);
+    let currentReviewsRequest = true;
+    const reloadReviews = async () => {
+      try {
+        const reviews = userId ? await getReviewsByUser(userId) : [];
+        if (currentReviewsRequest) setUserReviews(reviews);
+      } catch {
+        if (currentReviewsRequest) setUserReviews([]);
+      }
+    };
+    reloadReviews();
+    const reviewRefresh = setInterval(reloadReviews, 15000);
 
     // 4. Historial de reproducción reciente
     const recent = interactionsService.getRecentlyPlayed(userId);
@@ -243,7 +253,7 @@ export const UserDashboardPage = () => {
       setFollowedUsers(socialService.getFollowedUsers(currentId));
     };
     const handleReviewCreated = () => {
-      setUserReviews(interactionsService.getUserReviews(userId));
+      reloadReviews();
     };
     const handleRecentChange = () => {
       setRecentlyPlayed(interactionsService.getRecentlyPlayed(userId));
@@ -257,16 +267,20 @@ export const UserDashboardPage = () => {
     window.addEventListener('sonar:follow-artist-changed', handleArtistChange);
     window.addEventListener('sonar:follow-user-changed', handleUserChange);
     window.addEventListener('sonar:review-created', handleReviewCreated);
+    window.addEventListener('sonar:reviews-updated', handleReviewCreated);
     window.addEventListener('sonar:recently-played-changed', handleRecentChange);
     const handleCollectionChange = () => {
       setSavedAlbums(interactionsService.getUserSavedAlbums(userId));
     };
     window.addEventListener('sonar:collection-changed', handleCollectionChange);
     return () => {
+      currentReviewsRequest = false;
+      clearInterval(reviewRefresh);
       window.removeEventListener('sonar:navigate-tab', handleNavigateTab);
       window.removeEventListener('sonar:follow-artist-changed', handleArtistChange);
       window.removeEventListener('sonar:follow-user-changed', handleUserChange);
       window.removeEventListener('sonar:review-created', handleReviewCreated);
+      window.removeEventListener('sonar:reviews-updated', handleReviewCreated);
       window.removeEventListener('sonar:recently-played-changed', handleRecentChange);
       window.removeEventListener('sonar:collection-changed', handleCollectionChange);
     };

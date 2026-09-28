@@ -13,6 +13,7 @@ import { useAdminDashboard, useModeration } from './features/admin/index.js'
 import { AdminDashboardPage } from './pages/admin/admin-dashboard-page.jsx'
 import { ModerationPage } from './pages/admin/moderation-page.jsx'
 import { UsersPage } from './pages/admin/users-page.jsx'
+import { SonarAIPage } from './pages/admin/sonar-ai-page.jsx'
 import { AnimatedLogo } from './shared/components/ui/AnimatedLogo.jsx'
 import { AuthProvider } from './shared/context/auth-context.jsx'
 import { ThemeProvider, useTheme } from './shared/context/theme-context.jsx'
@@ -46,7 +47,7 @@ export function AdminConsole() {
   const catalogType = adminHash.split('?')[0].replace('#admin-catalog-', '')
   const routeParams = new URLSearchParams(adminHash.split('?')[1] || '')
   const baseRoute = adminHash.split('?')[0]
-  const page = Object.hasOwn(catalogTypes, catalogType) ? 'catalog' : baseRoute === '#moderacion' ? 'moderacion' : baseRoute === '#usuarios' ? 'usuarios' : baseRoute === '#admin-reports' ? 'reports' : baseRoute === '#admin-reviews' ? 'reviews' : 'dashboard'
+  const page = Object.hasOwn(catalogTypes, catalogType) ? 'catalog' : baseRoute === '#moderacion' ? 'moderacion' : baseRoute === '#usuarios' ? 'usuarios' : baseRoute === '#admin-reports' ? 'reports' : baseRoute === '#admin-reviews' ? 'reviews' : baseRoute === '#sonar-ai' || baseRoute === '#admin-ai' ? 'sonar-ai' : 'dashboard'
   const [data, setData] = useState({ users: [], reviews: [] })
   const [query, setQuery] = useState('')
   const [error, setError] = useState(null)
@@ -70,7 +71,7 @@ export function AdminConsole() {
     function onHashChange() {
       const nextHash = window.location.hash
       const base = nextHash.split('?')[0]
-      if (!['#dashboard', '#moderacion', '#usuarios', '#admin', '#admin-reports', '#admin-reviews', ''].includes(base) && !base.startsWith('#admin-catalog-')) return
+      if (!['#dashboard', '#moderacion', '#usuarios', '#admin', '#admin-reports', '#admin-reviews', '#sonar-ai', '#admin-ai', ''].includes(base) && !base.startsWith('#admin-catalog-')) return
       setAdminHash(nextHash)
       setQuery('')
     }
@@ -220,6 +221,13 @@ export function AdminConsole() {
                 {dashboard.metrics.pendingReviews}
               </span>
             </a>
+            <a
+              className={`${page === 'sonar-ai' ? 'active dark:bg-sonar-surface dark:text-sonar-text dark:border dark:border-[#B80C09]/40 font-bold' : 'dark:text-sonar-text dark:hover:bg-sonar-surface/60'}`}
+              aria-current={page === 'sonar-ai' ? 'page' : undefined}
+              href="#sonar-ai"
+            >
+              🤖 <span>Sonar AI</span>
+            </a>
             <a href="#explore" className="dark:text-sonar-text dark:hover:bg-sonar-surface/60">← <span>Ir al Portal Público</span></a>
           </nav>
           <span className="nav-caption dark:text-sonar-text/70">BUEN CRITERIO. MEJOR MÚSICA.</span>
@@ -228,7 +236,7 @@ export function AdminConsole() {
       <main id="contenido" tabIndex={-1} className="shell main-content transition-colors duration-300 dark:bg-sonar-base dark:text-sonar-text">
         {currentError && <div className="error-banner" role="alert"><div><strong>No pudimos completar la consulta.</strong><p>{currentError} Comprueba que la API local esté disponible.</p></div><button onClick={refresh} disabled={loading}>Reintentar</button></div>}
         <div className="live-notice" role="status">{notice}</div>
-        {page === 'catalog' ? <CatalogPage key={catalogType} type={catalogType} /> : page === 'reports' ? <ReportsPage users={data.users} reviews={data.reviews} onUserUpdate={handleUserUpdate} onSendToModeration={sendToModeration} /> : page === 'reviews' ? <ModerationTable key={window.location.hash} {...shared} compact={!routeParams.has('review')} userFilterId={routeParams.get('user')} query={routeParams.has('user') ? '' : query} reviews={routeParams.get('review') ? data.reviews.filter(review => String(review.id) === routeParams.get('review')) : data.reviews} initialFilter={routeParams.get('filter') || 'all'} /> : page === 'dashboard' ? <AdminDashboardPage {...shared} reviews={data.reviews} metrics={dashboardMetrics(data.users, data.reviews)} onRefresh={refresh} onExport={exportCsv} error={currentError} /> : page === 'usuarios' ? <UsersPage reviews={data.reviews} initialUserId={routeParams.get('user')} users={data.users} onUserUpdate={handleUserUpdate} /> : <ModerationPage {...shared} allReviews={data.reviews} reviews={moderation.reviews} onRefresh={refresh} error={currentError} />}
+        {page === 'catalog' ? <CatalogPage key={catalogType} type={catalogType} /> : page === 'reports' ? <ReportsPage users={data.users} reviews={data.reviews} onUserUpdate={handleUserUpdate} onSendToModeration={sendToModeration} /> : page === 'reviews' ? <ModerationTable key={window.location.hash} {...shared} compact={!routeParams.has('review')} userFilterId={routeParams.get('user')} query={routeParams.has('user') ? '' : query} reviews={routeParams.get('review') ? data.reviews.filter(review => String(review.id) === routeParams.get('review')) : data.reviews} initialFilter={routeParams.get('filter') || 'all'} /> : page === 'sonar-ai' ? <SonarAIPage /> : page === 'dashboard' ? <AdminDashboardPage {...shared} reviews={data.reviews} metrics={dashboardMetrics(data.users, data.reviews)} onRefresh={refresh} onExport={exportCsv} error={currentError} /> : page === 'usuarios' ? <UsersPage reviews={data.reviews} initialUserId={routeParams.get('user')} users={data.users} onUserUpdate={handleUserUpdate} /> : <ModerationPage {...shared} allReviews={data.reviews} reviews={moderation.reviews} onRefresh={refresh} error={currentError} />}
       </main>
       <footer className="console-footer">
         <div className="console-footer__inner shell">

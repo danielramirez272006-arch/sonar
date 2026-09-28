@@ -1,24 +1,14 @@
-import { userStatus } from '../services/admin-data.js'
-import { createContext, useContext, useEffect, useMemo, useState } from 'react'
-import { getUserByEmail, createUser, updateUser as updateUserApi, deleteUser as deleteUserApi } from '../services/api-client.js'
-import { hashPassword, verifyPassword } from '../services/crypto-service.js'
+import { createContext, useContext, useEffect, useMemo, useRef, useState } from 'react'
+import { apiRequest, getUserByEmail, updateUser as updateUserApi, deleteUser as deleteUserApi } from '../services/api-client.js'
+import { hashPassword } from '../services/crypto-service.js'
 import { notifyLoginAlertWebhook } from '../services/n8n-webhooks.js'
-
-/** Decodifica la parte payload de un JWT de Google sin necesitar librerías externas */
-function decodeGoogleJwt(token) {
-  try {
-    const base64 = token.split('.')[1].replace(/-/g, '+').replace(/_/g, '/');
-    return JSON.parse(atob(base64));
-  } catch {
-    return null;
-  }
-}
 
 // El contexto y el hook se exportan juntos como API de este módulo.
 // eslint-disable-next-line react-refresh/only-export-components
 export const AuthContext = createContext(undefined)
 
 export function AuthProvider({ children }) {
+  const authRevision = useRef(0)
   const [user, setUser] = useState(() => {
     try {
       const saved = typeof window !== 'undefined' ? window.localStorage?.getItem('sonar_auth_user') : null
@@ -30,6 +20,26 @@ export function AuthProvider({ children }) {
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState(null)
 
+  // La cookie del servidor determina si la sesion sigue autorizada.
+  useEffect(() => {
+    let alive = true
+    const refresh = () => {
+      const revision = authRevision.current
+      return apiRequest('/auth/me').then(current => {
+        if (!alive || revision !== authRevision.current) return
+        setUser(previous => JSON.stringify(previous) === JSON.stringify(current) ? previous : current)
+        window.localStorage.setItem('sonar_auth_user', JSON.stringify(current))
+      }).catch(() => {
+        if (!alive || revision !== authRevision.current) return
+        setUser(null)
+        window.localStorage.removeItem('sonar_auth_user')
+      })
+    }
+    refresh()
+    const timer = setInterval(refresh, 15000)
+    return () => { alive = false; clearInterval(timer) }
+  }, [])
+
   // Cierre de sesión automático por inactividad:
   // - Usuario normal: 60 segundos (1 minuto)
   // - Administrador: 30 segundos
@@ -40,7 +50,9 @@ export function AuthProvider({ children }) {
     let timerId = null;
 
     const handleInactivityLogout = () => {
+      authRevision.current++
       const roleLabel = user.role === 'admin' ? 'administrador (30 segundos)' : 'usuario (1 minuto)';
+      apiRequest('/auth/logout', { method: 'POST' }).catch(() => {});
       setUser(null);
       setError(`Sesión cerrada por inactividad de ${roleLabel}.`);
       try {
@@ -75,25 +87,12 @@ export function AuthProvider({ children }) {
 
   const value = useMemo(() => {
     async function login(email, password) {
+      authRevision.current++
       setIsLoading(true)
       setError(null)
 
       try {
-        const foundUser = await getUserByEmail(email.trim().toLowerCase())
-
-        if (!foundUser) {
-          throw new Error('No existe un usuario con ese correo electrónico.')
-        }
-
-        if (['banned', 'suspended'].includes(userStatus(foundUser))) {
-          throw new Error('Esta cuenta está baneada y no puede iniciar sesión.')
-        }
-
-        // Verificación segura criptográfica de la contraseña
-        const isPasswordValid = await verifyPassword(password, foundUser.password)
-        if (!isPasswordValid) {
-          throw new Error('La contraseña es incorrecta.')
-        }
+        const foundUser = await apiRequest('/auth/login', { method: 'POST', body: JSON.stringify({ email, password }) })
 
         setUser(foundUser)
         try {
@@ -131,46 +130,11 @@ export function AuthProvider({ children }) {
      * automáticamente con los datos de perfil de Google.
      */
     async function loginWithGoogle(credential) {
+      authRevision.current++
       setIsLoading(true)
       setError(null)
       try {
-        const payload = decodeGoogleJwt(credential)
-        if (!payload?.email) throw new Error('No se pudo obtener el correo de Google.')
-
-        const email = payload.email.trim().toLowerCase()
-        let foundUser = null
-        try { foundUser = await getUserByEmail(email) } catch { /* fallback */ }
-
-        if (foundUser) {
-          // Usuario ya registrado — verificar que no esté baneado
-          if (['banned', 'suspended'].includes(userStatus(foundUser))) {
-            throw new Error('Esta cuenta está baneada y no puede iniciar sesión.')
-          }
-        } else {
-          // Primera vez con Google — crear cuenta automáticamente
-          const avatarColors = ['#B80C09', '#5c1d5e', '#4B2840', '#0284c7', '#059669', '#d97706', '#7c3aed']
-          const hash = email.split('').reduce((acc, c) => (acc * 31 + c.charCodeAt(0)) % avatarColors.length, 0)
-          foundUser = {
-            id: `user-google-${Date.now()}`,
-            username: (payload.given_name || payload.name || 'usuario').toLowerCase().replace(/\s+/g, '_') + '_' + Math.floor(Math.random() * 999),
-            email,
-            password: await hashPassword(`google_oauth_${Date.now()}`),
-            role: 'user',
-            accountType: 'standard',
-            provider: 'google',
-            googleId: payload.sub,
-            avatarUrl: payload.picture || '',
-            avatarBg: avatarColors[hash],
-            bio: 'Melómano que accedió con Google. ¡Bienvenido a SONAR!',
-            stats: { savedAlbums: 0, reviewsCount: 0, followers: 0, following: 0 },
-            preferences: [],
-            badges: ['Melómano Verificado', 'Acceso Google'],
-            parentalControl: { enabled: false, blockExplicit: false, pin: '1234' },
-            gear: { headphones: 'Auriculares de referencia', turntable: 'Tocadiscos Direct Drive', favoriteFormat: 'Vinilo 33⅓ RPM' },
-            createdAt: new Date().toISOString(),
-          }
-          try { await createUser(foundUser) } catch { /* json-server fallback */ }
-        }
+        const foundUser = await apiRequest('/auth/google', { method: 'POST', body: JSON.stringify({ credential }) })
 
         setUser(foundUser)
         try {
@@ -199,6 +163,7 @@ export function AuthProvider({ children }) {
     }
 
     async function register({ username, email, password, preferences, avatarBg, bio, gear, accountType = 'standard', parentalControl = null, isJunior = false }) {
+      authRevision.current++
       setIsLoading(true)
       setError(null)
       try {
@@ -271,11 +236,9 @@ export function AuthProvider({ children }) {
           createdAt: new Date().toISOString(),
         }
 
-        try {
-          await createUser(newUser)
-        } catch {
-          // json-server mock fallback
-        }
+        const savedUser = await apiRequest('/users', { method: 'POST', body: JSON.stringify(newUser) })
+        Object.assign(newUser, savedUser)
+        delete newUser.password
 
         setUser(newUser)
         try {
@@ -302,16 +265,12 @@ export function AuthProvider({ children }) {
         throw new Error('La nueva contraseña debe tener al menos 6 caracteres.')
       }
 
-      const isOldValid = await verifyPassword(oldPassword, user.password)
-      if (!isOldValid) {
-        throw new Error('La contraseña actual es incorrecta.')
-      }
-
-      const newEncrypted = await hashPassword(newPassword)
-      return updateUser({ password: newEncrypted })
+      return apiRequest('/auth/password', { method: 'POST', body: JSON.stringify({ oldPassword, newPassword }) })
     }
 
     function logout() {
+      authRevision.current++
+      apiRequest('/auth/logout', { method: 'POST' }).catch(() => {})
       setUser(null)
       setError(null)
       try {

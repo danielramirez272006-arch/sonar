@@ -1,0 +1,264 @@
+{
+  "name": "SONAR - Agente real de moderacion y Gmail",
+  "nodes": [
+    {
+      "id": "agent-0",
+      "name": "Leer antes de activar",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        0,
+        -160
+      ],
+      "parameters": {
+        "width": 900,
+        "height": 340,
+        "content": "## Agente real de SONAR\nEl agente vive en server/moderation-agent.cjs y usa herramientas buscar_resenas, leer_resena y registrar_decision. Gemini es principal y OpenRouter gratuito es respaldo. El servidor verifica permisos, suspende y elimina en la base real.\n\n1. Ejecuta npm run api con .env.server.local configurado.\n2. Credencial SONAR agente servidor: Header Auth, Authorization = Bearer seguido de SONAR_AGENT_TOKEN.\n3. Selecciona Gmail OAuth2 en Gmail administrador.\n4. Ajusta apiBase: localhost si n8n corre en esta PC; host.docker.internal si corre en Docker con acceso al servidor; URL HTTPS accesible si es remoto.\n5. Prueba con Ejecutar manualmente. Activa para revisar cada minuto.\n\nLas claves IA se guardan solo en .env.server.local. Un fallo IA deja pendientes sin sancionar; los fallos de Gmail dejan avisos pendientes. No se han enviado correos durante la construccion."
+      }
+    },
+    {
+      "id": "agent-1",
+      "name": "Ejecutar manualmente",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        300
+      ],
+      "parameters": {}
+    },
+    {
+      "id": "agent-2",
+      "name": "Revisar cada minuto",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        0,
+        520
+      ],
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "minutes",
+              "minutesInterval": 1
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "agent-3",
+      "name": "Configuracion",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        240,
+        300
+      ],
+      "parameters": {
+        "jsCode": "return [{json:{apiBase:'http://127.0.0.1:3001'}}];"
+      }
+    },
+    {
+      "id": "agent-4",
+      "name": "Agente buscar leer y moderar",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        480,
+        300
+      ],
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $('Configuracion').first().json.apiBase + '/admin/moderation/run-agent' }}",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "options": {
+          "timeout": 900000
+        }
+      },
+      "credentials": {
+        "httpHeaderAuth": {
+          "name": "SONAR agente servidor"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "id": "agent-5",
+      "name": "Buscar avisos pendientes",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        720,
+        300
+      ],
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $('Configuracion').first().json.apiBase + '/admin/moderation/notifications/claim' }}",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "options": {
+          "timeout": 30000
+        }
+      },
+      "credentials": {
+        "httpHeaderAuth": {
+          "name": "SONAR agente servidor"
+        }
+      }
+    },
+    {
+      "id": "agent-6",
+      "name": "Validar avisos",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        960,
+        300
+      ],
+      "parameters": {
+        "jsCode": "return $input.all().flatMap(i => Array.isArray(i.json) ? i.json : [i.json]).filter(n => n.status === 'pending').map((n,index) => { if (typeof n.id !== 'string' || !/^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/.test(n.email || '') || !Number.isFinite(Date.parse(n.suspendedUntil))) throw new Error('Aviso incompleto en servidor'); return {json:n,pairedItem:{item:index}}; });"
+      }
+    },
+    {
+      "id": "agent-7",
+      "name": "Gmail administrador",
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        1200,
+        300
+      ],
+      "parameters": {
+        "resource": "message",
+        "operation": "send",
+        "sendTo": "={{ $json.email }}",
+        "subject": "SONAR: suspension temporal de tu cuenta",
+        "emailType": "text",
+        "message": "={{ 'Tu cuenta de SONAR ha sido suspendida hasta ' + $json.suspendedUntil + '. La resena ' + $json.reviewId + ' fue eliminada. Motivo: ' + $json.reason + '\\nResponde a este correo si deseas solicitar una revision.' }}",
+        "options": {
+          "appendAttribution": false
+        }
+      },
+      "credentials": {
+        "gmailOAuth2": {
+          "name": "Gmail administrador SONAR"
+        }
+      }
+    },
+    {
+      "id": "agent-8",
+      "name": "Confirmar aviso enviado",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1440,
+        300
+      ],
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $('Configuracion').first().json.apiBase + '/admin/moderation/notifications/' + encodeURIComponent($('Validar avisos').item.json.id) + '/sent' }}",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ {messageId:$json.id} }}",
+        "options": {
+          "timeout": 30000
+        }
+      },
+      "credentials": {
+        "httpHeaderAuth": {
+          "name": "SONAR agente servidor"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Ejecutar manualmente": {
+      "main": [
+        [
+          {
+            "node": "Configuracion",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Revisar cada minuto": {
+      "main": [
+        [
+          {
+            "node": "Configuracion",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Configuracion": {
+      "main": [
+        [
+          {
+            "node": "Agente buscar leer y moderar",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Agente buscar leer y moderar": {
+      "main": [
+        [
+          {
+            "node": "Buscar avisos pendientes",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Buscar avisos pendientes": {
+      "main": [
+        [
+          {
+            "node": "Validar avisos",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Validar avisos": {
+      "main": [
+        [
+          {
+            "node": "Gmail administrador",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Gmail administrador": {
+      "main": [
+        [
+          {
+            "node": "Confirmar aviso enviado",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "pinData": {},
+  "tags": []
+}

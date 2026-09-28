@@ -11,12 +11,14 @@ export async function apiRequest(endpoint, options = {}) {
   let response
   try { response = await fetch(`${API_BASE_URL}${path}`, {
     ...options,
+    credentials: 'include',
     headers,
   }) } catch (cause) { throw new Error('Se perdió la conexión con la API. Comprueba que npm run api esté activo y vuelve a intentar.', { cause }) }
 
   if (!response.ok) {
+    const detail = await response.json().catch(() => null)
     throw new Error(
-      `Error HTTP ${response.status}${response.statusText ? ` (${response.statusText})` : ''}: ${options.method || 'GET'} ${path}`,
+      detail?.error || `Error HTTP ${response.status}${response.statusText ? ` (${response.statusText})` : ''}: ${options.method || 'GET'} ${path}`,
     )
   }
 
@@ -156,10 +158,11 @@ export function getPendingReviews() {
 export async function createReview(review) {
   const author = await apiRequest(`/users/${encodeURIComponent(review.userId)}`)
   if (userStatus(author) !== 'active') throw new Error('Tu cuenta tiene una sanción activa y no puede publicar reseñas.')
-  return apiRequest('/reviews', {
+  const savedReview = await apiRequest('/reviews', {
     method: 'POST',
     body: JSON.stringify({ ...review, userName: author.username, status: 'pending_moderation', createdAt: review.createdAt || new Date().toISOString() }),
   })
+  return savedReview
 }
 
 export async function updateReview(reviewId, changes) {

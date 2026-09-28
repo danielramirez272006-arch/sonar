@@ -10356,6 +10356,43 @@
         "Audiófilo Inicial"
       ],
       "createdAt": "2026-09-25T14:18:55.379Z"
+    },
+    {
+      "id": "user-1790369099893",
+      "username": "luis_418",
+      "email": "lmendezpozo@gmail.com",
+      "password": "sha256$f5f96a2b25100a346ea8b19d3fe39b08$529c6a4cafb20cc7a63884bfe0a2952f35b3dd5bf7ee545f0cfe3350b851f4d9",
+      "role": "user",
+      "accountType": "standard",
+      "parentalControl": {
+        "enabled": false,
+        "blockExplicit": false,
+        "pin": "1234"
+      },
+      "avatarUrl": "",
+      "avatarBg": "#B80C09",
+      "bio": "Nuevo melómano explorando vinilos y texturas acústicas en Sonar.",
+      "stats": {
+        "savedAlbums": 0,
+        "reviewsCount": 0,
+        "followers": 0,
+        "following": 0
+      },
+      "preferences": [
+        "Art Rock",
+        "Electrónica",
+        "Psicodelia"
+      ],
+      "gear": {
+        "headphones": "Auriculares de referencia",
+        "turntable": "Tocadiscos Direct Drive",
+        "favoriteFormat": "Vinilo 33⅓ RPM"
+      },
+      "badges": [
+        "Melómano Verificado",
+        "Audiófilo Inicial"
+      ],
+      "createdAt": "2026-09-25T20:44:59.893Z"
     }
   ],
   "reviews": [
@@ -10497,6 +10534,60 @@
       "aiFlagged": false,
       "createdAt": "2026-09-25T14:20:21.317Z",
       "id": "p8vjNC2"
+    },
+    {
+      "userId": "1",
+      "userName": "Mateo Rivae",
+      "albumId": "14880659",
+      "albumTitle": "In Rainbows",
+      "parentAlbum": "In Rainbows",
+      "type": "album",
+      "trackTitle": "",
+      "artist": "Radiohead",
+      "cover": "https://cdn-images.dzcdn.net/images/cover/a175af9b7d329bc678cb4d26fc13d6de/1000x1000-000000-80-0-0.jpg",
+      "rating": 3,
+      "content": "puta culo teta",
+      "hasSpoilers": false,
+      "status": "pending_moderation",
+      "aiFlagged": false,
+      "createdAt": "2026-09-25T21:27:42.193Z",
+      "id": "LDNbu6V"
+    },
+    {
+      "userId": "1",
+      "userName": "Mateo Rivae",
+      "albumId": "14880659",
+      "albumTitle": "In Rainbows",
+      "parentAlbum": "In Rainbows",
+      "type": "album",
+      "trackTitle": "",
+      "artist": "Radiohead",
+      "cover": "https://cdn-images.dzcdn.net/images/cover/a175af9b7d329bc678cb4d26fc13d6de/1000x1000-000000-80-0-0.jpg",
+      "rating": 4,
+      "content": "puta culo teta",
+      "hasSpoilers": false,
+      "status": "pending_moderation",
+      "aiFlagged": false,
+      "createdAt": "2026-09-25T21:34:03.084Z",
+      "id": "Js7J8AV"
+    },
+    {
+      "userId": "1",
+      "userName": "Mateo Rivae",
+      "albumId": "14880659",
+      "albumTitle": "In Rainbows",
+      "parentAlbum": "In Rainbows",
+      "type": "album",
+      "trackTitle": "",
+      "artist": "Radiohead",
+      "cover": "https://cdn-images.dzcdn.net/images/cover/a175af9b7d329bc678cb4d26fc13d6de/1000x1000-000000-80-0-0.jpg",
+      "rating": 5,
+      "content": "eres puto",
+      "hasSpoilers": false,
+      "status": "pending_moderation",
+      "aiFlagged": false,
+      "createdAt": "2026-09-25T21:37:07.350Z",
+      "id": "quLzInF"
     }
   ],
   "featuredReleases": [

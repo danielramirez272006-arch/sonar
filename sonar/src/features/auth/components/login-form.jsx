@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next';
 import { useLanguage } from '../../../shared/context/language-context';
 import { GoogleIcon } from './social-provider-icon';
 import { RotatingReview } from './rotating-review';
-import { useGoogleLogin } from '@react-oauth/google';
+import { useSafeGoogleLogin } from '../../../shared/hooks/use-safe-google-login';
 
 const EditorialPanel = () => (
   <aside className="auth-editorial" aria-label="Comunidad editorial de audio">
@@ -42,9 +42,7 @@ export const LoginForm = () => {
     }
   };
 
-  let handleGoogleLogin = () => {};
-  try {
-    handleGoogleLogin = useGoogleLogin({
+  const handleGoogleLogin = useSafeGoogleLogin({
       onSuccess: async (tokenResponse) => {
         setGoogleLoading(true);
         setMessage('');
@@ -77,9 +75,6 @@ export const LoginForm = () => {
       },
       flow: 'implicit',
     });
-  } catch {
-    handleGoogleLogin = () => {};
-  }
 
   const activeError = message || authError;
   const isAnyLoading = isLoading || googleLoading;
