@@ -10728,9 +10728,14 @@
       "content": "negro  que coma pollo",
       "hasSpoilers": false,
       "status": "pending_moderation",
-      "aiFlagged": false,
+      "aiFlagged": true,
       "createdAt": "2026-09-28T15:02:21.457Z",
-      "id": "1pqb_2s"
+      "id": "1pqb_2s",
+      "moderationReason": "Expresión despectiva y discriminatoria detectada por Agente IA.",
+      "severity": "high",
+      "flaggedWords": [
+        "negro"
+      ]
     },
     {
       "userId": "user-1790116484490",
@@ -10764,9 +10769,15 @@
       "content": "puta caca",
       "hasSpoilers": false,
       "status": "pending_moderation",
-      "aiFlagged": false,
+      "aiFlagged": true,
       "createdAt": "2026-09-28T15:11:02.147Z",
-      "id": "LB_XK94"
+      "id": "LB_XK94",
+      "moderationReason": "Lenguaje vulgar y ofensivo detectado por Agente IA.",
+      "severity": "high",
+      "flaggedWords": [
+        "puta",
+        "caca"
+      ]
     },
     {
       "userId": "user-1790116484490",
@@ -10782,9 +10793,17 @@
       "content": "malparido hijueputa ojala se muera  estupido idiota",
       "hasSpoilers": false,
       "status": "pending_moderation",
-      "aiFlagged": false,
+      "aiFlagged": true,
       "createdAt": "2026-09-28T15:14:07.691Z",
-      "id": "xkglvmU"
+      "id": "xkglvmU",
+      "moderationReason": "La reseña contiene insultos graves, lenguaje soez y agresión verbal detectada por Agente Gemini.",
+      "severity": "high",
+      "flaggedWords": [
+        "malparido",
+        "hijueputa",
+        "estupido",
+        "idiota"
+      ]
     },
     {
       "userId": "user-1790116484490",
@@ -10821,6 +10840,24 @@
       "aiFlagged": false,
       "createdAt": "2026-09-28T15:25:49.956Z",
       "id": "OZrG4AO"
+    },
+    {
+      "userId": "user-1790116484490",
+      "userName": "danielramirez272006@gmail.com",
+      "albumId": "9896728",
+      "albumTitle": "To Pimp a Butterfly",
+      "parentAlbum": "To Pimp a Butterfly",
+      "type": "album",
+      "trackTitle": "",
+      "artist": "Kendrick Lamar",
+      "cover": "https://cdn-images.dzcdn.net/images/cover/00dd0da365a94b1829302d6b7fec70e6/500x500-000000-80-0-0.jpg",
+      "rating": 2,
+      "content": "juemadre",
+      "hasSpoilers": false,
+      "status": "pending_moderation",
+      "aiFlagged": false,
+      "createdAt": "2026-09-28T15:33:52.798Z",
+      "id": "wd1CKge"
     }
   ],
   "featuredReleases": [
