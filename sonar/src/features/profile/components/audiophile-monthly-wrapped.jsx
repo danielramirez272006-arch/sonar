@@ -2,6 +2,7 @@ import { useUIText } from '../../../shared/i18n/use-ui-text.js';
 import React, { useState, useRef, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Avatar } from '../../../shared/components/ui/avatar';
+import { avatarPropsFor } from '../../../shared/components/ui/avatar-props';
 
 /**
  * AudiophileMonthlyWrapped & Credencial Compartible
@@ -389,8 +390,7 @@ export const AudiophileMonthlyWrapped = ({
           <div className="flex items-center gap-5 z-10">
             <div className="relative shrink-0">
               <Avatar
-                src={user?.avatarUrl}
-                name={user?.name || user?.username || 'U'}
+                {...avatarPropsFor(user)}
                 size="xl"
                 frame={equippedFrame}
               />

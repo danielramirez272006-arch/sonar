@@ -5,6 +5,7 @@ import Navbar from '../../shared/components/layout/navbar';
 import Footer from '../../shared/components/layout/footer';
 import ProfileHeader from '../../features/profile/components/profile-header';
 import { Avatar } from '../../shared/components/ui/avatar';
+import { avatarPropsFor } from '../../shared/components/ui/avatar-props';
 import { useAuth } from '../../shared/context/auth-context';
 import { usePlayer } from '../../shared/context/player-context';
 import { useLanguage } from '../../shared/context/language-context';
@@ -1232,9 +1233,7 @@ export const UserDashboardPage = () => {
                       >
                         <div className="flex items-center gap-3 min-w-0">
                           <Avatar
-                            src={profile?.avatarUrl}
-                            name={displayName}
-                            avatarBg={profile?.avatarBg || '#B80C09'}
+                            {...avatarPropsFor(profile, { avatarBg: profile?.avatarBg || '#B80C09' })}
                             size="md"
                             className="w-11 h-11 shrink-0 rounded-full shadow-xs"
                           />

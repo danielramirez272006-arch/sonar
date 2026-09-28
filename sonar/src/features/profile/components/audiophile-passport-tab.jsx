@@ -2,7 +2,7 @@ import { useUIText } from '../../../shared/i18n/use-ui-text.js';
 import React, { useState, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Avatar } from '../../../shared/components/ui/avatar';
-import { BlobatarAvatar } from '../../../shared/components/ui/blobatar-avatar';
+import { avatarPropsFor } from '../../../shared/components/ui/avatar-props';
 import { useLanguage } from '../../../shared/context/language-context';
 import AudiophileMonthlyWrapped from './audiophile-monthly-wrapped';
 import AudiophileQuests from './audiophile-quests';
@@ -188,18 +188,16 @@ export const AudiophilePassportTab = ({
           <div className="flex flex-col sm:flex-row items-center sm:items-start gap-6">
             <div className="relative shrink-0">
               <div className="p-1 rounded-2xl bg-gradient-to-tr from-[#B80C09] via-white/30 to-[#003844] shadow-lg">
-                {user?.avatarUrl ? (
-                  <Avatar
-                    src={user.avatarUrl}
-                    name={user?.name || 'Usuario'}
-                    size="xl"
-                    className="w-24 h-24 sm:w-28 sm:h-28 rounded-xl object-cover"
-                  />
-                ) : (
-                  <div className="w-24 h-24 sm:w-28 sm:h-28 rounded-xl bg-[#4B2840] flex items-center justify-center overflow-hidden">
-                    <BlobatarAvatar name={user?.name || 'Audiófilo'} size={96} active={true} />
-                  </div>
-                )}
+                {/* Avatar decide solo: foto si la hay, si no el blobatar con el
+                    seed y el color del usuario. Antes eran dos ramas y median
+                    72px y 96px, y solo una respetaba la configuracion.
+                    Sin gaze a proposito: con los ojos siguiendo al puntero la
+                    cara se ve distinta a la del perfil de arriba. */}
+                <Avatar
+                  {...avatarPropsFor(user)}
+                  size="2xl"
+                  className="w-24 h-24 sm:w-28 sm:h-28"
+                />
               </div>
               <div className="absolute -bottom-2 -right-2 px-2.5 py-0.5 rounded-full bg-[#B80C09] text-white text-[10px] font-black tracking-widest uppercase border border-white/20 shadow-md">
                 HI-FI PRO
