@@ -1100,7 +1100,6 @@ export const RewardsStoreTab = () => {
                         <span className="material-symbols-outlined text-sm">visibility</span>
                       </button>
                     </div>
-                    </div>
                   </div>
 
                   <h4 className="text-base font-bold text-white group-hover:text-amber-300 transition-colors">
