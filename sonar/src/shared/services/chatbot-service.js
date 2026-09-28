@@ -8,6 +8,8 @@ const N8N_CHATBOT_URL =
 
 const DEFAULT_ENDPOINTS = [
   N8N_CHATBOT_URL,
+  '/api/n8n/webhook/sonar-chatbot',
+  '/api/n8n/webhook-test/sonar-chatbot',
   'http://localhost:5678/webhook/sonar-chatbot',
   'http://localhost:5678/webhook-test/sonar-chatbot',
 ].filter(Boolean)

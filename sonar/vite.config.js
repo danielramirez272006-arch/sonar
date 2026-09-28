@@ -10,7 +10,18 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url))
 export default defineConfig({
   plugins: [react(), tailwindcss()],
   preview: {
-    proxy: { '/api/catalog': { target: 'http://localhost:3001', changeOrigin: true, rewrite: path => path.replace(/^\/api\/catalog/, '') } },
+    proxy: {
+      '/api/catalog': {
+        target: 'http://localhost:3001',
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/api\/catalog/, ''),
+      },
+      '/api/n8n': {
+        target: 'http://localhost:5678',
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/api\/n8n/, ''),
+      },
+    },
   },
   resolve: {
     alias: {
@@ -33,6 +44,11 @@ export default defineConfig({
         target: 'https://api.deezer.com',
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/api\/deezer/, ''),
+      },
+      '/api/n8n': {
+        target: 'http://localhost:5678',
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/api\/n8n/, ''),
       },
     },
   },
