@@ -60,7 +60,12 @@ function createApp({ filename = path.join(__dirname,'../db.json'), env = process
       const p = await response.json();
       if (!response.ok || p.aud !== env.GOOGLE_CLIENT_ID || !['accounts.google.com','https://accounts.google.com'].includes(p.iss) || Number(p.exp)*1000 <= Date.now() || ![true,'true'].includes(p.email_verified)) return res.status(401).json({error:'Credencial Google inválida'});
       let u = db.getState().users.find(u => u.email?.toLowerCase() === p.email.toLowerCase());
-      if (!u) { u={id:randomBytes(16).toString('hex'),email:p.email.toLowerCase(),username:p.name || 'Usuario',role:'user',provider:'google',googleId:p.sub,avatarUrl:p.picture,status:'active',createdAt:new Date().toISOString()}; db.get('users').push(u).write(); }
+      if (!u) {
+        u={id:randomBytes(16).toString('hex'),email:p.email.toLowerCase(),username:p.name || 'Usuario',role:'user',provider:'google',googleId:p.sub,avatarUrl:p.picture,status:'active',createdAt:new Date().toISOString()};
+        // Mismos campos que acepta POST /users, y solo al crear la cuenta.
+        for (const field of ['avatarBg','bio','gear','preferences','accountType','parentalControl']) if (req.body.profile?.[field] !== undefined) u[field]=req.body.profile[field];
+        db.get('users').push(u).write();
+      }
       if (blocked(u)) return res.status(403).json({error:'Cuenta suspendida o baneada'});
       res.json(establish(res,u));
     } catch { res.status(502).json({error:'No se pudo validar Google'}); }

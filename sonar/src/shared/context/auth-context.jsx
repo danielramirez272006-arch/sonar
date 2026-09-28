@@ -125,16 +125,16 @@ export function AuthProvider({ children }) {
     }
 
     /**
-     * Inicia sesión con el token de credencial que entrega Google después del
+     * Inicia sesión con el ID token que entrega Google después del
      * consentimiento OAuth. Busca al usuario por email; si no existe, lo crea
      * automáticamente con los datos de perfil de Google.
      */
-    async function loginWithGoogle(credential) {
+    async function loginWithGoogle(credential, profile) {
       authRevision.current++
       setIsLoading(true)
       setError(null)
       try {
-        const foundUser = await apiRequest('/auth/google', { method: 'POST', body: JSON.stringify({ credential }) })
+        const foundUser = await apiRequest('/auth/google', { method: 'POST', body: JSON.stringify({ credential, profile }) })
 
         setUser(foundUser)
         try {

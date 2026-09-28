@@ -4,16 +4,23 @@ import { ArrowRight, Check, Eye, EyeOff, Headphones, Music2, Sparkles, User, Dis
 import { useAuth } from '../../../shared/context/auth-context';
 import { useTranslation } from 'react-i18next';
 import { useLanguage } from '../../../shared/context/language-context';
-import { GoogleIcon } from './social-provider-icon';
 import { RotatingReview } from './rotating-review';
 import { GENRE_OPTIONS } from '../../../shared/services/recommendations-service';
 import { requestRegisterOtpWebhook } from '../../../shared/services/n8n-webhooks';
 import { getUserByEmail } from '../../../shared/services/api-client';
-<<<<<<< HEAD
-import { useSafeGoogleLogin } from '../../../shared/hooks/use-safe-google-login';
-=======
-import { GoogleOAuthProvider, useGoogleLogin } from '@react-oauth/google';
->>>>>>> a62825a6f441b827d99bc12505e1fc265c90cfae
+import { GoogleSignInButton } from './google-signin-button';
+
+// El ID token lo firma Google y el servidor es quien lo valida. Aqui solo se
+// lee el email para avisar de que la cuenta ya existe antes de dar el alta.
+function readTokenEmail(idToken) {
+  try {
+    const part = String(idToken).split('.')[1].replace(/-/g, '+').replace(/_/g, '/');
+    const payload = JSON.parse(atob(part.padEnd(Math.ceil(part.length / 4) * 4, '=')));
+    return typeof payload.email === 'string' ? payload.email.trim().toLowerCase() : null;
+  } catch {
+    return null;
+  }
+}
 
 const AVATAR_PALETTES = [
   { color: '#B80C09', label: 'Carmesí Vinilo' },
@@ -59,7 +66,7 @@ const EditorialPanel = () => { const ui = useUIText(); return (<aside className=
 
 const RegisterFormContent = () => {
   const ui = useUIText();
-  const { register, isLoading } = useAuth();
+  const { register, loginWithGoogle, isLoading } = useAuth();
   const { t } = useTranslation();
   const [step, setStep] = useState('info'); // 'info' | 'otp' | 'password'
   const [formData, setFormData] = useState({
@@ -92,6 +99,7 @@ const RegisterFormContent = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
+  const [googleLoading, setGoogleLoading] = useState(false);
   const [newsletter, setNewsletter] = useState(true);
   const [acceptedTerms, setAcceptedTerms] = useState(false);
 
@@ -258,58 +266,36 @@ const RegisterFormContent = () => {
    * Si el correo ya existe en la BD, redirige a login (#login).
    * Si es nuevo, redirige a la página de usuario (#usuario).
    */
-<<<<<<< HEAD
-  const handleGoogleRegister = useSafeGoogleLogin({
-    onSuccess: async (tokenResponse) => {
-      setErrorMessage('');
-=======
-  const handleGoogleRegister = useGoogleLogin({
-      onSuccess: async (tokenResponse) => {
-        setErrorMessage('');
->>>>>>> a62825a6f441b827d99bc12505e1fc265c90cfae
-      try {
-        const res = await fetch('https://www.googleapis.com/oauth2/v3/userinfo', {
-          headers: { Authorization: `Bearer ${tokenResponse.access_token}` },
-        });
-        if (!res.ok) throw new Error('No se pudo obtener el perfil de Google.');
-        const googleUser = await res.json();
-
-        // Verificar si el correo ya está registrado
+  const handleGoogleCredential = async (credential) => {
+    setErrorMessage('');
+    setGoogleLoading(true);
+    try {
+      const email = readTokenEmail(credential);
+      if (email) {
         let existing = null;
-        try { existing = await getUserByEmail(googleUser.email.trim().toLowerCase()); } catch { /* fallback */ }
-        if (existing) {
-          window.location.hash = '#login';
-          return;
-        }
-
-        // Registrar nuevo usuario con datos de Google
-        const suffix = Math.floor(Math.random() * 999);
-        await register({
-          username: (googleUser.given_name || 'audiofilo').toLowerCase().replace(/\s+/g, '_') + '_' + suffix,
-          email: googleUser.email,
-          password: `google_oauth_${Date.now()}`,
-          avatarBg: formData.avatarBg,
-          preferences: formData.preferences,
-          accountType: formData.accountType,
-          isJunior: formData.accountType === 'junior',
-          parentalControl: {
-            enabled: formData.accountType === 'junior',
-            blockExplicit: formData.accountType === 'junior',
-            pin: formData.parentalPin || '1234',
-          },
-        });
-        window.location.hash = '#usuario';
-      } catch (err) {
-        setErrorMessage(err.message || 'No se pudo conectar con Google.');
+        try { existing = await getUserByEmail(email); } catch { /* decide el servidor */ }
+        if (existing) { window.location.hash = '#login'; return; }
       }
-    },
-    onError: () => setErrorMessage('No se pudo conectar con Google. Intenta de nuevo.'),
-    flow: 'implicit',
-  });
-<<<<<<< HEAD
-=======
-
->>>>>>> a62825a6f441b827d99bc12505e1fc265c90cfae
+      const pin = formData.parentalPin && formData.parentalPin.trim().length === 4
+        ? formData.parentalPin.trim()
+        : '1234';
+      const account = await loginWithGoogle(credential, {
+        avatarBg: formData.avatarBg,
+        preferences: formData.preferences,
+        accountType: formData.accountType,
+        parentalControl: {
+          enabled: formData.accountType === 'junior',
+          blockExplicit: formData.accountType === 'junior',
+          pin,
+        },
+      });
+      window.location.hash = account.role === 'admin' ? '#admin' : '#usuario';
+    } catch (err) {
+      setErrorMessage(err.message || 'No se pudo conectar con Google.');
+    } finally {
+      setGoogleLoading(false);
+    }
+  };
 
   return (
     <div className="auth-shell">
@@ -374,17 +360,13 @@ const RegisterFormContent = () => {
           {step === 'info' && (
             <>
               <div className="auth-socials" aria-label={ui("Registro con servicios externos")}>
-                <button
+                <GoogleSignInButton
                   id="google-register-btn"
-                  type="button"
-                  onClick={() => handleGoogleRegister()}
-                  disabled={isLoading}
-                  className="auth-google-btn"
-                  aria-label={t('auth.google_login')}
-                >
-                  <GoogleIcon />
-                  {t('auth.google_login')}
-                </button>
+                  label={t('auth.google_login')}
+                  disabled={isLoading || googleLoading}
+                  onCredential={handleGoogleCredential}
+                  onError={() => setErrorMessage('No se pudo conectar con Google. Intenta de nuevo.')}
+                />
               </div>
 
               <p className="auth-divider">
@@ -899,10 +881,6 @@ const RegisterFormContent = () => {
   );
 };
 
-export const RegisterForm = () => (
-  <GoogleOAuthProvider clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID || ''}>
-    <RegisterFormContent />
-  </GoogleOAuthProvider>
-);
+export const RegisterForm = () => <RegisterFormContent />;
 
 export default RegisterForm;
