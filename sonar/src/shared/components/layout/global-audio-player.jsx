@@ -264,71 +264,41 @@ export const GlobalAudioPlayer = () => {
             transition={{ type: 'spring', stiffness: 350, damping: 28 }}
             className={`fixed bottom-4 sm:bottom-6 left-3 sm:left-6 z-50 w-[calc(100%-1.5rem)] sm:w-[600px] md:w-[680px] max-w-[720px] flex flex-col gap-2.5 p-3 sm:p-4 select-none backdrop-blur-2xl transition-all duration-300 ${
               equippedSkin === 'skin-vu-meter'
-                ? 'ring-2 ring-amber-500/40 shadow-[0_0_30px_rgba(245,158,11,0.25)]'
+                ? 'ring-2 ring-[#B80C09]/40 shadow-[0_0_30px_rgba(184,12,9,0.25)]'
                 : equippedSkin === 'skin-cassette'
-                ? 'ring-2 ring-rose-500/40 shadow-[0_0_30px_rgba(244,63,94,0.25)]'
+                ? 'ring-2 ring-[#B80C09]/40 shadow-[0_0_30px_rgba(184,12,9,0.25)]'
                 : equippedSkin === 'skin-vinyl-turntable'
-                ? 'ring-2 ring-yellow-600/50 shadow-[0_0_35px_rgba(202,138,4,0.3)]'
+                ? 'ring-2 ring-[#4B2840]/70 shadow-[0_0_35px_rgba(75,40,64,0.3)]'
                 : equippedSkin === 'skin-tube-glow'
-                ? 'ring-2 ring-orange-500/50 shadow-[0_0_35px_rgba(249,115,22,0.35)]'
+                ? 'ring-2 ring-[#003844]/60 shadow-[0_0_35px_rgba(0,56,68,0.35)]'
                 : ''
             }`}
             style={{
               backgroundColor: equippedSkin === 'skin-vu-meter'
-                ? 'rgba(28, 18, 12, 0.96)'
+                ? 'rgba(35, 17, 35, 0.96)'
                 : equippedSkin === 'skin-tube-glow'
-                ? 'rgba(30, 15, 10, 0.96)'
+                ? 'rgba(35, 17, 35, 0.96)'
                 : equippedSkin === 'skin-vinyl-turntable'
-                ? 'rgba(18, 18, 20, 0.97)'
+                ? 'rgba(35, 17, 35, 0.97)'
                 : 'rgba(35, 17, 35, 0.94)',
               color: '#DCDCDD',
               borderRadius: '24px',
               border: equippedSkin === 'skin-vu-meter' || equippedSkin === 'skin-tube-glow'
-                ? '1px solid rgba(245, 158, 11, 0.4)'
+                ? '1px solid rgba(184, 12, 9, 0.4)'
                 : equippedSkin === 'skin-vinyl-turntable'
-                ? '1px solid rgba(202, 138, 4, 0.4)'
+                ? '1px solid rgba(75, 40, 64, 0.7)'
                 : '1px solid rgba(75, 40, 64, 0.7)',
               boxShadow: '0 24px 60px -12px rgba(0, 0, 0, 0.85), 0 0 25px rgba(184, 12, 9, 0.18), inset 0 1px 0 rgba(220, 220, 221, 0.12)',
             }}
           >
-            {/* Skin VU Meter Analógico */}
-            {equippedSkin === 'skin-vu-meter' && (
-              <div className="flex items-center justify-between gap-3 px-3 py-1.5 rounded-xl bg-amber-950/60 border border-amber-500/30 text-amber-300 text-[10px] font-mono shadow-inner">
-                <span className="flex items-center gap-1 font-bold shrink-0">
-                  <span className="material-symbols-outlined text-[13px] text-amber-400">speed</span>
-                  <span>VU L</span>
-                </span>
-                <div className="flex-1 h-2 bg-black/70 rounded-full overflow-hidden flex items-center p-0.5 border border-amber-500/20">
-                  <motion.div
-                    animate={{ width: isPlaying ? ['25%', '85%', '45%', '92%', '35%'] : '8%' }}
-                    transition={{ repeat: Infinity, duration: 0.7, ease: 'easeInOut' }}
-                    className="h-full bg-gradient-to-r from-emerald-500 via-amber-400 to-rose-500 rounded-full"
-                  />
-                </div>
-                <span className="flex items-center gap-1 font-bold shrink-0">
-                  <span>VU R</span>
-                </span>
-                <div className="flex-1 h-2 bg-black/70 rounded-full overflow-hidden flex items-center p-0.5 border border-amber-500/20">
-                  <motion.div
-                    animate={{ width: isPlaying ? ['35%', '90%', '55%', '78%', '48%'] : '8%' }}
-                    transition={{ repeat: Infinity, duration: 0.65, ease: 'easeInOut' }}
-                    className="h-full bg-gradient-to-r from-emerald-500 via-amber-400 to-rose-500 rounded-full"
-                  />
-                </div>
-                <span className="text-[9px] font-black uppercase text-amber-400/90 tracking-wider">
-                  Skin VU Meter
-                </span>
-              </div>
-            )}
-
             {/* Skin Cassette 1984 */}
             {equippedSkin === 'skin-cassette' && (
-              <div className="flex items-center justify-between gap-3 px-3 py-1.5 rounded-xl bg-rose-950/60 border border-rose-500/30 text-rose-200 text-[10px] font-mono shadow-inner">
+              <div className="flex items-center justify-between gap-3 px-3 py-1.5 rounded-xl bg-[#231123] border border-[#4B2840] text-[#DCDCDD] text-[10px] font-mono shadow-inner">
                 <div className="flex items-center gap-2">
                   <motion.div
                     animate={{ rotate: isPlaying ? 360 : 0 }}
                     transition={{ repeat: Infinity, duration: 2, ease: 'linear' }}
-                    className="w-4 h-4 rounded-full border border-dashed border-rose-300 flex items-center justify-center text-[9px] font-bold text-rose-300"
+                    className="w-4 h-4 rounded-full border border-dashed border-[#B80C09] flex items-center justify-center text-[9px] font-bold text-[#DCDCDD]"
                   >
                     ⚙
                   </motion.div>
@@ -336,15 +306,15 @@ export const GlobalAudioPlayer = () => {
                   <motion.div
                     animate={{ rotate: isPlaying ? 360 : 0 }}
                     transition={{ repeat: Infinity, duration: 2, ease: 'linear' }}
-                    className="w-4 h-4 rounded-full border border-dashed border-rose-300 flex items-center justify-center text-[9px] font-bold text-rose-300"
+                    className="w-4 h-4 rounded-full border border-dashed border-[#B80C09] flex items-center justify-center text-[9px] font-bold text-[#DCDCDD]"
                   >
                     ⚙
                   </motion.div>
                 </div>
-                <span className="text-[10px] font-bold text-rose-200 tracking-widest font-mono">
+                <span className="text-[10px] font-bold text-[#DCDCDD] tracking-widest font-mono">
                   TAPE COUNTER #{Math.floor(currentTime * 10).toString().padStart(4, '0')}
                 </span>
-                <span className="text-[9px] font-black uppercase text-rose-300/90 tracking-wider">
+                <span className="text-[9px] font-black uppercase text-[#B80C09] tracking-wider">
                   Cassette 1984
                 </span>
               </div>
@@ -352,38 +322,38 @@ export const GlobalAudioPlayer = () => {
 
             {/* Skin Tornamesa Direct Drive 33/45 RPM */}
             {equippedSkin === 'skin-vinyl-turntable' && (
-              <div className="flex items-center justify-between gap-3 px-3 py-1.5 rounded-xl bg-zinc-950/80 border border-amber-500/30 text-amber-200 text-[10px] font-mono shadow-inner">
+              <div className="flex items-center justify-between gap-3 px-3 py-1.5 rounded-xl bg-[#231123] border border-[#4B2840] text-[#DCDCDD] text-[10px] font-mono shadow-inner">
                 <div className="flex items-center gap-2">
                   <motion.div
                     animate={{ rotate: isPlaying ? 360 : 0 }}
                     transition={{ repeat: Infinity, duration: 1.8, ease: 'linear' }}
-                    className="w-5 h-5 rounded-full bg-zinc-900 border-2 border-amber-400 flex items-center justify-center text-[8px] font-mono shadow-md text-amber-300"
+                    className="w-5 h-5 rounded-full bg-[#231123] border-2 border-[#B80C09] flex items-center justify-center text-[8px] font-mono shadow-md text-[#DCDCDD]"
                   >
                     ◎
                   </motion.div>
-                  <span className="text-[10px] font-bold text-amber-300 uppercase tracking-widest">
+                  <span className="text-[10px] font-bold text-[#B80C09] uppercase tracking-widest">
                     33 ⅓ RPM · Strobe Lock
                   </span>
                 </div>
-                <span className="text-[9px] font-black uppercase text-amber-400/90 tracking-wider flex items-center gap-1">
-                  <span className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-ping" />{ui("Tornamesa Direct Drive")}</span>
+                <span className="text-[9px] font-black uppercase text-[#B80C09] tracking-wider flex items-center gap-1">
+                  <span className="w-1.5 h-1.5 rounded-full bg-[#B80C09] animate-ping" />{ui("Tornamesa Direct Drive")}</span>
               </div>
             )}
 
             {/* Skin Bulbos Valvulares Hi-End */}
             {equippedSkin === 'skin-tube-glow' && (
-              <div className="flex items-center justify-between gap-3 px-3 py-1.5 rounded-xl bg-orange-950/70 border border-orange-500/40 text-orange-200 text-[10px] font-mono shadow-inner">
+              <div className="flex items-center justify-between gap-3 px-3 py-1.5 rounded-xl bg-[#231123] border border-[#4B2840] text-[#DCDCDD] text-[10px] font-mono shadow-inner">
                 <div className="flex items-center gap-2">
                   <motion.span
                     animate={{ opacity: isPlaying ? [0.7, 1, 0.85, 1] : 0.4 }}
                     transition={{ repeat: Infinity, duration: 1.2, ease: 'easeInOut' }}
-                    className="text-orange-400 text-sm"
+                    className="text-[#B80C09] text-sm"
                   >
                     💡
                   </motion.span>
-                  <span className="text-[10px] font-bold text-orange-300 uppercase tracking-wider">{ui("Termoiónico 12AX7 · Saturación Clase A")}</span>
+                  <span className="text-[10px] font-bold text-[#DCDCDD] uppercase tracking-wider">{ui("Termoiónico 12AX7 · Saturación Clase A")}</span>
                 </div>
-                <span className="text-[9px] font-black uppercase text-orange-400 tracking-wider">{ui("Bulbos Valvulares")}</span>
+                <span className="text-[9px] font-black uppercase text-[#B80C09] tracking-wider">{ui("Bulbos Valvulares")}</span>
               </div>
             )}
             {/* Barra de progreso interactiva superior con degradado oficial */}
@@ -402,7 +372,7 @@ export const GlobalAudioPlayer = () => {
                 className="h-full rounded-full transition-all duration-100 relative"
                 style={{
                   width: `${progressPercent}%`,
-                  background: 'linear-gradient(90deg, #003844 0%, #4B2840 35%, #B80C09 80%, #ff4d4a 100%)',
+                  background: 'linear-gradient(90deg, #003844 0%, #4B2840 35%, #B80C09 100%)',
                 }}
               />
             </div>
@@ -454,7 +424,7 @@ export const GlobalAudioPlayer = () => {
                     </span>
                     {isExplicitTrack(currentTrack) && (
                       <span
-                        className="px-1 py-0.2 rounded text-[8px] font-black uppercase tracking-wider bg-[#4B2840] text-rose-300 border border-rose-500/30 shrink-0"
+                        className="px-1 py-0.2 rounded text-[8px] font-black uppercase tracking-wider bg-[#4B2840] text-[#DCDCDD] border border-[#B80C09]/30 shrink-0"
                         title={ui("Contenido Explícito (Explicit Lyrics)")}
                         aria-label={ui("Contenido Explícito")}
                       >
@@ -504,7 +474,7 @@ export const GlobalAudioPlayer = () => {
                       aria-label={isPlaying ? ui("Pausar Podcast") : ui("Reproducir Podcast")}
                       className="w-10 h-10 sm:w-11 sm:h-11 rounded-full text-white flex items-center justify-center shadow-[0_0_20px_rgba(184,12,9,0.45)] cursor-pointer transition-all disabled:opacity-60 border border-white/20"
                       style={{
-                        background: 'linear-gradient(135deg, #B80C09 0%, #850705 100%)',
+                        background: 'linear-gradient(135deg, #B80C09 0%, #4B2840 100%)',
                       }}
                     >
                       {isLoading ? (
@@ -575,7 +545,7 @@ export const GlobalAudioPlayer = () => {
                       }}
                       className={`h-8 px-2.5 rounded-xl border text-[11px] font-bold flex items-center gap-1 cursor-pointer transition-all ${
                         showTranscript
-                          ? 'bg-[#003844] text-white border-[#005769] shadow-[0_0_12px_rgba(0,56,68,0.5)]'
+                          ? 'bg-[#003844] text-white border-[#4B2840] shadow-[0_0_12px_rgba(0,56,68,0.5)]'
                           : 'bg-[#4B2840]/60 hover:bg-[#4B2840] border-white/10 text-[#DCDCDD]'
                       }`}
                       title={ui("Ver Transcripción y Subtítulos Accesibles (CC)")}
@@ -596,7 +566,7 @@ export const GlobalAudioPlayer = () => {
                       }}
                       className={`w-8 h-8 rounded-xl transition-all cursor-pointer flex items-center justify-center border ${
                         isCurrentTrackSaved
-                          ? 'text-[#ff4d4a] bg-[#B80C09]/20 border-rose-500/40 shadow-[0_0_10px_rgba(184,12,9,0.3)]'
+                          ? 'text-[#DCDCDD] bg-[#B80C09]/20 border-[#B80C09]/40 shadow-[0_0_10px_rgba(184,12,9,0.3)]'
                           : 'text-[#DCDCDD]/80 hover:text-[#DCDCDD] bg-[#4B2840]/60 hover:bg-[#4B2840] border-white/10'
                       }`}
                       title={isCurrentTrackSaved ? ui("En tus favoritos") : ui("Guardar en favoritos")}
@@ -643,7 +613,7 @@ export const GlobalAudioPlayer = () => {
                       }}
                       className={`h-8 px-2.5 rounded-xl border text-[11px] font-bold flex items-center gap-1 cursor-pointer transition-all ${
                         showTranscript
-                          ? 'bg-[#003844] text-white border-[#005769] shadow-[0_0_14px_rgba(0,56,68,0.5)]'
+                          ? 'bg-[#003844] text-white border-[#4B2840] shadow-[0_0_14px_rgba(0,56,68,0.5)]'
                           : 'bg-[#4B2840]/60 hover:bg-[#4B2840] border-white/10 text-[#DCDCDD]'
                       }`}
                       title={ui("Ver Letras de la Canción y Transcripción (CC)")}
@@ -664,7 +634,7 @@ export const GlobalAudioPlayer = () => {
                       aria-label={isPlaying ? ui("Pausar") : ui("Reproducir")}
                       className="w-10 h-10 sm:w-11 sm:h-11 rounded-full text-white flex items-center justify-center shadow-[0_0_20px_rgba(184,12,9,0.5)] cursor-pointer transition-all disabled:opacity-60 border border-white/20"
                       style={{
-                        background: 'linear-gradient(135deg, #B80C09 0%, #850705 100%)',
+                        background: 'linear-gradient(135deg, #B80C09 0%, #4B2840 100%)',
                       }}
                     >
                       {isLoading ? (
@@ -684,7 +654,7 @@ export const GlobalAudioPlayer = () => {
                       className="h-8 px-2.5 rounded-xl bg-[#4B2840]/60 hover:bg-[#4B2840] border border-white/10 text-[#DCDCDD] text-[11px] font-bold flex items-center gap-1 cursor-pointer hover:text-white transition-colors"
                       title={ui("Escribir una crítica")}
                     >
-                      <span className="material-symbols-outlined text-[14px] text-rose-400">rate_review</span>
+                    <span className="material-symbols-outlined text-[14px] text-[#B80C09]">rate_review</span>
                       <span className="hidden md:inline">{ui("Criticar")}</span>
                     </motion.button>
                   </>
@@ -717,7 +687,7 @@ export const GlobalAudioPlayer = () => {
                   className="w-full overflow-hidden flex flex-col pt-3 border-t border-white/10 gap-2 text-left"
                 >
                   <div className="flex items-center justify-between">
-                    <span className="text-xs font-black uppercase tracking-wider text-rose-300 flex items-center gap-1.5">
+                    <span className="text-xs font-black uppercase tracking-wider text-[#DCDCDD] flex items-center gap-1.5">
                       <span className="material-symbols-outlined text-[16px]">podcasts</span>
                       <span>{currentTrack.artist || 'Podcast Sonar'}</span>
                     </span>
@@ -753,7 +723,7 @@ export const GlobalAudioPlayer = () => {
                         onClick={() => setDrawerTab('lyrics')}
                         className={`px-2.5 py-1 rounded-lg text-xs font-bold uppercase tracking-wider flex items-center gap-1.5 cursor-pointer transition-colors ${
                           drawerTab === 'lyrics'
-                            ? 'bg-[#003844] text-white border border-[#005769] shadow-xs'
+                            ? 'bg-[#003844] text-white border border-[#4B2840] shadow-xs'
                             : 'text-[#DCDCDD]/80 hover:text-white bg-[#4B2840]/50'
                         }`}
                       >
@@ -766,7 +736,7 @@ export const GlobalAudioPlayer = () => {
                         onClick={() => setDrawerTab('info')}
                         className={`px-2.5 py-1 rounded-lg text-xs font-bold uppercase tracking-wider flex items-center gap-1.5 cursor-pointer transition-colors ${
                           drawerTab === 'info'
-                            ? 'bg-[#003844] text-white border border-[#005769] shadow-xs'
+                            ? 'bg-[#003844] text-white border border-[#4B2840] shadow-xs'
                             : 'text-[#DCDCDD]/80 hover:text-white bg-[#4B2840]/50'
                         }`}
                       >
@@ -827,13 +797,13 @@ export const GlobalAudioPlayer = () => {
                   <div className="p-3.5 rounded-xl bg-[#1b0b1b]/80 border border-[#4B2840]/60 max-h-52 overflow-y-auto space-y-2.5 text-xs leading-relaxed text-[#DCDCDD]">
                     {drawerTab === 'lyrics' ? (
                       isLoadingLyrics ? (
-                        <div className="py-6 flex items-center justify-center gap-2 text-xs text-[#003844] text-cyan-300">
-                          <div className="w-4 h-4 border-2 border-cyan-400 border-t-transparent rounded-full animate-spin" />
+                        <div className="py-6 flex items-center justify-center gap-2 text-xs text-[#DCDCDD]">
+                          <div className="w-4 h-4 border-2 border-[#003844] border-t-transparent rounded-full animate-spin" />
                           <span>{ui("Buscando letras oficiales en base de datos Sonar...")}</span>
                         </div>
                       ) : lyricsData?.instrumental ? (
                         <div className="py-6 flex flex-col items-center justify-center gap-2 text-center text-[#DCDCDD]">
-                          <span className="material-symbols-outlined text-[28px] text-rose-400">music_off</span>
+                          <span className="material-symbols-outlined text-[28px] text-[#B80C09]">music_off</span>
                           <p className="text-sm font-bold text-white">{ui("Pieza Instrumental")}</p>
                           <p className="text-xs text-[#DCDCDD]/80 max-w-sm">
                             {lyricsData.plainLyrics || ui("Esta pista es una composición instrumental pura sin letra vocal registrada.")}
@@ -841,7 +811,7 @@ export const GlobalAudioPlayer = () => {
                         </div>
                       ) : lyricsData?.plainLyrics ? (
                         <div className="space-y-2">
-                          <div className="flex items-center justify-between pb-1 border-b border-white/10 text-[11px] font-mono text-cyan-300 font-bold">
+                          <div className="flex items-center justify-between pb-1 border-b border-white/10 text-[11px] font-mono text-[#DCDCDD] font-bold">
                             <span>{currentTrack.title} — {currentTrack.artist}</span>
                             <span className="text-[9px] uppercase px-1.5 py-0.5 rounded bg-[#003844] text-white font-bold">
                               {lyricsData.source}
@@ -853,7 +823,7 @@ export const GlobalAudioPlayer = () => {
                         </div>
                       ) : (
                         <div className="py-5 text-center space-y-2.5">
-                          <span className="material-symbols-outlined text-[26px] text-cyan-400/80">lyrics</span>
+                          <span className="material-symbols-outlined text-[26px] text-[#003844]">lyrics</span>
                           <div>
                             <p className="text-[#DCDCDD] font-bold text-xs">{ui("Letra no disponible temporalmente")}</p>
                             <p className="text-[11px] text-[#DCDCDD]/60 mt-0.5">
@@ -879,7 +849,7 @@ export const GlobalAudioPlayer = () => {
                                   .catch(() => {})
                                   .finally(() => setIsLoadingLyrics(false));
                               }}
-                              className="px-3 py-1.5 rounded-lg bg-[#003844] hover:bg-[#005769] text-white text-[11px] font-bold flex items-center gap-1 cursor-pointer transition-colors"
+                              className="px-3 py-1.5 rounded-lg bg-[#003844] hover:bg-[#4B2840] text-white text-[11px] font-bold flex items-center gap-1 cursor-pointer transition-colors"
                             >
                               <span className="material-symbols-outlined text-[13px]">refresh</span>
                               <span>{ui("Reintentar Búsqueda")}</span>
@@ -899,7 +869,7 @@ export const GlobalAudioPlayer = () => {
                       )
                     ) : (
                       <div className="space-y-2">
-                        <div className="flex items-center gap-2 font-mono text-[11px] text-cyan-300 font-bold">
+                        <div className="flex items-center gap-2 font-mono text-[11px] text-[#DCDCDD] font-bold">
                           <span className="px-1.5 py-0.5 rounded bg-[#003844]">00:00 - {formatTime(duration || 180)}</span>
                           <span>{currentTrack.title}</span>
                         </div>
@@ -938,7 +908,7 @@ export const GlobalAudioPlayer = () => {
                       <span className="truncate">{ui("Álbum:")} <strong className="text-white">{currentTrack.album || currentTrack.title}</strong>
                       </span>
                     </div>
-                    <span className="text-[10px] uppercase font-black tracking-wider text-rose-300 bg-[#B80C09]/20 px-2 py-0.5 rounded-md shrink-0 border border-[#B80C09]/30">
+                    <span className="text-[10px] uppercase font-black tracking-wider text-[#DCDCDD] bg-[#B80C09]/20 px-2 py-0.5 rounded-md shrink-0 border border-[#B80C09]/30">
                       {albumTracks.length} {albumTracks.length === 1 ? ui("Canción") : ui("Canciones")}
                     </span>
                   </div>
@@ -992,7 +962,7 @@ export const GlobalAudioPlayer = () => {
 
                               <div className="flex flex-col min-w-0">
                                 <div className="flex items-center gap-1.5 overflow-hidden">
-                                  <span className={`text-xs font-bold truncate ${isCurrentSelected ? 'text-rose-300' : 'text-white'}`}>
+                                  <span className={`text-xs font-bold truncate ${isCurrentSelected ? 'text-[#DCDCDD]' : 'text-white'}`}>
                                     {track.title}
                                   </span>
                                   {isExplicitTrack(track) && (
@@ -1021,7 +991,7 @@ export const GlobalAudioPlayer = () => {
                                 onClick={(e) => handleToggleSaveItem(track, e)}
                                 className={`p-1 rounded-lg transition-colors cursor-pointer ${
                                   isTrackSaved
-                                    ? 'text-[#ff4d4a] bg-[#B80C09]/20'
+                                    ? 'text-[#DCDCDD] bg-[#B80C09]/20'
                                     : 'text-[#DCDCDD]/60 hover:text-white hover:bg-white/10'
                                 }`}
                                 title={isTrackSaved ? ui("Canción en favoritos") : ui("Guardar canción en favoritos")}
@@ -1075,7 +1045,7 @@ export const GlobalAudioPlayer = () => {
                                     type: 'track',
                                   });
                                 }}
-                                className="p-1 rounded-lg text-[#DCDCDD]/60 hover:text-rose-300 hover:bg-white/10 transition-colors cursor-pointer"
+                                className="p-1 rounded-lg text-[#DCDCDD]/60 hover:text-[#B80C09] hover:bg-white/10 transition-colors cursor-pointer"
                                 title={ui("Criticar {{value0}}", { value0: track.title })}
                               >
                                 <span className="material-symbols-outlined text-[15px]">rate_review</span>
@@ -1111,14 +1081,14 @@ export const GlobalAudioPlayer = () => {
                 boxShadow: '0 25px 60px rgba(0, 0, 0, 0.9), 0 0 30px rgba(184, 12, 9, 0.25)',
               }}
             >
-              <div className="w-14 h-14 mx-auto rounded-full bg-[#B80C09]/20 text-[#ff4d4a] border border-[#B80C09]/40 flex items-center justify-center">
+              <div className="w-14 h-14 mx-auto rounded-full bg-[#B80C09]/20 text-[#DCDCDD] border border-[#B80C09]/40 flex items-center justify-center">
                 <span className="material-symbols-outlined text-[30px]">lock</span>
               </div>
 
               <div>
                 <h3 id="parental-lock-title" className="text-lg font-black text-white flex items-center justify-center gap-2">
                   <span>{ui("Contenido Explícito Bloqueado")}</span>
-                  <span className="px-1.5 py-0.5 rounded text-[9px] font-black uppercase bg-[#4B2840] text-rose-300 border border-rose-500/40">
+                  <span className="px-1.5 py-0.5 rounded text-[9px] font-black uppercase bg-[#4B2840] text-[#DCDCDD] border border-[#B80C09]/40">
                     E
                   </span>
                 </h3>
@@ -1137,7 +1107,7 @@ export const GlobalAudioPlayer = () => {
                   <div className="min-w-0 flex-1">
                     <h4 className="text-xs font-bold text-white truncate">{explicitLockModal.track.title}</h4>
                     <p className="text-[11px] text-[#DCDCDD]/70 truncate">{explicitLockModal.track.artist}</p>
-                    <span className="inline-block mt-0.5 px-1.5 py-0.5 rounded text-[8px] font-bold bg-[#B80C09]/40 text-rose-300 border border-[#B80C09]/50">{ui("Filtro Parental Sonar")}</span>
+                    <span className="inline-block mt-0.5 px-1.5 py-0.5 rounded text-[8px] font-bold bg-[#B80C09]/40 text-[#DCDCDD] border border-[#B80C09]/50">{ui("Filtro Parental Sonar")}</span>
                   </div>
                 </div>
               )}
@@ -1167,10 +1137,10 @@ export const GlobalAudioPlayer = () => {
                     setParentPinInput(e.target.value);
                     if (pinError) setPinError('');
                   }}
-                  className="w-full text-center tracking-[0.4em] font-mono text-xl py-2 px-4 rounded-xl bg-black/50 border border-white/20 text-white focus:outline-hidden focus:border-[#ff4d4a]"
+                  className="w-full text-center tracking-[0.4em] font-mono text-xl py-2 px-4 rounded-xl bg-[#231123] border border-[#4B2840] text-white focus:outline-hidden focus:border-[#B80C09]"
                 />
                 {pinError && (
-                  <span className="text-xs text-rose-400 font-bold" role="alert">
+                  <span className="text-xs text-[#B80C09] font-bold" role="alert">
                     {pinError}
                   </span>
                 )}
@@ -1187,7 +1157,7 @@ export const GlobalAudioPlayer = () => {
                   >{ui("Cancelar")}</button>
                   <button
                     type="submit"
-                    className="flex-1 py-2.5 rounded-xl bg-gradient-to-r from-[#B80C09] to-[#850705] hover:brightness-110 text-xs font-black text-white shadow-md cursor-pointer transition-all"
+                    className="flex-1 py-2.5 rounded-xl bg-gradient-to-r from-[#B80C09] to-[#4B2840] hover:brightness-110 text-xs font-black text-white shadow-md cursor-pointer transition-all"
                   >{ui("Desbloquear")}</button>
                 </div>
               </form>

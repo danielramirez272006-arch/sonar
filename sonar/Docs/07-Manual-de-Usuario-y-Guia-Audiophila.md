@@ -43,4 +43,4 @@ Bienvenido a **SONAR**, la plataforma y bitácora musical creada para audiófilo
 1. **Subir Foto de Perfil**: Arrastra o selecciona tu propia imagen (PNG, JPG, WEBP o GIF).
 2. **Crear un Avatar Blobatar**: Selecciona entre 11 personalidades musicales y personaliza con 24 colores sólidos o 10 degradados.
 3. **Ficha de Equipamiento**: Registra tus auriculares de referencia, tornamesa o amplificador DAC para compartir tu configuración con otros melómanos.
-4. **Accesibilidad**: Ajusta el tamaño de fuente, contraste o narración por voz presionando el botón lateral o usando el atajo <kbd>Alt + A</kbd>.
+4. **Accesibilidad**: Abre el botón lateral o presiona <kbd>Alt + A</kbd>. En «Lectura y Tipografía», elige «Leer página» para escuchar el contenido principal en el idioma seleccionado; puedes pausar, continuar o detener la narración.

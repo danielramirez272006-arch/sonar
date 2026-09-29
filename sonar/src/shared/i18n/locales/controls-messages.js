@@ -31,6 +31,16 @@ Opciones de Accesibilidad (Alt + A)|Accessibility options (Alt + A)|Options d’
 Opciones de Accesibilidad|Accessibility options|Options d’accessibilité|Opzioni di accessibilità|无障碍选项|アクセシビリティ設定
 Accesibilidad Universal|Universal accessibility|Accessibilité universelle|Accessibilità universale|通用无障碍|ユニバーサルアクセシビリティ
 Personaliza el contraste, tipografía, audio y lectura para tu comodidad.|Customize contrast, typography, audio and reading for your comfort.|Adaptez contraste, typographie, audio et lecture à vos besoins.|Personalizza contrasto, caratteri, audio e lettura per il tuo comfort.|自定义对比度、字体、音频和阅读设置。|コントラスト、文字、音声、読みやすさを調整できます。
+Lectura de toda la página|Read the whole page|Lecture de toute la page|Lettura dell'intera pagina|朗读整个页面|ページ全体を読み上げ
+Lee el contenido principal en el idioma seleccionado. La lectura comienza cuando tú la activas.|Reads the main content in your selected language. Start reading whenever you choose.|Lit le contenu principal dans la langue choisie. Lancez la lecture quand vous le souhaitez.|Legge il contenuto principale nella lingua scelta. Avvia la lettura quando vuoi.|以所选语言朗读主要内容。由你决定何时开始。|選択中の言語で本文を読み上げます。読み上げは任意のタイミングで開始できます。
+Leer página|Read page|Lire la page|Leggi la pagina|朗读页面|ページを読み上げ
+Pausar|Pause|Pause|Pausa|暂停|一時停止
+Continuar|Resume|Reprendre|Riprendi|继续|再開
+Detener lectura|Stop reading|Arrêter la lecture|Interrompi lettura|停止朗读|読み上げを停止
+No se encontró contenido para leer.|No readable content was found.|Aucun contenu à lire n’a été trouvé.|Nessun contenuto da leggere.|未找到可朗读的内容。|読み上げる内容が見つかりません。
+Lectura en curso|Reading|Lecture en cours|Lettura in corso|正在朗读|読み上げ中
+Lectura pausada|Reading paused|Lecture en pause|Lettura in pausa|朗读已暂停|読み上げ一時停止
+Detén la lectura para cambiar la velocidad.|Stop reading to change the speed.|Arrêtez la lecture pour modifier la vitesse.|Interrompi la lettura per cambiare velocità.|停止朗读后再更改速度。|速度を変えるには読み上げを停止してください。
 Cerrar panel de accesibilidad|Close accessibility panel|Fermer le panneau d’accessibilité|Chiudi pannello accessibilità|关闭无障碍面板|アクセシビリティパネルを閉じる
 Lectura y Tipografía|Reading and typography|Lecture et typographie|Lettura e tipografia|阅读与字体|読みやすさと文字
 Tamaño del Texto|Text size|Taille du texte|Dimensione testo|文字大小|文字サイズ

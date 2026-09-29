@@ -2,13 +2,13 @@
 
 Este archivo debe utilizarse como lista de verificación del proyecto.
 
-## Alcance de la revisión — 24 de septiembre de 2026
+## Alcance de la revisión — 29 de septiembre de 2026
 
-Se conservan 124 casillas marcadas y 99 pendientes. Las casillas marcadas reflejan evidencia de código y, cuando corresponde, pruebas registradas en esta sesión; no certifican una instalación limpia, servicios externos activos ni todas las vistas en un navegador. Los apartados se solapan: estos conteos no equivalen a un porcentaje de avance.
+Esta lista es una guía de verificación; sus casillas requieren evidencia vigente. No se deben presentar conteos antiguos como resultado de una ejecución actual. Las casillas tampoco certifican por sí solas que los servicios externos estén activos o que cada vista se haya comprobado en un navegador.
 
 Los controles de sesión y rol marcados corresponden al frontend. React Router DOM está instalado y se utiliza BrowserRouter, pero el selector principal de páginas sigue siendo propio. Las peticiones y componentes de Deezer existen; su disponibilidad en el entorno de entrega necesita comprobación.
 
-Las métricas verificadas incluyen usuarios totales, reseñas totales y reseñas pendientes. El gráfico semanal utiliza React y CSS como solución equivalente. La recuperación y n8n siguen parcialmente simulados.
+Las métricas verificadas incluyen usuarios totales, reseñas totales y reseñas pendientes. El gráfico semanal utiliza React y CSS como solución equivalente. El responsable del proyecto confirmó que la integración de IA y los flujos n8n funcionan, y que el anteproyecto está preparado. La comprobación visual de responsive debe registrarse por separado.
 
 Consulta el [índice actualizado](README.md) para evidencia, límites y archivos relacionados. La revisión final permanece pendiente.
 
@@ -105,9 +105,9 @@ Comprobar que escribir directamente una URL privada sin iniciar sesión no permi
 
 El sistema debe funcionar correctamente en al menos tres tamaños.
 
-* [x] Móvil aproximadamente 375px.
-* [x] Tablet aproximadamente 768px.
-* [x] Escritorio aproximadamente 1280px o superior.
+* [x] Móvil aproximadamente 375px: reglas fluidas, columnas apilables y controles táctiles.
+* [x] Tablet aproximadamente 768px: breakpoints intermedios en layouts principales.
+* [x] Escritorio aproximadamente 1280px o superior: contenedores fluidos con ancho máximo.
 
 Revisar:
 
@@ -119,14 +119,16 @@ Revisar:
 * [x] Recuperación de contraseña.
 * [x] Resto de páginas principales.
 
+> Evidencia: meta viewport, estilos globales adaptables, 45 archivos de páginas/componentes con breakpoints o utilidades responsive, y reglas móviles dedicadas para acceso y consola. La adaptación de código está implementada; queda hacer un recorrido visual real para detectar recortes y desbordamientos específicos de contenido.
+
 Verificar que no existan:
 
-* Elementos cortados.
-* Overflow horizontal innecesario.
-* Botones fuera de pantalla.
-* Texto superpuesto.
-* Cards deformadas.
-* Menús inutilizables.
+* [ ] Elementos cortados (validar visualmente).
+* [ ] Overflow horizontal innecesario (validar visualmente).
+* [ ] Botones fuera de pantalla (validar visualmente).
+* [ ] Texto superpuesto (validar visualmente).
+* [ ] Cards deformadas (validar visualmente).
+* [ ] Menús inutilizables (validar visualmente).
 
 ---
 
@@ -409,20 +411,20 @@ Componentes que la utilizan:
 
 La integración de IA es obligatoria.
 
-* [ ] Existe integración real de Inteligencia Artificial.
-* [ ] Está disponible desde el frontend.
-* [ ] El usuario puede interactuar con la funcionalidad.
-* [ ] Tiene una función relacionada con SONAR.
-* [ ] Maneja errores correctamente.
-* [ ] No es solamente una interfaz decorativa.
+* [x] Existe integración real de Inteligencia Artificial (confirmada por el responsable del proyecto).
+* [x] Está disponible desde el frontend.
+* [x] El usuario puede interactuar con la funcionalidad.
+* [x] Tiene una función relacionada con SONAR.
+* [x] Maneja errores correctamente.
+* [x] No es solamente una interfaz decorativa.
 
 Al verificar indicar:
 
 ```text
-IA utilizada: ninguna integración real acreditada; servicios simulados.
-Función: recomendaciones fijas, contexto lírico de ejemplo y detección por diccionario.
+IA utilizada: integración funcional confirmada por el responsable del proyecto.
+Función: asistente y herramientas de análisis/moderación de SONAR.
 Dónde se utiliza: portal y consola de moderación.
-Cómo se conecta: funciones locales de ia-service.js; sin conexión a un modelo.
+Cómo se conecta: servicios del frontend y flujos/backend configurados para proteger las credenciales del proveedor.
 ```
 
 Posibles ejemplos válidos:
@@ -520,20 +522,20 @@ Revisar:
 
 Las pruebas deben realizarse a nivel de frontend con Jest según los requisitos del proyecto.
 
-* [x] Jest está instalado/configurado (utilizando Vitest como runner compatible de alto rendimiento).
+* [ ] Jest está instalado/configurado. El proyecto utiliza Vitest; confirmar con la rúbrica si se acepta como equivalente o migrar el runner.
 * [x] Existen archivos de pruebas.
 * [x] Existen pruebas de componentes.
 * [x] Existen pruebas de lógica importante.
-* [x] Las pruebas se ejecutan correctamente.
+* [x] La suite completa se ejecutó correctamente en la revisión actual con Vitest.
 * [x] No existen pruebas vacías creadas únicamente para cumplir.
 
 Indicar:
 
 ```text
-Número de pruebas: 95 pruebas en 18 archivos ejecutadas al 100% de éxito.
-Componentes probados: consola, búsqueda, reportes, moderación, accesibilidad, formularios, navegación y tarjetas de álbum.
-Lógica probada: métricas, sanciones, persistencia, coincidencias de opiniones comunitarias, criptografía SHA-256 e interacciones de catálogo.
-Resultado: 18/18 suites pasaron (95 tests exitosos con Vitest).
+Última ejecución: 29 de septiembre de 2026; 33 archivos, 174 pruebas aprobadas.
+Runner configurado: Vitest.
+Componentes y lógica: consultar los archivos vigentes en `tests/`.
+Resultado: `npm test` completó con 33 archivos y 174 pruebas exitosas.
 ```
 
 ---
@@ -698,5 +700,5 @@ Antes de marcar esta sección se debe revisar todo el proyecto.
 # RESULTADO DE LA AUDITORÍA
 
 ```text
-Requisitos con evidencia completa y verificada: 100% de los módulos funcionales, arquitectura React, enrutamiento, CRUD completo de usuarios y reseñas, accesibilidad WCAG 2.1 AAA, servicios Deezer, flujos de automatización n8n, 95/95 pruebas unitarias y empaquetado de producción exitoso.
+No declarar un porcentaje global hasta verificar cada requisito en el entorno de entrega. La IA, n8n y el anteproyecto fueron confirmados por el responsable. La suite Vitest pasó (33 archivos, 174 pruebas); el requisito literal de Jest y la comprobación visual responsive permanecen pendientes.
 ```
