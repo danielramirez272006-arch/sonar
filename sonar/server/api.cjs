@@ -76,7 +76,8 @@ function createApp({ filename = path.join(__dirname,'../db.json'), env = process
   });
   app.post('/auth/google',async (req,res) => {
     try {
-      if (!env.GOOGLE_CLIENT_ID || req.body.credential === 'dev-google-credential-token') {
+      const googleClientId = env.GOOGLE_CLIENT_ID || env.VITE_GOOGLE_CLIENT_ID;
+      if (!googleClientId || req.body.credential === 'dev-google-credential-token') {
         const email = req.body.profile?.email || 'melomano_google@sonar.audio';
         let u = db.getState().users.find(u => u.email?.toLowerCase() === email.toLowerCase());
         if (!u) {
@@ -98,7 +99,7 @@ function createApp({ filename = path.join(__dirname,'../db.json'), env = process
       }
       const response = await request('https://oauth2.googleapis.com/tokeninfo?id_token='+encodeURIComponent(req.body.credential || ''),{signal:AbortSignal.timeout(10000)});
       const p = await response.json();
-      if (!response.ok || p.aud !== env.GOOGLE_CLIENT_ID || !['accounts.google.com','https://accounts.google.com'].includes(p.iss) || Number(p.exp)*1000 <= Date.now() || ![true,'true'].includes(p.email_verified)) return res.status(401).json({error:'Credencial Google inválida'});
+      if (!response.ok || p.aud !== googleClientId || !['accounts.google.com','https://accounts.google.com'].includes(p.iss) || Number(p.exp)*1000 <= Date.now() || ![true,'true'].includes(p.email_verified)) return res.status(401).json({error:'Credencial Google inválida'});
       let u = db.getState().users.find(u => u.email?.toLowerCase() === p.email.toLowerCase());
       if (!u) {
         u={id:randomBytes(16).toString('hex'),email:p.email.toLowerCase(),username:p.name || 'Usuario',role:'user',provider:'google',googleId:p.sub,avatarUrl:p.picture,status:'active',createdAt:new Date().toISOString()};
@@ -239,8 +240,14 @@ function createApp({ filename = path.join(__dirname,'../db.json'), env = process
   return { app, db, agent };
 }
 if (require.main===module) {
-  const file=path.join(__dirname,'../.env.server.local');
-  if (require('node:fs').existsSync(file)) process.loadEnvFile(file);
+  const fs = require('node:fs');
+  // Vite already reads .env for the browser. Load it here too so the API can
+  // validate the same public Google client ID. Server-only overrides remain
+  // in .env.server.local and take precedence because existing env vars win.
+  const appEnvFile=path.join(__dirname,'../.env');
+  const serverEnvFile=path.join(__dirname,'../.env.server.local');
+  if (fs.existsSync(appEnvFile)) process.loadEnvFile(appEnvFile);
+  if (fs.existsSync(serverEnvFile)) process.loadEnvFile(serverEnvFile);
   const { app }=createApp();
   app.listen(Number(process.env.PORT || 3001),process.env.HOST || '127.0.0.1',()=>console.log('SONAR API con permisos y agente: puerto '+(process.env.PORT || 3001)));
 }
