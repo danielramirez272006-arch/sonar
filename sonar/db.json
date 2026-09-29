@@ -10423,7 +10423,13 @@
       "googleId": "101998128882862308299",
       "avatarUrl": "https://lh3.googleusercontent.com/a/ACg8ocL2Yq1Z90WHM2gjiiIejiuqLTB5MRTvnbEdBjabxdY1PR5yGbQ=s96-c",
       "status": "active",
-      "createdAt": "2026-09-29T14:20:14.888Z"
+      "createdAt": "2026-09-29T14:20:14.888Z",
+      "parentalControl": {
+        "enabled": true,
+        "blockExplicit": true,
+        "pin": "1234"
+      },
+      "accountType": "junior"
     }
   ],
   "reviews": [
@@ -11106,6 +11112,78 @@
       "trackTitle": "",
       "hasSpoilers": false,
       "cover": "https://cdn-images.dzcdn.net/images/cover/aa94ab293730bb7845d2aa8c672b2c29/500x500-000000-80-0-0.jpg"
+    },
+    {
+      "id": "0819a5d8037e9be80728b6700229d5b1",
+      "userId": "08673661bf523ec9d3e6c1cb7fe1c0e9",
+      "userName": "Melómano Google",
+      "content": "COREANOS GEIS PUTITISIMOS ",
+      "status": "pending_moderation",
+      "createdAt": "2026-09-29T16:56:35.385Z",
+      "aiFlagged": false,
+      "albumId": "3907717261",
+      "albumTitle": "SWIM",
+      "parentAlbum": "ARIRANG",
+      "artist": "BTS",
+      "rating": 1,
+      "type": "track",
+      "trackTitle": "SWIM",
+      "hasSpoilers": false,
+      "cover": "https://cdn-images.dzcdn.net/images/cover/a3b8e9462db0c02e082c706c624f9811/500x500-000000-80-0-0.jpg"
+    },
+    {
+      "id": "8ad4ca6edc790edefb4e3635217f90c0",
+      "userId": "c7e33023281251b540592620ca96fa49",
+      "userName": "Daniel Ramírez",
+      "content": "jueputa",
+      "status": "pending_moderation",
+      "createdAt": "2026-09-29T17:05:57.043Z",
+      "aiFlagged": false,
+      "albumId": "9896728",
+      "albumTitle": "To Pimp a Butterfly",
+      "parentAlbum": "To Pimp a Butterfly",
+      "artist": "Kendrick Lamar",
+      "rating": 5,
+      "type": "album",
+      "trackTitle": "",
+      "hasSpoilers": false,
+      "cover": "https://cdn-images.dzcdn.net/images/cover/00dd0da365a94b1829302d6b7fec70e6/500x500-000000-80-0-0.jpg"
+    },
+    {
+      "id": "a2544492c0b16cd4b3471af24c34fe42",
+      "userId": "c7e33023281251b540592620ca96fa49",
+      "userName": "Daniel Ramírez",
+      "content": "jueputa",
+      "status": "pending_moderation",
+      "createdAt": "2026-09-29T17:09:47.010Z",
+      "aiFlagged": false,
+      "albumId": "9896728",
+      "albumTitle": "To Pimp a Butterfly",
+      "parentAlbum": "To Pimp a Butterfly",
+      "artist": "Kendrick Lamar",
+      "rating": 5,
+      "type": "album",
+      "trackTitle": "",
+      "hasSpoilers": false,
+      "cover": "https://cdn-images.dzcdn.net/images/cover/00dd0da365a94b1829302d6b7fec70e6/500x500-000000-80-0-0.jpg"
+    },
+    {
+      "id": "48f660dc8b09ac8ccb1fb8391e6ca57a",
+      "userId": "c7e33023281251b540592620ca96fa49",
+      "userName": "Daniel Ramírez",
+      "content": "fazff",
+      "status": "pending_moderation",
+      "createdAt": "2026-09-29T17:15:47.397Z",
+      "aiFlagged": false,
+      "albumId": "9896728",
+      "albumTitle": "To Pimp a Butterfly",
+      "parentAlbum": "To Pimp a Butterfly",
+      "artist": "Kendrick Lamar",
+      "rating": 4,
+      "type": "album",
+      "trackTitle": "",
+      "hasSpoilers": false,
+      "cover": "https://cdn-images.dzcdn.net/images/cover/00dd0da365a94b1829302d6b7fec70e6/500x500-000000-80-0-0.jpg"
     }
   ],
   "featuredReleases": [

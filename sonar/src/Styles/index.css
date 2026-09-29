@@ -72,6 +72,12 @@ html.dark {
   --shadow-dropdown: 0 12px 30px rgba(0, 0, 0, 0.6);
 }
 
+html.dark,
+html.dark body,
+html.dark #root {
+  background-color: #231123;
+}
+
 /* Material Symbols Outlined Configuration */
 .material-symbols-outlined {
   font-family: 'Material Symbols Outlined';
@@ -90,6 +96,9 @@ html.dark {
 }
 
 html, body {
+  width: 100vw;
+  min-width: 100vw;
+  max-width: none;
   margin: 0;
   padding: 0;
   background-color: var(--bg-page);
@@ -99,8 +108,59 @@ html, body {
   transition: background-color 0.25s ease, color 0.25s ease;
 }
 
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+#root,
+main,
+main > * {
+  min-width: 0;
+}
+
+#root {
+  width: 100vw;
+  min-width: 100vw;
+  max-width: none;
+  background-color: var(--bg-page);
+  min-height: 100vh;
+  min-height: 100dvh;
+}
+
+img,
+picture,
+video,
+canvas,
+iframe {
+  max-width: 100%;
+}
+
+input,
+select,
+textarea {
+  max-width: 100%;
+}
+
+html {
+  scrollbar-color: var(--bg-surface) var(--bg-page);
+  scrollbar-width: thin;
+}
+
 ::-webkit-scrollbar {
-  display: none;
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--bg-page);
+}
+
+::-webkit-scrollbar-thumb {
+  border: 2px solid var(--bg-page);
+  border-radius: 999px;
+  background: var(--bg-surface);
 }
 
 /* Acceso: composición editorial independiente del portal público. */
@@ -251,6 +311,19 @@ html, body {
   background: rgba(255, 255, 255, 0.16);
   border-color: rgba(255, 255, 255, 0.3);
   transform: translateY(-1px);
+}
+
+@media (max-width: 768px) {
+  .lang-selector-container.navbar .lang-selector-btn {
+    gap: 0.25rem;
+    padding: 0.35rem 0.5rem;
+    font-size: 0.72rem;
+  }
+
+  .lang-selector-container.navbar .lang-icon {
+    width: 16px;
+    height: 16px;
+  }
 }
 
 .lang-icon {

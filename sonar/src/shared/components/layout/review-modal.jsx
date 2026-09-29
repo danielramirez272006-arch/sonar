@@ -7,6 +7,7 @@ import ReviewForm from '../../../features/reviews/components/review-form';
 import Toast from '../ui/toast';
 import { interactionsService } from '../../services/interactions-service';
 import { createReview } from '../../services/api-client';
+import { sendReviewToModeration } from '../../services/n8n-webhooks.js';
 
 export const ReviewModal = () => {
   const ui = useUIText();
@@ -125,6 +126,9 @@ export const ReviewModal = () => {
       rating: reviewData.rating, content: reviewData.reviewText,
       hasSpoilers: reviewData.hasSpoilers, status: 'pending_moderation', aiFlagged: false,
     });
+    void sendReviewToModeration(saved).catch((error) => {
+      console.error('[n8n Webhook - Moderación] No se pudo enviar la reseña:', error);
+    });
     interactionsService.addUserReview(effectiveUserId, { ...saved, userHandle: effectiveUserHandle });
     window.dispatchEvent(new CustomEvent('sonar:review-created', { detail: saved }));
     setToastMessage('Crítica enviada a moderación para ' + targetTitle + '.');
@@ -170,6 +174,7 @@ export const ReviewModal = () => {
           onClose={() => setToastMessage(null)}
         />
       )}
+
     </>
   );
 };

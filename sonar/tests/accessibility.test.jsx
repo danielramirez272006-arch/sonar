@@ -1,9 +1,9 @@
 /**
  * @vitest-environment jsdom
  */
-import { render, screen, fireEvent, act } from '@testing-library/react';
+import { render, screen, fireEvent, cleanup } from '@testing-library/react';
 import React from 'react';
-import { describe, it, expect, beforeEach, vi } from 'vitest';
+import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import { AccessibilityProvider, useAccessibility } from '../src/shared/context/accessibility-context';
 import { AccessibilityWidget } from '../src/shared/components/a11y/accessibility-widget';
 import { KeyboardShortcutsModal } from '../src/shared/components/a11y/keyboard-shortcuts-modal';
@@ -13,6 +13,8 @@ import { TTSButton } from '../src/shared/components/a11y/tts-button';
 // Mock Web Speech API
 const mockSpeak = vi.fn();
 const mockCancel = vi.fn();
+const mockPause = vi.fn();
+const mockResume = vi.fn();
 
 class MockUtterance {
   constructor(text) {
@@ -30,6 +32,8 @@ Object.defineProperty(window, 'speechSynthesis', {
   value: {
     speak: mockSpeak,
     cancel: mockCancel,
+    pause: mockPause,
+    resume: mockResume,
     getVoices: () => [{ lang: 'es-ES', name: 'Spanish Voice' }],
   },
   writable: true,
@@ -37,11 +41,16 @@ Object.defineProperty(window, 'speechSynthesis', {
 });
 
 describe('SONAR Accessibility System (WCAG 2.1 AA/AAA)', () => {
+  afterEach(() => cleanup());
+
   beforeEach(() => {
     localStorage.clear();
     mockSpeak.mockClear();
     mockCancel.mockClear();
+    mockPause.mockClear();
+    mockResume.mockClear();
     document.documentElement.className = '';
+    document.documentElement.lang = 'es';
   });
 
   const TestConsumer = () => {
@@ -147,6 +156,40 @@ describe('SONAR Accessibility System (WCAG 2.1 AA/AAA)', () => {
     expect(screen.getByText(/Modo Alto Contraste \(AAA\)/i)).toBeTruthy();
     expect(screen.getByText(/Fuente Adaptada para Dislexia/i)).toBeTruthy();
     expect(screen.getByText(/Pausar Animaciones y Giros/i)).toBeTruthy();
+  });
+
+  it('lee el contenido principal de la página y permite pausar, continuar y detenerlo', () => {
+    render(
+      <AccessibilityProvider>
+        <main>
+          <h1>Noticias musicales</h1>
+          <p>{'Esta página presenta novedades de la comunidad. '.repeat(10)}</p>
+          <img src="portada.jpg" alt="Portada del nuevo álbum" />
+          <button>Acción que no debe narrarse</button>
+        </main>
+        <AccessibilityWidget />
+      </AccessibilityProvider>
+    );
+
+    fireEvent.click(screen.getByLabelText(/Abrir opciones de accesibilidad/i));
+    fireEvent.click(screen.getByRole('button', { name: /Leer página/i }));
+
+    expect(mockSpeak.mock.calls.length).toBeGreaterThan(1);
+    const spokenText = mockSpeak.mock.calls.map(([utterance]) => utterance.text).join(' ');
+    expect(spokenText).toContain('Noticias musicales');
+    expect(spokenText).toContain('novedades de la comunidad');
+    expect(spokenText).toContain('Portada del nuevo álbum');
+    expect(spokenText).not.toContain('Acción que no debe narrarse');
+    expect(mockSpeak.mock.calls.every(([utterance]) => utterance.lang === 'es')).toBe(true);
+
+    fireEvent.click(screen.getByRole('button', { name: 'Pausar' }));
+    expect(mockPause).toHaveBeenCalledOnce();
+
+    fireEvent.click(screen.getByRole('button', { name: 'Continuar' }));
+    expect(mockResume).toHaveBeenCalledOnce();
+
+    fireEvent.click(screen.getByRole('button', { name: 'Detener lectura' }));
+    expect(mockCancel).toHaveBeenCalled();
   });
 
   it('renderiza el modal de atajos de teclado y la tecla de acceso rápido', () => {

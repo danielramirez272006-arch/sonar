@@ -7,6 +7,165 @@ import { useLanguage } from '../../../shared/context/language-context';
 import AudiophileMonthlyWrapped from './audiophile-monthly-wrapped';
 import AudiophileQuests from './audiophile-quests';
 
+const buildPassportPdf = (passport) => {
+  const canvas = document.createElement('canvas');
+  canvas.width = 1240;
+  canvas.height = 1754;
+  const ctx = canvas.getContext('2d');
+  const palette = {
+    violet: '#231123',
+    berry: '#4B2840',
+    teal: '#003844',
+    red: '#B80C09',
+    paper: '#F7F3F6',
+    muted: '#C8B9C6',
+  };
+  const roundedRect = (x, y, width, height, radius, fill, stroke) => {
+    ctx.beginPath();
+    ctx.roundRect(x, y, width, height, radius);
+    if (fill) {
+      ctx.fillStyle = fill;
+      ctx.fill();
+    }
+    if (stroke) {
+      ctx.strokeStyle = stroke;
+      ctx.lineWidth = 2;
+      ctx.stroke();
+    }
+  };
+  const fitText = (value, x, y, maxWidth, size, color, weight = 500) => {
+    let fontSize = size;
+    ctx.textAlign = 'left';
+    ctx.textBaseline = 'alphabetic';
+    ctx.fillStyle = color;
+    ctx.font = `${weight} ${fontSize}px "Segoe UI", Arial, sans-serif`;
+    while (ctx.measureText(String(value)).width > maxWidth && fontSize > 16) {
+      fontSize -= 1;
+      ctx.font = `${weight} ${fontSize}px "Segoe UI", Arial, sans-serif`;
+    }
+    ctx.fillText(String(value), x, y, maxWidth);
+  };
+
+  const background = ctx.createLinearGradient(70, 70, 1170, 1680);
+  background.addColorStop(0, palette.berry);
+  background.addColorStop(0.48, palette.violet);
+  background.addColorStop(1, palette.teal);
+  ctx.fillStyle = palette.paper;
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+  roundedRect(48, 48, 1144, 1658, 54, background);
+
+  const glow = ctx.createRadialGradient(1040, 130, 10, 1040, 130, 510);
+  glow.addColorStop(0, 'rgba(184, 12, 9, 0.3)');
+  glow.addColorStop(1, 'rgba(184, 12, 9, 0)');
+  ctx.fillStyle = glow;
+  ctx.fillRect(550, 48, 642, 570);
+  ctx.strokeStyle = 'rgba(220, 220, 221, 0.18)';
+  ctx.lineWidth = 2;
+  ctx.beginPath();
+  ctx.roundRect(68, 68, 1104, 1618, 42);
+  ctx.stroke();
+
+  ctx.fillStyle = palette.red;
+  ctx.beginPath();
+  ctx.arc(125, 142, 28, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.fillStyle = palette.paper;
+  ctx.font = '900 27px "Segoe UI", Arial, sans-serif';
+  ctx.textBaseline = 'middle';
+  ctx.fillText('S', 115, 143);
+  fitText('SONAR', 170, 153, 300, 44, palette.paper, 900);
+  fitText(passport.labels.title.toUpperCase(), 170, 191, 650, 20, palette.muted, 700);
+  roundedRect(850, 112, 270, 58, 28, 'rgba(0, 56, 68, 0.52)', 'rgba(220, 220, 221, 0.22)');
+  ctx.fillStyle = '#83D1D8';
+  ctx.beginPath();
+  ctx.arc(884, 141, 7, 0, Math.PI * 2);
+  ctx.fill();
+  fitText(passport.labels.calibrated, 905, 149, 190, 17, palette.paper, 700);
+
+  roundedRect(100, 244, 430, 52, 26, 'rgba(35, 17, 35, 0.5)', 'rgba(220, 220, 221, 0.18)');
+  fitText(passport.id, 126, 278, 380, 19, '#E9C7DE', 700);
+  fitText(passport.name, 100, 396, 1020, 70, palette.paper, 800);
+  fitText(passport.username, 104, 442, 900, 27, palette.muted, 500);
+  fitText(passport.labels.rank.toUpperCase(), 104, 526, 900, 17, '#83D1D8', 700);
+  fitText(passport.rank, 100, 579, 1020, 40, palette.paper, 700);
+
+  const metrics = [
+    [passport.labels.saved, passport.saved],
+    [passport.labels.reviews, passport.reviews],
+    [passport.labels.sessions, passport.sessions],
+    [passport.labels.following, passport.following],
+  ];
+  metrics.forEach(([label, value], index) => {
+    const x = 100 + index * 270;
+    roundedRect(x, 650, 248, 178, 25, 'rgba(247, 243, 246, 0.075)', 'rgba(220, 220, 221, 0.16)');
+    fitText(label.toUpperCase(), x + 20, 699, 208, 15, palette.muted, 700);
+    fitText(value, x + 20, 770, 208, 52, palette.paper, 800);
+  });
+
+  fitText(passport.labels.affinity.toUpperCase(), 100, 923, 1040, 25, palette.paper, 800);
+  fitText(passport.labels.topGenres, 100, 958, 1040, 17, palette.muted, 500);
+  passport.genres.forEach((genre, index) => {
+    const y = 1020 + index * 91;
+    fitText(genre.name, 104, y, 690, 21, palette.paper, 600);
+    fitText(`${genre.percentage}%`, 1050, y, 82, 18, '#E9C7DE', 700);
+    roundedRect(104, y + 20, 1028, 13, 7, 'rgba(247, 243, 246, 0.15)');
+    const bar = ctx.createLinearGradient(104, 0, 1132, 0);
+    bar.addColorStop(0, palette.red);
+    bar.addColorStop(1, '#52A2B0');
+    roundedRect(104, y + 20, Math.max(12, 1028 * genre.percentage / 100), 13, 7, bar);
+  });
+
+  fitText(passport.labels.setup.toUpperCase(), 100, 1518, 1040, 18, palette.muted, 700);
+  const setup = [
+    [passport.labels.source, passport.turntable],
+    [passport.labels.headphones, passport.headphones],
+    [passport.labels.dac, passport.dac],
+  ];
+  setup.forEach(([label, value], index) => {
+    const x = 100 + index * 350;
+    roundedRect(x, 1542, 326, 88, 18, 'rgba(35, 17, 35, 0.42)', 'rgba(220, 220, 221, 0.15)');
+    fitText(label, x + 18, 1573, 290, 14, '#83D1D8', 700);
+    fitText(value, x + 18, 1606, 290, 18, palette.paper, 600);
+  });
+  fitText(`SONAR  •  ${passport.labels.sampling}: 192 kHz / 24-bit Hi-Res FLAC`, 100, 1661, 1040, 15, palette.muted, 500);
+
+  const jpegBase64 = canvas.toDataURL('image/jpeg', 0.96).split(',')[1];
+  const jpegBinary = atob(jpegBase64);
+  const jpegBytes = Uint8Array.from(jpegBinary, (char) => char.charCodeAt(0));
+  const encoder = new TextEncoder();
+  const toBytes = (value) => encoder.encode(value);
+  const pageStream = 'q 595 0 0 842 0 0 cm /Im0 Do Q\n';
+  const imageStream = [
+    toBytes(`4 0 obj\n<< /Type /XObject /Subtype /Image /Width ${canvas.width} /Height ${canvas.height} /ColorSpace /DeviceRGB /BitsPerComponent 8 /Filter /DCTDecode /Length ${jpegBytes.length} >>\nstream\n`),
+    jpegBytes,
+    toBytes('\nendstream\nendobj\n'),
+  ];
+  const objects = [
+    toBytes('1 0 obj\n<< /Type /Catalog /Pages 2 0 R >>\nendobj\n'),
+    toBytes('2 0 obj\n<< /Type /Pages /Kids [3 0 R] /Count 1 >>\nendobj\n'),
+    toBytes('3 0 obj\n<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Resources << /XObject << /Im0 4 0 R >> >> /Contents 5 0 R >>\nendobj\n'),
+    imageStream,
+    toBytes(`5 0 obj\n<< /Length ${pageStream.length} >>\nstream\n${pageStream}endstream\nendobj\n`),
+  ];
+  const chunks = [toBytes('%PDF-1.4\n')];
+  const offsets = [0];
+  let byteLength = chunks[0].length;
+  objects.forEach((object) => {
+    offsets.push(byteLength);
+    const objectChunks = Array.isArray(object) ? object : [object];
+    chunks.push(...objectChunks);
+    byteLength += objectChunks.reduce((sum, chunk) => sum + chunk.length, 0);
+  });
+  const xrefOffset = byteLength;
+  let xref = `xref\n0 ${objects.length + 1}\n0000000000 65535 f \n`;
+  offsets.slice(1).forEach((offset) => {
+    xref += `${String(offset).padStart(10, '0')} 00000 n \n`;
+  });
+  xref += `trailer\n<< /Size ${objects.length + 1} /Root 1 0 R >>\nstartxref\n${xrefOffset}\n%%EOF`;
+  chunks.push(toBytes(xref));
+  return new Blob(chunks, { type: 'application/pdf' });
+};
+
 export const AudiophilePassportTab = ({
   user,
   savedAlbums = [],
@@ -15,7 +174,6 @@ export const AudiophilePassportTab = ({
   followedArtists = [],
   followedUsers = [],
   gearSetup = {},
-  onExportBackup,
 }) => {
   const ui = useUIText();
   const { t } = useLanguage();
@@ -169,6 +327,54 @@ export const AudiophilePassportTab = ({
     setTimeout(() => setCopiedLink(false), 3000);
   };
 
+  const handleDownloadPassport = () => {
+    const blob = buildPassportPdf({
+      id: passportNumber,
+      name: user?.name || 'Melomano Sonar',
+      username: user?.username ? `@${user.username.replace('@', '')}` : '@audiophile',
+      rank: stats.rankTitle,
+      labels: {
+        title: t('passport.title', 'Pasaporte Audiófilo'),
+        calibrated: t('passport.system_calibrated', 'Sistema calibrado'),
+        rank: t('passport.rank_label', 'Rango audiófilo'),
+        saved: t('passport.stat_in_collection', 'En colección'),
+        reviews: t('passport.stat_critical_verdict', 'Veredicto crítico'),
+        sessions: t('passport.stat_listening_sessions', 'Sesiones de escucha'),
+        following: t('passport.stat_acoustic_network', 'Red acústica'),
+        affinity: t('passport.affinity_distribution', 'Distribución de afinidad sonora'),
+        topGenres: t('passport.top_5_genres', 'Top 5 géneros'),
+        setup: t('passport.system_calibration', 'Calibración del sistema'),
+        source: t('passport.preferred_source', 'Fuente preferida'),
+        headphones: t('passport.headphones', 'Audífonos'),
+        dac: t('passport.dac_processor', 'DAC / Procesador'),
+        sampling: t('passport.sampling_rate', 'Frecuencia de muestreo'),
+      },
+      saved: stats.totalSaved,
+      reviews: stats.totalReviews,
+      sessions: stats.totalHistory,
+      following: stats.totalFollowing,
+      rating: stats.avgRating,
+      genres: stats.genreDistribution,
+      turntable: gearSetup.turntable || 'Technics Direct Drive',
+      headphones: gearSetup.headphones || 'Sennheiser Open-Back',
+      dac: gearSetup.dac || gearSetup.amplifier || 'Not configured',
+    });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    const filename = (user?.username || user?.name || 'audiophile')
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '')
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, '-')
+      .replace(/^-|-$/g, '') || 'audiophile';
+    link.href = url;
+    link.download = `sonar-pasaporte-${filename}.pdf`;
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+    window.setTimeout(() => URL.revokeObjectURL(url), 1000);
+  };
+
   return (
     <section className="flex flex-col gap-8">
       {/* 1. TARJETA PASAPORTE AUDIÓFILO HOLOGRÁFICA */}
@@ -251,16 +457,15 @@ export const AudiophilePassportTab = ({
                 <span>{copiedLink ? t('passport.link_copied', '¡Enlace Copiado!') : t('passport.share_passport', 'Compartir Pasaporte')}</span>
               </button>
 
-              {onExportBackup && (
-                <button
-                  type="button"
-                  onClick={onExportBackup}
-                  className="p-2.5 rounded-xl bg-white/10 hover:bg-white/20 text-white font-bold text-xs transition-all border border-white/15 flex items-center justify-center cursor-pointer"
-                  title={ui("Descargar Respaldo JSON")}
-                >
-                  <span className="material-symbols-outlined text-[18px]">download</span>
-                </button>
-              )}
+              <button
+                type="button"
+                onClick={handleDownloadPassport}
+                className="p-2.5 rounded-xl bg-white/10 hover:bg-white/20 text-white font-bold text-xs transition-all border border-white/15 flex items-center justify-center cursor-pointer"
+                title={ui("Descargar Pasaporte PDF")}
+                aria-label={ui("Descargar Pasaporte PDF")}
+              >
+                <span className="material-symbols-outlined text-[18px]">download</span>
+              </button>
             </div>
 
             <div className="text-right">
@@ -536,10 +741,10 @@ export const AudiophilePassportTab = ({
                   </div>
                   <div>
                     <span className="text-[10px] font-bold uppercase tracking-wider text-[#5c435a] dark:text-pink-300/80">
-                      {badge.category}
+                      {t(`passport.badges.${badge.id}.category`, { defaultValue: badge.category })}
                     </span>
                     <h4 className="text-sm font-bold text-[#231123] dark:text-white">
-                      {badge.title}
+                      {t(`passport.badges.${badge.id}.title`, { defaultValue: badge.title })}
                     </h4>
                   </div>
                 </div>
@@ -554,11 +759,11 @@ export const AudiophilePassportTab = ({
               </div>
 
               <p className="text-xs text-[#5c435a] dark:text-[#B89CB0] line-clamp-2">
-                {badge.description}
+                {t(`passport.badges.${badge.id}.description`, { defaultValue: badge.description })}
               </p>
 
               <div className="pt-2 border-t border-[#e6d5e2] dark:border-white/10 flex items-center justify-between text-[11px] font-medium">
-                <span className="text-[#B80C09] dark:text-pink-300 font-bold">{badge.rewardText}</span>
+                <span className="text-[#B80C09] dark:text-pink-300 font-bold">{t(`passport.badges.${badge.id}.reward`, { defaultValue: badge.rewardText })}</span>
                 <span className="material-symbols-outlined text-[14px] text-gray-400">info</span>
               </div>
             </motion.div>
@@ -596,9 +801,9 @@ export const AudiophilePassportTab = ({
                 </div>
                 <div>
                   <span className="text-xs font-bold uppercase tracking-wider text-[#B80C09] dark:text-pink-300">
-                    {selectedBadge.category}
+                    {t(`passport.badges.${selectedBadge.id}.category`, { defaultValue: selectedBadge.category })}
                   </span>
-                  <h3 className="text-lg font-black">{selectedBadge.title}</h3>
+                  <h3 className="text-lg font-black">{t(`passport.badges.${selectedBadge.id}.title`, { defaultValue: selectedBadge.title })}</h3>
                   <span className="text-xs font-medium text-emerald-600 dark:text-emerald-400">
                     {selectedBadge.unlocked ? ui("Logro Desbloqueado") : ui("Progreso actual: {{value0}}%", { value0: selectedBadge.progress })}
                   </span>
@@ -606,13 +811,13 @@ export const AudiophilePassportTab = ({
               </div>
 
               <p className="text-sm text-[#5c435a] dark:text-[#DCDCDD] leading-relaxed">
-                {selectedBadge.description}
+                {t(`passport.badges.${selectedBadge.id}.description`, { defaultValue: selectedBadge.description })}
               </p>
 
               <div className="p-4 rounded-2xl bg-gray-50 dark:bg-black/30 border border-[#e6d5e2] dark:border-white/10 flex flex-col gap-1.5">
                 <span className="text-[11px] font-bold text-gray-400 uppercase">{ui("Recompensa Acústica")}</span>
                 <span className="text-sm font-bold text-[#B80C09] dark:text-pink-200">
-                  {selectedBadge.rewardText}
+                  {t(`passport.badges.${selectedBadge.id}.reward`, { defaultValue: selectedBadge.rewardText })}
                 </span>
               </div>
 

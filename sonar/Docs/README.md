@@ -47,7 +47,7 @@ Bienvenido al centro de documentación técnica y operativa de **SONAR**, la pla
    - Cómo escuchar muestras, redactar críticas y organizar colecciones.
 
 8. **[08-Manual-Tecnico-de-Pruebas-y-Despliegue.md](08-Manual-Tecnico-de-Pruebas-y-Despliegue.md)**:
-   - Manual de ejecución de pruebas automatizadas (18 suites, 95 tests con Vitest).
+   - Manual de ejecución de pruebas automatizadas con Vitest. Consultar el resultado de la última ejecución antes de informar cantidades.
    - Guía de inicio local y compilación optimizada con Vite para producción.
 
 9. **[09-Catalogo-de-Recursos-y-Modulos-CRUD.md](09-Catalogo-de-Recursos-y-Modulos-CRUD.md)**:
@@ -55,7 +55,7 @@ Bienvenido al centro de documentación técnica y operativa de **SONAR**, la pla
    - Especificaciones de operaciones Create, Read, Update y Delete.
 
 10. **[requerimientos.md](requerimientos.md)**:
-    - Lista de verificación y auditoría del 100% de requerimientos completados.
+    - Lista de verificación de requerimientos con evidencia y pendientes identificados.
 
 11. **[Design.md](Design.md)**:
     - Lineamientos de identidad visual, paletas cromáticas, tipografía y diseño UI/UX.

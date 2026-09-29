@@ -16,7 +16,10 @@ export const AccessibilityWidget = () => {
     toggleShortcutsModal,
     speak,
     stopSpeaking,
+    pauseSpeaking,
+    resumeSpeaking,
     isSpeaking,
+    isSpeechPaused,
   } = useAccessibility();
 
   const colorBlindOptions = [
@@ -26,6 +29,30 @@ export const AccessibilityWidget = () => {
     { id: 'tritanopia', label: 'Tritanopía (Azul)' },
     { id: 'achromatopsia', label: 'Monocromático' },
   ];
+
+  const readCurrentPage = () => {
+    const mainContent = document.querySelector('main, [role="main"]') || document.body;
+    const readableContent = mainContent.cloneNode(true);
+    readableContent.querySelectorAll('script, style, nav, button, input, textarea, select, [aria-hidden="true"], [data-speech-ignore]').forEach((element) => element.remove());
+    readableContent.querySelectorAll('.material-symbols-outlined, [aria-hidden="true"]').forEach((element) => element.remove());
+    readableContent.querySelectorAll('img').forEach((image) => {
+      const alternativeText = image.getAttribute('alt')?.trim();
+      if (alternativeText) image.replaceWith(document.createTextNode(` ${alternativeText} `));
+      else image.remove();
+    });
+    readableContent.querySelectorAll('[aria-label]').forEach((element) => {
+      if (!element.textContent.trim()) element.textContent = element.getAttribute('aria-label');
+    });
+    const pageText = readableContent.innerText || readableContent.textContent || '';
+    const normalizedText = pageText.replace(/\s+/g, ' ').trim();
+
+    if (!normalizedText) {
+      speak(ui('No se encontró contenido para leer.'));
+      return;
+    }
+
+    speak(normalizedText, document.title);
+  };
 
   return (
     <>
@@ -54,7 +81,7 @@ export const AccessibilityWidget = () => {
               role="dialog"
               aria-modal="true"
               aria-labelledby="a11y-title"
-              className="w-full max-w-xl bg-white dark:bg-[#2e192c] text-[#231123] dark:text-[#FAF5F8] rounded-3xl border border-[#e6d5e2] dark:border-white/15 shadow-2xl p-5 sm:p-7 overflow-hidden relative max-h-[90vh] flex flex-col"
+              className="w-full max-w-xl min-w-0 bg-white dark:bg-[#2e192c] text-[#231123] dark:text-[#FAF5F8] rounded-3xl border border-[#e6d5e2] dark:border-white/15 shadow-2xl p-4 sm:p-7 overflow-hidden relative max-h-[90dvh] flex flex-col"
             >
               {/* Encabezado */}
               <div className="flex items-center justify-between pb-4 border-b border-[#e6d5e2] dark:border-white/10 shrink-0">
@@ -63,7 +90,7 @@ export const AccessibilityWidget = () => {
                     <span className="material-symbols-outlined text-[24px]">accessibility_new</span>
                   </div>
                   <div>
-                    <h2 id="a11y-title" className="text-xl sm:text-2xl font-black tracking-tight flex items-center gap-2">{ui("Accesibilidad Universal")}<span className="text-[10px] uppercase tracking-wider px-2 py-0.5 rounded-full bg-[#B80C09]/15 text-[#B80C09] font-extrabold">
+                        <h2 id="a11y-title" className="text-lg sm:text-2xl font-black tracking-tight flex flex-wrap items-center gap-2">{ui("Accesibilidad Universal")}<span className="text-[10px] uppercase tracking-wider px-2 py-0.5 rounded-full bg-[#B80C09]/15 text-[#B80C09] font-extrabold">
                         WCAG 2.1
                       </span>
                     </h2>
@@ -341,46 +368,42 @@ export const AccessibilityWidget = () => {
                     />
                   </label>
 
-                  {/* 3.3 Lector de Pantalla y Síntesis de Voz (TTS) */}
+                  {/* 3.3 Lectura completa de la página y síntesis de voz */}
                   <div className="p-3.5 rounded-2xl bg-gray-50 dark:bg-white/5 border border-gray-100 dark:border-white/5 flex flex-col gap-3">
                     <div className="flex items-center justify-between">
                       <span className="font-bold flex items-center gap-2">
-                        <span className="material-symbols-outlined text-[18px] text-[#B80C09]">record_voice_over</span>{ui("Lector de Reseñas por Voz (TTS)")}</span>
-                      <button
-                        type="button"
-                        onClick={() =>
-                          isSpeaking
-                            ? stopSpeaking()
-                            : speak(ui('Bienvenido a SONAR. Esta es una prueba de lectura en voz alta para tus reseñas y análisis líricos.'))
-                        }
-                        className={`px-3 py-1 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center gap-1 ${
-                          isSpeaking
-                            ? 'bg-[#B80C09] text-white animate-pulse'
-                            : 'bg-white dark:bg-[#4B2840] text-[#B80C09] dark:text-pink-200 border border-rose-200 dark:border-white/10'
-                        }`}
-                      >
-                        <span className="material-symbols-outlined text-[14px]">
-                          {isSpeaking ? 'stop' : 'volume_up'}
-                        </span>
-                        <span>{isSpeaking ? ui("Detener Voz") : ui("Probar Voz")}</span>
-                      </button>
+                        <span className="material-symbols-outlined text-[18px] text-[#B80C09]">record_voice_over</span>{ui("Lectura de toda la página")}</span>
                     </div>
-                    <div className="flex items-center gap-3 text-xs text-[#5c435a] dark:text-[#B89CB0]">
-                      <span>{ui("Velocidad de Lectura:")}</span>
-                      {[0.8, 1, 1.25].map((rate) => (
-                        <button
-                          key={rate}
-                          type="button"
-                          onClick={() => updateSetting('ttsRate', rate)}
-                          className={`px-2.5 py-1 rounded-lg font-bold cursor-pointer ${
-                            settings.ttsRate === rate
-                              ? 'bg-[#B80C09] text-white'
-                              : 'bg-white dark:bg-[#4B2840] border border-gray-200 dark:border-white/10'
-                          }`}
-                        >
-                          {rate}x
-                        </button>
-                      ))}
+                    <p className="text-xs text-[#5c435a] dark:text-[#B89CB0]">{ui("Lee el contenido principal en el idioma seleccionado. La lectura comienza cuando tú la activas.")}</p>
+                    {isSpeaking && <p className="text-xs font-semibold text-[#5c1d5e] dark:text-pink-200" role="status" aria-live="polite">{ui(isSpeechPaused ? 'Lectura pausada' : 'Lectura en curso')}</p>}
+                    <div className="a11y-reader__actions">
+                      {!isSpeaking && <button type="button" onClick={readCurrentPage} className="min-h-11 px-3 py-2 rounded-xl text-xs font-bold bg-[#B80C09] text-white hover:bg-[#960a07] cursor-pointer">
+                        <span className="material-symbols-outlined text-[14px] align-middle mr-1">volume_up</span>{ui("Leer página")}
+                      </button>}
+                      {isSpeaking && !isSpeechPaused && <button type="button" onClick={pauseSpeaking} className="min-h-11 px-3 py-2 rounded-xl text-xs font-bold bg-white dark:bg-[#4B2840] border border-gray-200 dark:border-white/10 cursor-pointer">{ui("Pausar")}</button>}
+                      {isSpeaking && isSpeechPaused && <button type="button" onClick={resumeSpeaking} className="min-h-11 px-3 py-2 rounded-xl text-xs font-bold bg-white dark:bg-[#4B2840] border border-gray-200 dark:border-white/10 cursor-pointer">{ui("Continuar")}</button>}
+                      {isSpeaking && <button type="button" onClick={stopSpeaking} className="min-h-11 px-3 py-2 rounded-xl text-xs font-bold bg-white dark:bg-[#4B2840] border border-gray-200 dark:border-white/10 cursor-pointer">{ui("Detener lectura")}</button>}
+                    </div>
+                    <div className="a11y-reader__speed">
+                      <span>{ui("Velocidad de Lectura:")} {isSpeaking && ui("Detén la lectura para cambiar la velocidad.")}</span>
+                      <div className="a11y-reader__speed-options" role="group" aria-label={ui("Velocidad de Lectura:")}>
+                        {[0.8, 1, 1.25].map((rate) => (
+                          <button
+                            key={rate}
+                            type="button"
+                            aria-pressed={settings.ttsRate === rate}
+                            disabled={isSpeaking}
+                            onClick={() => updateSetting('ttsRate', rate)}
+                            className={`min-h-11 px-3 rounded-lg font-bold cursor-pointer ${
+                              settings.ttsRate === rate
+                                ? 'bg-[#B80C09] text-white'
+                                : 'bg-white dark:bg-[#4B2840] border border-gray-200 dark:border-white/10'
+                            } disabled:cursor-not-allowed disabled:opacity-50`}
+                          >
+                            {rate}x
+                          </button>
+                        ))}
+                      </div>
                     </div>
                   </div>
                 </div>

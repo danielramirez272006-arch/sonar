@@ -2,7 +2,9 @@ import { useUIText } from '../../../shared/i18n/use-ui-text.js';
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '../../../shared/context/auth-context';
+import { useLanguage } from '../../../shared/context/language-context';
 import { soundEffects } from '../../../shared/utils/sound-effects';
+import { repairRewardCopy } from './reward-copy';
 
 export const REWARD_ITEMS = [
   // --- Marcos de Avatar ---
@@ -330,7 +332,35 @@ const INITIAL_QUESTS = [
 
 export const RewardsStoreTab = () => {
   const ui = useUIText();
+  const { currentLang, t: translate } = useLanguage();
   const { user, updateUser } = useAuth();
+  const localizedReward = (item) => {
+    return {
+      ...item,
+      name: translate(`rewards.${item.id}.name`, { defaultValue: item.name }),
+      description: translate(`rewards.${item.id}.description`, { defaultValue: item.description }),
+    };
+  };
+  const localizedQuest = (quest) => {
+    return {
+      ...quest,
+      title: translate(`rewards.${quest.id}.title`, { defaultValue: quest.title }),
+      desc: translate(`rewards.${quest.id}.description`, { defaultValue: quest.desc }),
+    };
+  };
+  const localizedTransactionName = (transaction) => {
+    const reward = REWARD_ITEMS.find((item) => item.name === transaction.name);
+    return reward ? localizedReward(reward).name : transaction.name;
+  };
+  const rewardsText = {
+    en: { all: 'All', frames: 'Avatar Frames', skins: 'Audio Skins', dsp: 'DSP Presets', sounds: 'UI Sounds', themes: 'Themes', titles: 'Titles', vip: 'VIP Passes', catalog: 'Rewards Catalog', catalogDesc: 'Customize your avatar, player, DSP chain and visual themes.', quests: 'Audiophile Missions and Challenges', questDesc: 'Complete listening and analysis goals to earn coins quickly.', daily: 'Daily', weekly: 'Weekly', progress: 'Progress', claimed: 'Reward Claimed', claim: 'Claim Reward!', inProgress: 'In Progress', cost: 'Cost', equipped: 'Equipped', equip: 'Equip', redeem: 'Redeem', preview: 'Live Preview', previewTitle: 'Live Preview • Sandbox', testing: 'PREVIEWING', player: 'Sonar Hi-Fi Player', price: 'Price', close: 'Close', redeemNow: 'Redeem Now', coins: 'Your Sonar Coins', streak: 'Listening Streak', crate: 'Daily Vinyl Crate', available: 'Available!', opened: 'Opened', crateTitle: 'Mystery Unpacking', openCrate: 'Open Vinyl Crate (Free)', opening: 'Opening Vinyl...', rewardRedeemed: 'Reward Redeemed', community: 'Monthly Community Goal', communityReviews: 'Collective Hi-Fi Reviews', receipt: 'Retro Receipt', store: 'Audiophile Store & Rewards', vault: 'Sound Loyalty Vault' },
+    fr: { all: 'Tout', frames: 'Cadres d’avatar', skins: 'Skins audio', dsp: 'Préréglages DSP', sounds: 'Sons UI', themes: 'Thèmes', titles: 'Titres', vip: 'Pass VIP', catalog: 'Catalogue des récompenses', catalogDesc: 'Personnalisez votre avatar, lecteur, chaîne DSP et thèmes visuels.', quests: 'Missions et défis audiophiles', questDesc: 'Atteignez vos objectifs d’écoute et d’analyse pour gagner des pièces.', daily: 'Quotidienne', weekly: 'Hebdomadaire', progress: 'Progression', claimed: 'Récompense récupérée', claim: 'Récupérer la récompense !', inProgress: 'En cours', cost: 'Coût', equipped: 'Équipé', equip: 'Équiper', redeem: 'Échanger', preview: 'Aperçu en direct', previewTitle: 'Aperçu en direct • Bac à sable', testing: 'APERÇU', player: 'Lecteur Sonar Hi-Fi', price: 'Prix', close: 'Fermer', redeemNow: 'Échanger maintenant', coins: 'Vos Sonar Coins', streak: 'Série d’écoute', crate: 'Caisse vinyle quotidienne', available: 'Disponible !', opened: 'Ouverte', crateTitle: 'Ouverture mystérieuse', openCrate: 'Ouvrir la caisse vinyle (gratuit)', opening: 'Ouverture du vinyle…', rewardRedeemed: 'Récompense récupérée', community: 'Objectif communautaire mensuel', communityReviews: 'Avis Hi-Fi collectifs', receipt: 'Reçu rétro', store: 'Boutique et récompenses audiophiles', vault: 'Coffre de fidélité sonore' },
+    it: { all: 'Tutti', frames: 'Cornici avatar', skins: 'Skin audio', dsp: 'Preset DSP', sounds: 'Suoni UI', themes: 'Temi', titles: 'Titoli', vip: 'Pass VIP', catalog: 'Catalogo premi', catalogDesc: 'Personalizza avatar, lettore, catena DSP e temi visivi.', quests: 'Missioni e sfide audiofile', questDesc: 'Completa obiettivi di ascolto e analisi per guadagnare monete.', daily: 'Giornaliera', weekly: 'Settimanale', progress: 'Progresso', claimed: 'Premio riscosso', claim: 'Riscatta premio!', inProgress: 'In corso', cost: 'Costo', equipped: 'Equipaggiato', equip: 'Equipaggia', redeem: 'Riscatta', preview: 'Anteprima dal vivo', previewTitle: 'Anteprima dal vivo • Sandbox', testing: 'ANTEPRIMA', player: 'Lettore Sonar Hi-Fi', price: 'Prezzo', close: 'Chiudi', redeemNow: 'Riscatta ora', coins: 'I tuoi Sonar Coins', streak: 'Serie di ascolto', crate: 'Cassa vinile giornaliera', available: 'Disponibile!', opened: 'Aperta', crateTitle: 'Apertura misteriosa', openCrate: 'Apri cassa vinile (gratis)', opening: 'Apertura del vinile…', rewardRedeemed: 'Premio riscattato', community: 'Obiettivo comunitario mensile', communityReviews: 'Recensioni Hi-Fi collettive', receipt: 'Scontrino rétro', store: 'Negozio e premi audiofili', vault: 'Scrigno della fedeltà sonora' },
+    zh: { all: '全部', frames: '头像边框', skins: '音频皮肤', dsp: 'DSP 预设', sounds: '界面音效', themes: '主题', titles: '称号', vip: 'VIP 通行证', catalog: '奖励目录', catalogDesc: '自定义头像、播放器、DSP 音链和视觉主题。', quests: '发烧友任务与挑战', questDesc: '完成聆听和分析目标，快速获得金币。', daily: '每日', weekly: '每周', progress: '进度', claimed: '已领取奖励', claim: '领取奖励！', inProgress: '进行中', cost: '花费', equipped: '已装备', equip: '装备', redeem: '兑换', preview: '实时预览', previewTitle: '实时预览 • 沙盒', testing: '预览中', player: 'Sonar Hi-Fi 播放器', price: '价格', close: '关闭', redeemNow: '立即兑换', coins: '你的 Sonar Coins', streak: '连续聆听', crate: '每日黑胶箱', available: '可领取！', opened: '已开启', crateTitle: '神秘开箱', openCrate: '免费开启黑胶箱', opening: '正在开启黑胶…', rewardRedeemed: '奖励已兑换', community: '月度社区目标', communityReviews: '社区 Hi-Fi 评论', receipt: '复古收据', store: '发烧友商店与奖励', vault: '聆听忠诚宝库' },
+    ja: { all: 'すべて', frames: 'アバターフレーム', skins: 'オーディオスキン', dsp: 'DSPプリセット', sounds: 'UIサウンド', themes: 'テーマ', titles: '称号', vip: 'VIPパス', catalog: 'リワードカタログ', catalogDesc: 'アバター、プレーヤー、DSPチェーン、ビジュアルテーマをカスタマイズ。', quests: 'オーディオファイルのミッションとチャレンジ', questDesc: 'リスニングと分析の目標を達成してコインを獲得しましょう。', daily: 'デイリー', weekly: 'ウィークリー', progress: '進捗', claimed: '報酬獲得済み', claim: '報酬を受け取る！', inProgress: '進行中', cost: 'コスト', equipped: '装備中', equip: '装備する', redeem: '交換', preview: 'ライブプレビュー', previewTitle: 'ライブプレビュー • サンドボックス', testing: 'プレビュー中', player: 'Sonar Hi-Fi プレーヤー', price: '価格', close: '閉じる', redeemNow: '今すぐ交換', coins: 'あなたのSonar Coins', streak: '連続リスニング', crate: 'デイリーレコードボックス', available: '利用可能！', opened: '開封済み', crateTitle: 'ミステリー開封', openCrate: 'レコードボックスを開く（無料）', opening: 'レコードを開封中…', rewardRedeemed: '報酬交換済み', community: '月間コミュニティ目標', communityReviews: 'コミュニティHi-Fiレビュー', receipt: 'レトロレシート', store: 'オーディオファイルのストアと報酬', vault: 'サウンドロイヤルティ保管庫' },
+  };
+  const spanishRewardsText = { all: 'Todos', frames: 'Marcos Avatar', skins: 'Skins Audio', dsp: 'Presets DSP', sounds: 'Sonidos UI', themes: 'Temas', titles: 'Títulos', vip: 'Pases VIP', catalog: 'Catálogo de Recompensas', catalogDesc: 'Personaliza tu avatar, reproductor, cadena DSP y temas visuales.', quests: 'Misiones y Desafíos Audiófilos', questDesc: 'Completa objetivos de audición y análisis para sumar monedas rápidamente.', daily: 'Diaria', weekly: 'Semanal', progress: 'Progreso', claimed: 'Recompensa Reclamada', claim: '¡Reclamar Recompensa!', inProgress: 'En Progreso', cost: 'Costo', equipped: 'Equipado', equip: 'Equipar', redeem: 'Canjear', preview: 'Probar en Vivo', previewTitle: 'Probador en Vivo • Sandbox', testing: 'PROBANDO', player: 'Reproductor Sonar Hi-Fi', price: 'Precio', close: 'Cerrar', redeemNow: 'Canjear Ahora', coins: 'Tus Sonar Coins', streak: 'Racha de Escucha', crate: 'Caja Diaria de Vinilo', available: '¡Disponible!', opened: 'Abierta', crateTitle: 'Desempaque Misterioso', openCrate: 'Abrir Caja de Vinilo (Gratis)', opening: 'Abriendo Vinilo...', rewardRedeemed: 'Recompensa Canjeada', community: 'Meta Comunitaria Mes', communityReviews: 'Reseñas Hi-Fi colectivas', receipt: 'Recibo Retro', store: 'Tienda & Recompensas Audiófilas', vault: 'Bóveda de Fidelidad Sonora' };
+  const t = (key) => repairRewardCopy(rewardsText[currentLang]?.[key] || spanishRewardsText[key]);
 
   // Balance de Puntos & XP
   const [points, setPoints] = useState(() => {
@@ -714,7 +744,7 @@ export const RewardsStoreTab = () => {
   const percentToNextLevel = Math.min(100, Math.round((currentLevelProgress / 300) * 100));
 
   return (
-    <div className="space-y-8 text-white relative">
+    <div className="space-y-8 text-[#231123] dark:text-white relative">
       {/* Toast Notifier */}
       <AnimatePresence>
         {toastMessage && (
@@ -731,7 +761,7 @@ export const RewardsStoreTab = () => {
       </AnimatePresence>
 
       {/* Header Principal con Balance & Controles */}
-      <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-zinc-900 via-zinc-900/90 to-black border border-white/10 p-6 md:p-8 shadow-2xl">
+      <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-[#231123] via-[#4B2840] to-[#231123] border border-[#4B2840] p-6 md:p-8 shadow-2xl text-white">
         <div className="absolute top-0 right-0 w-96 h-96 bg-amber-500/10 rounded-full blur-3xl pointer-events-none" />
         <div className="absolute bottom-0 left-0 w-80 h-80 bg-cyan-500/10 rounded-full blur-3xl pointer-events-none" />
 
@@ -767,13 +797,13 @@ export const RewardsStoreTab = () => {
           {/* Tarjetas de Balance */}
           <div className="flex flex-wrap items-center gap-4 w-full lg:w-auto">
             {/* Sonar Coins */}
-            <div className="flex-1 sm:flex-initial bg-zinc-800/80 border border-amber-500/30 rounded-2xl p-4 flex items-center gap-4 shadow-lg backdrop-blur-sm">
+            <div className="flex-1 sm:flex-initial bg-white dark:bg-zinc-800/80 border border-[#4B2840]/30 dark:border-amber-500/30 rounded-2xl p-4 flex items-center gap-4 shadow-lg backdrop-blur-sm text-[#231123] dark:text-white">
               <div className="w-12 h-12 rounded-xl bg-gradient-to-tr from-amber-500 to-yellow-300 flex items-center justify-center text-zinc-950 shadow-md shadow-amber-500/20">
                 <span className="material-symbols-outlined text-2xl font-bold">monetization_on</span>
               </div>
               <div>
-                <div className="text-xs text-zinc-400 font-medium">Tus Sonar Coins</div>
-                <div className="text-2xl font-black text-amber-400 flex items-center gap-1.5">
+                <div className="text-xs text-[#5c435a] dark:text-zinc-400 font-medium">{t('coins')}</div>
+                <div className="text-2xl font-black text-amber-700 dark:text-amber-400 flex items-center gap-1.5">
                   {points.toLocaleString()}
                   <span className="text-xs font-bold text-amber-500/80">🪙</span>
                 </div>
@@ -781,13 +811,13 @@ export const RewardsStoreTab = () => {
             </div>
 
             {/* Rango & XP */}
-            <div className="flex-1 sm:flex-initial bg-zinc-800/80 border border-white/10 rounded-2xl p-4 flex items-center gap-4 shadow-lg backdrop-blur-sm">
+            <div className="flex-1 sm:flex-initial bg-white dark:bg-zinc-800/80 border border-[#e6d5e2] dark:border-white/10 rounded-2xl p-4 flex items-center gap-4 shadow-lg backdrop-blur-sm text-[#231123] dark:text-white">
               <div className="w-12 h-12 rounded-xl bg-gradient-to-tr from-purple-500 to-indigo-400 flex items-center justify-center text-white shadow-md shadow-purple-500/20">
                 <span className="material-symbols-outlined text-2xl">military_tech</span>
               </div>
               <div>
-                <div className="text-xs text-zinc-400 font-medium">Nivel {userLevel} • Audiófilo</div>
-                <div className="text-lg font-bold text-white flex items-center gap-2">
+                <div className="text-xs text-[#5c435a] dark:text-zinc-400 font-medium">Nivel {userLevel} • Audiófilo</div>
+                <div className="text-lg font-bold text-[#231123] dark:text-white flex items-center gap-2">
                   {userXp} XP
                   <span className="text-xs text-purple-400 font-medium">({percentToNextLevel}%)</span>
                 </div>
@@ -800,7 +830,7 @@ export const RewardsStoreTab = () => {
                 soundEffects.playClick();
                 setShowReceipt(true);
               }}
-              className="px-3.5 py-4 bg-zinc-800/80 hover:bg-zinc-700/80 border border-white/10 hover:border-amber-400/40 rounded-2xl flex items-center gap-2 text-xs font-semibold text-zinc-300 hover:text-amber-400 transition-all shadow-md"
+              className="px-3.5 py-4 bg-white dark:bg-zinc-800/80 hover:bg-[#f8e9f6] dark:hover:bg-zinc-700/80 border border-[#e6d5e2] dark:border-white/10 hover:border-[#B80C09]/40 rounded-2xl flex items-center gap-2 text-xs font-semibold text-[#5c435a] dark:text-zinc-300 hover:text-[#B80C09] dark:hover:text-amber-400 transition-all shadow-md"
               title="Ver Recibo de Disquería Retro"
             >
               <span className="material-symbols-outlined text-lg">receipt_long</span>
@@ -813,13 +843,13 @@ export const RewardsStoreTab = () => {
       {/* Fila: Racha Diaria + Caja Misteriosa + Meta Comunitaria */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         {/* 1. Racha de Escucha (Streak) */}
-        <div className="bg-gradient-to-br from-zinc-900 via-zinc-900/90 to-zinc-950 border border-orange-500/20 rounded-3xl p-6 relative overflow-hidden flex flex-col justify-between shadow-xl">
+          <div className="bg-white dark:bg-gradient-to-br dark:from-zinc-900 dark:via-zinc-900/90 dark:to-zinc-950 border border-[#e6d5e2] dark:border-orange-500/20 rounded-3xl p-6 relative overflow-hidden flex flex-col justify-between shadow-xl text-[#231123] dark:text-white">
           <div className="flex items-center justify-between">
-            <span className="px-3 py-1 rounded-full bg-orange-500/10 text-orange-400 text-xs font-bold border border-orange-500/20 flex items-center gap-1">
+            <span className="px-3 py-1 rounded-full bg-[#B80C09]/10 dark:bg-orange-500/10 text-[#B80C09] dark:text-orange-400 text-xs font-bold border border-[#B80C09]/20 dark:border-orange-500/20 flex items-center gap-1">
               <span className="material-symbols-outlined text-sm">local_fire_department</span>
-              Racha de Escucha
+              {t('streak')}
             </span>
-            <span className="text-xs text-zinc-500 font-mono flex items-center gap-1">
+            <span className="text-xs text-[#5c435a]/70 dark:text-zinc-500 font-mono flex items-center gap-1">
               <span className="material-symbols-outlined text-xs">timer</span>
               {timeRemaining}
             </span>
@@ -830,10 +860,10 @@ export const RewardsStoreTab = () => {
               {streakDays}
             </div>
             <div>
-              <div className="text-xl font-bold text-white flex items-center gap-2">
+              <div className="text-xl font-bold text-[#231123] dark:text-white flex items-center gap-2">
                 Días Consecutivos 🔥
               </div>
-              <p className="text-xs text-orange-400/90 mt-0.5">
+              <p className="text-xs text-[#B80C09] dark:text-orange-400/90 mt-0.5">
                 Multiplicador activo: <span className="font-bold">{streakDays >= 5 ? '2.0x' : streakDays >= 3 ? '1.5x' : '1.2x'} Coins</span>
               </p>
             </div>
@@ -844,7 +874,7 @@ export const RewardsStoreTab = () => {
             onClick={handleClaimDailyStreak}
             className={`w-full py-3 rounded-2xl font-bold text-sm flex items-center justify-center gap-2 transition-all ${
               streakClaimedToday
-                ? 'bg-zinc-800/80 text-zinc-500 border border-zinc-700/50 cursor-not-allowed'
+                ? 'bg-gray-100 dark:bg-zinc-800/80 text-gray-500 dark:text-zinc-500 border border-gray-200 dark:border-zinc-700/50 cursor-not-allowed'
                 : 'bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-400 hover:to-amber-400 text-black shadow-lg shadow-orange-500/20 active:scale-95'
             }`}
           >
@@ -856,14 +886,14 @@ export const RewardsStoreTab = () => {
         </div>
 
         {/* 2. Caja Misteriosa de Vinilo */}
-        <div className="bg-gradient-to-br from-zinc-900 via-zinc-900/90 to-zinc-950 border border-amber-500/20 rounded-3xl p-6 relative overflow-hidden flex flex-col justify-between shadow-xl">
+          <div className="bg-white dark:bg-gradient-to-br dark:from-zinc-900 dark:via-zinc-900/90 dark:to-zinc-950 border border-[#e6d5e2] dark:border-amber-500/20 rounded-3xl p-6 relative overflow-hidden flex flex-col justify-between shadow-xl text-[#231123] dark:text-white">
           <div className="flex items-center justify-between">
-            <span className="px-3 py-1 rounded-full bg-amber-500/10 text-amber-400 text-xs font-bold border border-amber-500/20 flex items-center gap-1">
+            <span className="px-3 py-1 rounded-full bg-[#B80C09]/10 dark:bg-amber-500/10 text-[#B80C09] dark:text-amber-400 text-xs font-bold border border-[#B80C09]/20 dark:border-amber-500/20 flex items-center gap-1">
               <span className="material-symbols-outlined text-sm">album</span>
-              Caja Diaria de Vinilo
+              {t('crate')}
             </span>
-            <span className="text-xs font-semibold text-amber-300">
-              {crateOpened ? 'Abierta' : '¡Disponible!'}
+            <span className="text-xs font-semibold text-amber-800 dark:text-amber-300">
+              {crateOpened ? t('opened') : t('available')}
             </span>
           </div>
 
@@ -878,8 +908,8 @@ export const RewardsStoreTab = () => {
               </span>
             </motion.div>
             <div>
-              <div className="text-lg font-bold text-white">Desempaque Misterioso</div>
-              <p className="text-xs text-zinc-400 mt-0.5">
+            <div className="text-lg font-bold text-[#231123] dark:text-white">{t('crateTitle')}</div>
+              <p className="text-xs text-[#5c435a] dark:text-zinc-400 mt-0.5">
                 {crateOpened
                   ? 'Vuelve mañana para abrir otra funda de vinilo'
                   : 'Abre la funda sellada y gana recompensas aleatorias'}
@@ -892,7 +922,7 @@ export const RewardsStoreTab = () => {
             onClick={handleOpenCrate}
             className={`w-full py-3 rounded-2xl font-bold text-sm flex items-center justify-center gap-2 transition-all ${
               crateOpened
-                ? 'bg-zinc-800/80 text-zinc-500 border border-zinc-700/50 cursor-not-allowed'
+                ? 'bg-gray-100 dark:bg-zinc-800/80 text-gray-500 dark:text-zinc-500 border border-gray-200 dark:border-zinc-700/50 cursor-not-allowed'
                 : isOpeningCrate
                 ? 'bg-amber-500/50 text-black animate-pulse cursor-wait'
                 : 'bg-gradient-to-r from-amber-400 to-yellow-500 hover:from-amber-300 hover:to-yellow-400 text-black shadow-lg shadow-amber-500/20 active:scale-95'
@@ -901,93 +931,94 @@ export const RewardsStoreTab = () => {
             <span className="material-symbols-outlined text-lg">
               {isOpeningCrate ? 'hourglass_top' : crateOpened ? 'check' : 'lock_open'}
             </span>
-            {isOpeningCrate ? 'Abriendo Vinilo...' : crateOpened ? 'Recompensa Canjeada' : 'Abrir Caja de Vinilo (Gratis)'}
+            {isOpeningCrate ? t('opening') : crateOpened ? t('rewardRedeemed') : t('openCrate')}
           </button>
         </div>
 
         {/* 3. Meta Comunitaria de Reseñas */}
-        <div className="bg-gradient-to-br from-zinc-900 via-zinc-900/90 to-zinc-950 border border-cyan-500/20 rounded-3xl p-6 relative overflow-hidden flex flex-col justify-between shadow-xl">
+          <div className="bg-white dark:bg-gradient-to-br dark:from-zinc-900 dark:via-zinc-900/90 dark:to-zinc-950 border border-[#e6d5e2] dark:border-cyan-500/20 rounded-3xl p-6 relative overflow-hidden flex flex-col justify-between shadow-xl text-[#231123] dark:text-white">
           <div className="flex items-center justify-between">
-            <span className="px-3 py-1 rounded-full bg-cyan-500/10 text-cyan-400 text-xs font-bold border border-cyan-500/20 flex items-center gap-1">
+            <span className="px-3 py-1 rounded-full bg-[#003844]/10 dark:bg-cyan-500/10 text-[#003844] dark:text-cyan-400 text-xs font-bold border border-[#003844]/20 dark:border-cyan-500/20 flex items-center gap-1">
               <span className="material-symbols-outlined text-sm">groups</span>
               Meta Comunitaria Mes
             </span>
-            <span className="text-xs font-bold text-cyan-300">{communityProgressPercent}%</span>
+            <span className="text-xs font-bold text-[#003844] dark:text-cyan-300">{communityProgressPercent}%</span>
           </div>
 
           <div className="my-4">
-            <div className="flex justify-between text-xs text-zinc-300 mb-1.5">
+            <div className="flex justify-between text-xs text-[#5c435a] dark:text-zinc-300 mb-1.5">
               <span>Reseñas Hi-Fi colectivas</span>
-              <span className="font-bold text-cyan-400">{communityReviewsCount} / {communityGoal}</span>
+              <span className="font-bold text-[#003844] dark:text-cyan-400">{communityReviewsCount} / {communityGoal}</span>
             </div>
-            <div className="w-full h-3 bg-zinc-800 rounded-full overflow-hidden border border-white/5">
+            <div className="w-full h-3 bg-gray-200 dark:bg-zinc-800 rounded-full overflow-hidden border border-[#e6d5e2] dark:border-white/5">
               <div
                 className="h-full bg-gradient-to-r from-cyan-500 to-blue-500 rounded-full transition-all duration-700 shadow-[0_0_12px_rgba(6,182,212,0.5)]"
                 style={{ width: `${communityProgressPercent}%` }}
               />
             </div>
-            <p className="text-[11px] text-zinc-400 mt-2">
-              🎁 Al llegar a la meta: Toda la comunidad desbloquea la skin conmemorativa <span className="text-cyan-300 font-semibold">Tornamesa Direct Drive</span>.
+            <p className="text-[11px] text-[#5c435a] dark:text-zinc-400 mt-2">
+              🎁 Al llegar a la meta: Toda la comunidad desbloquea la skin conmemorativa <span className="text-[#003844] dark:text-cyan-300 font-semibold">Tornamesa Direct Drive</span>.
             </p>
           </div>
 
-          <div className="text-center py-1 bg-cyan-500/5 rounded-xl border border-cyan-500/10 text-xs font-semibold text-cyan-300">
+          <div className="text-center py-1 bg-[#003844]/5 dark:bg-cyan-500/5 rounded-xl border border-[#003844]/10 dark:border-cyan-500/10 text-xs font-semibold text-[#003844] dark:text-cyan-300">
             ¡Faltan solo {communityGoal - communityReviewsCount} reseñas para el desbloqueo colectivo!
           </div>
         </div>
       </div>
 
       {/* Misiones Dinámicas (Quests) */}
-      <div className="bg-zinc-900/60 border border-white/10 rounded-3xl p-6 md:p-8 backdrop-blur-md">
+      <div className="bg-[#f8e9f6] dark:bg-zinc-900/60 border border-[#e6d5e2] dark:border-white/10 rounded-3xl p-6 md:p-8 backdrop-blur-md">
         <div className="flex items-center justify-between mb-6">
           <div>
-            <h3 className="text-xl font-black text-white flex items-center gap-2">
-              <span className="material-symbols-outlined text-amber-400">task_alt</span>
+            <h3 className="text-xl font-black text-[#231123] dark:text-white flex items-center gap-2">
+              <span className="material-symbols-outlined text-[#B80C09] dark:text-amber-400">task_alt</span>
               Misiones y Desafíos Audiófilos
             </h3>
-            <p className="text-xs text-zinc-400 mt-0.5">
+            <p className="text-xs text-[#5c435a] dark:text-zinc-400 mt-0.5">
               Completa objetivos de audición y análisis para sumar monedas rápidamente.
             </p>
           </div>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {quests.map((quest) => {
+        {quests.map((storedQuest) => {
+          const quest = localizedQuest(storedQuest);
             const isReady = quest.progress >= quest.target;
             const progressPercent = Math.min(100, Math.round((quest.progress / quest.target) * 100));
 
             return (
               <div
                 key={quest.id}
-                className="p-4 rounded-2xl bg-zinc-800/50 border border-white/5 hover:border-white/15 transition-all flex flex-col justify-between gap-4"
+                className="p-4 rounded-2xl bg-white dark:bg-zinc-800/50 border border-[#e6d5e2] dark:border-white/5 hover:border-[#B80C09]/40 dark:hover:border-white/15 transition-all flex flex-col justify-between gap-4"
               >
                 <div className="flex items-start justify-between gap-3">
                   <div className="flex items-start gap-3">
-                    <div className="w-10 h-10 rounded-xl bg-amber-500/10 border border-amber-500/20 text-amber-400 flex items-center justify-center shrink-0">
+                    <div className="w-10 h-10 rounded-xl bg-[#B80C09]/10 dark:bg-amber-500/10 border border-[#B80C09]/20 dark:border-amber-500/20 text-[#B80C09] dark:text-amber-400 flex items-center justify-center shrink-0">
                       <span className="material-symbols-outlined">{quest.icon}</span>
                     </div>
                     <div>
-                      <div className="text-sm font-bold text-white flex items-center gap-2">
+                      <div className="text-sm font-bold text-[#231123] dark:text-white flex items-center gap-2">
                         {quest.title}
-                        <span className="text-[10px] px-2 py-0.5 rounded-full bg-zinc-700/60 text-zinc-300 uppercase font-semibold">
+                        <span className="text-[10px] px-2 py-0.5 rounded-full bg-[#f8e9f6] dark:bg-zinc-700/60 text-[#5c435a] dark:text-zinc-300 uppercase font-semibold">
                           {quest.type === 'daily' ? 'Diaria' : 'Semanal'}
                         </span>
                       </div>
-                      <p className="text-xs text-zinc-400 mt-0.5">{quest.desc}</p>
+                      <p className="text-xs text-[#5c435a] dark:text-zinc-400 mt-0.5">{quest.desc}</p>
                     </div>
                   </div>
                   <div className="text-right shrink-0">
-                    <span className="text-xs font-black text-amber-400">+{quest.rewardPts} 🪙</span>
+                    <span className="text-xs font-black text-amber-700 dark:text-amber-400">+{quest.rewardPts} 🪙</span>
                     <div className="text-[10px] text-purple-400 font-semibold">+{quest.rewardXp} XP</div>
                   </div>
                 </div>
 
                 <div className="space-y-2">
-                  <div className="flex justify-between text-xs text-zinc-400 font-medium">
-                    <span>Progreso</span>
-                    <span className="text-white font-bold">{quest.progress} / {quest.target}</span>
+                  <div className="flex justify-between text-xs text-[#5c435a] dark:text-zinc-400 font-medium">
+                    <span>{t('progress')}</span>
+                    <span className="text-[#231123] dark:text-white font-bold">{quest.progress} / {quest.target}</span>
                   </div>
-                  <div className="w-full h-2 bg-zinc-700/50 rounded-full overflow-hidden">
+                  <div className="w-full h-2 bg-gray-200 dark:bg-zinc-700/50 rounded-full overflow-hidden">
                     <div
                       className="h-full bg-gradient-to-r from-amber-500 to-yellow-400 rounded-full transition-all duration-500"
                       style={{ width: `${progressPercent}%` }}
@@ -998,16 +1029,16 @@ export const RewardsStoreTab = () => {
                     onClick={() => handleClaimQuest(quest.id)}
                     className={`w-full py-2 rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 transition-all ${
                       quest.claimed
-                        ? 'bg-zinc-800 text-zinc-500 border border-zinc-700/40 cursor-not-allowed'
+                        ? 'bg-gray-100 dark:bg-zinc-800 text-gray-500 dark:text-zinc-500 border border-gray-200 dark:border-zinc-700/40 cursor-not-allowed'
                         : isReady
                         ? 'bg-gradient-to-r from-amber-500 to-yellow-400 hover:from-amber-400 hover:to-yellow-300 text-black font-extrabold shadow-md shadow-amber-500/20 active:scale-95'
-                        : 'bg-zinc-800 text-zinc-400 border border-white/5 cursor-not-allowed'
+                        : 'bg-gray-100 dark:bg-zinc-800 text-gray-500 dark:text-zinc-400 border border-gray-200 dark:border-white/5 cursor-not-allowed'
                     }`}
                   >
                     <span className="material-symbols-outlined text-sm">
                       {quest.claimed ? 'done_all' : isReady ? 'redeem' : 'lock'}
                     </span>
-                    {quest.claimed ? 'Recompensa Reclamada' : isReady ? '¡Reclamar Recompensa!' : 'En Progreso'}
+                    {quest.claimed ? t('claimed') : isReady ? t('claim') : t('inProgress')}
                   </button>
                 </div>
               </div>
@@ -1020,11 +1051,11 @@ export const RewardsStoreTab = () => {
       <div className="space-y-6">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div>
-            <h3 className="text-2xl font-black text-white flex items-center gap-2">
-              <span className="material-symbols-outlined text-amber-400">storefront</span>
+            <h3 className="text-2xl font-black text-[#231123] dark:text-white flex items-center gap-2">
+              <span className="material-symbols-outlined text-[#B80C09] dark:text-amber-400">storefront</span>
               Catálogo de Recompensas
             </h3>
-            <p className="text-xs text-zinc-400 mt-0.5">
+            <p className="text-xs text-[#5c435a] dark:text-zinc-400 mt-0.5">
               Personaliza tu avatar, reproductor, cadena DSP y temas visuales.
             </p>
           </div>
@@ -1032,14 +1063,14 @@ export const RewardsStoreTab = () => {
           {/* Filtros de Categoría */}
           <div className="flex flex-wrap items-center gap-2">
             {[
-              { id: 'all', label: 'Todos' },
-              { id: 'frame', label: 'Marcos Avatar' },
-              { id: 'skin', label: 'Skins Audio' },
-              { id: 'dsp', label: 'Presets DSP' },
-              { id: 'sound', label: 'Sonidos UI' },
-              { id: 'theme', label: 'Temas' },
+              { id: 'all', label: t('all') },
+              { id: 'frame', label: t('frames') },
+              { id: 'skin', label: t('skins') },
+              { id: 'dsp', label: t('dsp') },
+              { id: 'sound', label: t('sounds') },
+              { id: 'theme', label: t('themes') },
               { id: 'title', label: 'Títulos' },
-              { id: 'perk', label: 'Pases VIP' },
+              { id: 'perk', label: t('vip') },
             ].map((tab) => (
               <button
                 key={tab.id}
@@ -1050,7 +1081,7 @@ export const RewardsStoreTab = () => {
                 className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all ${
                   activeCategory === tab.id
                     ? 'bg-amber-400 text-black shadow-md shadow-amber-400/20'
-                    : 'bg-zinc-800/80 text-zinc-400 hover:text-white hover:bg-zinc-700/80 border border-white/5'
+                    : 'bg-white dark:bg-zinc-800/80 text-[#5c435a] dark:text-zinc-400 hover:text-[#231123] dark:hover:text-white hover:bg-[#f8e9f6] dark:hover:bg-zinc-700/80 border border-[#e6d5e2] dark:border-white/5'
                 }`}
               >
                 {tab.label}
@@ -1061,7 +1092,8 @@ export const RewardsStoreTab = () => {
 
         {/* Grid de Artículos */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {filteredItems.map((item) => {
+          {filteredItems.map((storedItem) => {
+            const item = localizedReward(storedItem);
             const isOwned = inventory.includes(item.id);
             const isEquipped =
               (item.type === 'frame' && equippedFrame === item.id) ||
@@ -1075,7 +1107,7 @@ export const RewardsStoreTab = () => {
               <motion.div
                 key={item.id}
                 whileHover={{ y: -4 }}
-                className="bg-zinc-900/80 border border-white/10 hover:border-amber-400/40 rounded-3xl p-5 flex flex-col justify-between gap-4 transition-all shadow-xl group relative overflow-hidden"
+                className="bg-white dark:bg-zinc-900/80 border border-[#e6d5e2] dark:border-white/10 hover:border-[#B80C09]/40 dark:hover:border-amber-400/40 rounded-3xl p-5 flex flex-col justify-between gap-4 transition-all shadow-xl group relative overflow-hidden text-[#231123] dark:text-white"
               >
                 {/* Cabecera del Item */}
                 <div>
@@ -1085,65 +1117,65 @@ export const RewardsStoreTab = () => {
                     </div>
                     <div className="flex items-center gap-1.5">
                       {item.badge && (
-                        <span className="px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-400 text-[10px] font-bold border border-amber-500/20">
+                        <span className="px-2 py-0.5 rounded-full bg-[#B80C09]/10 dark:bg-amber-500/10 text-[#B80C09] dark:text-amber-400 text-[10px] font-bold border border-[#B80C09]/20 dark:border-amber-500/20">
                           {ui(item.badge)}
                         </span>
                       )}
                       <button
                         onClick={() => {
                           soundEffects.playClick();
-                          setPreviewItem(item);
+                          setPreviewItem(storedItem);
                         }}
-                        className="p-1.5 rounded-xl bg-zinc-800 hover:bg-zinc-700 text-zinc-300 hover:text-amber-400 transition-colors border border-white/5"
-                        title="Probar en Vivo (Live Preview)"
+                        className="p-1.5 rounded-xl bg-gray-100 dark:bg-zinc-800 hover:bg-[#f8e9f6] dark:hover:bg-zinc-700 text-[#5c435a] dark:text-zinc-300 hover:text-[#B80C09] dark:hover:text-amber-400 transition-colors border border-[#e6d5e2] dark:border-white/5"
+                        title={t('preview')}
                       >
                         <span className="material-symbols-outlined text-sm">visibility</span>
                       </button>
                     </div>
                   </div>
 
-                  <h4 className="text-base font-bold text-white group-hover:text-amber-300 transition-colors">
+                  <h4 className="text-base font-bold text-[#231123] dark:text-white group-hover:text-[#B80C09] dark:group-hover:text-amber-300 transition-colors">
                     {item.name}
                   </h4>
-                  <p className="text-xs text-zinc-400 mt-1 line-clamp-2">
+                  <p className="text-xs text-[#5c435a] dark:text-zinc-400 mt-1 line-clamp-2">
                     {item.description}
                   </p>
                 </div>
 
                 {/* Pie con Precio / Botón */}
-                <div className="pt-3 border-t border-white/5 flex items-center justify-between gap-3">
+                <div className="pt-3 border-t border-[#e6d5e2] dark:border-white/5 flex items-center justify-between gap-3">
                   <div className="text-left">
-                    <div className="text-[10px] text-zinc-500 uppercase tracking-wider font-semibold">Costo</div>
-                    <div className="text-base font-black text-amber-400 flex items-center gap-1">
+                    <div className="text-[10px] text-[#5c435a]/70 dark:text-zinc-500 uppercase tracking-wider font-semibold">{t('cost')}</div>
+                    <div className="text-base font-black text-amber-700 dark:text-amber-400 flex items-center gap-1">
                       {item.cost} <span className="text-xs">🪙</span>
                     </div>
                   </div>
 
                   {isOwned ? (
                     <button
-                      onClick={() => handleEquip(item)}
+                      onClick={() => handleEquip(storedItem)}
                       className={`px-4 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 ${
                         isEquipped
                           ? 'bg-emerald-500/20 border border-emerald-500/40 text-emerald-300 hover:bg-emerald-500/30'
-                          : 'bg-zinc-800 hover:bg-zinc-700 text-white border border-white/10'
+                          : 'bg-[#003844] hover:bg-[#4B2840] text-white border border-[#003844]'
                       }`}
                     >
                       <span className="material-symbols-outlined text-sm">
                         {isEquipped ? 'check' : 'toggle_on'}
                       </span>
-                      {isEquipped ? 'Equipado' : 'Equipar'}
+                      {isEquipped ? t('equipped') : t('equip')}
                     </button>
                   ) : (
                     <button
-                      onClick={() => handleRedeem(item)}
+                      onClick={() => handleRedeem(storedItem)}
                       className={`px-4 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 ${
                         points >= item.cost
                           ? 'bg-gradient-to-r from-amber-400 to-yellow-500 hover:from-amber-300 hover:to-yellow-400 text-black shadow-md shadow-amber-500/20 active:scale-95'
-                          : 'bg-zinc-800 text-zinc-500 border border-white/5 cursor-not-allowed'
+                          : 'bg-gray-100 dark:bg-zinc-800 text-gray-500 dark:text-zinc-500 border border-gray-200 dark:border-white/5 cursor-not-allowed'
                       }`}
                     >
                       <span className="material-symbols-outlined text-sm">shopping_bag</span>
-                      Canjear
+                      {t('redeem')}
                     </button>
                   )}
                 </div>
@@ -1174,7 +1206,7 @@ export const RewardsStoreTab = () => {
                 <span className="px-3 py-1 rounded-full bg-amber-500/10 text-amber-400 text-xs font-bold border border-amber-500/20">
                   Probador en Vivo • Sandbox
                 </span>
-                <h3 className="text-2xl font-black text-white">{previewItem.name}</h3>
+                <h3 className="text-2xl font-black text-white">{localizedReward(previewItem).name}</h3>
 
                 {/* Previsualización del elemento */}
                 <div className="py-6 flex flex-col items-center justify-center bg-zinc-950/60 rounded-2xl border border-white/5">
@@ -1194,7 +1226,7 @@ export const RewardsStoreTab = () => {
                       </div>
                       <div className="text-left flex-1">
                         <div className="text-xs font-bold text-white">Reproductor Sonar Hi-Fi</div>
-                        <div className="text-[10px] text-amber-400">{previewItem.name}</div>
+                        <div className="text-[10px] text-amber-400">{localizedReward(previewItem).name}</div>
                       </div>
                     </div>
                   ) : (
@@ -1204,13 +1236,13 @@ export const RewardsStoreTab = () => {
                   )}
 
                   <p className="text-xs text-zinc-300 mt-4 max-w-xs px-4 text-center">
-                    {previewItem.description}
+                    {localizedReward(previewItem).description}
                   </p>
                 </div>
 
                 <div className="flex items-center justify-between pt-2">
                   <div className="text-left">
-                    <span className="text-xs text-zinc-400">Precio</span>
+                    <span className="text-xs text-zinc-400">{t('price')}</span>
                     <div className="text-xl font-black text-amber-400">{previewItem.cost} 🪙</div>
                   </div>
                   <div className="flex gap-2">
@@ -1218,7 +1250,7 @@ export const RewardsStoreTab = () => {
                       onClick={() => setPreviewItem(null)}
                       className="px-4 py-2.5 rounded-xl text-xs font-semibold bg-zinc-800 hover:bg-zinc-700 text-zinc-300"
                     >
-                      Cerrar
+                      {t('close')}
                     </button>
                     {!inventory.includes(previewItem.id) && (
                       <button
@@ -1228,7 +1260,7 @@ export const RewardsStoreTab = () => {
                         }}
                         className="px-5 py-2.5 rounded-xl text-xs font-bold bg-gradient-to-r from-amber-400 to-yellow-500 text-black shadow-lg shadow-amber-500/20 hover:scale-105 transition-all"
                       >
-                        Canjear Ahora
+                        {t('redeemNow')}
                       </button>
                     )}
                   </div>
@@ -1257,19 +1289,19 @@ export const RewardsStoreTab = () => {
               </button>
 
               <div className="text-center border-b-2 border-dashed border-zinc-400 pb-4 mb-4">
-                <div className="text-xl font-black tracking-widest uppercase">SONAR AUDIO STORE</div>
-                <div className="text-[11px] text-zinc-600 mt-0.5">Disquería & Bóveda de Recompensas Hi-Fi</div>
-                <div className="text-[10px] text-zinc-500 mt-1">Ticket #SN-{Date.now().toString().slice(-6)}</div>
+                <div className="text-xl font-black tracking-widest uppercase">{translate('receipt.title', { defaultValue: 'SONAR AUDIO STORE' })}</div>
+                <div className="text-[11px] text-zinc-600 mt-0.5">{translate('receipt.subtitle')}</div>
+                <div className="text-[10px] text-zinc-500 mt-1">{translate('receipt.ticket', { ticket: Date.now().toString().slice(-6) })}</div>
               </div>
 
               <div className="space-y-2 text-xs border-b-2 border-dashed border-zinc-400 pb-4 mb-4 max-h-60 overflow-y-auto">
                 {purchaseHistory.length === 0 ? (
-                  <div className="text-center text-zinc-500 py-4">No hay transacciones registradas aún.</div>
+                  <div className="text-center text-zinc-500 py-4">{translate('receipt.empty')}</div>
                 ) : (
                   purchaseHistory.map((tx) => (
                     <div key={tx.id} className="flex justify-between items-start gap-2">
                       <div>
-                        <div className="font-bold">{tx.name}</div>
+                        <div className="font-bold">{localizedTransactionName(tx)}</div>
                         <div className="text-[10px] text-zinc-600">{tx.date}</div>
                       </div>
                       <div className="font-black text-right shrink-0">-{tx.cost} 🪙</div>
@@ -1280,19 +1312,19 @@ export const RewardsStoreTab = () => {
 
               <div className="space-y-1 text-xs mb-6">
                 <div className="flex justify-between font-bold">
-                  <span>SALDO RESTANTE:</span>
-                  <span className="text-base">{points.toLocaleString()} COINS</span>
+                  <span>{translate('receipt.balance')}</span>
+                  <span className="text-base">{points.toLocaleString()} {translate('receipt.coins')}</span>
                 </div>
                 <div className="flex justify-between text-zinc-600 text-[11px]">
-                  <span>NIVEL AUDIÓFILO:</span>
-                  <span>NIVEL {userLevel} ({userXp} XP)</span>
+                  <span>{translate('receipt.rank_label')}</span>
+                  <span>{translate('receipt.rank', { level: userLevel, xp: userXp })}</span>
                 </div>
               </div>
 
               {/* Código de barras decorativo */}
               <div className="text-center pt-2">
                 <div className="h-8 bg-[repeating-linear-gradient(90deg,#18181b_0px,#18181b_2px,transparent_2px,transparent_4px,#18181b_4px,#18181b_8px,transparent_8px,transparent_10px)] rounded opacity-80 mb-1" />
-                <div className="text-[9px] tracking-widest text-zinc-600 uppercase">GRACIAS POR TU AMOR AL VINILO</div>
+                <div className="text-[9px] tracking-widest text-zinc-600 uppercase">{translate('receipt.thanks')}</div>
               </div>
             </motion.div>
           </div>

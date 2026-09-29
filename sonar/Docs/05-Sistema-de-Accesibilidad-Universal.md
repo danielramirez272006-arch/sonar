@@ -23,7 +23,9 @@ SONAR implementa un sistema integral de accesibilidad diseñado para garantizar 
 ### 1.3 Lectura por Voz (Text-to-Speech)
 - **Integración Nativa**: Uso de `window.speechSynthesis` gestionado en [accessibility-context.jsx](../src/shared/context/accessibility-context.jsx).
 - **Botón «🔊 Escuchar» ([tts-button.jsx](../src/shared/components/a11y/tts-button.jsx))**: Presente en reseñas del feed, análisis de IA de letras y ensayos editoriales.
-- **Control de Reproducción**: Permite pausar, detener y regular el ritmo de lectura.
+- **Lectura de la página**: Desde el panel lateral, «Leer página» narra el contenido principal, incluyendo el texto alternativo de imágenes; se adapta al idioma de la interfaz.
+- **Control de Reproducción**: Permite pausar, continuar, detener y regular el ritmo. La lectura empieza cuando la persona la activa.
+- **Compatibilidad**: Utiliza las voces disponibles en el navegador. Esta función complementa, pero no sustituye, los lectores de pantalla del sistema.
 
 ### 1.4 Navegación por Teclado y Ayudas Motoras
 - **Skip to Content ([skip-to-content.jsx](../src/shared/components/a11y/skip-to-content.jsx))**: Enlace de salto rápido accesible con <kbd>Tab</kbd> para omitir la navegación inicial.

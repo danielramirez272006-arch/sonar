@@ -35,7 +35,7 @@ Este documento detalla los procedimientos técnicos para ejecutar la suite de pr
 
 ## 3. Suite de Pruebas Automatizadas (Vitest)
 
-SONAR cuenta con **18 suites de pruebas unitarias y de integración que abarcan 95 tests automatizados**:
+Última ejecución registrada el 29 de septiembre de 2026: **33 archivos y 174 pruebas aprobadas con Vitest**. Consulta `tests/` para el inventario actual y vuelve a ejecutar la suite antes de una nueva entrega:
 
 Para ejecutar todas las pruebas:
 ```bash

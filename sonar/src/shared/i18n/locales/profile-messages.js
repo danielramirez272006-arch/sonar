@@ -144,6 +144,17 @@ Estado Físico:|Physical condition:|État physique :|Condizione fisica:|品相�
 Vinilo anterior|Previous vinyl|Vinyle précédent|Vinile precedente|上一张黑胶|前のレコード
 Poner en Tornamesa|Put on turntable|Mettre sur la platine|Metti sul giradischi|放入唱机|ターンテーブルに置く
 Siguiente vinilo|Next vinyl|Vinyle suivant|Vinile successivo|下一张黑胶|次のレコード
+El PIN actual no es correcto.|The current PIN is incorrect.|Le code PIN actuel est incorrect.|Il PIN attuale non è corretto.|当前 PIN 不正确。|現在のPINが正しくありません。
+PIN parental actualizado.|Parental PIN updated.|Code PIN parental mis à jour.|PIN genitoriale aggiornato.|家长 PIN 已更新。|保護者用PINを更新しました。
+Modo Kids activado.|Kids Mode enabled.|Mode enfant activé.|Modalità Kids attivata.|儿童模式已开启。|キッズモードを有効にしました。
+Modo supervisado activado.|Supervised Mode enabled.|Mode supervisé activé.|Modalità supervisionata attivata.|监督模式已开启。|保護者監督モードを有効にしました。
+Modo adulto activado.|Adult Mode enabled.|Mode adulte activé.|Modalità adulti attivata.|成人模式已开启。|大人モードを有効にしました。
+PIN incorrecto. El Modo Kids sigue activo.|Incorrect PIN. Kids Mode is still active.|Code PIN incorrect. Le mode enfant reste actif.|PIN errato. La Modalità Kids resta attiva.|PIN 错误。儿童模式仍处于启用状态。|PINが違います。キッズモードは有効なままです。
+Se requiere el PIN parental|Parental PIN required|Code PIN parental requis|È richiesto il PIN genitoriale|需要家长 PIN|保護者用PINが必要です
+Ingresa el PIN de 4 dígitos para salir del Modo Kids. El modo seguirá activo si cancelas.|Enter the 4-digit PIN to leave Kids Mode. It will remain active if you cancel.|Saisissez le code PIN à 4 chiffres pour quitter le mode enfant. Il restera actif si vous annulez.|Inserisci il PIN di 4 cifre per uscire dalla Modalità Kids. Resterà attiva se annulli.|输入 4 位 PIN 以退出儿童模式。取消后儿童模式仍会保持启用。|キッズモードを終了するには4桁のPINを入力してください。キャンセルするとモードは有効なままです。
+PIN parental|Parental PIN|Code PIN parental|PIN genitoriale|家长 PIN|保護者用PIN
+PIN actual|Current PIN|Code PIN actuel|PIN attuale|当前 PIN|現在のPIN
+Nuevo PIN|New PIN|Nouveau code PIN|Nuovo PIN|新 PIN|新しいPIN
 `.trim().split('\n').map(row => row.split('|'));
 export const PROFILE_TRANSLATIONS = Object.fromEntries(
   ['es', 'en', 'fr', 'it', 'zh', 'ja'].map((language, index) => [language, Object.fromEntries(rows.map(values => [values[0], values[index]]))]),

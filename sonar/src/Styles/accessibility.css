@@ -194,6 +194,43 @@ html.a11y-reduced-motion *::after {
 }
 
 /* --- Anunciador ARIA Live --- */
+.a11y-reader__actions {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 8rem), 1fr));
+  gap: 0.5rem;
+}
+
+.a11y-reader__actions button {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.a11y-reader__speed {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.5rem 0.75rem;
+  color: #5c435a;
+  font-size: 0.75rem;
+}
+
+.a11y-reader__speed-options {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(3rem, 1fr));
+  gap: 0.45rem;
+}
+
+.a11y-reader__speed-options button {
+  min-width: 0;
+}
+
+@media (max-width: 420px) {
+  .a11y-reader__speed {
+    align-items: stretch;
+    flex-direction: column;
+  }
+}
+
 .sonar-sr-only {
   position: absolute !important;
   width: 1px !important;
