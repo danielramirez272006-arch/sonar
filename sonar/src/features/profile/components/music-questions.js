@@ -628,5 +628,375 @@ export const MUSIC_QUESTIONS = [
     ],
     "correct": 2,
     "fact": "Pulsar las cuerdas con los dedos."
+  },
+  {
+    "question": "¿En qué álbum de Queen apareció originalmente Bohemian Rhapsody?",
+    "options": [
+      "A Night at the Opera",
+      "News of the World",
+      "The Game"
+    ],
+    "correct": 0,
+    "fact": "La respuesta es: A Night at the Opera."
+  },
+  {
+    "question": "¿Qué álbum de Michael Jackson reúne Beat It y Billie Jean?",
+    "options": [
+      "Bad",
+      "Thriller",
+      "Dangerous"
+    ],
+    "correct": 1,
+    "fact": "La respuesta es: Thriller."
+  },
+  {
+    "question": "¿Quiénes colaboraron con Daft Punk en Get Lucky?",
+    "options": [
+      "Bruno Mars & Mark Ronson",
+      "The Weeknd & Max Martin",
+      "Pharrell Williams & Nile Rodgers"
+    ],
+    "correct": 2,
+    "fact": "La respuesta es: Pharrell Williams & Nile Rodgers."
+  },
+  {
+    "question": "¿Qué álbum de Taylor Swift incluye Blank Space y Style en sus versiones originales?",
+    "options": [
+      "1989",
+      "Red",
+      "Reputation"
+    ],
+    "correct": 0,
+    "fact": "La respuesta es: 1989."
+  },
+  {
+    "question": "¿Qué álbum de Adele incluye Rolling in the Deep y Someone Like You?",
+    "options": [
+      "19",
+      "21",
+      "25"
+    ],
+    "correct": 1,
+    "fact": "La respuesta es: 21."
+  },
+  {
+    "question": "¿En qué álbum de The Weeknd está Blinding Lights?",
+    "options": [
+      "Dawn FM",
+      "Starboy",
+      "After Hours"
+    ],
+    "correct": 2,
+    "fact": "La respuesta es: After Hours."
+  },
+  {
+    "question": "¿Qué álbum de Nirvana abre con Smells Like Teen Spirit?",
+    "options": [
+      "Nevermind",
+      "In Utero",
+      "Bleach"
+    ],
+    "correct": 0,
+    "fact": "La respuesta es: Nevermind."
+  },
+  {
+    "question": "¿En qué álbum de Coldplay se publicó originalmente Clocks?",
+    "options": [
+      "Parachutes",
+      "A Rush of Blood to the Head",
+      "X&Y"
+    ],
+    "correct": 1,
+    "fact": "La respuesta es: A Rush of Blood to the Head."
+  },
+  {
+    "question": "¿Qué álbum de Linkin Park contiene Numb?",
+    "options": [
+      "Minutes to Midnight",
+      "Hybrid Theory",
+      "Meteora"
+    ],
+    "correct": 2,
+    "fact": "La respuesta es: Meteora."
+  },
+  {
+    "question": "¿Con qué artista grabó Shakira Hips Don't Lie?",
+    "options": [
+      "Wyclef Jean",
+      "Pitbull",
+      "Sean Paul"
+    ],
+    "correct": 0,
+    "fact": "La respuesta es: Wyclef Jean."
+  },
+  {
+    "question": "¿Qué álbum de Lady Gaga incluye Poker Face y Just Dance?",
+    "options": [
+      "Born This Way",
+      "The Fame",
+      "ARTPOP"
+    ],
+    "correct": 1,
+    "fact": "La respuesta es: The Fame."
+  },
+  {
+    "question": "¿Qué álbum de Bad Bunny incluye Tití Me Preguntó y Me Porto Bonito?",
+    "options": [
+      "El Último Tour del Mundo",
+      "YHLQMDLG",
+      "Un Verano Sin Ti"
+    ],
+    "correct": 2,
+    "fact": "La respuesta es: Un Verano Sin Ti."
+  },
+  {
+    "question": "¿Qué álbum de The Beatles incluye «Come Together»?",
+    "options": [
+      "Abbey Road",
+      "Revolver",
+      "Rubber Soul"
+    ],
+    "correct": 0,
+    "fact": "La respuesta es: Abbey Road."
+  },
+  {
+    "question": "¿Qué álbum de Radiohead incluye «Karma Police»?",
+    "options": [
+      "The Bends",
+      "OK Computer",
+      "In Rainbows"
+    ],
+    "correct": 1,
+    "fact": "La respuesta es: OK Computer."
+  },
+  {
+    "question": "¿Qué álbum de Billie Eilish incluye «NDA»?",
+    "options": [
+      "HIT ME HARD AND SOFT",
+      "WHEN WE ALL FALL ASLEEP, WHERE DO WE GO?",
+      "Happier Than Ever"
+    ],
+    "correct": 2,
+    "fact": "La respuesta es: Happier Than Ever."
+  },
+  {
+    "question": "¿Qué álbum de Dua Lipa incluye «Levitating»?",
+    "options": [
+      "Future Nostalgia",
+      "Dua Lipa",
+      "Radical Optimism"
+    ],
+    "correct": 0,
+    "fact": "La respuesta es: Future Nostalgia."
+  },
+  {
+    "question": "¿Qué álbum de Olivia Rodrigo incluye «drivers license»?",
+    "options": [
+      "GUTS",
+      "SOUR",
+      "1989"
+    ],
+    "correct": 1,
+    "fact": "La respuesta es: SOUR."
+  },
+  {
+    "question": "¿Qué álbum de Harry Styles incluye «As It Was»?",
+    "options": [
+      "Harry Styles",
+      "Fine Line",
+      "Harry’s House"
+    ],
+    "correct": 2,
+    "fact": "La respuesta es: Harry’s House."
+  },
+  {
+    "question": "¿Qué álbum de Bruno Mars incluye «Locked Out of Heaven»?",
+    "options": [
+      "Unorthodox Jukebox",
+      "Doo-Wops & Hooligans",
+      "24K Magic"
+    ],
+    "correct": 0,
+    "fact": "La respuesta es: Unorthodox Jukebox."
+  },
+  {
+    "question": "¿Qué álbum de Amy Winehouse incluye «Rehab»?",
+    "options": [
+      "Frank",
+      "Back to Black",
+      "21"
+    ],
+    "correct": 1,
+    "fact": "La respuesta es: Back to Black."
+  },
+  {
+    "question": "¿Qué álbum de Beyoncé incluye «Break My Soul»?",
+    "options": [
+      "4",
+      "Lemonade",
+      "Renaissance"
+    ],
+    "correct": 2,
+    "fact": "La respuesta es: Renaissance."
+  },
+  {
+    "question": "¿Qué álbum de Kendrick Lamar incluye «HUMBLE.»?",
+    "options": [
+      "DAMN.",
+      "To Pimp a Butterfly",
+      "good kid, m.A.A.d city"
+    ],
+    "correct": 0,
+    "fact": "La respuesta es: DAMN.."
+  },
+  {
+    "question": "¿Qué álbum de Arctic Monkeys incluye «Do I Wanna Know?»?",
+    "options": [
+      "Favourite Worst Nightmare",
+      "AM",
+      "Humbug"
+    ],
+    "correct": 1,
+    "fact": "La respuesta es: AM."
+  },
+  {
+    "question": "¿Qué álbum de Oasis incluye «Wonderwall»?",
+    "options": [
+      "Be Here Now",
+      "Definitely Maybe",
+      "(What’s the Story) Morning Glory?"
+    ],
+    "correct": 2,
+    "fact": "La respuesta es: (What’s the Story) Morning Glory?."
+  },
+  {
+    "question": "¿Qué álbum de Green Day incluye «Boulevard of Broken Dreams»?",
+    "options": [
+      "American Idiot",
+      "Dookie",
+      "21st Century Breakdown"
+    ],
+    "correct": 0,
+    "fact": "La respuesta es: American Idiot."
+  },
+  {
+    "question": "¿Qué álbum de Red Hot Chili Peppers incluye «Under the Bridge»?",
+    "options": [
+      "Californication",
+      "Blood Sugar Sex Magik",
+      "By the Way"
+    ],
+    "correct": 1,
+    "fact": "La respuesta es: Blood Sugar Sex Magik."
+  },
+  {
+    "question": "¿Qué álbum de Metallica incluye «Enter Sandman»?",
+    "options": [
+      "Ride the Lightning",
+      "Master of Puppets",
+      "Metallica"
+    ],
+    "correct": 2,
+    "fact": "La respuesta es: Metallica."
+  },
+  {
+    "question": "¿Qué álbum de Fleetwood Mac incluye «Dreams»?",
+    "options": [
+      "Rumours",
+      "Tusk",
+      "Mirage"
+    ],
+    "correct": 0,
+    "fact": "La respuesta es: Rumours."
+  },
+  {
+    "question": "¿Qué álbum de Pink Floyd incluye «Money»?",
+    "options": [
+      "The Wall",
+      "The Dark Side of the Moon",
+      "Wish You Were Here"
+    ],
+    "correct": 1,
+    "fact": "La respuesta es: The Dark Side of the Moon."
+  },
+  {
+    "question": "¿Qué álbum de Rosalía incluye «Despechá»?",
+    "options": [
+      "Los Ángeles",
+      "El Mal Querer",
+      "Motomami +"
+    ],
+    "correct": 2,
+    "fact": "La respuesta es: Motomami +."
+  },
+  {
+    "question": "¿Qué álbum de Karol G incluye «Provenza»?",
+    "options": [
+      "Mañana Será Bonito",
+      "KG0516",
+      "Ocean"
+    ],
+    "correct": 0,
+    "fact": "La respuesta es: Mañana Será Bonito."
+  },
+  {
+    "question": "¿Qué álbum de Soda Stereo incluye «De Música Ligera»?",
+    "options": [
+      "Doble Vida",
+      "Canción Animal",
+      "Signos"
+    ],
+    "correct": 1,
+    "fact": "La respuesta es: Canción Animal."
+  },
+  {
+    "question": "¿Qué artista colaboró con Shakira en «La Tortura»?",
+    "options": [
+      "Ricky Martin",
+      "Juanes",
+      "Alejandro Sanz"
+    ],
+    "correct": 2,
+    "fact": "La respuesta es: Alejandro Sanz."
+  },
+  {
+    "question": "¿Qué artista colaboró con Luis Fonsi en «Despacito (2017)»?",
+    "options": [
+      "Daddy Yankee",
+      "J Balvin",
+      "Maluma"
+    ],
+    "correct": 0,
+    "fact": "La respuesta es: Daddy Yankee."
+  },
+  {
+    "question": "¿Qué artista colaboró con Mark Ronson en «Uptown Funk»?",
+    "options": [
+      "Pharrell Williams",
+      "Bruno Mars",
+      "Justin Timberlake"
+    ],
+    "correct": 1,
+    "fact": "La respuesta es: Bruno Mars."
+  },
+  {
+    "question": "¿Qué artista colaboró con Lady Gaga en «Shallow»?",
+    "options": [
+      "Adam Levine",
+      "Tony Bennett",
+      "Bradley Cooper"
+    ],
+    "correct": 2,
+    "fact": "La respuesta es: Bradley Cooper."
+  },
+  {
+    "question": "¿Qué artista colaboró con Daft Punk en «Starboy»?",
+    "options": [
+      "The Weeknd",
+      "Pharrell Williams",
+      "Julian Casablancas"
+    ],
+    "correct": 0,
+    "fact": "La respuesta es: The Weeknd."
   }
 ];
