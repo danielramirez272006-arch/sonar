@@ -27,6 +27,7 @@ const LoginFormContent = () => {
   const [googleLoading, setGoogleLoading] = useState(false);
 
   const redirectForRole = (account) => {
+    if (!account) return;
     window.location.hash = account.role === 'admin' ? '#admin' : '#usuario';
   };
 
@@ -41,11 +42,11 @@ const LoginFormContent = () => {
     }
   };
 
-  const handleGoogleCredential = async (credential) => {
+  const handleGoogleCredential = async (credential, profile) => {
     setGoogleLoading(true);
     setMessage('');
     try {
-      const account = await loginWithGoogle(credential);
+      const account = await loginWithGoogle(credential, profile);
       redirectForRole(account);
     } catch (err) {
       setMessage(err.message || 'No se pudo iniciar sesión con Google.');

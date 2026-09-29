@@ -3,12 +3,12 @@ import { motion } from 'framer-motion';
 
 export const AnimatedLogo = ({ className = '', onClick, showText = true, size = 'default' }) => {
   const isSmall = size === 'sm';
-  const iconSize = isSmall ? 'w-8 h-8' : 'w-10 h-10 sm:w-11 sm:h-11';
-  const textSize = isSmall ? 'text-base tracking-[0.18em]' : 'text-lg sm:text-xl tracking-[0.22em]';
+  const iconSize = isSmall ? 'w-8 h-8' : 'w-9 h-9 sm:w-10 sm:h-10';
+  const textSize = isSmall ? 'text-sm tracking-[0.16em]' : 'text-base sm:text-lg tracking-[0.18em]';
 
   return (
     <motion.div
-      className={`inline-flex items-center gap-2.5 cursor-pointer select-none group ${className}`}
+      className={`inline-flex items-center gap-2 cursor-pointer select-none group ${className}`}
       onClick={onClick}
       whileHover="hover"
       whileTap={{ scale: 0.95 }}
