@@ -16,11 +16,13 @@ export async function sendReviewToModeration(review) {
   const endpoints = configuredUrl
     ? [configuredUrl]
     : [
-        'http://localhost:5678/webhook-test/review-moderation',
-        'http://localhost:5678/webhook/review-moderation',
+        '/api/n8n/webhook-test/review-moderation',
+        '/api/n8n/webhook/review-moderation',
       ]
 
   for (const endpoint of endpoints) {
+    const controller = new AbortController()
+    const timeoutId = setTimeout(() => controller.abort(), 60000)
     try {
       console.log(
         '%c[n8n Webhook - Moderación] Enviando reseña a moderación:',
@@ -28,22 +30,18 @@ export async function sendReviewToModeration(review) {
         { reviewId: review.id, endpoint }
       )
 
-      const controller = new AbortController()
-      const timeoutId = setTimeout(() => controller.abort(), 3000)
-
       const response = await fetch(endpoint, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           content: review.content || '',
-          reviewId: review.id || '',
+          reviewId: String(review.id ?? ''),
           userId: review.userId || '',
           albumId: review.albumId || '',
           adminEmail: 'admin@sonar.audio',
         }),
         signal: controller.signal,
       })
-      clearTimeout(timeoutId)
 
       if (response.ok) {
         const data = await response.json()
@@ -55,20 +53,26 @@ export async function sendReviewToModeration(review) {
           ...data,
         }
       }
-    } catch {
-      // Intentar siguiente endpoint o fallback
+      // Solo probar producción si el webhook de prueba no está registrado.
+      if (response.status === 404 && endpoint === endpoints[0] && endpoints.length > 1) continue
+      throw new Error(`n8n respondió HTTP ${response.status}`)
+    } catch (error) {
+      return {
+        success: false,
+        queued: false,
+        reviewId: review.id ?? null,
+        message: `La reseña está guardada, pero no se confirmó la moderación en n8n: ${error.message}`,
+      }
+    } finally {
+      clearTimeout(timeoutId)
     }
   }
 
-  // Fallback: simulación local si n8n no está disponible
-  await delay(500)
-
   return {
-    success: true,
-    queued: true,
+    success: false,
+    queued: false,
     reviewId: review.id ?? null,
-    message: 'La reseña fue enviada a moderación.',
-    simulated: true,
+    message: 'No se pudo contactar el webhook de moderación de n8n.',
   }
 }
 
