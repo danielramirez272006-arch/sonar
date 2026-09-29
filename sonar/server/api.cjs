@@ -41,6 +41,27 @@ function createApp({ filename = path.join(__dirname,'../db.json'), env = process
     if (blocked(u)) return res.status(403).json({error:'Cuenta suspendida o baneada'});
     res.json(establish(res,u));
   });
+  app.post('/trivia/reward',async (req,res) => {
+    if (!req.user || blocked(req.user)) return res.status(403).json({error:'Inicia sesión con una cuenta activa'});
+    const { roundId, mode, deck, answers } = req.body;
+    if (typeof roundId !== 'string' || !/^[a-zA-Z0-9-]{20,64}$/.test(roundId) || !['solo','1v1'].includes(mode) || !Array.isArray(deck) || deck.length !== 16 || new Set(deck).size !== 16 || !Array.isArray(answers) || answers.length !== 16) return res.status(400).json({error:'Partida incompleta'});
+    try {
+      const { MUSIC_QUESTIONS } = await import('../src/features/profile/components/music-questions.js');
+      if (deck.some(i => !Number.isInteger(i) || !MUSIC_QUESTIONS[i]) || answers.some(a => !Number.isInteger(a) || a < -1 || a > 2)) return res.status(400).json({error:'Respuestas inválidas'});
+      const scores = [0,0]; let turn = 0;
+      deck.forEach((q,i) => { if (answers[i] === MUSIC_QUESTIONS[q].correct) scores[turn]++; else if (mode === '1v1') turn = 1-turn; });
+      const won = mode === 'solo' ? scores[0] >= 10 : scores[0] > scores[1];
+      if (!won) return res.status(400).json({error:'Esta partida no cumple la meta para ganar Coins'});
+      const u = db.getState().users.find(u => u.id === req.user.id);
+      const claimed = (u.triviaRewards || []).some(r => r.id === roundId);
+      if (!claimed) {
+        u.sonarPoints = (Number.isFinite(u.sonarPoints) ? u.sonarPoints : 0) + 100;
+        u.triviaRewards = [...(u.triviaRewards || []), {id:roundId, coins:100, createdAt:new Date().toISOString()}];
+        db.write();
+      }
+      res.json({points:u.sonarPoints, coins:100, alreadyClaimed:claimed});
+    } catch { res.status(500).json({error:'No se pudo guardar la recompensa. Intenta de nuevo.'}); }
+  });
   app.post('/auth/logout',(req,res) => {
     const cookie = /(?:^|;\s*)sonar_session=([^;]+)/.exec(req.headers.cookie || '')?.[1];
     sessions.delete(cookie); res.setHeader('Set-Cookie','sonar_session=; HttpOnly; SameSite=Lax; Path=/; Max-Age=0'); res.json({success:true});
