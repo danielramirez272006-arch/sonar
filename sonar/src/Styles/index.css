@@ -78,6 +78,15 @@ html.dark #root {
   background-color: #231123;
 }
 
+html::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  background: var(--bg-page);
+  pointer-events: none;
+}
+
 /* Material Symbols Outlined Configuration */
 .material-symbols-outlined {
   font-family: 'Material Symbols Outlined';
