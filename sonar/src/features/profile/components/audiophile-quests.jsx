@@ -2,6 +2,7 @@ import { useUIText } from '../../../shared/i18n/use-ui-text.js';
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '../../../shared/context/auth-context';
+import { useLanguage } from '../../../shared/context/language-context';
 
 const INITIAL_QUESTS = [
   {
@@ -64,6 +65,7 @@ const INITIAL_QUESTS = [
 
 export const AudiophileQuests = () => {
   const ui = useUIText();
+  const { t } = useLanguage();
   const { user, updateUser } = useAuth();
   const [toastMsg, setToastMsg] = useState(null);
   const [quests, setQuests] = useState(() => {
@@ -99,7 +101,8 @@ export const AudiophileQuests = () => {
       window.dispatchEvent(new CustomEvent('sonar:profile-customization-changed', { detail: { sonarPoints: newPts, audiophileXp: newXp } }));
     } catch {}
 
-    setToastMsg(`🎉 ¡Reclamaste: ${q.reward}! (+${rewardPoints} Monedas y +${rewardXp} XP)`);
+    const rewardLabel = t(`quests.${q.id}.reward`, { defaultValue: q.reward });
+    setToastMsg(t('quests.claim_success', { reward: rewardLabel, points: rewardPoints, xp: rewardXp }));
     setTimeout(() => setToastMsg(null), 3500);
   };
 
@@ -157,10 +160,10 @@ export const AudiophileQuests = () => {
                   </div>
                   <div>
                     <h4 className="text-sm font-bold text-[#231123] dark:text-white">
-                      {quest.title}
+                      {t(`quests.${quest.id}.title`, { defaultValue: quest.title })}
                     </h4>
                     <p className="text-xs text-[#5c435a] dark:text-[#B89CB0] mt-0.5">
-                      {quest.description}
+                      {t(`quests.${quest.id}.description`, { defaultValue: quest.description })}
                     </p>
                   </div>
                 </div>
@@ -169,7 +172,7 @@ export const AudiophileQuests = () => {
               {/* Barra de Progreso */}
               <div className="flex flex-col gap-1.5">
                 <div className="flex justify-between text-[11px] font-bold">
-                  <span className="text-[#5c435a] dark:text-[#B89CB0]">{ui("Progreso:")} {quest.progress} / {quest.target} {quest.unit}
+                  <span className="text-[#5c435a] dark:text-[#B89CB0]">{t('quests.progress', { progress: quest.progress, target: quest.target, unit: t(`quests.${quest.id}.unit`, { defaultValue: quest.unit }) })}
                   </span>
                   <span className="font-mono text-[#B80C09] dark:text-pink-300">{percent}%</span>
                 </div>
@@ -184,7 +187,7 @@ export const AudiophileQuests = () => {
 
               <div className="pt-2 border-t border-[#e6d5e2] dark:border-white/10 flex items-center justify-between">
                 <span className="text-[11px] font-bold text-amber-600 dark:text-amber-400">
-                  🎁 {quest.reward}
+                  🎁 {t(`quests.${quest.id}.reward`, { defaultValue: quest.reward })}
                 </span>
 
                 {isDone ? (

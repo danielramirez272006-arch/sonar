@@ -139,7 +139,7 @@ const AMBIENT_SOUNDS = [
 
 export const EnhancedParentalControl = () => {
   const ui = useUIText();
-  const { user, updateUser, updateParentalControl, isParentalControlActive } = useAuth();
+  const { user, updateUser, updateParentalControl, verifyParentalPin, isParentalControlActive } = useAuth();
   const { playTrack } = usePlayer();
 
   const audioCtxRef = useRef(null);
@@ -173,7 +173,11 @@ export const EnhancedParentalControl = () => {
     }
   });
 
-  const [pinInput, setPinInput] = useState(() => user?.parentalControl?.pin || '1234');
+  const [pinInput, setPinInput] = useState('');
+  const [currentPinInput, setCurrentPinInput] = useState('');
+  const [pendingModeChange, setPendingModeChange] = useState(null);
+  const [exitPinInput, setExitPinInput] = useState('');
+  const [pinError, setPinError] = useState('');
   const [newKeyword, setNewKeyword] = useState('');
   const [toastNotice, setToastNotice] = useState('');
   
@@ -318,11 +322,51 @@ export const EnhancedParentalControl = () => {
 
   const handleSavePin = (e) => {
     e.preventDefault();
-    if (pinInput.trim().length === 4) {
-      updateParentalControl({ pin: pinInput.trim() });
-      setToastNotice('🔑 PIN de Control Parental actualizado a: ' + pinInput.trim());
-      setTimeout(() => setToastNotice(''), 3000);
+    if (!verifyParentalPin(currentPinInput)) {
+      setPinError(ui('El PIN actual no es correcto.'));
+      return;
     }
+    if (!/^\d{4}$/.test(pinInput)) return;
+    updateParentalControl({ pin: pinInput });
+    setCurrentPinInput('');
+    setPinInput('');
+    setPinError('');
+    setToastNotice(ui('PIN parental actualizado.'));
+    setTimeout(() => setToastNotice(''), 3000);
+  };
+
+  const applyProtectionMode = (mode) => {
+    const settings = {
+      kids: { enabled: true, blockExplicit: true, accountType: 'junior' },
+      supervised: { enabled: true, blockExplicit: true, accountType: 'standard' },
+      adult: { enabled: false, blockExplicit: false, accountType: 'standard' },
+    }[mode];
+    if (!settings) return;
+    updateParentalControl(settings);
+    setPendingModeChange(null);
+    setExitPinInput('');
+    setPinError('');
+    setToastNotice(ui(mode === 'kids' ? 'Modo Kids activado.' : mode === 'supervised' ? 'Modo supervisado activado.' : 'Modo adulto activado.'));
+    setTimeout(() => setToastNotice(''), 3000);
+  };
+
+  const requestProtectionMode = (mode) => {
+    if (isKidsMode && mode !== 'kids') {
+      setPendingModeChange(mode);
+      setExitPinInput('');
+      setPinError('');
+      return;
+    }
+    applyProtectionMode(mode);
+  };
+
+  const confirmProtectionMode = (event) => {
+    event.preventDefault();
+    if (!verifyParentalPin(exitPinInput)) {
+      setPinError(ui('PIN incorrecto. El Modo Kids sigue activo.'));
+      return;
+    }
+    applyProtectionMode(pendingModeChange);
   };
 
   const formatTime = (secs) => {
@@ -391,12 +435,16 @@ export const EnhancedParentalControl = () => {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           {/* Kids Estricto */}
           <div
-            onClick={() => {
-              updateParentalControl({ enabled: true, blockExplicit: true, accountType: 'junior' });
-              setToastNotice('🛡️ Modo Kids Seguro activado: Música 100% familiar y protegida');
-              setTimeout(() => setToastNotice(''), 3000);
+            role="button"
+            tabIndex={0}
+            onKeyDown={(event) => {
+              if (event.key === 'Enter' || event.key === ' ') {
+                event.preventDefault();
+                requestProtectionMode('kids');
+              }
             }}
-            className={`p-5 rounded-2xl border-2 transition-all cursor-pointer flex flex-col justify-between gap-3 ${
+            onClick={() => requestProtectionMode('kids')}
+            className={`p-5 rounded-2xl border-2 transition-all cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#B80C09] flex flex-col justify-between gap-3 ${
               isKidsMode
                 ? 'border-[#4B2840] dark:border-[#e6d5e2]/60 bg-[#4B2840]/10 dark:bg-[#4B2840]/40 shadow-md ring-2 ring-[#4B2840]/30'
                 : 'border-gray-200 dark:border-white/10 bg-gray-50/70 dark:bg-black/20 hover:border-[#4B2840]/40'
@@ -416,12 +464,16 @@ export const EnhancedParentalControl = () => {
 
           {/* Supervisado con PIN */}
           <div
-            onClick={() => {
-              updateParentalControl({ enabled: true, blockExplicit: true, accountType: 'standard' });
-              setToastNotice('🔑 Modo Supervisado activado: Requiere PIN de 4 dígitos para pistas explícitas');
-              setTimeout(() => setToastNotice(''), 3000);
+            role="button"
+            tabIndex={0}
+            onKeyDown={(event) => {
+              if (event.key === 'Enter' || event.key === ' ') {
+                event.preventDefault();
+                requestProtectionMode('supervised');
+              }
             }}
-            className={`p-5 rounded-2xl border-2 transition-all cursor-pointer flex flex-col justify-between gap-3 ${
+            onClick={() => requestProtectionMode('supervised')}
+            className={`p-5 rounded-2xl border-2 transition-all cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#B80C09] flex flex-col justify-between gap-3 ${
               isSupervisedMode
                 ? 'border-[#B80C09] bg-[#B80C09]/10 dark:bg-[#B80C09]/20 shadow-md ring-2 ring-[#B80C09]/30'
                 : 'border-gray-200 dark:border-white/10 bg-gray-50/70 dark:bg-black/20 hover:border-[#B80C09]/40'
@@ -441,12 +493,16 @@ export const EnhancedParentalControl = () => {
 
           {/* Modo Adulto */}
           <div
-            onClick={() => {
-              updateParentalControl({ enabled: false, blockExplicit: false, accountType: 'standard' });
-              setToastNotice('🔓 Modo Adulto Libre activado (sin restricciones de contenido)');
-              setTimeout(() => setToastNotice(''), 3000);
+            role="button"
+            tabIndex={0}
+            onKeyDown={(event) => {
+              if (event.key === 'Enter' || event.key === ' ') {
+                event.preventDefault();
+                requestProtectionMode('adult');
+              }
             }}
-            className={`p-5 rounded-2xl border-2 transition-all cursor-pointer flex flex-col justify-between gap-3 ${
+            onClick={() => requestProtectionMode('adult')}
+            className={`p-5 rounded-2xl border-2 transition-all cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#B80C09] flex flex-col justify-between gap-3 ${
               isFreeAdultMode
                 ? 'border-[#003844] dark:border-[#52a2b0] bg-[#003844]/10 dark:bg-[#003844]/30 shadow-md ring-2 ring-[#003844]/40'
                 : 'border-gray-200 dark:border-white/10 bg-gray-50/70 dark:bg-black/20 hover:border-[#003844]/40'
@@ -573,8 +629,8 @@ export const EnhancedParentalControl = () => {
       <div className="p-6 sm:p-8 rounded-3xl bg-gradient-to-br from-[#231123] via-[#3d1a35] to-[#003844] text-white border border-white/15 shadow-xl flex flex-col gap-5">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <div className="flex items-center gap-3">
-            <div className="p-2.5 rounded-xl bg-amber-500 text-white shadow-md">
-              <span className="material-symbols-outlined text-[24px]">explore</span>
+            <div className="p-2 rounded-lg bg-amber-500 text-white shadow-md">
+              <span className="material-symbols-outlined text-[20px]">explore</span>
             </div>
             <div>
               <h3 className="text-lg font-black tracking-tight">{ui("Canales de Música Segura & Educativa \"Sonar Kids\"")}</h3>
@@ -787,20 +843,35 @@ export const EnhancedParentalControl = () => {
             <p className="text-xs text-[#5c435a] dark:text-[#B89CB0] mt-1">{ui("Código de 4 dígitos que los padres usan para autorizar música o cambiar ajustes de seguridad.")}</p>
           </div>
 
-          <form onSubmit={handleSavePin} className="flex items-center gap-3">
+          <form onSubmit={handleSavePin} className="flex flex-col items-stretch gap-3">
             <input
               type="password"
+              inputMode="numeric"
+              autoComplete="current-password"
+              maxLength={4}
+              value={currentPinInput}
+              onChange={(e) => setCurrentPinInput(e.target.value.replace(/\D/g, '').slice(0, 4))}
+              placeholder={ui('PIN actual')}
+              aria-label={ui('PIN actual')}
+              className="w-36 text-center tracking-[0.4em] font-mono text-base py-2.5 px-3 rounded-xl bg-gray-50 dark:bg-black/30 border border-gray-300 dark:border-white/20 text-[#231123] dark:text-white font-black focus:outline-hidden focus:border-[#B80C09]"
+            />
+            <input
+              type="password"
+              inputMode="numeric"
+              autoComplete="new-password"
               maxLength={4}
               value={pinInput}
               onChange={(e) => setPinInput(e.target.value.replace(/\D/g, '').slice(0, 4))}
-              placeholder="1234"
+              placeholder={ui('Nuevo PIN')}
+              aria-label={ui('Nuevo PIN')}
               className="w-28 text-center tracking-[0.4em] font-mono text-base py-2.5 px-3 rounded-xl bg-gray-50 dark:bg-black/30 border border-gray-300 dark:border-white/20 text-[#231123] dark:text-white font-black focus:outline-hidden focus:border-[#B80C09]"
             />
             <button
               type="submit"
-              disabled={pinInput.trim().length !== 4}
+              disabled={currentPinInput.length !== 4 || pinInput.length !== 4}
               className="px-5 py-2.5 rounded-xl bg-[#B80C09] hover:bg-[#960a07] text-white text-xs font-bold transition-all disabled:opacity-50 cursor-pointer shadow-xs"
             >{ui("Guardar PIN")}</button>
+            {pinError && <p role="alert" className="text-sm font-semibold text-[#B80C09]">{pinError}</p>}
           </form>
 
           <div className="pt-3 border-t border-gray-100 dark:border-white/10 flex items-center justify-between">
@@ -901,6 +972,63 @@ export const EnhancedParentalControl = () => {
           ))}
         </div>
       </div>
+
+      <AnimatePresence>
+        {pendingModeChange && (
+          <motion.div
+            className="fixed inset-0 z-[100] flex items-center justify-center bg-black/65 p-4"
+            role="presentation"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onMouseDown={(event) => {
+              if (event.target === event.currentTarget) setPendingModeChange(null);
+            }}
+          >
+            <motion.form
+              role="dialog"
+              aria-modal="true"
+              aria-labelledby="kids-exit-title"
+              onSubmit={confirmProtectionMode}
+              className="w-full max-w-md rounded-2xl border border-[#e6d5e2] bg-white p-6 shadow-2xl dark:border-white/10 dark:bg-[#4B2840]"
+              initial={{ y: 12, scale: 0.98 }}
+              animate={{ y: 0, scale: 1 }}
+              exit={{ y: 8, scale: 0.98 }}
+            >
+              <h4 id="kids-exit-title" className="text-lg font-bold text-[#231123] dark:text-white">
+                {ui('Se requiere el PIN parental')}
+              </h4>
+              <p className="mt-2 text-sm text-[#5c435a] dark:text-[#DCDCDD]">
+                {ui('Ingresa el PIN de 4 dígitos para salir del Modo Kids. El modo seguirá activo si cancelas.')}
+              </p>
+              <input
+                autoFocus
+                type="password"
+                inputMode="numeric"
+                autoComplete="current-password"
+                maxLength={4}
+                value={exitPinInput}
+                onChange={(event) => setExitPinInput(event.target.value.replace(/\D/g, '').slice(0, 4))}
+                aria-label={ui('PIN parental')}
+                className="mt-4 w-full rounded-xl border border-[#d4c0cf] bg-white px-4 py-3 text-center font-mono text-xl tracking-[0.5em] text-[#231123] outline-none focus:border-[#B80C09] dark:border-white/20 dark:bg-black/30 dark:text-white"
+              />
+              {pinError && <p role="alert" className="mt-2 text-sm font-semibold text-[#B80C09]">{pinError}</p>}
+              <div className="mt-5 flex justify-end gap-3">
+                <button
+                  type="button"
+                  onClick={() => { setPendingModeChange(null); setExitPinInput(''); setPinError(''); }}
+                  className="rounded-xl border border-[#d4c0cf] px-4 py-2.5 text-sm font-semibold text-[#231123] dark:border-white/20 dark:text-white"
+                >{ui('Cancelar')}</button>
+                <button
+                  type="submit"
+                  disabled={exitPinInput.length !== 4}
+                  className="rounded-xl bg-[#B80C09] px-4 py-2.5 text-sm font-bold text-white disabled:cursor-not-allowed disabled:opacity-50"
+                >{ui('Continuar')}</button>
+              </div>
+            </motion.form>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 };

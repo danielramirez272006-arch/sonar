@@ -598,7 +598,6 @@ export const UserDashboardPage = () => {
               followedArtists={followedArtists}
               followedUsers={followedUsers}
               gearSetup={gearSetup}
-              onExportBackup={handleExportBackup}
             />
           )}
 

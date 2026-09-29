@@ -1,6 +1,6 @@
 # Diseño de SONAR
 
-Guía de la implementación actual, actualizada el 24 de septiembre de 2026. Reemplaza la especificación inicial que contenía cifras y prestaciones de ejemplo. No constituye una validación de contraste ni un juego de mockups.
+Guía de la implementación actual, actualizada el 29 de septiembre de 2026. Reemplaza la especificación inicial que contenía cifras y prestaciones de ejemplo. El anteproyecto y los mockups se entregan como documentos del proyecto; esta guía describe la implementación de la interfaz.
 
 ## Identidad visual
 
@@ -35,8 +35,8 @@ El [logo](../public/logo-sonar.svg) y el [favicon](../public/favicon.svg) están
 
 ThemeProvider cambia las clases dark/light y conserva la selección. Los estilos incluyen breakpoints y reglas de movimiento reducido. Esto no acredita por sí solo accesibilidad completa.
 
-La revisión pendiente debe cubrir 375, 768 y 1280 px o más, zoom, foco, teclado, contraste y etiquetas de controles. El componente Input compartido requiere revisar la asociación entre label e input.
+La implementación incluye estilos fluidos y breakpoints para móvil (~375 px), tablet (~768 px) y escritorio (~1280 px o más). Falta el recorrido visual final en navegador para comprobar desbordamientos, recortes, zoom, foco, teclado, contraste y etiquetas de controles. No se declara conformidad WCAG solo por disponer de estas funciones. Revisar la asociación entre label e input compartido durante esa comprobación.
 
-## Entregables pendientes
+## Entregables
 
-No se localizaron entregables independientes de mockups de escritorio y móvil ni un anteproyecto completo. Esta guía aporta paleta, recursos y criterios, pero queda pendiente completar el libro de marca y verificar su aplicación.
+El anteproyecto y los mockups de escritorio y móvil forman parte de la entrega del proyecto. El libro de marca define la paleta, el logo y los estilos descritos arriba. La verificación responsive y de accesibilidad visual sigue siendo una comprobación técnica separada de esos documentos.

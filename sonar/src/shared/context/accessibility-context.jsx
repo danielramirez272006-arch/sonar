@@ -1,8 +1,30 @@
 import React, { createContext, useContext, useState, useEffect, useCallback, useRef } from 'react';
+import i18n from '../i18n';
 
 const AccessibilityContext = createContext(null);
 
 const STORAGE_KEY = 'sonar_a11y_settings';
+const MAX_SPEECH_CHUNK_LENGTH = 180;
+
+const splitSpeechText = (text) => {
+  const chunks = [];
+  let remaining = text.trim();
+
+  while (remaining.length > MAX_SPEECH_CHUNK_LENGTH) {
+    const sentenceBreaks = ['. ', '! ', '? ', ': ']
+      .map((separator) => remaining.lastIndexOf(separator, MAX_SPEECH_CHUNK_LENGTH))
+      .filter((index) => index >= MAX_SPEECH_CHUNK_LENGTH * 0.55);
+    const sentenceBreak = sentenceBreaks.length ? Math.max(...sentenceBreaks) + 1 : -1;
+    const wordBreak = remaining.lastIndexOf(' ', MAX_SPEECH_CHUNK_LENGTH);
+    const boundary = sentenceBreak > 0 ? sentenceBreak : wordBreak > 0 ? wordBreak : MAX_SPEECH_CHUNK_LENGTH;
+
+    chunks.push(remaining.slice(0, boundary).trim());
+    remaining = remaining.slice(boundary).trim();
+  }
+
+  if (remaining) chunks.push(remaining);
+  return chunks;
+};
 
 const DEFAULT_SETTINGS = {
   fontSize: 'normal', // 'normal' | 'large' | 'xlarge'
@@ -35,9 +57,37 @@ export const AccessibilityProvider = ({ children }) => {
   const [isShortcutsModalOpen, setIsShortcutsModalOpen] = useState(false);
   const [ariaAnnouncement, setAriaAnnouncement] = useState({ message: '', priority: 'polite' });
   const [isSpeaking, setIsSpeaking] = useState(false);
+  const [isSpeechPaused, setIsSpeechPaused] = useState(false);
   const [currentSpeakingText, setCurrentSpeakingText] = useState('');
 
   const utteranceRef = useRef(null);
+
+  // Anunciador ARIA Live
+  const announce = useCallback((message, priority = 'polite') => {
+    setAriaAnnouncement({ message, priority });
+    setTimeout(() => {
+      setAriaAnnouncement((prev) => (prev.message === message ? { message: '', priority: 'polite' } : prev));
+    }, 4000);
+  }, []);
+
+  const stopSpeaking = useCallback(() => {
+    if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
+      window.speechSynthesis.cancel();
+    }
+    setIsSpeaking(false);
+    setIsSpeechPaused(false);
+    setCurrentSpeakingText('');
+  }, []);
+
+  useEffect(() => {
+    const stopReadingOnNavigation = () => stopSpeaking();
+    window.addEventListener('hashchange', stopReadingOnNavigation);
+    window.addEventListener('popstate', stopReadingOnNavigation);
+    return () => {
+      window.removeEventListener('hashchange', stopReadingOnNavigation);
+      window.removeEventListener('popstate', stopReadingOnNavigation);
+    };
+  }, [stopSpeaking]);
 
   // Persistir configuraciones en localStorage
   useEffect(() => {
@@ -153,7 +203,7 @@ export const AccessibilityProvider = ({ children }) => {
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [isA11yWidgetOpen, isShortcutsModalOpen, isSpeaking]);
+  }, [isA11yWidgetOpen, isShortcutsModalOpen, isSpeaking, stopSpeaking]);
 
   // Actualizador genérico de configuración
   const updateSetting = useCallback((key, value) => {
@@ -166,25 +216,23 @@ export const AccessibilityProvider = ({ children }) => {
       window.speechSynthesis.cancel();
     }
     setIsSpeaking(false);
+    setIsSpeechPaused(false);
     announce('Se han restablecido todas las opciones de accesibilidad a los valores por defecto.');
-  }, []);
-
-  // Anunciador ARIA Live
-  const announce = useCallback((message, priority = 'polite') => {
-    setAriaAnnouncement({ message, priority });
-    // Limpiar anuncio después de 4 segundos
-    setTimeout(() => {
-      setAriaAnnouncement((prev) => (prev.message === message ? { message: '', priority: 'polite' } : prev));
-    }, 4000);
-  }, []);
+  }, [announce]);
 
   // Text-To-Speech (Lectura por Voz)
-  const stopSpeaking = useCallback(() => {
+  const pauseSpeaking = useCallback(() => {
     if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
-      window.speechSynthesis.cancel();
+      window.speechSynthesis.pause();
+      setIsSpeechPaused(true);
     }
-    setIsSpeaking(false);
-    setCurrentSpeakingText('');
+  }, []);
+
+  const resumeSpeaking = useCallback(() => {
+    if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
+      window.speechSynthesis.resume();
+      setIsSpeechPaused(false);
+    }
   }, []);
 
   const speak = useCallback(
@@ -212,36 +260,34 @@ export const AccessibilityProvider = ({ children }) => {
       if (!cleanText) return;
 
       const fullMessage = title ? `${title}. ${cleanText}` : cleanText;
-      const utterance = new SpeechSynthesisUtterance(fullMessage);
-      utteranceRef.current = utterance;
+      const language = (document.documentElement.lang || i18n.language || 'es').split('-')[0];
+      const voice = window.speechSynthesis.getVoices().find((item) => item.lang.toLowerCase().startsWith(language));
+      const chunks = splitSpeechText(fullMessage);
 
-      utterance.volume = settings.ttsVolume ?? 1;
-      utterance.rate = settings.ttsRate ?? 1;
-      utterance.lang = 'es-ES';
-
-      // Buscar voz en español si está disponible
-      const voices = window.speechSynthesis.getVoices();
-      const spanishVoice = voices.find((v) => v.lang.startsWith('es'));
-      if (spanishVoice) {
-        utterance.voice = spanishVoice;
-      }
-
-      utterance.onstart = () => {
-        setIsSpeaking(true);
-        setCurrentSpeakingText(text);
-      };
-
-      utterance.onend = () => {
-        setIsSpeaking(false);
-        setCurrentSpeakingText('');
-      };
-
-      utterance.onerror = () => {
-        setIsSpeaking(false);
-        setCurrentSpeakingText('');
-      };
-
-      window.speechSynthesis.speak(utterance);
+      setIsSpeaking(true);
+      setIsSpeechPaused(false);
+      setCurrentSpeakingText(text);
+      chunks.forEach((chunk, index) => {
+        const utterance = new SpeechSynthesisUtterance(chunk.trim());
+        utteranceRef.current = utterance;
+        utterance.volume = settings.ttsVolume ?? 1;
+        utterance.rate = settings.ttsRate ?? 1;
+        utterance.lang = document.documentElement.lang || i18n.language || 'es';
+        if (voice) utterance.voice = voice;
+        utterance.onend = () => {
+          if (index === chunks.length - 1) {
+            setIsSpeaking(false);
+            setIsSpeechPaused(false);
+            setCurrentSpeakingText('');
+          }
+        };
+        utterance.onerror = () => {
+          setIsSpeaking(false);
+          setIsSpeechPaused(false);
+          setCurrentSpeakingText('');
+        };
+        window.speechSynthesis.speak(utterance);
+      });
     },
     [isSpeaking, currentSpeakingText, settings.ttsVolume, settings.ttsRate, stopSpeaking, announce]
   );
@@ -331,7 +377,10 @@ export const AccessibilityProvider = ({ children }) => {
     announce,
     speak,
     stopSpeaking,
+    pauseSpeaking,
+    resumeSpeaking,
     isSpeaking,
+    isSpeechPaused,
     currentSpeakingText,
     playAudioCue,
   };

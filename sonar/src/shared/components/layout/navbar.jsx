@@ -282,10 +282,11 @@ export const Navbar = ({
 
   return (
     <header className="sticky top-0 z-50 w-full bg-[var(--bg-navbar)] border-b border-[var(--border-subtle)] backdrop-blur-md transition-colors duration-300 shadow-xs">
-      <div className="w-full max-w-[1600px] mx-auto px-3 sm:px-6 lg:px-8 h-[68px] flex items-center justify-between gap-3 sm:gap-5">
+      <div className="w-full max-w-[1600px] mx-auto px-2 sm:px-4 lg:px-8 h-[68px] flex items-center justify-between gap-1.5 sm:gap-2.5">
         {/* Izquierda: Logo principal animado */}
         <div className="shrink-0 flex items-center">
           <AnimatedLogo
+            size="sm"
             onClick={() => {
               window.location.hash = '#explore';
             }}
@@ -294,7 +295,7 @@ export const Navbar = ({
 
         {/* Centro: Buscador global (canciones + contenido editorial) */}
         {showSearch && (
-          <div ref={navDropdownRef} className="hidden md:flex relative flex-1 min-w-[240px] lg:min-w-[320px] max-w-[580px] mx-2 lg:mx-4">
+          <div ref={navDropdownRef} className="hidden md:flex relative flex-1 min-w-[200px] lg:min-w-[300px] max-w-[500px] mx-1 lg:mx-2">
             <form onSubmit={handleNavSearchSubmit} className="w-full" role="search">
               <div className="relative w-full">
                 <span className="material-symbols-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-[19px] text-[var(--text-muted)] pointer-events-none">
@@ -593,7 +594,7 @@ export const Navbar = ({
         )}
 
         {/* Derecha: Enlaces, Botón de Tema & Avatar / Auth */}
-        <div className="flex items-center gap-2 sm:gap-3.5 shrink-0">
+        <div className="flex items-center gap-1.5 sm:gap-2.5 shrink-0">
           {/* Enlaces de navegación con fondo transparente/translúcido en modo oscuro */}
           <nav className="flex items-center gap-1 sm:gap-1.5">
             {links.map((link) => {
@@ -605,7 +606,7 @@ export const Navbar = ({
                   onClick={() => handleNavClick(link)}
                   whileHover={{ y: -1 }}
                   whileTap={{ scale: 0.95 }}
-                  className={`relative px-3 sm:px-4 py-2 text-xs sm:text-sm font-bold rounded-xl cursor-pointer transition-colors duration-200 ${
+                  className={`relative px-1 sm:px-2 py-2 text-[10px] sm:text-[11px] lg:text-xs font-bold rounded-xl cursor-pointer transition-colors duration-200 ${
                     isActive
                       ? 'text-[#231123] dark:text-white'
                       : 'text-[#482d46] hover:text-[#B80C09] dark:text-[#d8c5d3] dark:hover:text-white'
@@ -668,7 +669,7 @@ export const Navbar = ({
                     window.dispatchEvent(new CustomEvent('sonar:navigate-tab', { detail: 'parental_control' }));
                   }}
                   title={ui("Modo Kids y Control Parental activo. Clic para administrar.")}
-                  className="hidden sm:flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-[#4B2840]/15 dark:bg-[#4B2840]/40 text-[#4B2840] dark:text-[#DCDCDD] border border-[#4B2840]/30 text-[11px] font-black tracking-wide cursor-pointer shadow-xs hover:bg-[#4B2840]/25 transition-all"
+                  className="hidden sm:flex items-center gap-1 px-2 sm:px-2.5 py-1 rounded-full bg-[#4B2840]/15 dark:bg-[#4B2840]/40 text-[#4B2840] dark:text-[#DCDCDD] border border-[#4B2840]/30 text-[10px] sm:text-[11px] font-black tracking-wide cursor-pointer shadow-xs hover:bg-[#4B2840]/25 transition-all"
                 >
                   <span className="material-symbols-outlined text-[14px]">child_care</span>
                   <span>{ui("Modo Kids")}</span>
