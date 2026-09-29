@@ -289,7 +289,9 @@ const RegisterFormContent = () => {
           pin,
         },
       });
-      window.location.hash = account.role === 'admin' ? '#admin' : '#usuario';
+      if (account) {
+        window.location.hash = account.role === 'admin' ? '#admin' : '#usuario';
+      }
     } catch (err) {
       setErrorMessage(err.message || 'No se pudo conectar con Google.');
     } finally {

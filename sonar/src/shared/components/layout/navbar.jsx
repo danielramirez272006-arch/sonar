@@ -282,9 +282,9 @@ export const Navbar = ({
 
   return (
     <header className="sticky top-0 z-50 w-full bg-[var(--bg-navbar)] border-b border-[var(--border-subtle)] backdrop-blur-md transition-colors duration-300 shadow-xs">
-      <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-10 h-[68px] flex items-center justify-between gap-3 sm:gap-4">
+      <div className="w-full max-w-[1600px] mx-auto px-3 sm:px-6 lg:px-8 h-[68px] flex items-center justify-between gap-3 sm:gap-5">
         {/* Izquierda: Logo principal animado */}
-        <div className="shrink-0">
+        <div className="shrink-0 flex items-center">
           <AnimatedLogo
             onClick={() => {
               window.location.hash = '#explore';
@@ -294,7 +294,7 @@ export const Navbar = ({
 
         {/* Centro: Buscador global (canciones + contenido editorial) */}
         {showSearch && (
-          <div ref={navDropdownRef} className="hidden md:flex relative flex-1 max-w-[440px] mx-2 lg:mx-4">
+          <div ref={navDropdownRef} className="hidden md:flex relative flex-1 min-w-[240px] lg:min-w-[320px] max-w-[580px] mx-2 lg:mx-4">
             <form onSubmit={handleNavSearchSubmit} className="w-full" role="search">
               <div className="relative w-full">
                 <span className="material-symbols-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-[19px] text-[var(--text-muted)] pointer-events-none">
@@ -314,7 +314,7 @@ export const Navbar = ({
                   onFocus={() => {
                     if (navSearch.trim()) setIsNavDropdownOpen(true);
                   }}
-                  className="w-full pl-10 pr-20 py-2.5 rounded-2xl text-[13px] font-medium bg-[var(--bg-surface-secondary)] border border-[var(--border-subtle)] text-[var(--text-main)] placeholder-[var(--text-muted)] focus:outline-none focus:border-[var(--color-accent)] focus:bg-[var(--bg-card)] focus:shadow-[0_0_0_4px_rgba(184,12,9,0.12)] transition-all"
+                  className="w-full pl-10 pr-10 py-2.5 rounded-2xl text-[13px] font-medium bg-[var(--bg-surface-secondary)] border border-[var(--border-subtle)] text-[var(--text-main)] placeholder-[var(--text-muted)] focus:outline-none focus:border-[var(--color-accent)] focus:bg-[var(--bg-card)] focus:shadow-[0_0_0_4px_rgba(184,12,9,0.12)] transition-all"
                 />
                 <div className="absolute right-2.5 top-1/2 -translate-y-1/2 flex items-center gap-1">
                   {isNavSearching && (
@@ -593,9 +593,9 @@ export const Navbar = ({
         )}
 
         {/* Derecha: Enlaces, Botón de Tema & Avatar / Auth */}
-        <div className="flex items-center gap-3 sm:gap-4">
+        <div className="flex items-center gap-2 sm:gap-3.5 shrink-0">
           {/* Enlaces de navegación con fondo transparente/translúcido en modo oscuro */}
-          <nav className="flex items-center gap-1.5 sm:gap-2">
+          <nav className="flex items-center gap-1 sm:gap-1.5">
             {links.map((link) => {
               const isActive = activeTab === link.id;
               return (

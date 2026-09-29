@@ -3,9 +3,29 @@ import { apiRequest, getUserByEmail, updateUser as updateUserApi, deleteUser as 
 import { hashPassword } from '../services/crypto-service.js'
 import { notifyLoginAlertWebhook } from '../services/n8n-webhooks.js'
 
+const defaultAuthFallback = {
+  user: null,
+  isAuthenticated: false,
+  isLoading: false,
+  error: null,
+  login: async () => null,
+  loginWithGoogle: async () => null,
+  register: async () => null,
+  changePassword: async () => {},
+  logout: () => {},
+  deleteAccount: async () => false,
+  updateUser: () => {},
+  updateParentalControl: () => {},
+  verifyParentalPin: () => false,
+  isParentalControlActive: false,
+  isJunior: false,
+  hasRole: () => false,
+  isAdmin: false,
+  isUser: false,
+}
+
 // El contexto y el hook se exportan juntos como API de este módulo.
-// eslint-disable-next-line react-refresh/only-export-components
-export const AuthContext = createContext(undefined)
+export const AuthContext = createContext(defaultAuthFallback)
 
 export function AuthProvider({ children }) {
   const authRevision = useRef(0)
@@ -46,12 +66,12 @@ export function AuthProvider({ children }) {
   useEffect(() => {
     if (!user) return;
 
-    const timeoutMs = user.role === 'admin' ? 30000 : 60000;
+    const timeoutMs = user.role === 'admin' ? 15 * 60 * 1000 : 30 * 60 * 1000;
     let timerId = null;
 
     const handleInactivityLogout = () => {
       authRevision.current++
-      const roleLabel = user.role === 'admin' ? 'administrador (30 segundos)' : 'usuario (1 minuto)';
+      const roleLabel = user.role === 'admin' ? 'administrador (15 minutos)' : 'usuario (30 minutos)';
       apiRequest('/auth/logout', { method: 'POST' }).catch(() => {});
       setUser(null);
       setError(`Sesión cerrada por inactividad de ${roleLabel}.`);
@@ -380,13 +400,7 @@ export function AuthProvider({ children }) {
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>
 }
 
-// eslint-disable-next-line react-refresh/only-export-components
 export function useAuth() {
   const context = useContext(AuthContext)
-
-  if (context === undefined) {
-    throw new Error('useAuth debe utilizarse dentro de AuthProvider.')
-  }
-
-  return context
+  return context || defaultAuthFallback
 }

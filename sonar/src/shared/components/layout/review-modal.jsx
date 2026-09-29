@@ -10,7 +10,8 @@ import { createReview } from '../../services/api-client';
 
 export const ReviewModal = () => {
   const ui = useUIText();
-  const { user } = useAuth();
+  const auth = useAuth();
+  const user = auth?.user || null;
   const { reviewModalAlbum, closeReviewModal } = usePlayer();
   const [toastMessage, setToastMessage] = useState(null);
 

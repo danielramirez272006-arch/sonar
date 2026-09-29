@@ -115,7 +115,7 @@ export function SonarAiSommelier() {
   const [isLoading, setIsLoading] = useState(false)
   const [sessionId] = useState(() => 'sonar-session-' + Date.now().toString(36))
 
-  const { playTrack, pauseTrack, isPlaying, currentTrack } = usePlayer()
+  const { playTrack, pauseTrack, isPlaying, currentTrack, openReviewModal } = usePlayer()
 
   // Actualizar mensaje inicial cuando cambia el idioma
   useEffect(() => {
@@ -236,18 +236,17 @@ export function SonarAiSommelier() {
   }
 
   const handleOpenReview = (suggestion) => {
-    window.dispatchEvent(
-      new CustomEvent('sonar:open-review-modal', {
-        detail: {
-          album: {
-            title: suggestion.title,
-            artist: suggestion.artist,
-            albumId: 'custom-' + Date.now(),
-            cover: 'https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=600&auto=format&fit=crop&q=80',
-          },
-        },
+    if (!suggestion) return
+    if (openReviewModal) {
+      openReviewModal({
+        id: suggestion.id || suggestion.albumId || 'sug-' + suggestion.title.toLowerCase().replace(/\s+/g, '-'),
+        title: suggestion.title,
+        artist: suggestion.artist,
+        album: suggestion.album || suggestion.title,
+        cover: suggestion.cover || 'https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=600&auto=format&fit=crop&q=80',
+        type: 'album',
       })
-    )
+    }
   }
 
   const handleClearHistory = () => {
