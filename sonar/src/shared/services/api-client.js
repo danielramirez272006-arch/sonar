@@ -1,4 +1,5 @@
 import { userStatus } from './admin-data.js'
+import { sendReviewToModeration } from './n8n-webhooks.js'
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || '/api/catalog'
 
 export async function apiRequest(endpoint, options = {}) {
@@ -172,6 +173,10 @@ export async function createReview(review) {
     method: 'POST',
     body: JSON.stringify({ ...review, userName: author.username, status: 'pending_moderation', createdAt: review.createdAt || new Date().toISOString() }),
   })
+  // La reseña ya está guardada: un fallo de n8n no debe provocar otro envío del formulario.
+  void sendReviewToModeration(savedReview).then(result => {
+    if (!result.success) console.warn('No se pudo enviar la reseña a n8n:', result.message)
+  }).catch(error => console.warn('No se pudo enviar la reseña a n8n:', error))
   return savedReview
 }
 

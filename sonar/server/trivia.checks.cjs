@@ -1,0 +1,27 @@
+﻿const {test}=require('node:test');
+const assert=require('node:assert/strict');
+const fs=require('node:fs'),os=require('node:os'),path=require('node:path');
+const {createApp}=require('./api.cjs');
+test('trivia rewards require login, a win, and are credited only once',async t=>{
+ const dir=fs.mkdtempSync(path.join(os.tmpdir(),'sonar-trivia-'));
+ const filename=path.join(dir,'db.json');
+ fs.writeFileSync(filename,JSON.stringify({users:[{id:'u',email:'test@example.com',password:'test',status:'active',role:'user',sonarPoints:50}],reviews:[]}));
+ const {app,db}=createApp({filename,env:{}});
+ const server=app.listen(0,'127.0.0.1');await new Promise(r=>server.once('listening',r));
+ t.after(async()=>{await new Promise(r=>server.close(r));fs.rmSync(dir,{recursive:true,force:true});});
+ const url='http://127.0.0.1:'+server.address().port;
+ const call=(route,body,cookie='')=>fetch(url+route,{method:'POST',headers:{'Content-Type':'application/json',cookie},body:JSON.stringify(body)});
+ assert.equal((await call('/trivia/reward',{})).status,403);
+ const login=await call('/auth/login',{email:'test@example.com',password:'test'});
+ const cookie=login.headers.get('set-cookie').split(';')[0];
+ const {MUSIC_QUESTIONS}=await import('../src/features/profile/components/music-questions.js');
+ const deck=Array.from({length:16},(_,i)=>i);
+ const payload={roundId:'test-round-123456789012345',mode:'solo',deck,answers:deck.map(i=>MUSIC_QUESTIONS[i].correct)};
+ assert.equal((await call('/trivia/reward',{...payload,answers:[]},cookie)).status,400);
+ assert.equal((await call('/trivia/reward',{...payload,answers:deck.map(()=>-1)},cookie)).status,400);
+ let r=await call('/trivia/reward',payload,cookie);assert.equal(r.status,200);assert.equal((await r.json()).points,150);
+ r=await call('/trivia/reward',payload,cookie);assert.equal((await r.json()).alreadyClaimed,true);
+ assert.equal(db.getState().users[0].sonarPoints,150);
+ assert.equal(db.getState().users[0].triviaRewards.length,1);
+ assert.equal((await call('/trivia/reward',{...payload,roundId:'tie-round-1234567890123456',mode:'1v1',answers:deck.map(()=>-1)},cookie)).status,400);
+});
