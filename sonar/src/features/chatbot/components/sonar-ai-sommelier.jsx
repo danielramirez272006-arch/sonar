@@ -4,6 +4,18 @@ import { sendChatMessage } from '../../../shared/services/chatbot-service.js'
 import { usePlayer } from '../../../shared/context/player-context.jsx'
 import { useLanguage } from '../../../shared/context/language-context.jsx'
 import { useLocation } from 'react-router-dom'
+import { Avatar } from '../../../shared/components/ui/avatar.jsx'
+
+const SONARIA_AVATAR_PROPS = {
+  name: 'Sonaria',
+  username: 'Sonaria',
+  avatarStyle: 'blobatar',
+  avatarSeed: 'sonaria',
+  avatarHue: 185,
+  avatarTone: 55,
+  avatarBg: '#003844',
+  frame: 'frame-neon-cyber',
+}
 
 // Mensajes iniciales por idioma
 const INITIAL_MESSAGES = {
@@ -261,18 +273,28 @@ export function SonarAiSommelier() {
           whileHover={{ scale: 1.08 }}
           whileTap={{ scale: 0.94 }}
           onClick={() => setIsOpen((prev) => !prev)}
-          className="flex items-center gap-2.5 px-4 py-3 rounded-full bg-gradient-to-r from-[#B80C09] via-[#8C0A07] to-[#4B2840] text-white font-bold shadow-2xl shadow-black/60 border border-white/20 cursor-pointer backdrop-blur-md transition-all group"
+          className="flex items-center gap-2.5 px-3.5 py-2.5 sm:px-4 sm:py-2.5 rounded-full bg-gradient-to-r from-[#B80C09] via-[#8C0A07] to-[#4B2840] text-white font-bold shadow-2xl shadow-black/60 border border-white/20 cursor-pointer backdrop-blur-md transition-all group"
           aria-label={isOpen ? 'Cerrar Sonaria' : 'Abrir Sonaria (Asistente IA)'}
         >
-          <div className="relative flex items-center justify-center w-7 h-7 rounded-full bg-white/15">
-            <span className="material-symbols-outlined text-[19px] text-[#ffdddd] group-hover:rotate-12 transition-transform">
-              {isOpen ? 'close' : 'smart_toy'}
-            </span>
-            {!isOpen && (
-              <span className="absolute -top-1 -right-1 flex h-2.5 w-2.5">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#ff4d4a] opacity-75"></span>
-                <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-[#B80C09]"></span>
-              </span>
+          <div className="relative flex items-center justify-center">
+            {isOpen ? (
+              <div className="w-8 h-8 rounded-full bg-white/15 flex items-center justify-center">
+                <span className="material-symbols-outlined text-[20px] text-white">close</span>
+              </div>
+            ) : (
+              <div className="relative">
+                <Avatar
+                  {...SONARIA_AVATAR_PROPS}
+                  size={32}
+                  gaze={true}
+                  active={true}
+                  className="ring-2 ring-white/30 shadow-md"
+                />
+                <span className="absolute -top-0.5 -right-0.5 flex h-2.5 w-2.5">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                  <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500"></span>
+                </span>
+              </div>
             )}
           </div>
           <span className="text-xs tracking-wider uppercase hidden sm:inline-block font-extrabold text-[#DCDCDD]">
@@ -292,15 +314,22 @@ export function SonarAiSommelier() {
             className="fixed bottom-22 right-4 sm:right-6 z-50 w-[calc(100vw-2rem)] sm:w-[420px] h-[580px] max-h-[82vh] flex flex-col rounded-2xl bg-[#231123] border border-[#4B2840]/80 shadow-2xl shadow-black/80 overflow-hidden text-[#DCDCDD]"
           >
             {/* Cabecera */}
-            <div className="flex items-center justify-between px-4 py-3.5 bg-gradient-to-r from-[#231123] via-[#4B2840] to-[#231123] border-b border-white/10">
+            <div className="flex items-center justify-between px-4 py-3 bg-gradient-to-r from-[#231123] via-[#4B2840] to-[#231123] border-b border-white/10">
               <div className="flex items-center gap-3">
-                <div className="w-9 h-9 rounded-full bg-[#B80C09]/30 border border-[#B80C09]/60 flex items-center justify-center">
-                  <span className="text-base font-serif font-black text-[#ff4d4a]">✧</span>
+                <div className="relative">
+                  <Avatar
+                    {...SONARIA_AVATAR_PROPS}
+                    size={38}
+                    gaze={true}
+                    active={isOpen}
+                    className="ring-2 ring-cyan-400/40 shadow-lg"
+                  />
+                  <span className="absolute -bottom-0.5 -right-0.5 w-3 h-3 rounded-full bg-emerald-400 border-2 border-[#231123]"></span>
                 </div>
                 <div>
                   <div className="flex items-center gap-2">
                     <strong className="text-sm font-bold text-white tracking-wide">Sonaria</strong>
-                    <span className="px-1.5 py-0.5 rounded text-[9px] font-extrabold tracking-widest bg-[#B80C09] text-white uppercase">
+                    <span className="px-1.5 py-0.5 rounded text-[9px] font-extrabold tracking-widest bg-gradient-to-r from-cyan-600 to-teal-500 text-white uppercase">
                       Gemini IA
                     </span>
                   </div>
@@ -334,130 +363,144 @@ export function SonarAiSommelier() {
               {messages.map((msg) => (
                 <div
                   key={msg.id}
-                  className={`flex flex-col ${msg.sender === 'user' ? 'items-end' : 'items-start'}`}
+                  className={`flex gap-2.5 ${msg.sender === 'user' ? 'flex-row-reverse items-end' : 'flex-row items-start'}`}
                 >
-                  <div
-                    className={`max-w-[88%] p-3.5 rounded-2xl text-xs sm:text-[13px] leading-relaxed ${
-                      msg.sender === 'user'
-                        ? 'bg-gradient-to-r from-[#B80C09] to-[#8C0A07] text-white rounded-tr-xs shadow-md'
-                        : 'bg-[#4B2840]/70 border border-white/10 text-[#DCDCDD] rounded-tl-xs backdrop-blur-sm'
-                    }`}
-                  >
-                    <p className="whitespace-pre-line">{msg.text}</p>
+                  {msg.sender === 'bot' && (
+                    <div className="shrink-0 mt-0.5">
+                      <Avatar
+                        {...SONARIA_AVATAR_PROPS}
+                        size={28}
+                        gaze={true}
+                        active={false}
+                        className="shadow-sm ring-1 ring-cyan-400/30"
+                      />
+                    </div>
+                  )}
 
-                    {/* Tarjetas de Recomendación Musical */}
-                    {msg.suggestions && msg.suggestions.length > 0 && (
-                      <div className="mt-3 space-y-2.5 pt-2.5 border-t border-white/15">
-                        <span className="text-[10px] font-bold tracking-wider uppercase text-[#ff4d4a] block">
-                          💿 Recomendaciones del Sommelier:
-                        </span>
-                        {msg.suggestions.map((sug, idx) => {
-                          const isThisTrackPlaying =
-                            isPlaying &&
-                            currentTrack &&
-                            (String(currentTrack.title || '').toLowerCase().includes(String(sug.title || '').toLowerCase()) ||
-                              String(sug.title || '').toLowerCase().includes(String(currentTrack.title || '').toLowerCase()))
+                  <div className={`flex flex-col ${msg.sender === 'user' ? 'items-end' : 'items-start'} max-w-[85%]`}>
+                    <div
+                      className={`p-3.5 rounded-2xl text-xs sm:text-[13px] leading-relaxed w-full ${
+                        msg.sender === 'user'
+                          ? 'bg-gradient-to-r from-[#B80C09] to-[#8C0A07] text-white rounded-tr-xs shadow-md'
+                          : 'bg-[#4B2840]/70 border border-white/10 text-[#DCDCDD] rounded-tl-xs backdrop-blur-sm shadow-md'
+                      }`}
+                    >
+                      <p className="whitespace-pre-line">{msg.text}</p>
 
-                          return (
-                            <div
-                              key={idx}
-                              className={`p-2.5 rounded-xl bg-[#231123]/90 border transition-all flex flex-col gap-2 ${
-                                isThisTrackPlaying
-                                  ? 'border-[#ff4d4a] shadow-lg shadow-[#ff4d4a]/20 bg-[#2e122b]'
-                                  : 'border-white/10 hover:border-[#B80C09]/50'
-                              }`}
-                            >
-                              <div className="flex items-start justify-between gap-2">
-                                <div>
-                                  <strong className="text-xs text-white font-bold block flex items-center gap-1.5">
-                                    {sug.title}
-                                    {isThisTrackPlaying && (
-                                      <span className="flex items-center gap-0.5 ml-1">
-                                        <span className="w-1 h-3 bg-[#ff4d4a] animate-pulse"></span>
-                                        <span className="w-1 h-2 bg-[#ff4d4a] animate-pulse [animation-delay:0.2s]"></span>
-                                        <span className="w-1 h-4 bg-[#ff4d4a] animate-pulse [animation-delay:0.4s]"></span>
-                                      </span>
-                                    )}
-                                  </strong>
-                                  <small className="text-[11px] text-[#DCDCDD]/70 block">
-                                    {sug.artist} {sug.year ? `· ${sug.year}` : ''} {sug.genre ? `· ${sug.genre}` : ''}
-                                  </small>
-                                </div>
-                                <span
-                                  className={`px-1.5 py-0.5 rounded text-[9px] font-bold whitespace-nowrap ${
-                                    isThisTrackPlaying
-                                      ? 'bg-[#B80C09] text-white animate-pulse'
-                                      : 'bg-[#003844] text-white'
-                                  }`}
-                                >
-                                  {isThisTrackPlaying ? 'Sonando Ahora' : 'Hi-Fi Master'}
-                                </span>
-                              </div>
+                      {/* Tarjetas de Recomendación Musical */}
+                      {msg.suggestions && msg.suggestions.length > 0 && (
+                        <div className="mt-3 space-y-2.5 pt-2.5 border-t border-white/15">
+                          <span className="text-[10px] font-bold tracking-wider uppercase text-[#ff4d4a] block">
+                            💿 Recomendaciones del Sommelier:
+                          </span>
+                          {msg.suggestions.map((sug, idx) => {
+                            const isThisTrackPlaying =
+                              isPlaying &&
+                              currentTrack &&
+                              (String(currentTrack.title || '').toLowerCase().includes(String(sug.title || '').toLowerCase()) ||
+                                String(sug.title || '').toLowerCase().includes(String(currentTrack.title || '').toLowerCase()))
 
-                              {sug.reason && (
-                                <p className="text-[11px] text-[#DCDCDD]/80 italic bg-[#1a0c1a]/60 p-2 rounded-lg border-l-2 border-[#B80C09]">
-                                  «{sug.reason}»
-                                </p>
-                              )}
-
-                              <div className="flex items-center gap-2 pt-1">
-                                <button
-                                  onClick={() => (isThisTrackPlaying && pauseTrack ? pauseTrack() : handlePlaySuggestion(sug))}
-                                  className={`flex-1 flex items-center justify-center gap-1 py-1.5 px-2 rounded-lg font-semibold text-[11px] transition-colors cursor-pointer text-white ${
-                                    isThisTrackPlaying
-                                      ? 'bg-[#B80C09] hover:bg-[#8C0A07]'
-                                      : 'bg-[#003844] hover:bg-[#005161]'
-                                  }`}
-                                >
-                                  <span className="material-symbols-outlined text-[14px]">
-                                    {isThisTrackPlaying ? 'pause' : 'play_arrow'}
+                            return (
+                              <div
+                                key={idx}
+                                className={`p-2.5 rounded-xl bg-[#231123]/90 border transition-all flex flex-col gap-2 ${
+                                  isThisTrackPlaying
+                                    ? 'border-[#ff4d4a] shadow-lg shadow-[#ff4d4a]/20 bg-[#2e122b]'
+                                    : 'border-white/10 hover:border-[#B80C09]/50'
+                                }`}
+                              >
+                                <div className="flex items-start justify-between gap-2">
+                                  <div>
+                                    <strong className="text-xs text-white font-bold block flex items-center gap-1.5">
+                                      {sug.title}
+                                      {isThisTrackPlaying && (
+                                        <span className="flex items-center gap-0.5 ml-1">
+                                          <span className="w-1 h-3 bg-[#ff4d4a] animate-pulse"></span>
+                                          <span className="w-1 h-2 bg-[#ff4d4a] animate-pulse [animation-delay:0.2s]"></span>
+                                          <span className="w-1 h-4 bg-[#ff4d4a] animate-pulse [animation-delay:0.4s]"></span>
+                                        </span>
+                                      )}
+                                    </strong>
+                                    <small className="text-[11px] text-[#DCDCDD]/70 block">
+                                      {sug.artist} {sug.year ? `· ${sug.year}` : ''} {sug.genre ? `· ${sug.genre}` : ''}
+                                    </small>
+                                  </div>
+                                  <span
+                                    className={`px-1.5 py-0.5 rounded text-[9px] font-bold whitespace-nowrap ${
+                                      isThisTrackPlaying
+                                        ? 'bg-[#B80C09] text-white animate-pulse'
+                                        : 'bg-[#003844] text-white'
+                                    }`}
+                                  >
+                                    {isThisTrackPlaying ? 'Sonando Ahora' : 'Hi-Fi Master'}
                                   </span>
-                                  <span>{isThisTrackPlaying ? 'Pausar' : 'Reproducir'}</span>
-                                </button>
-                                <button
-                                  onClick={() => handleOpenReview(sug)}
-                                  className="flex-1 flex items-center justify-center gap-1 py-1.5 px-2 rounded-lg bg-white/10 hover:bg-white/20 text-[#DCDCDD] font-semibold text-[11px] transition-colors cursor-pointer"
-                                >
-                                  <span className="material-symbols-outlined text-[14px]">rate_review</span>
-                                  <span>Reseñar</span>
-                                </button>
+                                </div>
+
+                                {sug.reason && (
+                                  <p className="text-[11px] text-[#DCDCDD]/80 italic bg-[#1a0c1a]/60 p-2 rounded-lg border-l-2 border-[#B80C09]">
+                                    «{sug.reason}»
+                                  </p>
+                                )}
+
+                                <div className="flex items-center gap-2 pt-1">
+                                  <button
+                                    onClick={() => (isThisTrackPlaying && pauseTrack ? pauseTrack() : handlePlaySuggestion(sug))}
+                                    className={`flex-1 flex items-center justify-center gap-1 py-1.5 px-2 rounded-lg font-semibold text-[11px] transition-colors cursor-pointer text-white ${
+                                      isThisTrackPlaying
+                                        ? 'bg-[#B80C09] hover:bg-[#8C0A07]'
+                                        : 'bg-[#003844] hover:bg-[#005161]'
+                                    }`}
+                                  >
+                                    <span className="material-symbols-outlined text-[14px]">
+                                      {isThisTrackPlaying ? 'pause' : 'play_arrow'}
+                                    </span>
+                                    <span>{isThisTrackPlaying ? 'Pausar' : 'Reproducir'}</span>
+                                  </button>
+                                  <button
+                                    onClick={() => handleOpenReview(sug)}
+                                    className="flex-1 flex items-center justify-center gap-1 py-1.5 px-2 rounded-lg bg-white/10 hover:bg-white/20 text-[#DCDCDD] font-semibold text-[11px] transition-colors cursor-pointer"
+                                  >
+                                    <span className="material-symbols-outlined text-[14px]">rate_review</span>
+                                    <span>Reseñar</span>
+                                  </button>
+                                </div>
                               </div>
-                            </div>
-                          )
-                        })}
+                            )
+                          })}
+                        </div>
+                      )}
+                    </div>
+
+                    <div className="flex items-center gap-2 mt-1 px-1">
+                      <span className="text-[10px] text-[#DCDCDD]/40">{msg.timestamp}</span>
+                      {msg.sender === 'bot' && (
+                        <span
+                          className={`text-[9px] px-1.5 py-0.2 rounded-full font-bold uppercase tracking-wider ${
+                            msg.source === 'n8n-gemini'
+                              ? 'bg-emerald-950 text-emerald-300 border border-emerald-500/30'
+                              : 'bg-[#4B2840]/60 text-[#ffdddd]/60 border border-white/10'
+                          }`}
+                        >
+                          {msg.source === 'n8n-gemini' ? '⚡ n8n Gemini Agent' : '✧ Sonaria Local'}
+                        </span>
+                      )}
+                    </div>
+
+                    {/* Sugerencias Rápidas (Chips) */}
+                    {msg.sender === 'bot' && msg.quickReplies && msg.quickReplies.length > 0 && (
+                      <div className="flex flex-wrap gap-1.5 mt-2.5 max-w-[95%]">
+                        {msg.quickReplies.map((reply, rIdx) => (
+                          <button
+                            key={rIdx}
+                            onClick={() => handleSend(reply)}
+                            className="text-[11px] px-2.5 py-1 rounded-full bg-[#2e1628] hover:bg-[#4B2840] text-[#DCDCDD] border border-white/15 hover:border-[#B80C09]/50 transition-colors cursor-pointer"
+                          >
+                            {reply}
+                          </button>
+                        ))}
                       </div>
                     )}
                   </div>
-
-                  <div className="flex items-center gap-2 mt-1 px-1">
-                    <span className="text-[10px] text-[#DCDCDD]/40">{msg.timestamp}</span>
-                    {msg.sender === 'bot' && (
-                      <span
-                        className={`text-[9px] px-1.5 py-0.2 rounded-full font-bold uppercase tracking-wider ${
-                          msg.source === 'n8n-gemini'
-                            ? 'bg-emerald-950 text-emerald-300 border border-emerald-500/30'
-                            : 'bg-[#4B2840]/60 text-[#ffdddd]/60 border border-white/10'
-                        }`}
-                      >
-                        {msg.source === 'n8n-gemini' ? '⚡ n8n Gemini Agent' : '✧ Sonaria Local'}
-                      </span>
-                    )}
-                  </div>
-
-                  {/* Sugerencias Rápidas (Chips) */}
-                  {msg.sender === 'bot' && msg.quickReplies && msg.quickReplies.length > 0 && (
-                    <div className="flex flex-wrap gap-1.5 mt-2.5 max-w-[95%]">
-                      {msg.quickReplies.map((reply, rIdx) => (
-                        <button
-                          key={rIdx}
-                          onClick={() => handleSend(reply)}
-                          className="text-[11px] px-2.5 py-1 rounded-full bg-[#2e1628] hover:bg-[#4B2840] text-[#DCDCDD] border border-white/15 hover:border-[#B80C09]/50 transition-colors cursor-pointer"
-                        >
-                          {reply}
-                        </button>
-                      ))}
-                    </div>
-                  )}
                 </div>
               ))}
 

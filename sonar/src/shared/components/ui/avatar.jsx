@@ -6,6 +6,35 @@ import 'blobatar/motion.css';
 import 'blobatar/gaze.css';
 import { Disc, Headphones, Radio, Volume2, Mic, Flame } from 'lucide-react';
 
+if (typeof window !== 'undefined' && typeof window.matchMedia !== 'function') {
+  window.matchMedia = (query) => ({
+    matches: false,
+    media: query,
+    onchange: null,
+    addListener: () => {},
+    removeListener: () => {},
+    addEventListener: () => {},
+    removeEventListener: () => {},
+    dispatchEvent: () => false,
+  });
+}
+
+if (typeof window !== 'undefined' && typeof window.ResizeObserver !== 'function') {
+  window.ResizeObserver = class ResizeObserver {
+    observe() {}
+    unobserve() {}
+    disconnect() {}
+  };
+}
+
+if (typeof globalThis !== 'undefined' && typeof globalThis.ResizeObserver !== 'function') {
+  globalThis.ResizeObserver = class ResizeObserver {
+    observe() {}
+    unobserve() {}
+    disconnect() {}
+  };
+}
+
 const sizeMap = {
   xs: { size: '28px', font: 12, num: 28, iconSize: 14 },
   sm: { size: '36px', font: 14, num: 36, iconSize: 18 },
