@@ -24,4 +24,9 @@ test('trivia rewards require login, a win, and are credited only once',async t=>
  assert.equal(db.getState().users[0].sonarPoints,150);
  assert.equal(db.getState().users[0].triviaRewards.length,1);
  assert.equal((await call('/trivia/reward',{...payload,roundId:'tie-round-1234567890123456',mode:'1v1',answers:deck.map(()=>-1)},cookie)).status,400);
+ const expandedDeck=Array.from({length:16},(_,i)=>MUSIC_QUESTIONS.length-16+i);
+ r=await call('/trivia/reward',{roundId:'expanded-round-123456789012',mode:'solo',deck:expandedDeck,answers:expandedDeck.map(i=>MUSIC_QUESTIONS[i].correct)},cookie);
+ assert.equal(r.status,200);
+ assert.equal((await r.json()).points,250);
+ assert.equal(db.getState().users[0].triviaRewards.length,2);
 });

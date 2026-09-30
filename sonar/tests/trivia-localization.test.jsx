@@ -14,7 +14,7 @@ it('has a complete question and answer dictionary in every supported language',(
      for(const answer of q.options)expect(TRIVIA_TRANSLATIONS[lang][answer]).toBeTruthy();
    }
  }
- expect(MUSIC_QUESTIONS.slice(63)).toHaveLength(37);
+ expect(MUSIC_QUESTIONS.slice(100)).toHaveLength(400);
 });
 it('switches all six languages without resetting the question or timer',async()=>{
  vi.useFakeTimers();

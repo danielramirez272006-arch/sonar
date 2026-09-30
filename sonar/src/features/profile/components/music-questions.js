@@ -1,3 +1,5 @@
+import { EXTRA_MUSIC_QUESTIONS } from '../../../shared/data/music-question-expansion.js';
+
 export const MUSIC_QUESTIONS = [
   {
     "question": "¿Qué instrumento de la orquesta tiene cuerdas y se toca con un arco?",
@@ -998,5 +1000,6 @@ export const MUSIC_QUESTIONS = [
     ],
     "correct": 0,
     "fact": "La respuesta es: The Weeknd."
-  }
+  },
+  ...EXTRA_MUSIC_QUESTIONS,
 ];

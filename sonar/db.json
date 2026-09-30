@@ -5767,7 +5767,15 @@
         "Melómano Junior",
         "Audio Seguro"
       ],
-      "createdAt": "2026-09-24T21:15:06.053Z"
+      "createdAt": "2026-09-24T21:15:06.053Z",
+      "sonarPoints": 100,
+      "triviaRewards": [
+        {
+          "id": "cd9ccb72-25d5-4277-babd-25c10aa0ae9c",
+          "coins": 100,
+          "createdAt": "2026-09-30T14:22:02.945Z"
+        }
+      ]
     },
     {
       "id": "user-1790285570092",

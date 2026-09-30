@@ -7,6 +7,15 @@ import { MUSIC_QUESTIONS } from './music-questions';
 
 export const ROUND_SIZE = 16;
 export const QUESTION_MS = 15000;
+function CelebrationParticles({ coins = false }) {
+  return <span className={`mt-particles ${coins ? 'mt-particles-coins' : ''}`} aria-hidden="true">
+    {Array.from({ length: coins ? 12 : 28 }, (_, i) => <span key={i} style={{
+      '--x': `${(i * 37 + 11) % 100}%`, '--delay': `${(i % 7) * 0.09}s`,
+      '--drift': `${((i * 23) % 130) - 65}px`, '--spin': `${i % 2 ? 420 : -360}deg`,
+      '--particle-color': ['#ffd374', '#c6a2ff', '#87e6d1', '#ff99b8'][i % 4],
+    }}>{coins ? '♫' : ''}</span>)}
+  </span>;
+}
 export const initialGame = () => {
   const deck = MUSIC_QUESTIONS.map((_, i) => i);
   for (let i = deck.length - 1; i > 0; i--) {
@@ -118,6 +127,8 @@ export function MusicTrivia() {
   const name = i => names[i].trim() || ui('Jugador {{number}}', { number: i + 1 });
   const missed = state.selected !== null && state.selected !== question.correct;
   const wonCoins = state.finished && (duelMode ? state.scores[0] > state.scores[1] : state.scores[0] >= 10);
+  const hasWinner = state.finished && (duelMode ? winners.length === 1 : wonCoins);
+  const rewardSaved = reward.id === state.roundId && reward.status === 'saved';
   const claimReward = async () => {
     if (!wonCoins || claimLock.current) return;
     claimLock.current = true;
@@ -126,7 +137,7 @@ export function MusicTrivia() {
       const result = await apiRequest('/trivia/reward', {method:'POST', body:JSON.stringify({roundId:state.roundId, mode, deck:state.deck, answers:state.answers})});
       try { localStorage.setItem('sonar_user_points', String(result.points)); } catch { /* optional cache */ }
       window.dispatchEvent(new CustomEvent('sonar:points-updated', {detail:{points:result.points}}));
-      setReward({id:state.roundId,status:'saved',message:result.alreadyClaimed ? "Recompensa ya recibida: 100 Sonar Coins." : "+100 Sonar Coins guardadas en tu cuenta."});
+      setReward({id:state.roundId,status:'saved',celebrate:!result.alreadyClaimed,message:result.alreadyClaimed ? "Recompensa ya recibida: 100 Sonar Coins." : "+100 Sonar Coins guardadas en tu cuenta."});
     } catch { setReward({id:state.roundId,status:'error',message:'No se pudo guardar la recompensa. Inicia sesión e intenta de nuevo.'}); }
     finally { claimLock.current = false; }
   };
@@ -158,11 +169,18 @@ export function MusicTrivia() {
     <div className="mt-progress-heading"><span>{ui("Tu recorrido musical")}</span><strong>{answered} / {ROUND_SIZE}</strong></div>
     <progress className="mt-progress" aria-label={ui("Preguntas respondidas")} value={answered} max={ROUND_SIZE} />
     <p className="mt-reward-rules">{duelMode ? ui("Jugador 1 representa tu cuenta. Gana el duelo para obtener 100 Coins; los empates no dan premio.") : ui("Consigue al menos 10 de 16 aciertos para ganar 100 Sonar Coins.")}</p>
-    {state.finished ? <div className="mt-result" role="status">
+    {state.finished ? <div key={state.roundId} className={`mt-result ${hasWinner ? 'mt-victory' : ''}`} role="status">
+      {hasWinner && <CelebrationParticles />}
       <span className="mt-trophy" aria-hidden="true">🏆</span><span className="mt-eyebrow">{ui("¡RETO COMPLETADO!")}</span>
-      <h5>{ui("Partida terminada")}</h5>
+      <h5>{hasWinner ? (duelMode ? `${ui("Ganador")}: ${name(state.scores[0] > state.scores[1] ? 0 : 1)}` : ui("¡RETO COMPLETADO!")) : ui("Partida terminada")}</h5>
       <p>{duelMode ? `${winners.length > 1 ? ui("Empate") : ui("Ganador")}: ${players.map((_, i) => i).filter(i => state.scores[i] === highest).map(name).join(', ')} · ${highest} ${ui('aciertos')}` : ui('Resultado: {{score}} de {{total}} aciertos', {score:state.scores[0],total:ROUND_SIZE})}</p>
-      {wonCoins && <div className="mt-reward">
+      {wonCoins && <div className={`mt-reward ${rewardSaved ? 'is-saved' : ''} ${rewardSaved && reward.celebrate ? 'mt-reward-celebration' : ''}`}>
+        {rewardSaved && <div className="mt-coin-award" aria-hidden="true">
+          {reward.celebrate && <CelebrationParticles coins />}
+          <span className="mt-gold-coin">♫</span>
+          <span className="mt-coin-amount">+100 <small>Sonar Coins</small></span>
+          <span className="mt-coin-check">✓</span>
+        </div>}
         <strong>{ui("Premio de victoria: 100 Sonar Coins")}</strong>
         {reward.id === state.roundId && <p role="status">{ui(reward.message)}</p>}
         <button type="button" className="mt-next" disabled={reward.id === state.roundId && ['loading','saved'].includes(reward.status)} onClick={claimReward}>{reward.id === state.roundId && reward.status === 'saved' ? ui("Recompensa recibida") : ui("Recibir 100 Coins")}</button>

@@ -1,3 +1,5 @@
+import { EXTRA_TRIVIA_TRANSLATIONS } from '../../data/music-question-expansion.js';
+
 // Authored translations; artist and album names retain their original spelling.
 export const TRIVIA_TRANSLATIONS = {
   "es": {
@@ -2509,3 +2511,7 @@ export const TRIVIA_TRANSLATIONS = {
     "Julian Casablancas": "Julian Casablancas"
   }
 };
+
+for (const [language, messages] of Object.entries(EXTRA_TRIVIA_TRANSLATIONS)) {
+  Object.assign(TRIVIA_TRANSLATIONS[language], messages);
+}
