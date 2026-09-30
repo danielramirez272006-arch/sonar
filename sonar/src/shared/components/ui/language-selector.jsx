@@ -3,7 +3,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { Globe, ChevronDown, Check } from 'lucide-react';
 import { useLanguage } from '../../context/language-context';
 
-export function LanguageSelector({ variant = 'navbar', className = '' }) {
+export function LanguageSelector({ variant = 'navbar', direction = 'auto', className = '' }) {
   const ui = useUIText();
   const { currentLang, changeLanguage, languages, currentLanguageObj, t } = useLanguage();
   const [isOpen, setIsOpen] = useState(false);
@@ -36,7 +36,7 @@ export function LanguageSelector({ variant = 'navbar', className = '' }) {
               onClick={() => handleSelect(lang.code)}
               aria-label={ui("Cambiar idioma a {{value0}}", { value0: lang.label })}
             >
-              <span>{lang.flag}</span>
+              <span className="lang-item-badge">{lang.code.toUpperCase()}</span>
               <span>{lang.label}</span>
             </button>
           ))}
@@ -45,8 +45,10 @@ export function LanguageSelector({ variant = 'navbar', className = '' }) {
     );
   }
 
+  const isUp = direction === 'up';
+
   return (
-    <div className={`lang-selector-container ${variant} ${className}`} ref={dropdownRef}>
+    <div className={`lang-selector-container ${variant} ${isUp ? 'direction-up' : ''} ${className}`} ref={dropdownRef}>
       <button
         type="button"
         className="lang-selector-btn"
@@ -55,9 +57,8 @@ export function LanguageSelector({ variant = 'navbar', className = '' }) {
         aria-label={t('common.select_language')}
       >
         <Globe size={18} className="lang-icon" />
-        <span className="lang-flag">{currentLanguageObj.flag}</span>
         <span className="lang-code">{currentLanguageObj.code.toUpperCase()}</span>
-        <ChevronDown size={14} className={`lang-chevron ${isOpen ? 'open' : ''}`} />
+        <ChevronDown size={14} className={`lang-chevron ${isUp ? 'up-arrow' : ''} ${isOpen ? 'open' : ''}`} />
       </button>
 
       {isOpen && (
@@ -70,7 +71,7 @@ export function LanguageSelector({ variant = 'navbar', className = '' }) {
               className={`lang-dropdown-item ${currentLang === lang.code ? 'selected' : ''}`}
               onClick={() => handleSelect(lang.code)}
             >
-              <span className="lang-item-flag">{lang.flag}</span>
+              <span className="lang-item-badge">{lang.code.toUpperCase()}</span>
               <span className="lang-item-label">{lang.label}</span>
               {currentLang === lang.code && <Check size={16} className="lang-item-check" />}
             </button>

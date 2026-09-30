@@ -10425,11 +10425,38 @@
       "status": "active",
       "createdAt": "2026-09-29T14:20:14.888Z",
       "parentalControl": {
-        "enabled": true,
-        "blockExplicit": true,
+        "enabled": false,
+        "blockExplicit": false,
         "pin": "1234"
       },
-      "accountType": "junior"
+      "accountType": "standard"
+    },
+    {
+      "id": "6653849489bc103a059169058c077e2f",
+      "email": "jzunigafwdcostarica@gmail.com",
+      "password": "sha256$b9548f0565ed0fdea75fc79ce73b8bf7$4114d02ebca9123541ea07fb19a0e1e6690adc584adbc304e4aa44d36335efb4",
+      "username": "jorge",
+      "role": "user",
+      "status": "active",
+      "createdAt": "2026-09-29T14:39:36.990Z",
+      "avatarBg": "#B80C09",
+      "bio": "Nuevo melómano explorando vinilos y texturas acústicas en Sonar.",
+      "gear": {
+        "headphones": "Auriculares de referencia",
+        "turntable": "Tocadiscos Direct Drive",
+        "favoriteFormat": "Vinilo 33⅓ RPM"
+      },
+      "preferences": [
+        "Art Rock",
+        "Electrónica",
+        "Psicodelia"
+      ],
+      "accountType": "standard",
+      "parentalControl": {
+        "enabled": false,
+        "blockExplicit": false,
+        "pin": "1234"
+      }
     }
   ],
   "reviews": [
@@ -11184,6 +11211,114 @@
       "trackTitle": "",
       "hasSpoilers": false,
       "cover": "https://cdn-images.dzcdn.net/images/cover/00dd0da365a94b1829302d6b7fec70e6/500x500-000000-80-0-0.jpg"
+    },
+    {
+      "id": "c45d70513d90edae2faab7833331bb0a",
+      "userId": "6653849489bc103a059169058c077e2f",
+      "userName": "jorge",
+      "content": "tontito puto gay malparidito jueputa",
+      "status": "pending_moderation",
+      "createdAt": "2026-09-29T14:42:46.703Z",
+      "aiFlagged": false,
+      "albumId": "9896728",
+      "albumTitle": "To Pimp a Butterfly",
+      "parentAlbum": "To Pimp a Butterfly",
+      "artist": "Kendrick Lamar",
+      "rating": 4,
+      "type": "album",
+      "trackTitle": "",
+      "hasSpoilers": false,
+      "cover": "https://cdn-images.dzcdn.net/images/cover/00dd0da365a94b1829302d6b7fec70e6/500x500-000000-80-0-0.jpg"
+    },
+    {
+      "id": "dc6725ede37f2e3a774d06b10d707f61",
+      "userId": "6653849489bc103a059169058c077e2f",
+      "userName": "jorge",
+      "content": "que basura legal que gay que son",
+      "status": "pending_moderation",
+      "createdAt": "2026-09-29T14:43:51.906Z",
+      "aiFlagged": false,
+      "albumId": "12047952",
+      "albumTitle": "Abbey Road",
+      "parentAlbum": "Abbey Road",
+      "artist": "The Beatles",
+      "rating": 5,
+      "type": "album",
+      "trackTitle": "",
+      "hasSpoilers": false,
+      "cover": "https://cdn-images.dzcdn.net/images/cover/aa94ab293730bb7845d2aa8c672b2c29/500x500-000000-80-0-0.jpg"
+    },
+    {
+      "id": "5039ba2e8c5c2ed36e728a4a7fdcdd5a",
+      "userId": "6653849489bc103a059169058c077e2f",
+      "userName": "jorge",
+      "content": "que gays pero me gustan putitos ",
+      "status": "pending_moderation",
+      "createdAt": "2026-09-29T14:47:20.623Z",
+      "aiFlagged": false,
+      "albumId": "3907717261",
+      "albumTitle": "SWIM",
+      "parentAlbum": "ARIRANG",
+      "artist": "BTS",
+      "rating": 5,
+      "type": "track",
+      "trackTitle": "SWIM",
+      "hasSpoilers": false,
+      "cover": "https://cdn-images.dzcdn.net/images/cover/a3b8e9462db0c02e082c706c624f9811/500x500-000000-80-0-0.jpg"
+    },
+    {
+      "id": "e001f6b5dbbad769bb711add49495e75",
+      "userId": "1",
+      "userName": "Mateo Rivae",
+      "content": "idiota estupido",
+      "status": "pending_moderation",
+      "createdAt": "2026-09-29T15:02:00.699Z",
+      "aiFlagged": false,
+      "albumId": "14880659",
+      "albumTitle": "In Rainbows",
+      "parentAlbum": "In Rainbows",
+      "artist": "Radiohead",
+      "rating": 4,
+      "type": "album",
+      "trackTitle": "",
+      "hasSpoilers": false,
+      "cover": "https://cdn-images.dzcdn.net/images/cover/a175af9b7d329bc678cb4d26fc13d6de/1000x1000-000000-80-0-0.jpg"
+    },
+    {
+      "id": "ee84954538f9ba2ce4807dc67fe88472",
+      "userId": "user-1790284506053",
+      "userName": "espectro",
+      "content": "puto tonto bastardo",
+      "status": "pending_moderation",
+      "createdAt": "2026-09-29T16:57:42.269Z",
+      "aiFlagged": false,
+      "albumId": "14880659",
+      "albumTitle": "In Rainbows",
+      "parentAlbum": "In Rainbows",
+      "artist": "Radiohead",
+      "rating": 4,
+      "type": "album",
+      "trackTitle": "",
+      "hasSpoilers": false,
+      "cover": "https://cdn-images.dzcdn.net/images/cover/a175af9b7d329bc678cb4d26fc13d6de/1000x1000-000000-80-0-0.jpg"
+    },
+    {
+      "id": "ec91a937738f55089090c02337c264ae",
+      "userId": "user-1790284506053",
+      "userName": "espectro",
+      "content": "puto idiota bastardo",
+      "status": "pending_moderation",
+      "createdAt": "2026-09-29T16:59:19.249Z",
+      "aiFlagged": false,
+      "albumId": "14880659",
+      "albumTitle": "In Rainbows",
+      "parentAlbum": "In Rainbows",
+      "artist": "Radiohead",
+      "rating": 4,
+      "type": "album",
+      "trackTitle": "",
+      "hasSpoilers": false,
+      "cover": "https://cdn-images.dzcdn.net/images/cover/a175af9b7d329bc678cb4d26fc13d6de/1000x1000-000000-80-0-0.jpg"
     }
   ],
   "featuredReleases": [

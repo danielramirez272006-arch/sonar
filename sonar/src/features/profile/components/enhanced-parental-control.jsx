@@ -1,3 +1,4 @@
+import { MusicTrivia } from './music-trivia';
 import { useUIText } from '../../../shared/i18n/use-ui-text.js';
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -135,26 +136,6 @@ const AMBIENT_SOUNDS = [
   { id: 'white-noise', name: '📻 Sonido Blanco Acústico', desc: 'Frecuencia suave para concentración' },
 ];
 
-const KIDS_QUIZZES = [
-  {
-    question: '¿Qué instrumento de la orquesta tiene cuerdas y se toca con un arco?',
-    options: ['El Violín 🎻', 'La Trompeta 🎺', 'La Batería 🥁'],
-    correct: 0,
-    fact: '¡Correcto! El violín es el instrumento de cuerda frotada más ágil de la orquesta.',
-  },
-  {
-    question: '¿Quién compuso la famosa melodía "Para Elisa"?',
-    options: ['Ludwig van Beethoven 🎹', 'Miles Davis 🎺', 'Freddie Mercury 🎤'],
-    correct: 0,
-    fact: '¡Excelente! Beethoven escribió "Para Elisa" en 1810 para piano solo.',
-  },
-  {
-    question: '¿Cuántas cuerdas suele tener una guitarra clásica o acústica estándar?',
-    options: ['4 cuerdas', '6 cuerdas 🎸', '12 cuerdas'],
-    correct: 1,
-    fact: '¡Genial! La guitarra estándar tiene 6 cuerdas afinadas en Mi, La, Re, Sol, Si, Mi.',
-  },
-];
 
 export const EnhancedParentalControl = () => {
   const ui = useUIText();
@@ -200,11 +181,6 @@ export const EnhancedParentalControl = () => {
   const [newKeyword, setNewKeyword] = useState('');
   const [toastNotice, setToastNotice] = useState('');
   
-  // Estado de Trivia Kids
-  const [currentQuizIdx, setCurrentQuizIdx] = useState(0);
-  const [quizSelected, setQuizSelected] = useState(null);
-  const [quizScore, setQuizScore] = useState(0);
-
   // Estado de Temporizador de Estudio Pomodoro
   const [pomodoroSeconds, setPomodoroSeconds] = useState(25 * 60);
   const [isPomodoroRunning, setIsPomodoroRunning] = useState(false);
@@ -403,20 +379,6 @@ export const EnhancedParentalControl = () => {
     100,
     Math.round((parentalSettings.listenedTodayMinutes / parentalSettings.dailyLimitMinutes) * 100)
   );
-
-  const currentQuiz = KIDS_QUIZZES[currentQuizIdx];
-
-  const handleAnswerQuiz = (optIndex) => {
-    setQuizSelected(optIndex);
-    if (optIndex === currentQuiz.correct) {
-      setQuizScore((prev) => prev + 1);
-    }
-  };
-
-  const handleNextQuiz = () => {
-    setQuizSelected(null);
-    setCurrentQuizIdx((prev) => (prev + 1) % KIDS_QUIZZES.length);
-  };
 
   const isKidsMode = Boolean(user?.accountType === 'junior' && user?.parentalControl?.enabled && user?.parentalControl?.blockExplicit);
   const isSupervisedMode = Boolean(user?.accountType !== 'junior' && user?.parentalControl?.enabled && user?.parentalControl?.blockExplicit);
@@ -661,68 +623,7 @@ export const EnhancedParentalControl = () => {
         </div>
       </div>
 
-      {/* 3. TRIVIA MUSICAL EDUCATIVA PARA NIÑOS */}
-      <div className="p-6 sm:p-8 rounded-3xl bg-gradient-to-r from-amber-500/15 via-[#4B2840]/30 to-purple-900/20 border border-amber-300/40 dark:border-white/10 shadow-xs flex flex-col gap-4">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2.5">
-            <span className="material-symbols-outlined text-[24px] text-amber-500">quiz</span>
-            <div>
-              <h4 className="text-base font-bold text-[#231123] dark:text-white">{ui("Trivia Musical Kids & Juegos de Oído")}</h4>
-              <p className="text-xs text-[#5c435a] dark:text-[#B89CB0]">{ui("Aprende sobre instrumentos e historia musical mientras escuchas.")}</p>
-            </div>
-          </div>
-          <span className="text-xs font-bold text-amber-600 dark:text-amber-400 bg-amber-100 dark:bg-amber-950/60 px-3 py-1 rounded-full border border-amber-300/30">{ui("Puntos:")} {quizScore}
-          </span>
-        </div>
-
-        <div className="p-5 rounded-2xl bg-white dark:bg-black/40 border border-[#e6d5e2] dark:border-white/10 flex flex-col gap-3">
-          <p className="text-sm font-bold text-[#231123] dark:text-white">
-            {currentQuiz.question}
-          </p>
-
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
-            {currentQuiz.options.map((opt, idx) => {
-              const isSelected = quizSelected === idx;
-              const isCorrect = idx === currentQuiz.correct;
-
-              return (
-                <button
-                  key={opt}
-                  type="button"
-                  onClick={() => handleAnswerQuiz(idx)}
-                  disabled={quizSelected !== null}
-                  className={`p-3 rounded-xl border text-xs font-bold transition-all cursor-pointer ${
-                    quizSelected === null
-                      ? 'bg-gray-50 dark:bg-white/5 border-gray-200 dark:border-white/10 hover:border-amber-500 hover:bg-amber-50 dark:hover:bg-white/10'
-                      : isSelected && isCorrect
-                      ? 'bg-emerald-600 text-white border-emerald-600 shadow-md'
-                      : isSelected && !isCorrect
-                      ? 'bg-red-600 text-white border-red-600'
-                      : isCorrect
-                      ? 'bg-emerald-100 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-300 border-emerald-500'
-                      : 'opacity-50'
-                  }`}
-                >
-                  {opt}
-                </button>
-              );
-            })}
-          </div>
-
-          {quizSelected !== null && (
-            <div className="pt-2 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
-              <span className="text-emerald-600 dark:text-emerald-400 font-semibold">
-                {currentQuiz.fact}
-              </span>
-              <button
-                type="button"
-                onClick={handleNextQuiz}
-                className="px-4 py-1.5 rounded-xl bg-amber-500 hover:bg-amber-600 text-white font-bold text-xs self-start sm:self-auto cursor-pointer"
-              >{ui("Siguiente Pregunta ➔")}</button>
-            </div>
-          )}
-        </div>
-      </div>
+      <MusicTrivia />
 
       {/* 4. CANALES DE DESCUBRIMIENTO EXCLUSIVOS "SONAR KIDS" */}
       <div className="p-6 sm:p-8 rounded-3xl bg-gradient-to-br from-[#231123] via-[#3d1a35] to-[#003844] text-white border border-white/15 shadow-xl flex flex-col gap-5">

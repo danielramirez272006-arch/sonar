@@ -18,7 +18,7 @@ export const Footer = () => {
       <EngineStatusModal isOpen={isEngineOpen} onClose={() => setIsEngineOpen(false)} />
 
       <div className="w-full max-w-[1440px] mx-auto px-4 lg:px-10">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
           {/* Brand Summary con Logo Animado */}
           <div className="lg:col-span-2 flex flex-col gap-2 text-left">
             <div className="mb-3">
@@ -88,18 +88,16 @@ export const Footer = () => {
               <li><a href="#labels" className="text-[#3c253a] dark:text-[#d8c5d3] hover:text-[#B80C09] dark:hover:text-[#ff6b68] font-semibold transition-colors">{t('footer.record_labels')}</a></li>
             </ul>
           </div>
-
-          {/* Links Col 3: Selector de Idioma Footer */}
-          <div className="flex flex-col justify-end gap-3 text-left">
-            <LanguageSelector variant="navbar" />
-          </div>
         </div>
 
         {/* Copyright Bar */}
-        <div className="mt-10 pt-6 border-t border-[#e8dbe6] dark:border-white/10 flex flex-col sm:flex-row items-center justify-between gap-3 text-center sm:text-left">
-          <p className="text-xs text-[#523c50] dark:text-gray-400 font-medium">
-            © 2026 Sonar Audio Media Inc. {t('footer.rights')}
-          </p>
+        <div className="mt-10 pt-6 border-t border-[#e8dbe6] dark:border-white/10 flex flex-col sm:flex-row items-center justify-between gap-4 text-center sm:text-left">
+          <div className="flex flex-wrap items-center justify-center sm:justify-start gap-4">
+            <p className="text-xs text-[#523c50] dark:text-gray-400 font-medium">
+              © 2026 Sonar Audio Media Inc. {t('footer.rights')}
+            </p>
+            <LanguageSelector variant="navbar" direction="up" />
+          </div>
           <button
             type="button"
             onClick={() => setIsEngineOpen(true)}

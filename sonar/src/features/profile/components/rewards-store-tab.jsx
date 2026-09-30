@@ -1,283 +1,14 @@
 import { useUIText } from '../../../shared/i18n/use-ui-text.js';
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef, useMemo, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '../../../shared/context/auth-context';
 import { useLanguage } from '../../../shared/context/language-context';
 import { soundEffects } from '../../../shared/utils/sound-effects';
 import { repairRewardCopy } from './reward-copy';
 
-export const REWARD_ITEMS = [
-  // --- Marcos de Avatar ---
-  {
-    id: 'frame-gold-vinyl',
-    type: 'frame',
-    name: 'Marco Vinilo de Oro 24K',
-    category: 'Marcos de Avatar',
-    cost: 450,
-    icon: 'album',
-    color: 'from-amber-400 to-yellow-600',
-    description: 'Borde dorado reluciente con textura de microsurcos de vinilo para tu avatar.',
-    previewBorder: 'ring-4 ring-amber-400 shadow-[0_0_20px_rgba(251,191,36,0.6)]',
-    badge: 'Legendario',
-  },
-  {
-    id: 'frame-neon-cyber',
-    type: 'frame',
-    name: 'Marco Neón Hi-Fi Cyberpunk',
-    category: 'Marcos de Avatar',
-    cost: 350,
-    icon: 'bolt',
-    color: 'from-cyan-400 to-fuchsia-500',
-    description: 'Aura electromagnética de neón cian y magenta con pulso de audio.',
-    previewBorder: 'ring-4 ring-cyan-400 shadow-[0_0_20px_rgba(6,182,212,0.7)]',
-    badge: 'Popular',
-  },
-  {
-    id: 'frame-valve-tube',
-    type: 'frame',
-    name: 'Marco Tubo Valvular Retro',
-    category: 'Marcos de Avatar',
-    cost: 300,
-    icon: 'lightbulb',
-    color: 'from-orange-500 to-amber-700',
-    description: 'Resplandor cálido de filamento de bulbo termoiónico vintage para audiófilos analógicos.',
-    previewBorder: 'ring-4 ring-orange-500 shadow-[0_0_18px_rgba(249,115,22,0.6)]',
-  },
-  {
-    id: 'frame-hologram',
-    type: 'frame',
-    name: 'Marco Holográfico Espectral',
-    category: 'Marcos de Avatar',
-    cost: 500,
-    icon: 'auto_awesome',
-    color: 'from-purple-500 via-pink-500 to-indigo-500',
-    description: 'Efecto tornasolado iridiscente que reacciona a los reflejos de luz.',
-    previewBorder: 'ring-4 ring-purple-400 shadow-[0_0_22px_rgba(168,85,247,0.7)]',
-    badge: 'Exclusivo',
-  },
-  {
-    id: 'frame-prism-rainbow',
-    type: 'frame',
-    name: 'Marco Prisma Pink Floyd',
-    category: 'Marcos de Avatar',
-    cost: 400,
-    icon: 'flare',
-    color: 'from-rose-500 via-purple-500 to-sky-400',
-    description: 'Halo refractario de espectro visible con haz de luz continua.',
-    previewBorder: 'ring-4 ring-pink-500 shadow-[0_0_20px_rgba(236,72,153,0.8)]',
-  },
-  {
-    id: 'frame-analog-wood',
-    type: 'frame',
-    name: 'Marco Caoba Analógica',
-    category: 'Marcos de Avatar',
-    cost: 320,
-    icon: 'nature',
-    color: 'from-amber-700 to-yellow-900',
-    description: 'Acabado en madera noble lacada de gabinete acústico artesanal.',
-    previewBorder: 'ring-4 ring-amber-700 shadow-[0_0_16px_rgba(180,83,9,0.7)]',
-  },
+import { EXTENDED_REWARD_ITEMS } from '../data/rewards-catalog.js';
 
-  // --- Skins de Reproductor ---
-  {
-    id: 'skin-cassette',
-    type: 'skin',
-    name: 'Skin Cassette C-90 CrO2',
-    category: 'Skins de Audio',
-    cost: 600,
-    icon: 'radio',
-    color: 'from-rose-600 to-red-800',
-    description: 'Diseño retro con carretes giratorios analógicos para el reproductor global de Sonar.',
-    badge: 'Popular',
-  },
-  {
-    id: 'skin-vu-meter',
-    type: 'skin',
-    name: 'Skin VU Meter Aguja Analógica',
-    category: 'Skins de Audio',
-    cost: 750,
-    icon: 'speed',
-    color: 'from-emerald-500 to-teal-800',
-    description: 'Vúmetro balístico retroiluminado en ámbar que mide la dinámica sonora.',
-    badge: 'Hi-Fi Pro',
-  },
-  {
-    id: 'skin-vinyl-turntable',
-    type: 'skin',
-    name: 'Skin Tornamesa Direct Drive 33/45',
-    category: 'Skins de Audio',
-    cost: 700,
-    icon: 'album',
-    color: 'from-amber-500 to-zinc-900',
-    description: 'Plato giratorio estroboscópico de cuarzo con brazo fonocaptor dinámico.',
-    badge: 'Vinilo',
-  },
-  {
-    id: 'skin-tube-glow',
-    type: 'skin',
-    name: 'Skin Bulbos Valvulares Hi-End',
-    category: 'Skins de Audio',
-    cost: 680,
-    icon: 'local_fire_department',
-    color: 'from-amber-600 to-orange-950',
-    description: 'Preamplificador con filamentos incandescentes y saturación armónica par.',
-    badge: 'Calidez',
-  },
-
-  // --- Presets DSP & Audio ---
-  {
-    id: 'dsp-warm-tube',
-    type: 'dsp',
-    name: 'Preset DSP: Calidez Valvular 1970',
-    category: 'Presets DSP de Audio',
-    cost: 400,
-    icon: 'tune',
-    color: 'from-orange-500 to-amber-700',
-    description: 'Realce armónico de frecuencias medias y compresión sutil que emula etapas a tubos.',
-    badge: 'DSP Hi-Fi',
-  },
-  {
-    id: 'dsp-tape-studer',
-    type: 'dsp',
-    name: 'Preset DSP: Cinta Studer A800',
-    category: 'Presets DSP de Audio',
-    cost: 450,
-    icon: 'graphic_eq',
-    color: 'from-blue-600 to-indigo-900',
-    description: 'Saturación analógica a 15 IPS con pegada redonda en graves y agudos aterciopelados.',
-    badge: 'Estudio',
-  },
-  {
-    id: 'dsp-jazz-club',
-    type: 'dsp',
-    name: 'Preset DSP: Acústica Club de Jazz',
-    category: 'Presets DSP de Audio',
-    cost: 380,
-    icon: 'surround_sound',
-    color: 'from-emerald-600 to-teal-900',
-    description: 'Reverberación espacial de sala íntima con absorción de madera natural.',
-  },
-
-  // --- Packs de Sonidos UI ---
-  {
-    id: 'sound-vintage-clicks',
-    type: 'sound',
-    name: 'Pack Sonoro: Clics Analógicos Swiss',
-    category: 'Packs de Sonido UI',
-    cost: 280,
-    icon: 'volume_up',
-    color: 'from-amber-600 to-yellow-800',
-    description: 'Sustituye las interacciones táctiles de la app por clics mecánicos de potenciómetro suizo.',
-    badge: 'Táctil',
-  },
-  {
-    id: 'sound-vinyl-needle',
-    type: 'sound',
-    name: 'Pack Sonoro: Aguja de Diamante Ortofon',
-    category: 'Packs de Sonido UI',
-    cost: 320,
-    icon: 'music_note',
-    color: 'from-violet-600 to-purple-900',
-    description: 'Efecto de caída de aguja en microsurco al reproducir discos o pulsar me gusta.',
-  },
-
-  // --- Temas de Interfaz ---
-  {
-    id: 'theme-mcintosh-blue',
-    type: 'theme',
-    name: 'Tema UI: Vintage McIntosh Blue',
-    category: 'Temas de Interfaz',
-    cost: 500,
-    icon: 'palette',
-    color: 'from-cyan-600 to-blue-900',
-    description: 'Elegante panel negro con retroiluminación azul turquesa icónica de alta gama.',
-    badge: 'Premium',
-  },
-  {
-    id: 'theme-gold-audiophile',
-    type: 'theme',
-    name: 'Tema UI: Gold Champagne Audiophile',
-    category: 'Temas de Interfaz',
-    cost: 520,
-    icon: 'brush',
-    color: 'from-amber-500 to-yellow-800',
-    description: 'Acentos en oro cepillado y fondo carbón para máxima sofisticación visual.',
-  },
-
-  // --- Títulos de Prestigio ---
-  {
-    id: 'title-absolute-pitch',
-    type: 'title',
-    name: 'Título: Oído Absoluto',
-    category: 'Títulos de Prestigio',
-    cost: 250,
-    icon: 'hearing',
-    color: 'from-indigo-600 to-blue-800',
-    description: 'Insignia exclusiva que se muestra en tu perfil público y comentarios de reseñas.',
-  },
-  {
-    id: 'title-mastering-guru',
-    type: 'title',
-    name: 'Título: Maestro del Mastering',
-    category: 'Títulos de Prestigio',
-    cost: 300,
-    icon: 'equalizer',
-    color: 'from-purple-600 to-pink-700',
-    description: 'Reconocimiento de máxima autoridad acústica en la comunidad de Sonar.',
-  },
-  {
-    id: 'title-vinyl-archaeologist',
-    type: 'title',
-    name: 'Título: Arqueólogo del Vinilo',
-    category: 'Títulos de Prestigio',
-    cost: 280,
-    icon: 'history_edu',
-    color: 'from-amber-600 to-amber-900',
-    description: 'Distintivo de coleccionista experto en prensados originales y primeras ediciones.',
-  },
-  {
-    id: 'title-hi-res-purist',
-    type: 'title',
-    name: 'Título: Purista Hi-Res 192kHz',
-    category: 'Títulos de Prestigio',
-    cost: 350,
-    icon: 'graphic_eq',
-    color: 'from-teal-600 to-emerald-900',
-    description: 'Para quienes no aceptan nada por debajo de la fidelidad Bit-Perfect de estudio.',
-  },
-
-  // --- Pases & Beneficios ---
-  {
-    id: 'perk-vip-room',
-    type: 'perk',
-    name: 'Pase VIP Salón de Debate Acústico',
-    category: 'Pases & Beneficios',
-    cost: 200,
-    icon: 'meeting_room',
-    color: 'from-amber-600 to-red-700',
-    description: 'Acceso ilimitado a salas de escucha privadas con audiófilos y críticos certificados.',
-  },
-  {
-    id: 'perk-lossless-master',
-    type: 'perk',
-    name: 'Pase Bitrate Master Lossless',
-    category: 'Pases & Beneficios',
-    cost: 350,
-    icon: 'high_quality',
-    color: 'from-sky-600 to-blue-900',
-    description: 'Transmisión directa de audio sin compresión con rango dinámico expandido.',
-  },
-  {
-    id: 'perk-ai-critic',
-    type: 'perk',
-    name: 'Pase Asistente Crítico IA Ilimitado',
-    category: 'Pases & Beneficios',
-    cost: 300,
-    icon: 'smart_toy',
-    color: 'from-fuchsia-600 to-purple-900',
-    description: 'Análisis ilimitados de poética de letras y correlaciones musicales por IA.',
-  },
-];
+export const REWARD_ITEMS = EXTENDED_REWARD_ITEMS;
 
 const INITIAL_QUESTS = [
   {
@@ -330,22 +61,246 @@ const INITIAL_QUESTS = [
   },
 ];
 
+const RewardCard = React.memo(({
+  item,
+  localizedItem,
+  isOwned,
+  isEquipped,
+  points,
+  onEquip,
+  onRedeem,
+  onPreview,
+  t,
+  ui,
+  isCarouselItem = false,
+}) => {
+  return (
+    <div
+      className={`bg-white dark:bg-zinc-900/80 border border-[#e6d5e2] dark:border-white/10 hover:border-[#B80C09]/40 dark:hover:border-amber-400/40 rounded-3xl p-5 flex flex-col justify-between gap-4 transition-transform hover:-translate-y-1 shadow-xl group relative overflow-hidden text-[#231123] dark:text-white h-full ${
+        isCarouselItem ? 'snap-start shrink-0 select-none' : ''
+      }`}
+    >
+      {/* Cabecera del Item */}
+      <div>
+        <div className="flex items-start justify-between gap-3 mb-3">
+          <div className={`w-12 h-12 rounded-2xl bg-gradient-to-tr ${localizedItem.color} flex items-center justify-center text-white shadow-lg shrink-0`}>
+            <span className="material-symbols-outlined text-2xl">{localizedItem.icon}</span>
+          </div>
+          <div className="flex items-center gap-1.5">
+            {localizedItem.badge && (
+              <span className="px-2 py-0.5 rounded-full bg-[#B80C09]/10 dark:bg-amber-500/10 text-[#B80C09] dark:text-amber-400 text-[10px] font-bold border border-[#B80C09]/20 dark:border-amber-500/20 whitespace-nowrap">
+                {ui(localizedItem.badge)}
+              </span>
+            )}
+            <button
+              type="button"
+              onClick={() => onPreview(item)}
+              className="p-1.5 rounded-xl bg-gray-100 dark:bg-zinc-800 hover:bg-[#f8e9f6] dark:hover:bg-zinc-700 text-[#5c435a] dark:text-zinc-300 hover:text-[#B80C09] dark:hover:text-amber-400 transition-colors border border-[#e6d5e2] dark:border-white/5 cursor-pointer"
+              title={t('preview')}
+            >
+              <span className="material-symbols-outlined text-sm">visibility</span>
+            </button>
+          </div>
+        </div>
+
+        <h4 className="text-base font-bold text-[#231123] dark:text-white group-hover:text-[#B80C09] dark:group-hover:text-amber-300 transition-colors line-clamp-1">
+          {localizedItem.name}
+        </h4>
+        <p className="text-xs text-[#5c435a] dark:text-zinc-400 mt-1 line-clamp-2 min-h-[32px]">
+          {localizedItem.description}
+        </p>
+      </div>
+
+      {/* Pie con Precio / Botón */}
+      <div className="pt-3 border-t border-[#e6d5e2] dark:border-white/5 flex items-center justify-between gap-3">
+        <div className="text-left">
+          <div className="text-[10px] text-[#5c435a]/70 dark:text-zinc-500 uppercase tracking-wider font-semibold">{t('cost')}</div>
+          <div className="text-base font-black text-amber-700 dark:text-amber-400 flex items-center gap-1">
+            {localizedItem.cost} <span className="text-xs">🪙</span>
+          </div>
+        </div>
+
+        {isOwned ? (
+          <button
+            type="button"
+            onClick={() => onEquip(item)}
+            className={`px-4 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 active:scale-95 cursor-pointer ${
+              isEquipped
+                ? 'bg-emerald-500/20 border border-emerald-500/40 text-emerald-300 hover:bg-emerald-500/30'
+                : 'bg-[#003844] hover:bg-[#4B2840] text-white border border-[#003844]'
+            }`}
+          >
+            <span className="material-symbols-outlined text-sm">
+              {isEquipped ? 'check' : 'toggle_on'}
+            </span>
+            {isEquipped ? t('equipped') : t('equip')}
+          </button>
+        ) : (
+          <button
+            type="button"
+            onClick={() => onRedeem(item)}
+            className={`px-4 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 active:scale-95 cursor-pointer ${
+              points >= localizedItem.cost
+                ? 'bg-gradient-to-r from-amber-400 to-yellow-500 hover:from-amber-300 hover:to-yellow-400 text-black shadow-md shadow-amber-500/20'
+                : 'bg-gray-100 dark:bg-zinc-800 text-gray-500 dark:text-zinc-500 border border-gray-200 dark:border-white/5 cursor-not-allowed'
+            }`}
+          >
+            <span className="material-symbols-outlined text-sm">shopping_bag</span>
+            {t('redeem')}
+          </button>
+        )}
+      </div>
+    </div>
+  );
+}, (prev, next) => {
+  return (
+    prev.item.id === next.item.id &&
+    prev.isOwned === next.isOwned &&
+    prev.isEquipped === next.isEquipped &&
+    prev.points === next.points &&
+    prev.localizedItem.name === next.localizedItem.name &&
+    prev.localizedItem.description === next.localizedItem.description &&
+    prev.isCarouselItem === next.isCarouselItem &&
+    prev.t === next.t &&
+    prev.ui === next.ui
+  );
+});
+
+const SliderRail = React.memo(({
+  title,
+  icon,
+  items,
+  localizedMap,
+  inventory,
+  equippedFrame,
+  equippedTitle,
+  equippedSkin,
+  equippedDsp,
+  equippedTheme,
+  activePerks,
+  points,
+  onEquip,
+  onRedeem,
+  onPreview,
+  onExplore,
+  t,
+  ui,
+}) => {
+  const railRef = useRef(null);
+  const slideLeft = () => railRef.current?.scrollBy({ left: -460, behavior: 'smooth' });
+  const slideRight = () => railRef.current?.scrollBy({ left: 460, behavior: 'smooth' });
+
+  return (
+    <div className="space-y-3 p-4 md:p-6 rounded-3xl bg-white/70 dark:bg-zinc-900/50 border border-[#e6d5e2] dark:border-white/10 backdrop-blur-md shadow-xl">
+      <div className="flex items-center justify-between gap-3">
+        <div className="flex items-center gap-2.5">
+          <div className="w-8 h-8 rounded-xl bg-[#B80C09]/10 dark:bg-amber-500/10 text-[#B80C09] dark:text-amber-400 flex items-center justify-center">
+            <span className="material-symbols-outlined text-lg">{icon}</span>
+          </div>
+          <h4 className="text-base sm:text-lg font-black text-[#231123] dark:text-white flex items-center gap-2">
+            <span>{title}</span>
+            <span className="text-xs px-2 py-0.5 rounded-full bg-[#f8e9f6] dark:bg-zinc-800 text-[#5c435a] dark:text-zinc-400 font-bold border border-[#e6d5e2] dark:border-white/5">
+              {items.length}
+            </span>
+          </h4>
+        </div>
+        <div className="flex items-center gap-2">
+          {onExplore && (
+            <button
+              type="button"
+              onClick={onExplore}
+              className="text-xs font-bold text-[#B80C09] dark:text-amber-400 hover:underline px-2.5 py-1 rounded-lg hover:bg-amber-500/10 transition-colors hidden sm:inline-flex items-center gap-1 cursor-pointer"
+            >
+              <span>{ui('Ver categoría')}</span>
+              <span className="material-symbols-outlined text-sm">arrow_forward</span>
+            </button>
+          )}
+          <button
+            type="button"
+            onClick={slideLeft}
+            className="w-8 h-8 rounded-xl bg-white dark:bg-zinc-800 hover:bg-amber-400 hover:text-black text-[#231123] dark:text-white border border-[#e6d5e2] dark:border-white/10 flex items-center justify-center transition-all shadow active:scale-95 cursor-pointer"
+            title={ui('Deslizar a la izquierda')}
+          >
+            <span className="material-symbols-outlined text-lg">chevron_left</span>
+          </button>
+          <button
+            type="button"
+            onClick={slideRight}
+            className="w-8 h-8 rounded-xl bg-white dark:bg-zinc-800 hover:bg-amber-400 hover:text-black text-[#231123] dark:text-white border border-[#e6d5e2] dark:border-white/10 flex items-center justify-center transition-all shadow active:scale-95 cursor-pointer"
+            title={ui('Deslizar a la derecha')}
+          >
+            <span className="material-symbols-outlined text-lg">chevron_right</span>
+          </button>
+        </div>
+      </div>
+
+      <div
+        ref={railRef}
+        className="flex gap-4 overflow-x-auto scroll-smooth snap-x snap-mandatory py-2 pb-4 no-scrollbar items-stretch"
+      >
+        {items.map((storedItem) => {
+          const locItem = localizedMap.get(storedItem.id) || storedItem;
+          const isOwned = inventory.includes(storedItem.id);
+          const isEquipped =
+            (storedItem.type === 'frame' && equippedFrame === storedItem.id) ||
+            (storedItem.type === 'title' && (equippedTitle === storedItem.name.replace(/^Título:\s*/i, '') || equippedTitle === storedItem.id)) ||
+            (storedItem.type === 'skin' && equippedSkin === storedItem.id) ||
+            (storedItem.type === 'dsp' && equippedDsp === storedItem.id) ||
+            (storedItem.type === 'theme' && equippedTheme === storedItem.id) ||
+            (storedItem.type === 'perk' && activePerks.includes(storedItem.id));
+
+          return (
+            <div key={storedItem.id} className="w-[280px] sm:w-[320px] shrink-0">
+              <RewardCard
+                item={storedItem}
+                localizedItem={locItem}
+                isOwned={isOwned}
+                isEquipped={isEquipped}
+                points={points}
+                onEquip={onEquip}
+                onRedeem={onRedeem}
+                onPreview={onPreview}
+                t={t}
+                ui={ui}
+                isCarouselItem={true}
+              />
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+});
+
 export const RewardsStoreTab = () => {
   const ui = useUIText();
   const { currentLang, t: translate } = useLanguage();
   const { user, updateUser } = useAuth();
-  const localizedReward = (item) => {
-    return {
-      ...item,
-      name: translate(`rewards.${item.id}.name`, { defaultValue: item.name }),
-      description: translate(`rewards.${item.id}.description`, { defaultValue: item.description }),
-    };
-  };
+  const localizedRewardMap = useMemo(() => {
+    const map = new Map();
+    REWARD_ITEMS.forEach((item) => {
+      const translatedName = translate(`rewards.${item.id}.name`, { defaultValue: item.name });
+      const translatedDesc = translate(`rewards.${item.id}.description`, { defaultValue: item.description });
+      map.set(item.id, {
+        ...item,
+        name: translatedName !== item.name ? translatedName : ui(item.name),
+        description: translatedDesc !== item.description ? translatedDesc : ui(item.description),
+      });
+    });
+    return map;
+  }, [currentLang, translate, ui]);
+
+  const localizedReward = useCallback((item) => {
+    if (!item) return null;
+    return localizedRewardMap.get(item.id) || item;
+  }, [localizedRewardMap]);
   const localizedQuest = (quest) => {
+    const translatedTitle = translate(`rewards.${quest.id}.title`, { defaultValue: quest.title });
+    const translatedDesc = translate(`rewards.${quest.id}.description`, { defaultValue: quest.desc });
     return {
       ...quest,
-      title: translate(`rewards.${quest.id}.title`, { defaultValue: quest.title }),
-      desc: translate(`rewards.${quest.id}.description`, { defaultValue: quest.desc }),
+      title: translatedTitle !== quest.title ? translatedTitle : ui(quest.title),
+      desc: translatedDesc !== quest.desc ? translatedDesc : ui(quest.desc),
     };
   };
   const localizedTransactionName = (transaction) => {
@@ -359,8 +314,9 @@ export const RewardsStoreTab = () => {
     zh: { all: '全部', frames: '头像边框', skins: '音频皮肤', dsp: 'DSP 预设', sounds: '界面音效', themes: '主题', titles: '称号', vip: 'VIP 通行证', catalog: '奖励目录', catalogDesc: '自定义头像、播放器、DSP 音链和视觉主题。', quests: '发烧友任务与挑战', questDesc: '完成聆听和分析目标，快速获得金币。', daily: '每日', weekly: '每周', progress: '进度', claimed: '已领取奖励', claim: '领取奖励！', inProgress: '进行中', cost: '花费', equipped: '已装备', equip: '装备', redeem: '兑换', preview: '实时预览', previewTitle: '实时预览 • 沙盒', testing: '预览中', player: 'Sonar Hi-Fi 播放器', price: '价格', close: '关闭', redeemNow: '立即兑换', coins: '你的 Sonar Coins', streak: '连续聆听', crate: '每日黑胶箱', available: '可领取！', opened: '已开启', crateTitle: '神秘开箱', openCrate: '免费开启黑胶箱', opening: '正在开启黑胶…', rewardRedeemed: '奖励已兑换', community: '月度社区目标', communityReviews: '社区 Hi-Fi 评论', receipt: '复古收据', store: '发烧友商店与奖励', vault: '聆听忠诚宝库' },
     ja: { all: 'すべて', frames: 'アバターフレーム', skins: 'オーディオスキン', dsp: 'DSPプリセット', sounds: 'UIサウンド', themes: 'テーマ', titles: '称号', vip: 'VIPパス', catalog: 'リワードカタログ', catalogDesc: 'アバター、プレーヤー、DSPチェーン、ビジュアルテーマをカスタマイズ。', quests: 'オーディオファイルのミッションとチャレンジ', questDesc: 'リスニングと分析の目標を達成してコインを獲得しましょう。', daily: 'デイリー', weekly: 'ウィークリー', progress: '進捗', claimed: '報酬獲得済み', claim: '報酬を受け取る！', inProgress: '進行中', cost: 'コスト', equipped: '装備中', equip: '装備する', redeem: '交換', preview: 'ライブプレビュー', previewTitle: 'ライブプレビュー • サンドボックス', testing: 'プレビュー中', player: 'Sonar Hi-Fi プレーヤー', price: '価格', close: '閉じる', redeemNow: '今すぐ交換', coins: 'あなたのSonar Coins', streak: '連続リスニング', crate: 'デイリーレコードボックス', available: '利用可能！', opened: '開封済み', crateTitle: 'ミステリー開封', openCrate: 'レコードボックスを開く（無料）', opening: 'レコードを開封中…', rewardRedeemed: '報酬交換済み', community: '月間コミュニティ目標', communityReviews: 'コミュニティHi-Fiレビュー', receipt: 'レトロレシート', store: 'オーディオファイルのストアと報酬', vault: 'サウンドロイヤルティ保管庫' },
   };
-  const spanishRewardsText = { all: 'Todos', frames: 'Marcos Avatar', skins: 'Skins Audio', dsp: 'Presets DSP', sounds: 'Sonidos UI', themes: 'Temas', titles: 'Títulos', vip: 'Pases VIP', catalog: 'Catálogo de Recompensas', catalogDesc: 'Personaliza tu avatar, reproductor, cadena DSP y temas visuales.', quests: 'Misiones y Desafíos Audiófilos', questDesc: 'Completa objetivos de audición y análisis para sumar monedas rápidamente.', daily: 'Diaria', weekly: 'Semanal', progress: 'Progreso', claimed: 'Recompensa Reclamada', claim: '¡Reclamar Recompensa!', inProgress: 'En Progreso', cost: 'Costo', equipped: 'Equipado', equip: 'Equipar', redeem: 'Canjear', preview: 'Probar en Vivo', previewTitle: 'Probador en Vivo • Sandbox', testing: 'PROBANDO', player: 'Reproductor Sonar Hi-Fi', price: 'Precio', close: 'Cerrar', redeemNow: 'Canjear Ahora', coins: 'Tus Sonar Coins', streak: 'Racha de Escucha', crate: 'Caja Diaria de Vinilo', available: '¡Disponible!', opened: 'Abierta', crateTitle: 'Desempaque Misterioso', openCrate: 'Abrir Caja de Vinilo (Gratis)', opening: 'Abriendo Vinilo...', rewardRedeemed: 'Recompensa Canjeada', community: 'Meta Comunitaria Mes', communityReviews: 'Reseñas Hi-Fi colectivas', receipt: 'Recibo Retro', store: 'Tienda & Recompensas Audiófilas', vault: 'Bóveda de Fidelidad Sonora' };
-  const t = (key) => repairRewardCopy(rewardsText[currentLang]?.[key] || spanishRewardsText[key]);
+  const t = useCallback((key) => {
+    return repairRewardCopy(rewardsText[currentLang]?.[key] || spanishRewardsText[key] || '');
+  }, [currentLang]);
 
   // Balance de Puntos & XP
   const [points, setPoints] = useState(() => {
@@ -564,7 +520,146 @@ export const RewardsStoreTab = () => {
     setSoundEnabled(next);
     soundEffects.toggle(next);
     if (next) soundEffects.playCoin();
-    showToast(next ? '🔊 Efectos sonoros de UI activados' : '🔇 Efectos sonoros silenciados');
+    showToast(next ? (t('soundEnabledToast') || ui('🔊 Efectos sonoros de UI activados')) : (t('soundDisabledToast') || ui('🔇 Efectos sonoros silenciados')));
+  };
+
+  const getToastMessage = (type, params = {}) => {
+    const locName = params.name || '';
+    const messages = {
+      es: {
+        frameEquipped: `✨ Marco "${locName}" equipado`,
+        frameUnequipped: 'Marco desequipado',
+        titleEquipped: `🎖️ Título "${locName}" activado`,
+        titleUnequipped: 'Título desequipado',
+        skinEquipped: `🎛️ Skin "${locName}" activada`,
+        skinUnequipped: 'Skin desequipada',
+        dspEquipped: `🎚️ "${locName}" activado en tu cadena de audio`,
+        dspUnequipped: 'DSP desactivado',
+        themeEquipped: `🎨 "${locName}" aplicado a la interfaz`,
+        themeUnequipped: 'Tema por defecto restaurado',
+        soundEquipped: `🔊 Pack sonoro "${locName}" activado`,
+        perkEquipped: `🎟️ Pase "${locName}" activado`,
+        perkUnequipped: 'Pase desactivado',
+        redeemed: `🎉 ¡Canjeaste con éxito "${locName}"!`,
+        insufficientCoins: `❌ Necesitas ${params.diff || 0} monedas más para canjear este artículo.`,
+        questClaimed: `🎉 ¡Misión completada! +${params.pts || 0} Coins y +${params.xp || 0} XP`,
+        streakBonus: `🔥 ¡Racha de ${params.streak || 0} días! Has ganado +${params.bonus || 0} Sonar Coins de bonus.`,
+        crateLegendary: `🌟 ¡Caja de Vinilo Legendaria! +350 Coins & +300 XP`,
+        crateRare: `💎 ¡Prensado Raro! +200 Sonar Coins & +200 XP`,
+        crateCommon: `💿 ¡Vinilo Clásico! +120 Sonar Coins & +150 XP`,
+      },
+      en: {
+        frameEquipped: `✨ Frame "${locName}" equipped`,
+        frameUnequipped: 'Frame unequipped',
+        titleEquipped: `🎖️ Title "${locName}" activated`,
+        titleUnequipped: 'Title unequipped',
+        skinEquipped: `🎛️ Skin "${locName}" activated`,
+        skinUnequipped: 'Skin unequipped',
+        dspEquipped: `🎚️ "${locName}" activated in your audio chain`,
+        dspUnequipped: 'DSP deactivated',
+        themeEquipped: `🎨 "${locName}" applied to interface`,
+        themeUnequipped: 'Default theme restored',
+        soundEquipped: `🔊 Sound pack "${locName}" activated`,
+        perkEquipped: `🎟️ Pass "${locName}" activated`,
+        perkUnequipped: 'Pass deactivated',
+        redeemed: `🎉 Successfully redeemed "${locName}"!`,
+        insufficientCoins: `❌ You need ${params.diff || 0} more coins to redeem this item.`,
+        questClaimed: `🎉 Quest completed! +${params.pts || 0} Coins & +${params.xp || 0} XP`,
+        streakBonus: `🔥 ${params.streak || 0}-day streak! You earned +${params.bonus || 0} Sonar Coins bonus.`,
+        crateLegendary: `🌟 Legendary Vinyl Crate! +350 Coins & +300 XP`,
+        crateRare: `💎 Rare Pressing! +200 Sonar Coins & +200 XP`,
+        crateCommon: `💿 Classic Vinyl! +120 Sonar Coins & +150 XP`,
+      },
+      fr: {
+        frameEquipped: `✨ Cadre « ${locName} » équipé`,
+        frameUnequipped: 'Cadre retiré',
+        titleEquipped: `🎖️ Titre « ${locName} » activé`,
+        titleUnequipped: 'Titre retiré',
+        skinEquipped: `🎛️ Skin « ${locName} » activée`,
+        skinUnequipped: 'Skin retirée',
+        dspEquipped: `🎚️ « ${locName} » activé dans votre chaîne audio`,
+        dspUnequipped: 'DSP désactivé',
+        themeEquipped: `🎨 « ${locName} » appliqué à l'interface`,
+        themeUnequipped: 'Thème par défaut restauré',
+        soundEquipped: `🔊 Pack sonore « ${locName} » activé`,
+        perkEquipped: `🎟️ Pass « ${locName} » activé`,
+        perkUnequipped: 'Pass désactivé',
+        redeemed: `🎉 Vous avez obtenu « ${locName} » avec succès !`,
+        insufficientCoins: `❌ Il vous manque ${params.diff || 0} pièces pour cet article.`,
+        questClaimed: `🎉 Quête terminée ! +${params.pts || 0} Pièces & +${params.xp || 0} XP`,
+        streakBonus: `🔥 Série de ${params.streak || 0} jours ! Vous avez gagné +${params.bonus || 0} Sonar Coins en bonus.`,
+        crateLegendary: `🌟 Caisse Vinyle Légendaire ! +350 Pièces & +300 XP`,
+        crateRare: `💎 Pressage Rare ! +200 Pièces & +200 XP`,
+        crateCommon: `💿 Vinyle Classique ! +120 Pièces & +150 XP`,
+      },
+      it: {
+        frameEquipped: `✨ Cornice "${locName}" equipaggiata`,
+        frameUnequipped: 'Cornice rimossa',
+        titleEquipped: `🎖️ Titolo "${locName}" attivato`,
+        titleUnequipped: 'Titolo rimosso',
+        skinEquipped: `🎛️ Skin "${locName}" attivata`,
+        skinUnequipped: 'Skin rimossa',
+        dspEquipped: `🎚️ "${locName}" attivato nella catena audio`,
+        dspUnequipped: 'DSP disattivato',
+        themeEquipped: `🎨 "${locName}" applicato all'interfaccia`,
+        themeUnequipped: 'Tema predefinito ripristinato',
+        soundEquipped: `🔊 Pacchetto suoni "${locName}" attivato`,
+        perkEquipped: `🎟️ Pass "${locName}" attivato`,
+        perkUnequipped: 'Pass disattivato',
+        redeemed: `🎉 Hai riscattato con successo "${locName}"!`,
+        insufficientCoins: `❌ Ti servono altre ${params.diff || 0} monete per riscattare questo articolo.`,
+        questClaimed: `🎉 Missione completata! +${params.pts || 0} Monete & +${params.xp || 0} XP`,
+        streakBonus: `🔥 Serie di ${params.streak || 0} giorni! Hai guadagnato +${params.bonus || 0} Sonar Coins di bonus.`,
+        crateLegendary: `🌟 Cassa Vinile Leggendaria! +350 Monete & +300 XP`,
+        crateRare: `💎 Stampa Rara! +200 Monete & +200 XP`,
+        crateCommon: `💿 Vinile Classico! +120 Monete & +150 XP`,
+      },
+      zh: {
+        frameEquipped: `✨ 已装备头像框“${locName}”`,
+        frameUnequipped: '已卸下头像框',
+        titleEquipped: `🎖️ 已启用称号“${locName}”`,
+        titleUnequipped: '已卸下称号',
+        skinEquipped: `🎛️ 已应用皮肤“${locName}”`,
+        skinUnequipped: '已卸下皮肤',
+        dspEquipped: `🎚️ 已在音频链中启用“${locName}”`,
+        dspUnequipped: '已停用 DSP',
+        themeEquipped: `🎨 已应用界面主题“${locName}”`,
+        themeUnequipped: '已恢复默认主题',
+        soundEquipped: `🔊 已启用音效包“${locName}”`,
+        perkEquipped: `🎟️ 已激活通行证“${locName}”`,
+        perkUnequipped: '已停用通行证',
+        redeemed: `🎉 成功兑换“${locName}”！`,
+        insufficientCoins: `❌ 兑换此物品还需要 ${params.diff || 0} 个金币。`,
+        questClaimed: `🎉 任务完成！+${params.pts || 0} 金币与 +${params.xp || 0} 经验`,
+        streakBonus: `🔥 连续签到 ${params.streak || 0} 天！获得额外 +${params.bonus || 0} 金币奖励。`,
+        crateLegendary: `🌟 传奇黑胶盲盒！+350 金币 & +300 XP`,
+        crateRare: `💎 珍稀压制！+200 金币 & +200 XP`,
+        crateCommon: `💿 经典黑胶！+120 金币 & +150 XP`,
+      },
+      ja: {
+        frameEquipped: `✨ フレーム「${locName}」を装着しました`,
+        frameUnequipped: 'フレームの装備を解除しました',
+        titleEquipped: `🎖️ 称号「${locName}」を装着しました`,
+        titleUnequipped: '称号の装備を解除しました',
+        skinEquipped: `🎛️ スキン「${locName}」を適用しました`,
+        skinUnequipped: 'スキンの適用を解除しました',
+        dspEquipped: `🎚️ オーディオチェーンに「${locName}」を適用しました`,
+        dspUnequipped: 'DSPを解除しました',
+        themeEquipped: `🎨 UIテーマに「${locName}」を適用しました`,
+        themeUnequipped: 'デフォルトテーマに戻しました',
+        soundEquipped: `🔊 サウンドパック「${locName}」を有効化しました`,
+        perkEquipped: `🎟️ パス「${locName}」を有効化しました`,
+        perkUnequipped: 'パスを無効化しました',
+        redeemed: `🎉 「${locName}」の引き換えに成功しました！`,
+        insufficientCoins: `❌ このアイテムを引き換えるにはあと ${params.diff || 0} コイン必要です。`,
+        questClaimed: `🎉 ミッション完了！+${params.pts || 0} コイン & +${params.xp || 0} XP`,
+        streakBonus: `🔥 ${params.streak || 0}日連続リスニング達成！ボーナス +${params.bonus || 0} コインを獲得しました。`,
+        crateLegendary: `🌟 伝説のレコードボックス！+350 コイン & +300 XP`,
+        crateRare: `💎 レアプレス！+200 コイン & +200 XP`,
+        crateCommon: `💿 クラシックレコード！+120 コイン & +150 XP`,
+      },
+    };
+    return messages[currentLang]?.[type] || messages.es[type] || '';
   };
 
   // Reclamar Racha Diaria
@@ -584,7 +679,7 @@ export const RewardsStoreTab = () => {
       localStorage.setItem('sonar_streak_last_claim', new Date().toISOString());
     } catch {}
 
-    showToast(`🔥 ¡Racha de ${nextStreak} días! Has ganado +${bonus} Sonar Coins de bonus.`);
+    showToast(getToastMessage('streakBonus', { streak: nextStreak, bonus }));
   };
 
   // Abrir Caja Misteriosa
@@ -595,9 +690,9 @@ export const RewardsStoreTab = () => {
 
     setTimeout(() => {
       const rewardsList = [
-        { type: 'legendary', title: '🌟 ¡Caja de Vinilo Legendaria! +350 Coins & +300 XP', points: 350, xp: 300, rarity: 'Legendario' },
-        { type: 'rare', title: '💎 ¡Prensado Raro! +200 Sonar Coins & +200 XP', points: 200, xp: 200, rarity: 'Raro' },
-        { type: 'common', title: '💿 ¡Vinilo Clásico! +120 Sonar Coins & +150 XP', points: 120, xp: 150, rarity: 'Clásico' },
+        { type: 'legendary', points: 350, xp: 300, toastKey: 'crateLegendary' },
+        { type: 'rare', points: 200, xp: 200, toastKey: 'crateRare' },
+        { type: 'common', points: 120, xp: 150, toastKey: 'crateCommon' },
       ];
       const selected = rewardsList[Math.floor(Math.random() * rewardsList.length)];
 
@@ -613,7 +708,7 @@ export const RewardsStoreTab = () => {
         localStorage.setItem('sonar_daily_crate_last_open', new Date().toISOString());
       } catch {}
 
-      showToast(selected.title);
+      showToast(getToastMessage(selected.toastKey));
     }, 2000);
   };
 
@@ -636,15 +731,88 @@ export const RewardsStoreTab = () => {
       localStorage.setItem('sonar_rewards_quests', JSON.stringify(updated));
     } catch {}
 
-    showToast(`🎉 ¡Misión completada! +${rewardPoints} Coins y +${rewardXp} XP`);
+    showToast(getToastMessage('questClaimed', { pts: rewardPoints, xp: rewardXp }));
   };
 
+  // Equipar Artículo con respuesta instantánea
+  const handleEquip = useCallback((item) => {
+    soundEffects.playClick();
+    const locItem = localizedReward(item);
+    if (item.type === 'frame') {
+      const next = equippedFrame === item.id ? '' : item.id;
+      setEquippedFrame(next);
+      showToast(next ? getToastMessage('frameEquipped', { name: locItem.name }) : getToastMessage('frameUnequipped'));
+      try {
+        localStorage.setItem('sonar_equipped_frame', next);
+        window.dispatchEvent(new CustomEvent('sonar:profile-customization-changed', { detail: { equippedFrame: next } }));
+      } catch {}
+      if (updateUser) {
+        setTimeout(() => updateUser({ equippedFrame: next }), 60);
+      }
+    } else if (item.type === 'title') {
+      const cleanTitle = item.name.replace(/^Título:\s*/i, '');
+      const locTitle = locItem.name.replace(/^Título:\s*|^Title:\s*|^Titre\s*:\s*|^Titolo:\s*|^称号[：:]\s*|^称号\s*/i, '');
+      const next = equippedTitle === cleanTitle ? '' : cleanTitle;
+      setEquippedTitle(next);
+      showToast(next ? getToastMessage('titleEquipped', { name: locTitle }) : getToastMessage('titleUnequipped'));
+      try {
+        localStorage.setItem('sonar_equipped_title', next);
+        window.dispatchEvent(new CustomEvent('sonar:profile-customization-changed', { detail: { equippedTitle: next } }));
+      } catch {}
+      if (updateUser) {
+        setTimeout(() => updateUser({ equippedTitle: next }), 60);
+      }
+    } else if (item.type === 'skin') {
+      const next = equippedSkin === item.id ? '' : item.id;
+      setEquippedSkin(next);
+      showToast(next ? getToastMessage('skinEquipped', { name: locItem.name }) : getToastMessage('skinUnequipped'));
+      try {
+        localStorage.setItem('sonar_equipped_skin', next);
+        window.dispatchEvent(new CustomEvent('sonar:profile-customization-changed', { detail: { equippedSkin: next } }));
+      } catch {}
+      if (updateUser) {
+        setTimeout(() => updateUser({ equippedSkin: next }), 60);
+      }
+    } else if (item.type === 'dsp') {
+      const next = equippedDsp === item.id ? '' : item.id;
+      setEquippedDsp(next);
+      showToast(next ? getToastMessage('dspEquipped', { name: locItem.name }) : getToastMessage('dspUnequipped'));
+      try {
+        localStorage.setItem('sonar_equipped_dsp', next);
+      } catch {}
+    } else if (item.type === 'theme') {
+      const next = equippedTheme === item.id ? '' : item.id;
+      setEquippedTheme(next);
+      showToast(next ? getToastMessage('themeEquipped', { name: locItem.name }) : getToastMessage('themeUnequipped'));
+      try {
+        localStorage.setItem('sonar_equipped_theme', next);
+      } catch {}
+    } else if (item.type === 'sound') {
+      showToast(getToastMessage('soundEquipped', { name: locItem.name }));
+    } else if (item.type === 'perk') {
+      const isAlreadyActive = activePerks.includes(item.id);
+      const nextPerks = isAlreadyActive
+        ? activePerks.filter((id) => id !== item.id)
+        : [...activePerks, item.id];
+      setActivePerks(nextPerks);
+      showToast(!isAlreadyActive ? getToastMessage('perkEquipped', { name: locItem.name }) : getToastMessage('perkUnequipped'));
+      try {
+        localStorage.setItem('sonar_active_perks', JSON.stringify(nextPerks));
+        window.dispatchEvent(new CustomEvent('sonar:profile-customization-changed', { detail: { activePerks: nextPerks } }));
+      } catch {}
+      if (updateUser) {
+        setTimeout(() => updateUser({ activePerks: nextPerks }), 60);
+      }
+    }
+  }, [equippedFrame, equippedTitle, equippedSkin, equippedDsp, equippedTheme, activePerks, localizedReward, getToastMessage, updateUser]);
+
   // Canjear Artículo
-  const handleRedeem = (item) => {
+  const handleRedeem = useCallback((item) => {
+    const locItem = localizedReward(item);
     if (inventory.includes(item.id)) return;
     if (points < item.cost) {
       soundEffects.playClick();
-      showToast(`❌ Necesitas ${item.cost - points} monedas más para canjear este artículo.`);
+      showToast(getToastMessage('insufficientCoins', { diff: item.cost - points }));
       return;
     }
 
@@ -670,78 +838,55 @@ export const RewardsStoreTab = () => {
     } catch {}
 
     handleEquip(item);
-    showToast(`🎉 ¡Canjeaste con éxito "${item.name}"!`);
-  };
+    showToast(getToastMessage('redeemed', { name: locItem.name }));
+  }, [inventory, points, purchaseHistory, localizedReward, handleEquip, getToastMessage]);
 
-  // Equipar Artículo
-  const handleEquip = (item) => {
+  const handlePreview = useCallback((item) => {
     soundEffects.playClick();
-    if (item.type === 'frame') {
-      const next = equippedFrame === item.id ? '' : item.id;
-      setEquippedFrame(next);
-      try {
-        localStorage.setItem('sonar_equipped_frame', next);
-        updateUser?.({ equippedFrame: next });
-        window.dispatchEvent(new CustomEvent('sonar:profile-customization-changed', { detail: { equippedFrame: next } }));
-      } catch {}
-      showToast(next ? `✨ Marco "${item.name}" equipado` : 'Marco desequipado');
-    } else if (item.type === 'title') {
-      const cleanTitle = item.name.replace('Título: ', '');
-      const next = equippedTitle === cleanTitle ? '' : cleanTitle;
-      setEquippedTitle(next);
-      try {
-        localStorage.setItem('sonar_equipped_title', next);
-        updateUser?.({ equippedTitle: next });
-        window.dispatchEvent(new CustomEvent('sonar:profile-customization-changed', { detail: { equippedTitle: next } }));
-      } catch {}
-      showToast(next ? `🎖️ Título "${next}" activado` : 'Título desequipado');
-    } else if (item.type === 'skin') {
-      const next = equippedSkin === item.id ? '' : item.id;
-      setEquippedSkin(next);
-      try {
-        localStorage.setItem('sonar_equipped_skin', next);
-        updateUser?.({ equippedSkin: next });
-        window.dispatchEvent(new CustomEvent('sonar:profile-customization-changed', { detail: { equippedSkin: next } }));
-      } catch {}
-      showToast(next ? `🎛️ Skin "${item.name}" activada` : 'Skin desequipada');
-    } else if (item.type === 'dsp') {
-      const next = equippedDsp === item.id ? '' : item.id;
-      setEquippedDsp(next);
-      try {
-        localStorage.setItem('sonar_equipped_dsp', next);
-      } catch {}
-      showToast(next ? `🎚️ ${item.name} activado en tu cadena de audio` : 'DSP desactivado');
-    } else if (item.type === 'theme') {
-      const next = equippedTheme === item.id ? '' : item.id;
-      setEquippedTheme(next);
-      try {
-        localStorage.setItem('sonar_equipped_theme', next);
-      } catch {}
-      showToast(next ? `🎨 ${item.name} aplicado a la interfaz` : 'Tema por defecto restaurado');
-    } else if (item.type === 'sound') {
-      showToast(`🔊 Pack sonoro "${item.name}" activado`);
-    } else if (item.type === 'perk') {
-      const isAlreadyActive = activePerks.includes(item.id);
-      const nextPerks = isAlreadyActive
-        ? activePerks.filter((id) => id !== item.id)
-        : [...activePerks, item.id];
-      setActivePerks(nextPerks);
-      try {
-        localStorage.setItem('sonar_active_perks', JSON.stringify(nextPerks));
-        updateUser?.({ activePerks: nextPerks });
-        window.dispatchEvent(new CustomEvent('sonar:profile-customization-changed', { detail: { activePerks: nextPerks } }));
-      } catch {}
-      showToast(!isAlreadyActive ? `🎟️ Pase "${item.name}" activado` : `Pase desactivado`);
-    }
-  };
+    setPreviewItem(item);
+  }, []);
 
-  const filteredItems = activeCategory === 'all'
-    ? REWARD_ITEMS
-    : REWARD_ITEMS.filter((item) => item.type === activeCategory);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [visibleCount, setVisibleCount] = useState(24);
+  const [viewMode, setViewMode] = useState('slider'); // 'slider' | 'grid'
+  const singleSliderRef = useRef(null);
+
+  const categoryFiltered = useMemo(() => {
+    return activeCategory === 'all'
+      ? REWARD_ITEMS
+      : REWARD_ITEMS.filter((item) => item.type === activeCategory);
+  }, [activeCategory]);
+
+  const filteredItems = useMemo(() => {
+    if (!searchQuery.trim()) return categoryFiltered;
+    const q = searchQuery.toLowerCase();
+    return categoryFiltered.filter((storedItem) => {
+      const item = localizedReward(storedItem);
+      return (
+        item.name.toLowerCase().includes(q) ||
+        item.description.toLowerCase().includes(q) ||
+        (item.badge && item.badge.toLowerCase().includes(q))
+      );
+    });
+  }, [categoryFiltered, searchQuery, localizedReward]);
+
+  const displayedItems = useMemo(() => {
+    return filteredItems.slice(0, visibleCount);
+  }, [filteredItems, visibleCount]);
 
   const userLevel = Math.max(1, Math.floor(userXp / 300) + 1);
   const currentLevelProgress = userXp % 300;
   const percentToNextLevel = Math.min(100, Math.round((currentLevelProgress / 300) * 100));
+
+  const categoryDefinitions = useMemo(() => [
+    { id: 'frame', label: t('frames'), icon: 'portrait', title: ui('Marcos de Avatar') },
+    { id: 'skin', label: t('skins'), icon: 'album', title: ui('Skins de Reproductor') },
+    { id: 'dsp', label: t('dsp'), icon: 'tune', title: ui('Presets DSP & Audio') },
+    { id: 'sound', label: t('sounds'), icon: 'volume_up', title: ui('Packs de Sonidos UI') },
+    { id: 'theme', label: t('themes'), icon: 'palette', title: ui('Temas Visuales UI') },
+    { id: 'title', label: t('titles'), icon: 'military_tech', title: ui('Títulos de Prestigio') },
+    { id: 'perk', label: t('vip'), icon: 'verified', title: ui('Pases VIP & Beneficios') },
+  ], [t, ui]);
 
   return (
     <div className="space-y-8 text-[#231123] dark:text-white relative">
@@ -749,13 +894,15 @@ export const RewardsStoreTab = () => {
       <AnimatePresence>
         {toastMessage && (
           <motion.div
-            initial={{ opacity: 0, y: -20, scale: 0.95 }}
+            initial={{ opacity: 0, y: -16, scale: 0.96 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: -20, scale: 0.95 }}
-            className="fixed top-20 right-6 z-50 bg-gradient-to-r from-amber-500 to-amber-700 text-black font-semibold px-6 py-3.5 rounded-2xl shadow-2xl flex items-center gap-3 border border-amber-300/40 backdrop-blur-md"
+            exit={{ opacity: 0, y: -12, scale: 0.96 }}
+            transition={{ duration: 0.2, ease: [0.16, 1, 0.3, 1] }}
+            style={{ willChange: 'transform, opacity' }}
+            className="fixed top-20 right-6 z-50 bg-gradient-to-r from-amber-500 via-amber-500 to-amber-600 text-black font-bold px-5 py-3 rounded-2xl shadow-2xl flex items-center gap-3 border border-amber-300/60 pointer-events-none"
           >
-            <span className="material-symbols-outlined text-black font-bold">celebration</span>
-            <span>{toastMessage}</span>
+            <span className="material-symbols-outlined text-black font-black text-xl">celebration</span>
+            <span className="text-sm font-bold tracking-tight">{toastMessage}</span>
           </motion.div>
         )}
       </AnimatePresence>
@@ -770,7 +917,7 @@ export const RewardsStoreTab = () => {
             <div className="flex items-center gap-2 mb-2">
               <span className="px-3 py-1 rounded-full bg-amber-500/10 text-amber-400 text-xs font-bold tracking-wider uppercase border border-amber-500/20 flex items-center gap-1.5">
                 <span className="material-symbols-outlined text-sm">workspace_premium</span>
-                Tienda & Recompensas Audiófilas
+                {t('store')}
               </span>
               <button
                 onClick={toggleSound}
@@ -779,7 +926,7 @@ export const RewardsStoreTab = () => {
                     ? 'bg-amber-500/20 border-amber-400/40 text-amber-300'
                     : 'bg-zinc-800 border-zinc-700 text-zinc-400'
                 }`}
-                title={soundEnabled ? 'Silenciar efectos de sonido' : 'Activar efectos de sonido de UI'}
+                title={soundEnabled ? ui('Silenciar efectos de sonido') : ui('Activar efectos de sonido de UI')}
               >
                 <span className="material-symbols-outlined text-sm">
                   {soundEnabled ? 'volume_up' : 'volume_off'}
@@ -787,10 +934,10 @@ export const RewardsStoreTab = () => {
               </button>
             </div>
             <h2 className="text-3xl md:text-4xl font-black tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-amber-200 via-amber-400 to-yellow-500">
-              Bóveda de Fidelidad Sonora
+              {t('vault')}
             </h2>
             <p className="text-zinc-400 text-sm mt-1 max-w-xl">
-              Gana <span className="text-amber-400 font-semibold">Sonar Coins</span> escuchando vinilos, publicando reseñas Hi-Fi y manteniendo tu racha de audiófilo.
+              {ui('Gana Sonar Coins escuchando vinilos, publicando reseñas Hi-Fi y manteniendo tu racha de audiófilo.')}
             </p>
           </div>
 
@@ -816,7 +963,7 @@ export const RewardsStoreTab = () => {
                 <span className="material-symbols-outlined text-2xl">military_tech</span>
               </div>
               <div>
-                <div className="text-xs text-[#5c435a] dark:text-zinc-400 font-medium">Nivel {userLevel} • Audiófilo</div>
+                <div className="text-xs text-[#5c435a] dark:text-zinc-400 font-medium">{ui('Nivel')} {userLevel} • {ui('Audiófilo')}</div>
                 <div className="text-lg font-bold text-[#231123] dark:text-white flex items-center gap-2">
                   {userXp} XP
                   <span className="text-xs text-purple-400 font-medium">({percentToNextLevel}%)</span>
@@ -831,10 +978,10 @@ export const RewardsStoreTab = () => {
                 setShowReceipt(true);
               }}
               className="px-3.5 py-4 bg-white dark:bg-zinc-800/80 hover:bg-[#f8e9f6] dark:hover:bg-zinc-700/80 border border-[#e6d5e2] dark:border-white/10 hover:border-[#B80C09]/40 rounded-2xl flex items-center gap-2 text-xs font-semibold text-[#5c435a] dark:text-zinc-300 hover:text-[#B80C09] dark:hover:text-amber-400 transition-all shadow-md"
-              title="Ver Recibo de Disquería Retro"
+              title={ui('Ver Recibo de Disquería Retro')}
             >
               <span className="material-symbols-outlined text-lg">receipt_long</span>
-              <span className="hidden sm:inline">Recibo Retro</span>
+              <span className="hidden sm:inline">{t('receipt')}</span>
             </button>
           </div>
         </div>
@@ -861,10 +1008,10 @@ export const RewardsStoreTab = () => {
             </div>
             <div>
               <div className="text-xl font-bold text-[#231123] dark:text-white flex items-center gap-2">
-                Días Consecutivos 🔥
+                {ui('Días Consecutivos')} 🔥
               </div>
               <p className="text-xs text-[#B80C09] dark:text-orange-400/90 mt-0.5">
-                Multiplicador activo: <span className="font-bold">{streakDays >= 5 ? '2.0x' : streakDays >= 3 ? '1.5x' : '1.2x'} Coins</span>
+                {ui('Multiplicador activo:')} <span className="font-bold">{streakDays >= 5 ? '2.0x' : streakDays >= 3 ? '1.5x' : '1.2x'} Coins</span>
               </p>
             </div>
           </div>
@@ -881,7 +1028,7 @@ export const RewardsStoreTab = () => {
             <span className="material-symbols-outlined text-lg">
               {streakClaimedToday ? 'check_circle' : 'redeem'}
             </span>
-            {streakClaimedToday ? 'Racha Reclamada Hoy' : 'Reclamar Bono Diario (+50 🪙)'}
+            {streakClaimedToday ? ui('Racha Reclamada Hoy') : `${ui('Reclamar Bono Diario')} (+50 🪙)`}
           </button>
         </div>
 
@@ -911,8 +1058,8 @@ export const RewardsStoreTab = () => {
             <div className="text-lg font-bold text-[#231123] dark:text-white">{t('crateTitle')}</div>
               <p className="text-xs text-[#5c435a] dark:text-zinc-400 mt-0.5">
                 {crateOpened
-                  ? 'Vuelve mañana para abrir otra funda de vinilo'
-                  : 'Abre la funda sellada y gana recompensas aleatorias'}
+                  ? ui('Vuelve mañana para abrir otra funda de vinilo')
+                  : ui('Abre la funda sellada y gana recompensas aleatorias')}
               </p>
             </div>
           </div>
@@ -940,14 +1087,14 @@ export const RewardsStoreTab = () => {
           <div className="flex items-center justify-between">
             <span className="px-3 py-1 rounded-full bg-[#003844]/10 dark:bg-cyan-500/10 text-[#003844] dark:text-cyan-400 text-xs font-bold border border-[#003844]/20 dark:border-cyan-500/20 flex items-center gap-1">
               <span className="material-symbols-outlined text-sm">groups</span>
-              Meta Comunitaria Mes
+              {t('community')}
             </span>
             <span className="text-xs font-bold text-[#003844] dark:text-cyan-300">{communityProgressPercent}%</span>
           </div>
 
           <div className="my-4">
             <div className="flex justify-between text-xs text-[#5c435a] dark:text-zinc-300 mb-1.5">
-              <span>Reseñas Hi-Fi colectivas</span>
+              <span>{t('communityReviews')}</span>
               <span className="font-bold text-[#003844] dark:text-cyan-400">{communityReviewsCount} / {communityGoal}</span>
             </div>
             <div className="w-full h-3 bg-gray-200 dark:bg-zinc-800 rounded-full overflow-hidden border border-[#e6d5e2] dark:border-white/5">
@@ -957,12 +1104,12 @@ export const RewardsStoreTab = () => {
               />
             </div>
             <p className="text-[11px] text-[#5c435a] dark:text-zinc-400 mt-2">
-              🎁 Al llegar a la meta: Toda la comunidad desbloquea la skin conmemorativa <span className="text-[#003844] dark:text-cyan-300 font-semibold">Tornamesa Direct Drive</span>.
+              🎁 {ui('Al llegar a la meta: Toda la comunidad desbloquea la skin conmemorativa')} <span className="text-[#003844] dark:text-cyan-300 font-semibold">{ui('Tornamesa Direct Drive')}</span>.
             </p>
           </div>
 
           <div className="text-center py-1 bg-[#003844]/5 dark:bg-cyan-500/5 rounded-xl border border-[#003844]/10 dark:border-cyan-500/10 text-xs font-semibold text-[#003844] dark:text-cyan-300">
-            ¡Faltan solo {communityGoal - communityReviewsCount} reseñas para el desbloqueo colectivo!
+            {ui('¡Faltan solo')} {communityGoal - communityReviewsCount} {ui('reseñas para el desbloqueo colectivo!')}
           </div>
         </div>
       </div>
@@ -973,10 +1120,10 @@ export const RewardsStoreTab = () => {
           <div>
             <h3 className="text-xl font-black text-[#231123] dark:text-white flex items-center gap-2">
               <span className="material-symbols-outlined text-[#B80C09] dark:text-amber-400">task_alt</span>
-              Misiones y Desafíos Audiófilos
+              {t('quests')}
             </h3>
             <p className="text-xs text-[#5c435a] dark:text-zinc-400 mt-0.5">
-              Completa objetivos de audición y análisis para sumar monedas rápidamente.
+              {t('questDesc')}
             </p>
           </div>
         </div>
@@ -1001,7 +1148,7 @@ export const RewardsStoreTab = () => {
                       <div className="text-sm font-bold text-[#231123] dark:text-white flex items-center gap-2">
                         {quest.title}
                         <span className="text-[10px] px-2 py-0.5 rounded-full bg-[#f8e9f6] dark:bg-zinc-700/60 text-[#5c435a] dark:text-zinc-300 uppercase font-semibold">
-                          {quest.type === 'daily' ? 'Diaria' : 'Semanal'}
+                          {quest.type === 'daily' ? t('daily') : t('weekly')}
                         </span>
                       </div>
                       <p className="text-xs text-[#5c435a] dark:text-zinc-400 mt-0.5">{quest.desc}</p>
@@ -1049,140 +1196,296 @@ export const RewardsStoreTab = () => {
 
       {/* Catálogo de la Tienda */}
       <div className="space-y-6">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div>
             <h3 className="text-2xl font-black text-[#231123] dark:text-white flex items-center gap-2">
               <span className="material-symbols-outlined text-[#B80C09] dark:text-amber-400">storefront</span>
-              Catálogo de Recompensas
+              {t('catalog')}
             </h3>
             <p className="text-xs text-[#5c435a] dark:text-zinc-400 mt-0.5">
-              Personaliza tu avatar, reproductor, cadena DSP y temas visuales.
+              {t('catalogDesc')}
             </p>
           </div>
 
-          {/* Filtros de Categoría */}
+          <div className="flex items-center gap-3 w-full md:w-auto">
+            {/* View Mode Switcher (Slider vs Grid) */}
+            <div className="flex items-center p-1 rounded-2xl bg-white dark:bg-zinc-800/90 border border-[#e6d5e2] dark:border-white/10 shadow-sm">
+              <button
+                onClick={() => {
+                  soundEffects.playClick();
+                  setViewMode('slider');
+                }}
+                className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 ${
+                  viewMode === 'slider'
+                    ? 'bg-amber-400 text-black shadow-md shadow-amber-400/20'
+                    : 'text-[#5c435a] dark:text-zinc-400 hover:text-[#231123] dark:hover:text-white'
+                }`}
+                title={ui('Carrusel Deslizante')}
+              >
+                <span className="material-symbols-outlined text-sm">view_carousel</span>
+                <span className="hidden sm:inline">{ui('Carrusel Deslizante')}</span>
+                <span className="sm:hidden">{ui('Deslizar')}</span>
+              </button>
+              <button
+                onClick={() => {
+                  soundEffects.playClick();
+                  setViewMode('grid');
+                }}
+                className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 ${
+                  viewMode === 'grid'
+                    ? 'bg-amber-400 text-black shadow-md shadow-amber-400/20'
+                    : 'text-[#5c435a] dark:text-zinc-400 hover:text-[#231123] dark:hover:text-white'
+                }`}
+                title={ui('Vista Cuadrícula')}
+              >
+                <span className="material-symbols-outlined text-sm">grid_view</span>
+                <span className="hidden sm:inline">{ui('Vista Cuadrícula')}</span>
+                <span className="sm:hidden">{ui('Cuadrícula')}</span>
+              </button>
+            </div>
+
+            {/* Barra de Búsqueda */}
+            <div className="relative flex-1 md:w-64">
+              <span className="material-symbols-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-zinc-400 text-sm pointer-events-none">
+                search
+              </span>
+              <input
+                type="text"
+                value={searchQuery}
+                onChange={(e) => {
+                  setSearchQuery(e.target.value);
+                  setVisibleCount(24);
+                }}
+                placeholder={ui('Buscar por nombre, preset, marca o descripción...')}
+                className="w-full pl-9 pr-8 py-2 text-xs rounded-2xl bg-white dark:bg-zinc-800/90 text-[#231123] dark:text-white border border-[#e6d5e2] dark:border-white/10 focus:border-[#B80C09] dark:focus:border-amber-400 focus:outline-none transition-all placeholder:text-[#5c435a]/60 dark:placeholder:text-zinc-500"
+              />
+              {searchQuery && (
+                <button
+                  onClick={() => setSearchQuery('')}
+                  className="absolute right-2.5 top-1/2 -translate-y-1/2 text-zinc-400 hover:text-zinc-200 text-xs"
+                >
+                  <span className="material-symbols-outlined text-sm">close</span>
+                </button>
+              )}
+            </div>
+          </div>
+        </div>
+
+        {/* Filtros de Categoría con Contadores */}
+        <div className="flex flex-wrap items-center justify-between gap-3 pt-1">
           <div className="flex flex-wrap items-center gap-2">
             {[
-              { id: 'all', label: t('all') },
-              { id: 'frame', label: t('frames') },
-              { id: 'skin', label: t('skins') },
-              { id: 'dsp', label: t('dsp') },
-              { id: 'sound', label: t('sounds') },
-              { id: 'theme', label: t('themes') },
-              { id: 'title', label: 'Títulos' },
-              { id: 'perk', label: t('vip') },
+              { id: 'all', label: t('all'), count: REWARD_ITEMS.length },
+              { id: 'frame', label: t('frames'), count: REWARD_ITEMS.filter(i => i.type === 'frame').length },
+              { id: 'skin', label: t('skins'), count: REWARD_ITEMS.filter(i => i.type === 'skin').length },
+              { id: 'dsp', label: t('dsp'), count: REWARD_ITEMS.filter(i => i.type === 'dsp').length },
+              { id: 'sound', label: t('sounds'), count: REWARD_ITEMS.filter(i => i.type === 'sound').length },
+              { id: 'theme', label: t('themes'), count: REWARD_ITEMS.filter(i => i.type === 'theme').length },
+              { id: 'title', label: t('titles'), count: REWARD_ITEMS.filter(i => i.type === 'title').length },
+              { id: 'perk', label: t('vip'), count: REWARD_ITEMS.filter(i => i.type === 'perk').length },
             ].map((tab) => (
               <button
                 key={tab.id}
                 onClick={() => {
                   soundEffects.playClick();
                   setActiveCategory(tab.id);
+                  setVisibleCount(24);
                 }}
-                className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all ${
+                className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 ${
                   activeCategory === tab.id
                     ? 'bg-amber-400 text-black shadow-md shadow-amber-400/20'
                     : 'bg-white dark:bg-zinc-800/80 text-[#5c435a] dark:text-zinc-400 hover:text-[#231123] dark:hover:text-white hover:bg-[#f8e9f6] dark:hover:bg-zinc-700/80 border border-[#e6d5e2] dark:border-white/5'
                 }`}
               >
-                {tab.label}
+                <span>{tab.label}</span>
+                <span className={`text-[10px] px-1.5 py-0.2 rounded-full ${
+                  activeCategory === tab.id ? 'bg-black/20 text-black' : 'bg-zinc-100 dark:bg-zinc-700 text-zinc-500 dark:text-zinc-400'
+                }`}>
+                  {tab.count}
+                </span>
               </button>
             ))}
           </div>
+
+          <div className="flex items-center gap-3 text-xs text-[#5c435a] dark:text-zinc-400 font-medium">
+            <span>
+              {filteredItems.length} {ui('recompensas')}
+            </span>
+          </div>
         </div>
 
-        {/* Grid de Artículos */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {filteredItems.map((storedItem) => {
-            const item = localizedReward(storedItem);
-            const isOwned = inventory.includes(item.id);
-            const isEquipped =
-              (item.type === 'frame' && equippedFrame === item.id) ||
-              (item.type === 'title' && equippedTitle === item.name.replace('Título: ', '')) ||
-              (item.type === 'skin' && equippedSkin === item.id) ||
-              (item.type === 'dsp' && equippedDsp === item.id) ||
-              (item.type === 'theme' && equippedTheme === item.id) ||
-              (item.type === 'perk' && activePerks.includes(item.id));
+        {/* Estado Vacío cuando no hay resultados de búsqueda */}
+        {filteredItems.length === 0 && (
+          <div className="text-center py-12 bg-white dark:bg-zinc-900/40 rounded-3xl border border-[#e6d5e2] dark:border-white/5 p-8">
+            <span className="material-symbols-outlined text-4xl text-zinc-400 mb-2">search_off</span>
+            <p className="text-sm font-bold text-[#231123] dark:text-white">{ui('No se encontraron recompensas')}</p>
+            <p className="text-xs text-[#5c435a] dark:text-zinc-400 mt-1">{ui('Prueba con otro término de búsqueda o selecciona otra categoría.')}</p>
+            <button
+              onClick={() => {
+                setSearchQuery('');
+                setActiveCategory('all');
+                setVisibleCount(24);
+              }}
+              className="mt-4 px-4 py-2 rounded-xl bg-amber-400 text-black text-xs font-bold shadow hover:bg-amber-300 transition-all"
+            >
+              {ui('Ver todo el catálogo')}
+            </button>
+          </div>
+        )}
 
-            return (
-              <motion.div
-                key={item.id}
-                whileHover={{ y: -4 }}
-                className="bg-white dark:bg-zinc-900/80 border border-[#e6d5e2] dark:border-white/10 hover:border-[#B80C09]/40 dark:hover:border-amber-400/40 rounded-3xl p-5 flex flex-col justify-between gap-4 transition-all shadow-xl group relative overflow-hidden text-[#231123] dark:text-white"
-              >
-                {/* Cabecera del Item */}
-                <div>
-                  <div className="flex items-start justify-between gap-3 mb-3">
-                    <div className={`w-12 h-12 rounded-2xl bg-gradient-to-tr ${item.color} flex items-center justify-center text-white shadow-lg`}>
-                      <span className="material-symbols-outlined text-2xl">{item.icon}</span>
-                    </div>
-                    <div className="flex items-center gap-1.5">
-                      {item.badge && (
-                        <span className="px-2 py-0.5 rounded-full bg-[#B80C09]/10 dark:bg-amber-500/10 text-[#B80C09] dark:text-amber-400 text-[10px] font-bold border border-[#B80C09]/20 dark:border-amber-500/20">
-                          {ui(item.badge)}
-                        </span>
-                      )}
-                      <button
-                        onClick={() => {
-                          soundEffects.playClick();
-                          setPreviewItem(storedItem);
-                        }}
-                        className="p-1.5 rounded-xl bg-gray-100 dark:bg-zinc-800 hover:bg-[#f8e9f6] dark:hover:bg-zinc-700 text-[#5c435a] dark:text-zinc-300 hover:text-[#B80C09] dark:hover:text-amber-400 transition-colors border border-[#e6d5e2] dark:border-white/5"
-                        title={t('preview')}
-                      >
-                        <span className="material-symbols-outlined text-sm">visibility</span>
-                      </button>
-                    </div>
+        {/* CONTENIDO DEL CATÁLOGO: MODO SLIDER O MODO GRID */}
+        {filteredItems.length > 0 && (
+          viewMode === 'slider' ? (
+            activeCategory === 'all' && !searchQuery.trim() ? (
+              /* Modo Slider por Categorías Deslizantes (Rails) */
+              <div className="space-y-8">
+                {categoryDefinitions.map((cat) => {
+                  const catItems = REWARD_ITEMS.filter((i) => i.type === cat.id);
+                  if (catItems.length === 0) return null;
+                  return (
+                    <SliderRail
+                      key={cat.id}
+                      title={cat.title}
+                      icon={cat.icon}
+                      items={catItems}
+                      localizedMap={localizedRewardMap}
+                      inventory={inventory}
+                      equippedFrame={equippedFrame}
+                      equippedTitle={equippedTitle}
+                      equippedSkin={equippedSkin}
+                      equippedDsp={equippedDsp}
+                      equippedTheme={equippedTheme}
+                      activePerks={activePerks}
+                      points={points}
+                      onEquip={handleEquip}
+                      onRedeem={handleRedeem}
+                      onPreview={handlePreview}
+                      onExplore={() => {
+                        soundEffects.playClick();
+                        setActiveCategory(cat.id);
+                      }}
+                      t={t}
+                      ui={ui}
+                    />
+                  );
+                })}
+              </div>
+            ) : (
+              /* Modo Slider para Categoría Individual o Búsqueda */
+              <div className="space-y-4 p-4 md:p-6 rounded-3xl bg-white/70 dark:bg-zinc-900/50 border border-[#e6d5e2] dark:border-white/10 backdrop-blur-md shadow-xl">
+                <div className="flex items-center justify-between gap-3">
+                  <div className="flex items-center gap-2">
+                    <span className="text-xs text-[#5c435a] dark:text-zinc-400 font-semibold">
+                      {ui('Desliza horizontalmente para ver las opciones disponibles')}
+                    </span>
                   </div>
-
-                  <h4 className="text-base font-bold text-[#231123] dark:text-white group-hover:text-[#B80C09] dark:group-hover:text-amber-300 transition-colors">
-                    {item.name}
-                  </h4>
-                  <p className="text-xs text-[#5c435a] dark:text-zinc-400 mt-1 line-clamp-2">
-                    {item.description}
-                  </p>
+                  <div className="flex items-center gap-2">
+                    <button
+                      type="button"
+                      onClick={() => singleSliderRef.current?.scrollBy({ left: -460, behavior: 'smooth' })}
+                      className="w-8 h-8 rounded-xl bg-white dark:bg-zinc-800 hover:bg-amber-400 hover:text-black text-[#231123] dark:text-white border border-[#e6d5e2] dark:border-white/10 flex items-center justify-center transition-all shadow active:scale-95 cursor-pointer"
+                      title={ui('Deslizar a la izquierda')}
+                    >
+                      <span className="material-symbols-outlined text-lg">chevron_left</span>
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => singleSliderRef.current?.scrollBy({ left: 460, behavior: 'smooth' })}
+                      className="w-8 h-8 rounded-xl bg-white dark:bg-zinc-800 hover:bg-amber-400 hover:text-black text-[#231123] dark:text-white border border-[#e6d5e2] dark:border-white/10 flex items-center justify-center transition-all shadow active:scale-95 cursor-pointer"
+                      title={ui('Deslizar a la derecha')}
+                    >
+                      <span className="material-symbols-outlined text-lg">chevron_right</span>
+                    </button>
+                  </div>
                 </div>
 
-                {/* Pie con Precio / Botón */}
-                <div className="pt-3 border-t border-[#e6d5e2] dark:border-white/5 flex items-center justify-between gap-3">
-                  <div className="text-left">
-                    <div className="text-[10px] text-[#5c435a]/70 dark:text-zinc-500 uppercase tracking-wider font-semibold">{t('cost')}</div>
-                    <div className="text-base font-black text-amber-700 dark:text-amber-400 flex items-center gap-1">
-                      {item.cost} <span className="text-xs">🪙</span>
-                    </div>
-                  </div>
+                <div
+                  ref={singleSliderRef}
+                  className="flex gap-5 overflow-x-auto scroll-smooth snap-x snap-mandatory py-2 pb-4 no-scrollbar items-stretch"
+                >
+                  {filteredItems.map((storedItem) => {
+                    const locItem = localizedRewardMap.get(storedItem.id) || storedItem;
+                    const isOwned = inventory.includes(storedItem.id);
+                    const isEquipped =
+                      (storedItem.type === 'frame' && equippedFrame === storedItem.id) ||
+                      (storedItem.type === 'title' && (equippedTitle === storedItem.name.replace(/^Título:\s*/i, '') || equippedTitle === storedItem.id)) ||
+                      (storedItem.type === 'skin' && equippedSkin === storedItem.id) ||
+                      (storedItem.type === 'dsp' && equippedDsp === storedItem.id) ||
+                      (storedItem.type === 'theme' && equippedTheme === storedItem.id) ||
+                      (storedItem.type === 'perk' && activePerks.includes(storedItem.id));
 
-                  {isOwned ? (
-                    <button
-                      onClick={() => handleEquip(storedItem)}
-                      className={`px-4 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 ${
-                        isEquipped
-                          ? 'bg-emerald-500/20 border border-emerald-500/40 text-emerald-300 hover:bg-emerald-500/30'
-                          : 'bg-[#003844] hover:bg-[#4B2840] text-white border border-[#003844]'
-                      }`}
-                    >
-                      <span className="material-symbols-outlined text-sm">
-                        {isEquipped ? 'check' : 'toggle_on'}
-                      </span>
-                      {isEquipped ? t('equipped') : t('equip')}
-                    </button>
-                  ) : (
-                    <button
-                      onClick={() => handleRedeem(storedItem)}
-                      className={`px-4 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 ${
-                        points >= item.cost
-                          ? 'bg-gradient-to-r from-amber-400 to-yellow-500 hover:from-amber-300 hover:to-yellow-400 text-black shadow-md shadow-amber-500/20 active:scale-95'
-                          : 'bg-gray-100 dark:bg-zinc-800 text-gray-500 dark:text-zinc-500 border border-gray-200 dark:border-white/5 cursor-not-allowed'
-                      }`}
-                    >
-                      <span className="material-symbols-outlined text-sm">shopping_bag</span>
-                      {t('redeem')}
-                    </button>
-                  )}
+                    return (
+                      <div key={storedItem.id} className="w-[280px] sm:w-[320px] shrink-0">
+                        <RewardCard
+                          item={storedItem}
+                          localizedItem={locItem}
+                          isOwned={isOwned}
+                          isEquipped={isEquipped}
+                          points={points}
+                          onEquip={handleEquip}
+                          onRedeem={handleRedeem}
+                          onPreview={handlePreview}
+                          t={t}
+                          ui={ui}
+                          isCarouselItem={true}
+                        />
+                      </div>
+                    );
+                  })}
                 </div>
-              </motion.div>
-            );
-          })}
-        </div>
+              </div>
+            )
+          ) : (
+            /* Modo Cuadrícula (Grid View) con Paginación */
+            <div className="space-y-6">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                {displayedItems.map((storedItem) => {
+                  const locItem = localizedRewardMap.get(storedItem.id) || storedItem;
+                  const isOwned = inventory.includes(storedItem.id);
+                  const isEquipped =
+                    (storedItem.type === 'frame' && equippedFrame === storedItem.id) ||
+                    (storedItem.type === 'title' && (equippedTitle === storedItem.name.replace(/^Título:\s*/i, '') || equippedTitle === storedItem.id)) ||
+                    (storedItem.type === 'skin' && equippedSkin === storedItem.id) ||
+                    (storedItem.type === 'dsp' && equippedDsp === storedItem.id) ||
+                    (storedItem.type === 'theme' && equippedTheme === storedItem.id) ||
+                    (storedItem.type === 'perk' && activePerks.includes(storedItem.id));
+
+                  return (
+                    <div key={storedItem.id}>
+                      <RewardCard
+                        item={storedItem}
+                        localizedItem={locItem}
+                        isOwned={isOwned}
+                        isEquipped={isEquipped}
+                        points={points}
+                        onEquip={handleEquip}
+                        onRedeem={handleRedeem}
+                        onPreview={handlePreview}
+                        t={t}
+                        ui={ui}
+                        isCarouselItem={false}
+                      />
+                    </div>
+                  );
+                })}
+              </div>
+
+              {/* Botón Cargar Más Recompensas */}
+              {visibleCount < filteredItems.length && (
+                <div className="text-center pt-4">
+                  <button
+                    type="button"
+                    onClick={() => setVisibleCount((prev) => prev + 24)}
+                    className="px-6 py-3 rounded-2xl bg-white dark:bg-zinc-800/80 hover:bg-[#f8e9f6] dark:hover:bg-zinc-700 text-[#231123] dark:text-white font-bold text-xs border border-[#e6d5e2] dark:border-white/10 hover:border-[#B80C09]/40 shadow-lg transition-all active:scale-95 inline-flex items-center gap-2 cursor-pointer"
+                  >
+                    <span className="material-symbols-outlined text-base">expand_more</span>
+                    {ui('Cargar más recompensas')} ({displayedItems.length} / {filteredItems.length})
+                  </button>
+                </div>
+              )}
+            </div>
+          )
+        )}
       </div>
 
       {/* Modal: Probador en Vivo (Live Sandbox Preview) */}
@@ -1204,7 +1507,7 @@ export const RewardsStoreTab = () => {
 
               <div className="text-center space-y-4">
                 <span className="px-3 py-1 rounded-full bg-amber-500/10 text-amber-400 text-xs font-bold border border-amber-500/20">
-                  Probador en Vivo • Sandbox
+                  {t('previewTitle')}
                 </span>
                 <h3 className="text-2xl font-black text-white">{localizedReward(previewItem).name}</h3>
 
@@ -1216,7 +1519,7 @@ export const RewardsStoreTab = () => {
                         {user?.username ? user.username.slice(0, 2).toUpperCase() : 'SN'}
                       </div>
                       <div className="absolute -bottom-2 -right-2 px-2 py-0.5 rounded-full bg-amber-400 text-black text-[10px] font-extrabold shadow">
-                        PROBANDO
+                        {t('testing')}
                       </div>
                     </div>
                   ) : previewItem.type === 'skin' ? (
@@ -1225,7 +1528,7 @@ export const RewardsStoreTab = () => {
                         <span className="material-symbols-outlined">{previewItem.icon}</span>
                       </div>
                       <div className="text-left flex-1">
-                        <div className="text-xs font-bold text-white">Reproductor Sonar Hi-Fi</div>
+                        <div className="text-xs font-bold text-white">{t('player')}</div>
                         <div className="text-[10px] text-amber-400">{localizedReward(previewItem).name}</div>
                       </div>
                     </div>

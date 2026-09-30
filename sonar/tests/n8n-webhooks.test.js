@@ -7,7 +7,7 @@ import {
 beforeEach(() => {
   vi.useFakeTimers()
   // El fetch mockeado simula que n8n no está disponible (lanza error).
-  // sendReviewToModeration intentará conectar y luego caerá al fallback local.
+  // El servicio debe informar el fallo sin simular un envío exitoso.
   vi.stubGlobal('fetch', vi.fn(() => {
     throw new Error('n8n no disponible en entorno de test.')
   }))
@@ -19,16 +19,28 @@ afterEach(() => {
 })
 
 describe('sendReviewToModeration', () => {
-  it('encola una reseña y conserva su ID, cayendo al fallback si n8n no responde', async () => {
+  it('envía el ID como texto al webhook de prueba', async () => {
+    fetch.mockResolvedValue({ ok: true, json: async () => ({ success: true }) })
+    expect((await sendReviewToModeration({ id: 101, content: 'Bien' })).success).toBe(true)
+    expect(fetch.mock.calls[0][0]).toBe('/api/n8n/webhook-test/review-moderation')
+    expect(JSON.parse(fetch.mock.calls[0][1].body).reviewId).toBe('101')
+  })
+
+  it('prueba producción cuando la ruta de prueba devuelve 404', async () => {
+    fetch.mockResolvedValueOnce({ ok: false, status: 404 })
+      .mockResolvedValueOnce({ ok: true, json: async () => ({ success: true }) })
+    expect((await sendReviewToModeration({ id: '101', content: 'Bien' })).success).toBe(true)
+    expect(fetch.mock.calls[1][0]).toBe('/api/n8n/webhook/review-moderation')
+  })
+  it('informa el fallo y conserva el ID si n8n no responde', async () => {
     const result = sendReviewToModeration({ id: '101', content: 'Excelente álbum.' })
     await vi.runAllTimersAsync()
 
     expect(await result).toEqual({
-      success: true,
-      queued: true,
+      success: false,
+      queued: false,
       reviewId: '101',
       message: expect.any(String),
-      simulated: true,
     })
   })
 
