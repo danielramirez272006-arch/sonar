@@ -33,22 +33,7 @@
   },
   {
     "parameters": {
-      "jsCode": "const inputData = $input.first().json || {};\nconst { reviewId, content, userId, username, email, timestamp } = inputData;\n\nconst promptText = `Analiza el siguiente comentario de reseña para determinar si contiene lenguaje ofensivo, insultos, agresión, spam o contenido dañino para alguien. 
-
-Comentario: \"${content}\"
-
-Responde JSON con esta estructura exacta:
-{
-  \"offensive\": true/false,
-  \"severity\": \"low|medium|high\", 
-  \"category\": \"insult|aggression|spam|harassment|other\",
-  \"explanation\": \"Explicación breve del hallazgo\",
-  \"actionRequired\": true/false,
-  \"suggestedSuspensionDays\": number (0-365)
-}
-
-Sé objetivo. Si hay algún término ofensivo en cualquier idioma, establece offensive=true. Sé conservador con severity: low para términos leves, medium para insultos moderados, high para agresión seria o acoso.
-`;\n\nreturn [{\n  json: {\n    promptText,\n    metadata: {\n      reviewId,\n      content,\n      source: 'gemini-openrouter'\n    }\n  }\n}];"
+      "jsCode": "const inputData = $input.first().json || {};\nconst { reviewId, content, userId, username, email, timestamp } = inputData;\n\nconst promptText = `Analiza el siguiente comentario de reseña para determinar si contiene lenguaje ofensivo, insultos, agresión, spam o contenido dañino para alguien. \r\n\r\nComentario: \"${content}\"\r\n\r\nResponde JSON con esta estructura exacta:\r\n{\r\n  \"offensive\": true/false,\r\n  \"severity\": \"low|medium|high\", \r\n  \"category\": \"insult|aggression|spam|harassment|other\",\r\n  \"explanation\": \"Explicación breve del hallazgo\",\r\n  \"actionRequired\": true/false,\r\n  \"suggestedSuspensionDays\": number (0-365)\r\n}\r\n\r\nSé objetivo. Si hay algún término ofensivo en cualquier idioma, establece offensive=true. Sé conservador con severity: low para términos leves, medium para insultos moderados, high para agresión seria o acoso.\r\n`;\n\nreturn [{\n  json: {\n    promptText,\n    metadata: {\n      reviewId,\n      content,\n      source: 'gemini-openrouter'\n    }\n  }\n}];"
     },
     "id": "prepare-prompt-003",
     "name": "Preparar Prompt IA",
@@ -223,7 +208,7 @@ Sé objetivo. Si hay algún término ofensivo en cualquier idioma, establece off
     "parameters": {
       "mailOptions": {
         "to": "={{ $json.email }}",
-        "subject": '⚠️ Advertencia de Moderación - SONAR',
+        "subject": "⚠️ Advertencia de Moderación - SONAR",
         "text": "Hola Usuario,\n\nSe ha detectado contenido ofensivo en tu reseña. El contenido ha sido marcado para revisión administrativa.\n\n-- Equipo Sonar"
       }
     },
