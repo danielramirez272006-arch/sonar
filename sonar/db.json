@@ -5767,7 +5767,15 @@
         "Melómano Junior",
         "Audio Seguro"
       ],
-      "createdAt": "2026-09-24T21:15:06.053Z"
+      "createdAt": "2026-09-24T21:15:06.053Z",
+      "sonarPoints": 100,
+      "triviaRewards": [
+        {
+          "id": "cd9ccb72-25d5-4277-babd-25c10aa0ae9c",
+          "coins": 100,
+          "createdAt": "2026-09-30T14:22:02.945Z"
+        }
+      ]
     },
     {
       "id": "user-1790285570092",
@@ -11206,11 +11214,65 @@
       "albumTitle": "To Pimp a Butterfly",
       "parentAlbum": "To Pimp a Butterfly",
       "artist": "Kendrick Lamar",
-      "rating": 4,
+      "rating": 5,
       "type": "album",
       "trackTitle": "",
       "hasSpoilers": false,
       "cover": "https://cdn-images.dzcdn.net/images/cover/00dd0da365a94b1829302d6b7fec70e6/500x500-000000-80-0-0.jpg"
+    },
+    {
+      "id": "e001f6b5dbbad769bb711add49495e75",
+      "userId": "1",
+      "userName": "Mateo Rivae",
+      "content": "idiota estupido",
+      "status": "pending_moderation",
+      "createdAt": "2026-09-29T15:02:00.699Z",
+      "aiFlagged": false,
+      "albumId": "14880659",
+      "albumTitle": "In Rainbows",
+      "parentAlbum": "In Rainbows",
+      "artist": "Radiohead",
+      "rating": 4,
+      "type": "album",
+      "trackTitle": "",
+      "hasSpoilers": false,
+      "cover": "https://cdn-images.dzcdn.net/images/cover/a175af9b7d329bc678cb4d26fc13d6de/1000x1000-000000-80-0-0.jpg"
+    },
+    {
+      "id": "ee84954538f9ba2ce4807dc67fe88472",
+      "userId": "user-1790284506053",
+      "userName": "espectro",
+      "content": "puto tonto bastardo",
+      "status": "pending_moderation",
+      "createdAt": "2026-09-29T16:57:42.269Z",
+      "aiFlagged": false,
+      "albumId": "14880659",
+      "albumTitle": "In Rainbows",
+      "parentAlbum": "In Rainbows",
+      "artist": "Radiohead",
+      "rating": 4,
+      "type": "album",
+      "trackTitle": "",
+      "hasSpoilers": false,
+      "cover": "https://cdn-images.dzcdn.net/images/cover/a175af9b7d329bc678cb4d26fc13d6de/1000x1000-000000-80-0-0.jpg"
+    },
+    {
+      "id": "ec91a937738f55089090c02337c264ae",
+      "userId": "user-1790284506053",
+      "userName": "espectro",
+      "content": "puto idiota bastardo",
+      "status": "pending_moderation",
+      "createdAt": "2026-09-29T16:59:19.249Z",
+      "aiFlagged": false,
+      "albumId": "14880659",
+      "albumTitle": "In Rainbows",
+      "parentAlbum": "In Rainbows",
+      "artist": "Radiohead",
+      "rating": 4,
+      "type": "album",
+      "trackTitle": "",
+      "hasSpoilers": false,
+      "cover": "https://cdn-images.dzcdn.net/images/cover/a175af9b7d329bc678cb4d26fc13d6de/1000x1000-000000-80-0-0.jpg"
     },
     {
       "id": "c45d70513d90edae2faab7833331bb0a",
@@ -11318,6 +11380,8 @@
       "type": "album",
       "trackTitle": "",
       "hasSpoilers": false,
+=======
+>>>>>>> origin/luis
       "cover": "https://cdn-images.dzcdn.net/images/cover/a175af9b7d329bc678cb4d26fc13d6de/1000x1000-000000-80-0-0.jpg"
     }
   ],

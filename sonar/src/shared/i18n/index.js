@@ -1,3 +1,4 @@
+import { TRIVIA_TRANSLATIONS } from './locales/trivia-messages.js';
 import i18n from 'i18next';
 import { initReactI18next } from 'react-i18next';
 import LanguageDetector from 'i18next-browser-languagedetector';
@@ -36,6 +37,7 @@ export const resources = Object.fromEntries(
     const translation = { ...base, ...ADMIN_TRANSLATIONS[language], ...PAGE_TRANSLATIONS[language] };
     return [language, {
       translation,
+      trivia: TRIVIA_TRANSLATIONS[language],
       ui: {
         ...Object.fromEntries(Object.entries(spanishMessages).map(([key, source]) => [source, translation[key]])),
         ...UI_TRANSLATIONS[language],
@@ -47,6 +49,7 @@ export const resources = Object.fromEntries(
         ...FAMILY_TRANSLATIONS[language],
         ...STATE_TRANSLATIONS[language],
         ...FEEDBACK_TRANSLATIONS[language],
+        ...TRIVIA_TRANSLATIONS[language],
       },
     }];
   }),

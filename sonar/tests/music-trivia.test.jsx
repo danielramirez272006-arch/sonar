@@ -6,12 +6,15 @@ import { MusicTrivia, initialGame, triviaReducer } from '../src/features/profile
 import { MUSIC_QUESTIONS } from '../src/features/profile/components/music-questions';
 afterEach(() => { cleanup(); vi.useRealTimers(); vi.restoreAllMocks(); });
 const correct = state => MUSIC_QUESTIONS[state.deck[state.index]].correct;
-it('keeps 63 unique valid questions and draws sixteen without repeats', () => {
-  expect(MUSIC_QUESTIONS).toHaveLength(63);
-  expect(new Set(MUSIC_QUESTIONS.map(q => q.question)).size).toBe(63);
+it('keeps 500 unique valid questions and draws sixteen without repeats', () => {
+  expect(MUSIC_QUESTIONS).toHaveLength(500);
+  expect(new Set(MUSIC_QUESTIONS.map(q => q.question)).size).toBe(500);
   for (const q of MUSIC_QUESTIONS) {
     expect(q.options).toHaveLength(3);
+    expect(new Set(q.options).size).toBe(3);
+    expect(Number.isInteger(q.correct) && q.correct >= 0 && q.correct < 3).toBe(true);
     expect(q.options[q.correct]).toBeTruthy();
+    expect(q.fact.trim()).toBeTruthy();
   }
   expect(new Set(initialGame().deck).size).toBe(16);
   vi.spyOn(Math, 'random').mockReturnValue(0);
