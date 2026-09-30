@@ -10425,11 +10425,11 @@
       "status": "active",
       "createdAt": "2026-09-29T14:20:14.888Z",
       "parentalControl": {
-        "enabled": true,
-        "blockExplicit": true,
+        "enabled": false,
+        "blockExplicit": false,
         "pin": "1234"
       },
-      "accountType": "junior"
+      "accountType": "standard"
     },
     {
       "id": "6653849489bc103a059169058c077e2f",

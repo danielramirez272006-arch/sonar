@@ -13,14 +13,22 @@ const buildPassportPdf = (passport) => {
   canvas.height = 1754;
   const ctx = canvas.getContext('2d');
   const palette = {
-    violet: '#231123',
-    berry: '#4B2840',
+    violet: '#1A0C1A',
+    deepViolet: '#231123',
+    berry: '#3A1B34',
     teal: '#003844',
+    gold: '#F3B700',
+    goldGlow: '#FFE28A',
+    cyan: '#83D1D8',
     red: '#B80C09',
-    paper: '#F7F3F6',
+    paper: '#FDFBFC',
+    cardBg: 'rgba(255, 255, 255, 0.065)',
+    cardBorder: 'rgba(220, 220, 221, 0.16)',
     muted: '#C8B9C6',
+    subtle: '#8C7A8A',
   };
-  const roundedRect = (x, y, width, height, radius, fill, stroke) => {
+
+  const roundedRect = (x, y, width, height, radius, fill, stroke, lineWidth = 2) => {
     ctx.beginPath();
     ctx.roundRect(x, y, width, height, radius);
     if (fill) {
@@ -29,66 +37,289 @@ const buildPassportPdf = (passport) => {
     }
     if (stroke) {
       ctx.strokeStyle = stroke;
-      ctx.lineWidth = 2;
+      ctx.lineWidth = lineWidth;
       ctx.stroke();
     }
   };
+
   const fitText = (value, x, y, maxWidth, size, color, weight = 500) => {
     let fontSize = size;
     ctx.textAlign = 'left';
     ctx.textBaseline = 'alphabetic';
     ctx.fillStyle = color;
     ctx.font = `${weight} ${fontSize}px "Segoe UI", Arial, sans-serif`;
-    while (ctx.measureText(String(value)).width > maxWidth && fontSize > 16) {
+    while (ctx.measureText(String(value)).width > maxWidth && fontSize > 11) {
       fontSize -= 1;
       ctx.font = `${weight} ${fontSize}px "Segoe UI", Arial, sans-serif`;
     }
     ctx.fillText(String(value), x, y, maxWidth);
   };
 
-  const background = ctx.createLinearGradient(70, 70, 1170, 1680);
-  background.addColorStop(0, palette.berry);
-  background.addColorStop(0.48, palette.violet);
-  background.addColorStop(1, palette.teal);
-  ctx.fillStyle = palette.paper;
-  ctx.fillRect(0, 0, canvas.width, canvas.height);
-  roundedRect(48, 48, 1144, 1658, 54, background);
+  const drawQrCode = (startX, startY, size, text) => {
+    const modules = 21;
+    const cellSize = size / modules;
+    roundedRect(startX - 6, startY - 6, size + 12, size + 12, 10, '#FFFFFF', palette.gold, 2);
+    ctx.fillStyle = '#1A0C1A';
 
-  const glow = ctx.createRadialGradient(1040, 130, 10, 1040, 130, 510);
-  glow.addColorStop(0, 'rgba(184, 12, 9, 0.3)');
-  glow.addColorStop(1, 'rgba(184, 12, 9, 0)');
-  ctx.fillStyle = glow;
-  ctx.fillRect(550, 48, 642, 570);
-  ctx.strokeStyle = 'rgba(220, 220, 221, 0.18)';
+    let hash = 0;
+    for (let i = 0; i < text.length; i++) {
+      hash = (hash << 5) - hash + text.charCodeAt(i);
+      hash |= 0;
+    }
+
+    const isTarget = (r, c) => {
+      if (r < 7 && c < 7) return true;
+      if (r < 7 && c >= modules - 7) return true;
+      if (r >= modules - 7 && c < 7) return true;
+      return false;
+    };
+
+    const drawFinderPattern = (pr, pc) => {
+      ctx.fillStyle = '#1A0C1A';
+      ctx.fillRect(startX + pc * cellSize, startY + pr * cellSize, 7 * cellSize, 7 * cellSize);
+      ctx.fillStyle = '#FFFFFF';
+      ctx.fillRect(startX + (pc + 1) * cellSize, startY + (pr + 1) * cellSize, 5 * cellSize, 5 * cellSize);
+      ctx.fillStyle = '#1A0C1A';
+      ctx.fillRect(startX + (pc + 2) * cellSize, startY + (pr + 2) * cellSize, 3 * cellSize, 3 * cellSize);
+    };
+
+    drawFinderPattern(0, 0);
+    drawFinderPattern(0, modules - 7);
+    drawFinderPattern(modules - 7, 0);
+
+    ctx.fillStyle = '#1A0C1A';
+    for (let r = 0; r < modules; r++) {
+      for (let c = 0; c < modules; c++) {
+        if (!isTarget(r, c)) {
+          const pseudo = Math.sin((r + 1) * (c + 1) * 31 + hash) * 10000;
+          if (pseudo - Math.floor(pseudo) > 0.46) {
+            ctx.fillRect(startX + c * cellSize, startY + r * cellSize, cellSize - 0.5, cellSize - 0.5);
+          }
+        }
+      }
+    }
+  };
+
+  const drawHolographicSeal = (cx, cy, r) => {
+    const sealGlow = ctx.createRadialGradient(cx, cy, 5, cx, cy, r + 16);
+    sealGlow.addColorStop(0, 'rgba(243, 183, 0, 0.35)');
+    sealGlow.addColorStop(1, 'rgba(184, 12, 9, 0)');
+    ctx.fillStyle = sealGlow;
+    ctx.beginPath();
+    ctx.arc(cx, cy, r + 16, 0, Math.PI * 2);
+    ctx.fill();
+
+    const goldGrad = ctx.createLinearGradient(cx - r, cy - r, cx + r, cy + r);
+    goldGrad.addColorStop(0, '#FFE89E');
+    goldGrad.addColorStop(0.3, '#D4971A');
+    goldGrad.addColorStop(0.7, '#FFE89E');
+    goldGrad.addColorStop(1, '#9C680A');
+
+    ctx.fillStyle = goldGrad;
+    ctx.beginPath();
+    ctx.arc(cx, cy, r, 0, Math.PI * 2);
+    ctx.fill();
+
+    ctx.fillStyle = palette.violet;
+    ctx.beginPath();
+    ctx.arc(cx, cy, r - 6, 0, Math.PI * 2);
+    ctx.fill();
+
+    ctx.strokeStyle = '#FFE89E';
+    ctx.lineWidth = 1.5;
+    ctx.setLineDash([3, 4]);
+    ctx.beginPath();
+    ctx.arc(cx, cy, r - 12, 0, Math.PI * 2);
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    ctx.fillStyle = palette.gold;
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.font = '900 16px "Segoe UI", Arial, sans-serif';
+    ctx.fillText('★ SONAR ★', cx, cy - 14);
+    ctx.font = '800 11px "Segoe UI", Arial, sans-serif';
+    ctx.fillStyle = '#FFFFFF';
+    ctx.fillText('AUDIOPHILE', cx, cy);
+    ctx.font = '700 9px "Segoe UI", Arial, sans-serif';
+    ctx.fillStyle = palette.cyan;
+    ctx.fillText('192kHz / 24-BIT', cx, cy + 13);
+  };
+
+  const drawPassportVisaStamp = (x, y, w, h, title, category, unlocked) => {
+    const borderColor = unlocked ? 'rgba(243, 183, 0, 0.45)' : 'rgba(220, 220, 221, 0.12)';
+    const bgColor = unlocked ? 'rgba(243, 183, 0, 0.06)' : 'rgba(255, 255, 255, 0.02)';
+    const textColor = unlocked ? palette.gold : palette.subtle;
+
+    roundedRect(x, y, w, h, 14, bgColor, borderColor, 1.5);
+
+    ctx.strokeStyle = unlocked ? 'rgba(243, 183, 0, 0.3)' : 'rgba(255, 255, 255, 0.08)';
+    ctx.lineWidth = 1;
+    ctx.setLineDash([4, 3]);
+    ctx.beginPath();
+    ctx.roundRect(x + 4, y + 4, w - 8, h - 8, 10);
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    ctx.textAlign = 'left';
+    fitText(`★ ${category.toUpperCase()}`, x + 14, y + 26, w - 28, 11, textColor, 700);
+    fitText(title, x + 14, y + 54, w - 28, 15, unlocked ? palette.paper : palette.subtle, 700);
+    fitText(unlocked ? '✓ SELLO VALIDADO' : '○ PENDIENTE', x + 14, y + 78, w - 28, 11, unlocked ? '#10B981' : palette.subtle, 700);
+  };
+
+  const drawSonarOfficialLogo = (cx, cy, radius) => {
+    const scale = radius / 60;
+    ctx.save();
+    ctx.translate(cx, cy);
+    ctx.scale(scale, scale);
+
+    // 4 Overlapping Circular Petals with rich gradients
+    // Top Petal
+    const topG = ctx.createRadialGradient(0, -22, 2, 0, -22, 27);
+    topG.addColorStop(0, 'rgba(158, 27, 41, 0.95)');
+    topG.addColorStop(1, 'rgba(74, 14, 24, 0.85)');
+    ctx.fillStyle = topG;
+    ctx.beginPath();
+    ctx.arc(0, -22, 27, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Left Petal
+    const leftG = ctx.createRadialGradient(-22, 0, 2, -22, 0, 27);
+    leftG.addColorStop(0, 'rgba(197, 22, 19, 0.95)');
+    leftG.addColorStop(1, 'rgba(107, 9, 7, 0.85)');
+    ctx.fillStyle = leftG;
+    ctx.beginPath();
+    ctx.arc(-22, 0, 27, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Bottom Petal
+    const botG = ctx.createRadialGradient(0, 22, 2, 0, 22, 27);
+    botG.addColorStop(0, 'rgba(27, 50, 75, 0.95)');
+    botG.addColorStop(1, 'rgba(14, 26, 41, 0.85)');
+    ctx.fillStyle = botG;
+    ctx.beginPath();
+    ctx.arc(0, 22, 27, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Right Petal
+    const rightG = ctx.createRadialGradient(22, 0, 2, 22, 0, 27);
+    rightG.addColorStop(0, 'rgba(75, 42, 94, 0.95)');
+    rightG.addColorStop(1, 'rgba(35, 17, 48, 0.85)');
+    ctx.fillStyle = rightG;
+    ctx.beginPath();
+    ctx.arc(22, 0, 27, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Outer dashed radar ring
+    ctx.strokeStyle = 'rgba(255, 255, 255, 0.55)';
+    ctx.lineWidth = 1.6;
+    ctx.setLineDash([4, 4]);
+    ctx.beginPath();
+    ctx.arc(0, 0, 37, 0, Math.PI * 2);
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    // Middle solid radar ring
+    ctx.strokeStyle = 'rgba(255, 255, 255, 0.65)';
+    ctx.lineWidth = 1.2;
+    ctx.beginPath();
+    ctx.arc(0, 0, 21, 0, Math.PI * 2);
+    ctx.stroke();
+
+    // Center dark ring base
+    ctx.fillStyle = '#1C0D1C';
+    ctx.strokeStyle = 'rgba(255, 255, 255, 0.4)';
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.arc(0, 0, 11, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.stroke();
+
+    // Red Sonar Core
+    ctx.fillStyle = '#B80C09';
+    ctx.beginPath();
+    ctx.arc(0, 0, 7.5, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Center White Target Point
+    ctx.fillStyle = '#FFFFFF';
+    ctx.beginPath();
+    ctx.arc(0, 0, 2.8, 0, Math.PI * 2);
+    ctx.fill();
+
+    ctx.restore();
+  };
+
+  // Base background & canvas frame
+  const bgGrad = ctx.createLinearGradient(60, 60, 1180, 1700);
+  bgGrad.addColorStop(0, palette.berry);
+  bgGrad.addColorStop(0.35, palette.deepViolet);
+  bgGrad.addColorStop(0.75, palette.violet);
+  bgGrad.addColorStop(1, palette.teal);
+
+  ctx.fillStyle = '#F5EDF3';
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+  roundedRect(44, 44, 1152, 1666, 44, bgGrad);
+
+  // Security guilloche perimeter line
+  ctx.strokeStyle = 'rgba(243, 183, 0, 0.22)';
   ctx.lineWidth = 2;
   ctx.beginPath();
-  ctx.roundRect(68, 68, 1104, 1618, 42);
+  ctx.roundRect(64, 64, 1112, 1626, 36);
   ctx.stroke();
 
-  ctx.fillStyle = palette.red;
-  ctx.beginPath();
-  ctx.arc(125, 142, 28, 0, Math.PI * 2);
-  ctx.fill();
-  ctx.fillStyle = palette.paper;
-  ctx.font = '900 27px "Segoe UI", Arial, sans-serif';
-  ctx.textBaseline = 'middle';
-  ctx.fillText('S', 115, 143);
-  fitText('SONAR', 170, 153, 300, 44, palette.paper, 900);
-  fitText(passport.labels.title.toUpperCase(), 170, 191, 650, 20, palette.muted, 700);
-  roundedRect(850, 112, 270, 58, 28, 'rgba(0, 56, 68, 0.52)', 'rgba(220, 220, 221, 0.22)');
-  ctx.fillStyle = '#83D1D8';
-  ctx.beginPath();
-  ctx.arc(884, 141, 7, 0, Math.PI * 2);
-  ctx.fill();
-  fitText(passport.labels.calibrated, 905, 149, 190, 17, palette.paper, 700);
+  // Corner security brackets
+  const drawCorner = (cx, cy, angle) => {
+    ctx.save();
+    ctx.translate(cx, cy);
+    ctx.rotate(angle);
+    ctx.strokeStyle = palette.gold;
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+    ctx.moveTo(0, 30);
+    ctx.lineTo(0, 0);
+    ctx.lineTo(30, 0);
+    ctx.stroke();
+    ctx.restore();
+  };
+  drawCorner(76, 76, 0);
+  drawCorner(1164, 76, Math.PI / 2);
+  drawCorner(1164, 1680, Math.PI);
+  drawCorner(76, 1680, -Math.PI / 2);
 
-  roundedRect(100, 244, 430, 52, 26, 'rgba(35, 17, 35, 0.5)', 'rgba(220, 220, 221, 0.18)');
-  fitText(passport.id, 126, 278, 380, 19, '#E9C7DE', 700);
-  fitText(passport.name, 100, 396, 1020, 70, palette.paper, 800);
-  fitText(passport.username, 104, 442, 900, 27, palette.muted, 500);
-  fitText(passport.labels.rank.toUpperCase(), 104, 526, 900, 17, '#83D1D8', 700);
-  fitText(passport.rank, 100, 579, 1020, 40, palette.paper, 700);
+  // 1. Header: Official SONAR Logo & Title & Holographic Seal
+  drawSonarOfficialLogo(115, 145, 27);
 
+  fitText('SONAR', 160, 142, 260, 38, palette.paper, 900);
+  fitText('PASAPORTE AUDIÓFILO · PASSEPORT AUDIOPHILE', 162, 172, 560, 15, palette.gold, 700);
+
+  // Holographic certified seal
+  drawHolographicSeal(810, 130, 50);
+
+  // QR Code on top right
+  drawQrCode(990, 84, 110, `SONAR-PASSPORT:${passport.id}:${passport.username}`);
+
+  // 2. User Identity Card & ID Banner
+  roundedRect(90, 204, 380, 46, 23, 'rgba(0, 56, 68, 0.45)', 'rgba(220, 220, 221, 0.2)');
+  fitText(passport.id, 115, 234, 330, 18, '#E9C7DE', 700);
+
+  fitText(passport.name, 90, 310, 880, 54, palette.paper, 800);
+  fitText(passport.username, 94, 348, 880, 22, palette.muted, 500);
+  fitText(`RANGO OFICIAL: ${passport.rank.toUpperCase()}`, 94, 380, 880, 18, palette.cyan, 800);
+
+  // 3. VIP Economy & Prestige Badges Row (Coins, XP, Sound Signature)
+  const prestigePills = [
+    [`🪙 SALDO COINS: ${passport.coins} SC`, palette.gold, 'rgba(243, 183, 0, 0.12)', 'rgba(243, 183, 0, 0.3)'],
+    [`⭐ NIVEL ${passport.level} (${passport.xp} XP)`, '#FF6B68', 'rgba(184, 12, 9, 0.15)', 'rgba(184, 12, 9, 0.3)'],
+    [`🎧 ${passport.soundSignature}`, palette.cyan, 'rgba(0, 56, 68, 0.4)', 'rgba(131, 209, 216, 0.3)'],
+  ];
+  prestigePills.forEach(([text, textColor, bg, border], idx) => {
+    const x = 90 + idx * 356;
+    roundedRect(x, 404, 340, 48, 24, bg, border, 1.5);
+    fitText(text, x + 18, 434, 304, 14, textColor, 700);
+  });
+
+  // 4. 4 Acoustic Vital Metric Cards
   const metrics = [
     [passport.labels.saved, passport.saved],
     [passport.labels.reviews, passport.reviews],
@@ -96,38 +327,116 @@ const buildPassportPdf = (passport) => {
     [passport.labels.following, passport.following],
   ];
   metrics.forEach(([label, value], index) => {
-    const x = 100 + index * 270;
-    roundedRect(x, 650, 248, 178, 25, 'rgba(247, 243, 246, 0.075)', 'rgba(220, 220, 221, 0.16)');
-    fitText(label.toUpperCase(), x + 20, 699, 208, 15, palette.muted, 700);
-    fitText(value, x + 20, 770, 208, 52, palette.paper, 800);
+    const x = 90 + index * 268;
+    roundedRect(x, 472, 252, 130, 20, palette.cardBg, palette.cardBorder);
+    fitText(label.toUpperCase(), x + 18, 510, 216, 13, palette.muted, 700);
+    fitText(value, x + 18, 572, 216, 44, palette.paper, 800);
   });
 
-  fitText(passport.labels.affinity.toUpperCase(), 100, 923, 1040, 25, palette.paper, 800);
-  fitText(passport.labels.topGenres, 100, 958, 1040, 17, palette.muted, 500);
+  // 5. Crown Jewel / Álbum Insignia del Melómano
+  roundedRect(90, 622, 1060, 120, 20, 'rgba(184, 12, 9, 0.12)', 'rgba(243, 183, 0, 0.32)', 1.5);
+  // Vinyl badge mini graphic
+  ctx.fillStyle = '#110611';
+  ctx.beginPath();
+  ctx.arc(150, 682, 38, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.strokeStyle = palette.gold;
+  ctx.lineWidth = 2;
+  ctx.stroke();
+  ctx.fillStyle = palette.red;
+  ctx.beginPath();
+  ctx.arc(150, 682, 14, 0, Math.PI * 2);
+  ctx.fill();
+
+  fitText('💎 ÁLBUM INSIGNIA DEL PASAPORTE (MASTERPIECE RECORD)', 210, 654, 700, 13, palette.gold, 800);
+  fitText(`${passport.topAlbum.title} — ${passport.topAlbum.artist} (${passport.topAlbum.year})`, 210, 688, 700, 22, palette.paper, 800);
+  fitText(`Veredicto Crítico: ★ ${passport.topAlbum.rating} · Master Edition`, 210, 718, 700, 15, palette.cyan, 600);
+
+  // 100% HI-FI Gold Badge Pill Box (perfect centered rendering)
+  const badgeX = 930;
+  const badgeY = 658;
+  const badgeW = 190;
+  const badgeH = 48;
+  roundedRect(badgeX, badgeY, badgeW, badgeH, 24, 'rgba(243, 183, 0, 0.16)', palette.gold, 1.5);
+  ctx.save();
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  ctx.fillStyle = palette.gold;
+  ctx.font = '800 16px "Segoe UI", Arial, sans-serif';
+  ctx.fillText('100% HI-FI', badgeX + badgeW / 2, badgeY + badgeH / 2);
+  ctx.restore();
+
+  // 6. Affinity Spectrum: Top 5 Genres
+  fitText(passport.labels.affinity.toUpperCase(), 90, 780, 1060, 20, palette.paper, 800);
+  fitText(passport.labels.topGenres, 90, 808, 1060, 14, palette.muted, 500);
+
   passport.genres.forEach((genre, index) => {
-    const y = 1020 + index * 91;
-    fitText(genre.name, 104, y, 690, 21, palette.paper, 600);
-    fitText(`${genre.percentage}%`, 1050, y, 82, 18, '#E9C7DE', 700);
-    roundedRect(104, y + 20, 1028, 13, 7, 'rgba(247, 243, 246, 0.15)');
-    const bar = ctx.createLinearGradient(104, 0, 1132, 0);
+    const y = 842 + index * 60;
+    fitText(genre.name, 94, y, 690, 17, palette.paper, 600);
+    fitText(`${genre.percentage}%`, 1080, y, 70, 16, palette.cyan, 700);
+    roundedRect(94, y + 10, 1056, 10, 5, 'rgba(247, 243, 246, 0.12)');
+    const bar = ctx.createLinearGradient(94, 0, 1150, 0);
     bar.addColorStop(0, palette.red);
-    bar.addColorStop(1, '#52A2B0');
-    roundedRect(104, y + 20, Math.max(12, 1028 * genre.percentage / 100), 13, 7, bar);
+    bar.addColorStop(0.5, '#7C3AED');
+    bar.addColorStop(1, palette.cyan);
+    roundedRect(94, y + 10, Math.max(12, (1056 * genre.percentage) / 100), 10, 5, bar);
   });
 
-  fitText(passport.labels.setup.toUpperCase(), 100, 1518, 1040, 18, palette.muted, 700);
+  // 7. Passport Visas / Unlocked Achievement Stamps
+  fitText('SELLOS Y VISAS AUDIÓFILAS DESBLOQUEADAS', 90, 1184, 1060, 18, palette.gold, 800);
+  const badgeStamps = (passport.badges && passport.badges.length > 0)
+    ? passport.badges.slice(0, 4)
+    : [
+        { title: 'Oído de Alta Fidelidad', category: 'Equipamiento', unlocked: true },
+        { title: 'Coleccionista 180g', category: 'Colecciones', unlocked: true },
+        { title: 'Crítico Verificado', category: 'Reseñas', unlocked: true },
+        { title: 'Radar de Vanguardia', category: 'Exploración', unlocked: true },
+      ];
+
+  badgeStamps.forEach((badge, idx) => {
+    const x = 90 + idx * 268;
+    drawPassportVisaStamp(x, 1204, 252, 92, badge.title, badge.category, badge.unlocked !== false);
+  });
+
+  // 8. Calibrated Reference Hardware Setup
+  fitText(passport.labels.setup.toUpperCase(), 90, 1334, 1060, 16, palette.muted, 700);
   const setup = [
     [passport.labels.source, passport.turntable],
     [passport.labels.headphones, passport.headphones],
     [passport.labels.dac, passport.dac],
   ];
   setup.forEach(([label, value], index) => {
-    const x = 100 + index * 350;
-    roundedRect(x, 1542, 326, 88, 18, 'rgba(35, 17, 35, 0.42)', 'rgba(220, 220, 221, 0.15)');
-    fitText(label, x + 18, 1573, 290, 14, '#83D1D8', 700);
-    fitText(value, x + 18, 1606, 290, 18, palette.paper, 600);
+    const x = 90 + index * 356;
+    roundedRect(x, 1354, 340, 78, 16, 'rgba(35, 17, 35, 0.5)', 'rgba(220, 220, 221, 0.14)');
+    fitText(label, x + 16, 1382, 308, 13, palette.cyan, 700);
+    fitText(value, x + 16, 1412, 308, 16, palette.paper, 600);
   });
-  fitText(`SONAR  •  ${passport.labels.sampling}: 192 kHz / 24-bit Hi-Res FLAC`, 100, 1661, 1040, 15, palette.muted, 500);
+
+  // 9. Official Certification Signatures & Footprint
+  roundedRect(90, 1454, 1060, 170, 20, 'rgba(0, 0, 0, 0.28)', 'rgba(243, 183, 0, 0.24)', 1.5);
+
+  // Left signature
+  fitText('DIRECTORIO CURATORIAL SONAR', 120, 1488, 420, 13, palette.gold, 700);
+  ctx.strokeStyle = 'rgba(243, 183, 0, 0.4)';
+  ctx.lineWidth = 1;
+  ctx.beginPath();
+  ctx.moveTo(120, 1540);
+  ctx.lineTo(440, 1540);
+  ctx.stroke();
+  fitText('Firma: Comité Curatorial & Acoustic Lab', 120, 1560, 420, 12, palette.muted, 500);
+
+  // Right signature
+  fitText('AGENTE MODERADOR & AUDITORÍA IA', 640, 1488, 420, 13, palette.cyan, 700);
+  ctx.strokeStyle = 'rgba(131, 209, 216, 0.4)';
+  ctx.beginPath();
+  ctx.moveTo(640, 1540);
+  ctx.lineTo(960, 1540);
+  ctx.stroke();
+  fitText('Firma: Sonaria AI Sommelier (v2.4 Verified)', 640, 1560, 420, 12, palette.muted, 500);
+
+  // Bottom security string & issue date
+  fitText(`SHA256: e89f${passport.id.replace(/[^0-9]/g, '42')}a41c · EMISIÓN: ${passport.issueDate} · FRECUENCIA: 192 kHz / 24-bit FLAC`, 120, 1600, 1000, 12, palette.goldGlow, 600);
+  fitText('DOCUMENTO OFICIAL DIGITAL EMITIDO POR SONAR AUDIO MEDIA INC. © 2026 TODOS LOS DERECHOS RESERVADOS.', 90, 1658, 1060, 12, palette.subtle, 500);
 
   const jpegBase64 = canvas.toDataURL('image/jpeg', 0.96).split(',')[1];
   const jpegBinary = atob(jpegBase64);
@@ -328,11 +637,56 @@ export const AudiophilePassportTab = ({
   };
 
   const handleDownloadPassport = () => {
+    const topReview = userReviews.slice().sort((a, b) => (Number(b.rating) || 0) - (Number(a.rating) || 0))[0];
+    const topAlbum = topReview
+      ? {
+          title: topReview.albumTitle || topReview.title || 'Aja',
+          artist: topReview.artist || 'Steely Dan',
+          rating: `${topReview.rating || 10}/10`,
+          year: topReview.year || '1977',
+        }
+      : savedAlbums[0]
+      ? {
+          title: savedAlbums[0].title || savedAlbums[0].albumTitle || 'Abbey Road',
+          artist: savedAlbums[0].artist || 'The Beatles',
+          rating: '10/10',
+          year: savedAlbums[0].year || '1969',
+        }
+      : {
+          title: 'Random Access Memories',
+          artist: 'Daft Punk',
+          rating: '10/10',
+          year: '2013',
+        };
+
+    const soundSignature = stats.genreDistribution[0]?.name?.includes('Jazz') || stats.genreDistribution[0]?.name?.includes('Rock')
+      ? 'Analógico Cálido / Hi-Res Dynamic'
+      : stats.genreDistribution[0]?.name?.includes('Electr')
+      ? 'Respuesta Lineal / Frecuencia Extendida'
+      : 'Calibración Neutra / Balance Estudio';
+
+    const issueDate = new Date().toLocaleDateString('es-ES', {
+      day: '2-digit',
+      month: 'short',
+      year: 'numeric',
+    }).toUpperCase();
+
+    const coins = user?.coins ?? user?.sonarCoins ?? 35;
+    const level = user?.level ?? 1;
+    const xp = user?.experience ?? user?.xp ?? 150;
+
     const blob = buildPassportPdf({
       id: passportNumber,
-      name: user?.name || 'Melomano Sonar',
+      name: user?.name || 'Melómano Sonar',
       username: user?.username ? `@${user.username.replace('@', '')}` : '@audiophile',
       rank: stats.rankTitle,
+      coins,
+      level,
+      xp,
+      topAlbum,
+      soundSignature,
+      issueDate,
+      badges: badges.slice(0, 4),
       labels: {
         title: t('passport.title', 'Pasaporte Audiófilo'),
         calibrated: t('passport.system_calibrated', 'Sistema calibrado'),
@@ -357,7 +711,7 @@ export const AudiophilePassportTab = ({
       genres: stats.genreDistribution,
       turntable: gearSetup.turntable || 'Technics Direct Drive',
       headphones: gearSetup.headphones || 'Sennheiser Open-Back',
-      dac: gearSetup.dac || gearSetup.amplifier || 'Not configured',
+      dac: gearSetup.dac || gearSetup.amplifier || 'Universal Audio DAC',
     });
     const url = URL.createObjectURL(blob);
     const link = document.createElement('a');

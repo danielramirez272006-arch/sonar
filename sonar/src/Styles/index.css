@@ -153,24 +153,53 @@ textarea {
 }
 
 html {
-  scrollbar-color: var(--bg-surface) var(--bg-page);
+  scrollbar-color: var(--border-medium) transparent;
   scrollbar-width: thin;
 }
 
 ::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
+  width: 6px;
+  height: 6px;
 }
 
 ::-webkit-scrollbar-track {
-  background: var(--bg-page);
+  background: transparent;
 }
 
 ::-webkit-scrollbar-thumb {
-  border: 2px solid var(--bg-page);
   border-radius: 999px;
-  background: var(--bg-surface);
+  background: var(--border-medium);
 }
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--text-muted);
+}
+
+/* Scrollbars limpios para la experiencia de autenticación y registro */
+.auth-page,
+.auth-page * {
+  scrollbar-color: #e2d1df transparent;
+  scrollbar-width: thin;
+}
+
+.auth-page ::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+}
+
+.auth-page ::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.auth-page ::-webkit-scrollbar-thumb {
+  background: #e2d1df;
+  border-radius: 999px;
+}
+
+.auth-page ::-webkit-scrollbar-thumb:hover {
+  background: #cbb4c8;
+}
+
 
 /* Acceso: composición editorial independiente del portal público. */
 .auth-page { min-height: 100vh; background: #fff; color: #231123; }
@@ -359,6 +388,14 @@ html {
   transform: rotate(180deg);
 }
 
+.lang-chevron.up-arrow {
+  transform: rotate(180deg);
+}
+
+.lang-chevron.up-arrow.open {
+  transform: rotate(0deg);
+}
+
 .lang-dropdown-menu {
   position: absolute;
   top: calc(100% + 8px);
@@ -374,8 +411,22 @@ html {
   animation: langFadeIn 0.18s ease-out;
 }
 
+.lang-selector-container.direction-up .lang-dropdown-menu,
+footer .lang-dropdown-menu {
+  top: auto;
+  bottom: calc(100% + 8px);
+  left: 0;
+  right: auto;
+  animation: langFadeInUp 0.18s ease-out;
+}
+
 @keyframes langFadeIn {
   from { opacity: 0; transform: translateY(-6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes langFadeInUp {
+  from { opacity: 0; transform: translateY(6px); }
   to { opacity: 1; transform: translateY(0); }
 }
 
@@ -418,8 +469,24 @@ html {
   font-weight: 700;
 }
 
-.lang-item-flag {
-  font-size: 1.05rem;
+.lang-item-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.68rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  padding: 0.15rem 0.4rem;
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.12);
+  color: #fff;
+  min-width: 1.7rem;
+  text-align: center;
+}
+
+.lang-dropdown-item.selected .lang-item-badge {
+  background: rgba(236, 72, 153, 0.3);
+  color: #ec4899;
 }
 
 .lang-item-label {

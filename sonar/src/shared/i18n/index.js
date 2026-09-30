@@ -12,6 +12,7 @@ import { PAGE_TRANSLATIONS } from './locales/page-messages.js';
 import { UI_TRANSLATIONS } from './locales/ui-messages.js';
 import { INTERFACE_TRANSLATIONS } from './locales/interface-messages.js';
 import { PROFILE_TRANSLATIONS } from './locales/profile-messages.js';
+import { REWARDS_CATALOG_TRANSLATIONS } from './locales/rewards-catalog-messages.js';
 import { CONTROLS_TRANSLATIONS } from './locales/controls-messages.js';
 import { DETAILS_TRANSLATIONS } from './locales/details-messages.js';
 import { FAMILY_TRANSLATIONS } from './locales/family-messages.js';
@@ -40,6 +41,7 @@ export const resources = Object.fromEntries(
         ...UI_TRANSLATIONS[language],
         ...INTERFACE_TRANSLATIONS[language],
         ...PROFILE_TRANSLATIONS[language],
+        ...REWARDS_CATALOG_TRANSLATIONS[language],
         ...CONTROLS_TRANSLATIONS[language],
         ...DETAILS_TRANSLATIONS[language],
         ...FAMILY_TRANSLATIONS[language],
