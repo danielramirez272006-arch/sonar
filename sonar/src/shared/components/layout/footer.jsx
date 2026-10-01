@@ -18,9 +18,9 @@ export const Footer = () => {
       <EngineStatusModal isOpen={isEngineOpen} onClose={() => setIsEngineOpen(false)} />
 
       <div className="w-full max-w-[1440px] mx-auto px-4 lg:px-10">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-8">
           {/* Brand Summary con Logo Animado */}
-          <div className="lg:col-span-2 flex flex-col gap-2 text-left">
+          <div className="sm:col-span-2 md:col-span-3 lg:col-span-2 flex flex-col gap-2 text-left">
             <div className="mb-3">
               <AnimatedLogo size="sm" onClick={() => { window.location.hash = '#explore'; }} />
             </div>
@@ -88,6 +88,19 @@ export const Footer = () => {
               <li><a href="#labels" className="text-[#3c253a] dark:text-[#d8c5d3] hover:text-[#B80C09] dark:hover:text-[#ff6b68] font-semibold transition-colors">{t('footer.record_labels')}</a></li>
             </ul>
           </div>
+
+          {/* Links Col 3: Institucional & Legal / Visión */}
+          <div className="flex flex-col gap-3 text-left">
+            <h4 className="text-xs uppercase tracking-wider text-[#231123] dark:text-white font-black">
+              {t('footer.legal_privacy', 'Legal & Visión')}
+            </h4>
+            <ul className="flex flex-col gap-2.5 text-sm list-none p-0 m-0">
+              <li><a href="#about" className="text-[#3c253a] dark:text-[#d8c5d3] hover:text-[#B80C09] dark:hover:text-[#ff6b68] font-semibold transition-colors">{t('footer.about_sonar', 'Acerca de Sonar & Visión')}</a></li>
+              <li><a href="#terms" className="text-[#3c253a] dark:text-[#d8c5d3] hover:text-[#B80C09] dark:hover:text-[#ff6b68] font-semibold transition-colors">{t('footer.terms_of_use', 'Términos y Condiciones')}</a></li>
+              <li><a href="#guidelines" className="text-[#3c253a] dark:text-[#d8c5d3] hover:text-[#B80C09] dark:hover:text-[#ff6b68] font-semibold transition-colors">{t('footer.editorial_guidelines', 'Pautas Editoriales')}</a></li>
+              <li><a href="#podcasts" className="text-[#3c253a] dark:text-[#d8c5d3] hover:text-[#B80C09] dark:hover:text-[#ff6b68] font-semibold transition-colors">{ui("Sesiones de Audio")}</a></li>
+            </ul>
+          </div>
         </div>
 
         {/* Copyright Bar */}
@@ -96,6 +109,13 @@ export const Footer = () => {
             <p className="text-xs text-[#523c50] dark:text-gray-400 font-medium">
               © 2026 Sonar Audio Media Inc. {t('footer.rights')}
             </p>
+            <div className="hidden md:flex items-center gap-3 text-xs text-[#523c50] dark:text-gray-400">
+              <a href="#about" className="hover:text-[#B80C09] dark:hover:text-white transition-colors">{t('footer.about_sonar', 'Visión & Misión')}</a>
+              <span>•</span>
+              <a href="#terms" className="hover:text-[#B80C09] dark:hover:text-white transition-colors">{t('footer.terms_of_use', 'Términos y Condiciones')}</a>
+              <span>•</span>
+              <a href="#guidelines" className="hover:text-[#B80C09] dark:hover:text-white transition-colors">{t('footer.editorial_guidelines', 'Pautas')}</a>
+            </div>
             <LanguageSelector variant="navbar" direction="up" />
           </div>
           <button
