@@ -98,7 +98,7 @@ export const Footer = () => {
               <li><a href="#about" className="text-[#3c253a] dark:text-[#d8c5d3] hover:text-[#B80C09] dark:hover:text-[#ff6b68] font-semibold transition-colors">{t('footer.about_sonar', 'Acerca de Sonar & Visión')}</a></li>
               <li><a href="#terms" className="text-[#3c253a] dark:text-[#d8c5d3] hover:text-[#B80C09] dark:hover:text-[#ff6b68] font-semibold transition-colors">{t('footer.terms_of_use', 'Términos y Condiciones')}</a></li>
               <li><a href="#guidelines" className="text-[#3c253a] dark:text-[#d8c5d3] hover:text-[#B80C09] dark:hover:text-[#ff6b68] font-semibold transition-colors">{t('footer.editorial_guidelines', 'Pautas Editoriales')}</a></li>
-              <li><a href="#podcasts" className="text-[#3c253a] dark:text-[#d8c5d3] hover:text-[#B80C09] dark:hover:text-[#ff6b68] font-semibold transition-colors">{ui("Sesiones de Audio")}</a></li>
+              <li><a href="#podcasts" className="text-[#3c253a] dark:text-[#d8c5d3] hover:text-[#B80C09] dark:hover:text-[#ff6b68] font-semibold transition-colors">{t('footer.audio_sessions', 'Sesiones de Audio')}</a></li>
             </ul>
           </div>
         </div>

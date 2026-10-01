@@ -123,17 +123,17 @@ export const VinylCollectionsPage = () => {
           <div className="text-sm sm:text-base leading-relaxed text-gray-700 dark:text-[#d8c5d3]">
             {selectedGuide === 'gramaje' && (
               <p>
-                <strong>¿Por qué 180 gramos?</strong> El gramaje superior no altera directamente la profundidad del surco, pero ofrece mayor estabilidad física contra el alabeo (warping), mejor amortiguación de vibraciones parásitas del plato y una durabilidad prolongada a lo largo de décadas.
+                <strong>{t('page.vinyl.guide.gramaje_title')}</strong> {t('page.vinyl.guide.gramaje_desc')}
               </p>
             )}
             {selectedGuide === 'velocidad' && (
               <p>
-                <strong>La ventaja de los 45 RPM:</strong> Al girar un 35% más rápido, la aguja recorre más distancia de vinilo por segundo. Esto permite grabar transientes agudos más limpios y mayor separación estéreo sin distorsión por compresión de surco.
+                <strong>{t('page.vinyl.guide.speed_title')}</strong> {t('page.vinyl.guide.speed_desc')}
               </p>
             )}
             {selectedGuide === 'cuidado' && (
               <p>
-                <strong>Preservación Óptima:</strong> Utiliza fundas interiores de polietileno antiestático (tipo MoFi Archival Sleeves), cepillos de fibra de carbono antes de cada escucha y almacena tus discos siempre en posición vertical, nunca apilados en horizontal.
+                <strong>{t('page.vinyl.guide.care_title')}</strong> {t('page.vinyl.guide.care_desc')}
               </p>
             )}
           </div>
