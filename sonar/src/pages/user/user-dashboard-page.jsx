@@ -336,209 +336,211 @@ export const UserDashboardPage = () => {
 
         {/* Navegación por Pestañas (Tabs) */}
         <div className="flex flex-col gap-6">
-          <div className="flex items-center gap-4 sm:gap-8 border-b border-[#e6d5e2] dark:border-white/10 overflow-x-auto pb-1 scrollbar-none">
-            <button
-              type="button"
-              onClick={() => setActiveTab('passport')}
-              className={`pb-3 text-sm sm:text-base font-bold transition-all cursor-pointer relative whitespace-nowrap flex items-center gap-2 ${
-                activeTab === 'passport'
-                  ? 'text-[#B80C09]'
-                  : 'text-[#5c435a] dark:text-[#B89CB0] hover:text-[#231123] dark:hover:text-white'
-              }`}
-            >
-              <span className="material-symbols-outlined text-[18px]">badge</span>
-              <span>{t('profile.passport', 'Pasaporte & Estadísticas')}</span>
-              {activeTab === 'passport' && (
-                <motion.div
-                  layoutId="dashboard-tab-indicator"
-                  className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#B80C09]"
-                  transition={{ type: 'spring', stiffness: 400, damping: 30 }}
-                />
-              )}
-            </button>
+          <div className="flex items-center justify-between gap-3 sm:gap-4 border-b border-[#e6d5e2] dark:border-white/10 pb-1">
+            <div className="flex items-center gap-4 sm:gap-6 overflow-x-auto scrollbar-none flex-1 min-w-0 py-1">
+              <button
+                type="button"
+                onClick={() => setActiveTab('passport')}
+                className={`pb-2.5 text-sm sm:text-base font-bold transition-all cursor-pointer relative whitespace-nowrap shrink-0 flex items-center gap-2 ${
+                  activeTab === 'passport'
+                    ? 'text-[#B80C09]'
+                    : 'text-[#5c435a] dark:text-[#B89CB0] hover:text-[#231123] dark:hover:text-white'
+                }`}
+              >
+                <span className="material-symbols-outlined text-[18px]">badge</span>
+                <span>{t('profile.passport', 'Pasaporte & Estadísticas')}</span>
+                {activeTab === 'passport' && (
+                  <motion.div
+                    layoutId="dashboard-tab-indicator"
+                    className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#B80C09]"
+                    transition={{ type: 'spring', stiffness: 400, damping: 30 }}
+                  />
+                )}
+              </button>
 
-            <button
-              type="button"
-              onClick={() => setActiveTab('recommendations')}
-              className={`pb-3 text-sm sm:text-base font-bold transition-all cursor-pointer relative whitespace-nowrap flex items-center gap-2 ${
-                activeTab === 'recommendations'
-                  ? 'text-[#B80C09]'
-                  : 'text-[#5c435a] dark:text-[#B89CB0] hover:text-[#231123] dark:hover:text-white'
-              }`}
-            >
-              <span className="material-symbols-outlined text-[18px]">auto_awesome</span>
-              <span>{t('profile.recommendations', 'Recomendados Para Ti')} ({recommendations.length})</span>
-              {activeTab === 'recommendations' && (
-                <motion.div
-                  layoutId="dashboard-tab-indicator"
-                  className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#B80C09]"
-                  transition={{ type: 'spring', stiffness: 400, damping: 30 }}
-                />
-              )}
-            </button>
+              <button
+                type="button"
+                onClick={() => setActiveTab('recommendations')}
+                className={`pb-2.5 text-sm sm:text-base font-bold transition-all cursor-pointer relative whitespace-nowrap shrink-0 flex items-center gap-2 ${
+                  activeTab === 'recommendations'
+                    ? 'text-[#B80C09]'
+                    : 'text-[#5c435a] dark:text-[#B89CB0] hover:text-[#231123] dark:hover:text-white'
+                }`}
+              >
+                <span className="material-symbols-outlined text-[18px]">auto_awesome</span>
+                <span>{t('profile.recommendations', 'Recomendados Para Ti')} ({recommendations.length})</span>
+                {activeTab === 'recommendations' && (
+                  <motion.div
+                    layoutId="dashboard-tab-indicator"
+                    className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#B80C09]"
+                    transition={{ type: 'spring', stiffness: 400, damping: 30 }}
+                  />
+                )}
+              </button>
 
-            <button
-              type="button"
-              onClick={() => setActiveTab('saved')}
-              className={`pb-3 text-sm sm:text-base font-bold transition-all cursor-pointer relative whitespace-nowrap flex items-center gap-2 ${
-                activeTab === 'saved'
-                  ? 'text-[#B80C09]'
-                  : 'text-[#5c435a] dark:text-[#B89CB0] hover:text-[#231123] dark:hover:text-white'
-              }`}
-            >
-              <span className="material-symbols-outlined text-[18px]">collections_bookmark</span>
-              <span>{t('profile.collections', 'Mis Colecciones')} ({savedAlbums.length})</span>
-              {activeTab === 'saved' && (
-                <motion.div
-                  layoutId="dashboard-tab-indicator"
-                  className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#B80C09]"
-                  transition={{ type: 'spring', stiffness: 400, damping: 30 }}
-                />
-              )}
-            </button>
+              <button
+                type="button"
+                onClick={() => setActiveTab('saved')}
+                className={`pb-2.5 text-sm sm:text-base font-bold transition-all cursor-pointer relative whitespace-nowrap shrink-0 flex items-center gap-2 ${
+                  activeTab === 'saved'
+                    ? 'text-[#B80C09]'
+                    : 'text-[#5c435a] dark:text-[#B89CB0] hover:text-[#231123] dark:hover:text-white'
+                }`}
+              >
+                <span className="material-symbols-outlined text-[18px]">collections_bookmark</span>
+                <span>{t('profile.collections', 'Mis Colecciones')} ({savedAlbums.length})</span>
+                {activeTab === 'saved' && (
+                  <motion.div
+                    layoutId="dashboard-tab-indicator"
+                    className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#B80C09]"
+                    transition={{ type: 'spring', stiffness: 400, damping: 30 }}
+                  />
+                )}
+              </button>
 
-            <button
-              type="button"
-              onClick={() => setActiveTab('reviews')}
-              className={`pb-3 text-sm sm:text-base font-bold transition-all cursor-pointer relative whitespace-nowrap flex items-center gap-2 ${
-                activeTab === 'reviews'
-                  ? 'text-[#B80C09]'
-                  : 'text-[#5c435a] dark:text-[#B89CB0] hover:text-[#231123] dark:hover:text-white'
-              }`}
-            >
-              <span className="material-symbols-outlined text-[18px]">rate_review</span>
-              <span>{t('profile.reviews', 'Mis Reseñas')} ({userReviews.length})</span>
-              {activeTab === 'reviews' && (
-                <motion.div
-                  layoutId="dashboard-tab-indicator"
-                  className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#B80C09]"
-                  transition={{ type: 'spring', stiffness: 400, damping: 30 }}
-                />
-              )}
-            </button>
+              <button
+                type="button"
+                onClick={() => setActiveTab('reviews')}
+                className={`pb-2.5 text-sm sm:text-base font-bold transition-all cursor-pointer relative whitespace-nowrap shrink-0 flex items-center gap-2 ${
+                  activeTab === 'reviews'
+                    ? 'text-[#B80C09]'
+                    : 'text-[#5c435a] dark:text-[#B89CB0] hover:text-[#231123] dark:hover:text-white'
+                }`}
+              >
+                <span className="material-symbols-outlined text-[18px]">rate_review</span>
+                <span>{t('profile.reviews', 'Mis Reseñas')} ({userReviews.length})</span>
+                {activeTab === 'reviews' && (
+                  <motion.div
+                    layoutId="dashboard-tab-indicator"
+                    className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#B80C09]"
+                    transition={{ type: 'spring', stiffness: 400, damping: 30 }}
+                  />
+                )}
+              </button>
 
-            <button
-              type="button"
-              onClick={() => setActiveTab('history')}
-              className={`pb-3 text-sm sm:text-base font-bold transition-all cursor-pointer relative whitespace-nowrap flex items-center gap-2 ${
-                activeTab === 'history'
-                  ? 'text-[#B80C09]'
-                  : 'text-[#5c435a] dark:text-[#B89CB0] hover:text-[#231123] dark:hover:text-white'
-              }`}
-            >
-              <span className="material-symbols-outlined text-[18px]">history</span>
-              <span>{ui("Historial (")}{recentlyPlayed.length})</span>
-              {activeTab === 'history' && (
-                <motion.div
-                  layoutId="dashboard-tab-indicator"
-                  className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#B80C09]"
-                  transition={{ type: 'spring', stiffness: 400, damping: 30 }}
-                />
-              )}
-            </button>
+              <button
+                type="button"
+                onClick={() => setActiveTab('history')}
+                className={`pb-2.5 text-sm sm:text-base font-bold transition-all cursor-pointer relative whitespace-nowrap shrink-0 flex items-center gap-2 ${
+                  activeTab === 'history'
+                    ? 'text-[#B80C09]'
+                    : 'text-[#5c435a] dark:text-[#B89CB0] hover:text-[#231123] dark:hover:text-white'
+                }`}
+              >
+                <span className="material-symbols-outlined text-[18px]">history</span>
+                <span>{ui("Historial (")}{recentlyPlayed.length})</span>
+                {activeTab === 'history' && (
+                  <motion.div
+                    layoutId="dashboard-tab-indicator"
+                    className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#B80C09]"
+                    transition={{ type: 'spring', stiffness: 400, damping: 30 }}
+                  />
+                )}
+              </button>
 
-            <button
-              type="button"
-              onClick={() => setActiveTab('following_artists')}
-              className={`pb-3 text-sm sm:text-base font-bold transition-all cursor-pointer relative whitespace-nowrap flex items-center gap-2 ${
-                activeTab === 'following_artists'
-                  ? 'text-[#B80C09]'
-                  : 'text-[#5c435a] dark:text-[#B89CB0] hover:text-[#231123] dark:hover:text-white'
-              }`}
-            >
-              <span className="material-symbols-outlined text-[18px]">favorite</span>
-              <span>{ui("Artistas (")}{followedArtists.length})</span>
-              {activeTab === 'following_artists' && (
-                <motion.div
-                  layoutId="dashboard-tab-indicator"
-                  className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#B80C09]"
-                  transition={{ type: 'spring', stiffness: 400, damping: 30 }}
-                />
-              )}
-            </button>
+              <button
+                type="button"
+                onClick={() => setActiveTab('following_artists')}
+                className={`pb-2.5 text-sm sm:text-base font-bold transition-all cursor-pointer relative whitespace-nowrap shrink-0 flex items-center gap-2 ${
+                  activeTab === 'following_artists'
+                    ? 'text-[#B80C09]'
+                    : 'text-[#5c435a] dark:text-[#B89CB0] hover:text-[#231123] dark:hover:text-white'
+                }`}
+              >
+                <span className="material-symbols-outlined text-[18px]">favorite</span>
+                <span>{ui("Artistas (")}{followedArtists.length})</span>
+                {activeTab === 'following_artists' && (
+                  <motion.div
+                    layoutId="dashboard-tab-indicator"
+                    className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#B80C09]"
+                    transition={{ type: 'spring', stiffness: 400, damping: 30 }}
+                  />
+                )}
+              </button>
 
-            <button
-              type="button"
-              onClick={() => setActiveTab('following_users')}
-              className={`pb-3 text-sm sm:text-base font-bold transition-all cursor-pointer relative whitespace-nowrap flex items-center gap-2 ${
-                activeTab === 'following_users'
-                  ? 'text-[#B80C09]'
-                  : 'text-[#5c435a] dark:text-[#B89CB0] hover:text-[#231123] dark:hover:text-white'
-              }`}
-            >
-              <span className="material-symbols-outlined text-[18px]">group</span>
-              <span>{ui("Siguiendo (")}{followedUsers.length})</span>
-              {activeTab === 'following_users' && (
-                <motion.div
-                  layoutId="dashboard-tab-indicator"
-                  className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#B80C09]"
-                  transition={{ type: 'spring', stiffness: 400, damping: 30 }}
-                />
-              )}
-            </button>
+              <button
+                type="button"
+                onClick={() => setActiveTab('following_users')}
+                className={`pb-2.5 text-sm sm:text-base font-bold transition-all cursor-pointer relative whitespace-nowrap shrink-0 flex items-center gap-2 ${
+                  activeTab === 'following_users'
+                    ? 'text-[#B80C09]'
+                    : 'text-[#5c435a] dark:text-[#B89CB0] hover:text-[#231123] dark:hover:text-white'
+                }`}
+              >
+                <span className="material-symbols-outlined text-[18px]">group</span>
+                <span>{ui("Siguiendo (")}{followedUsers.length})</span>
+                {activeTab === 'following_users' && (
+                  <motion.div
+                    layoutId="dashboard-tab-indicator"
+                    className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#B80C09]"
+                    transition={{ type: 'spring', stiffness: 400, damping: 30 }}
+                  />
+                )}
+              </button>
 
-            <button
-              type="button"
-              onClick={() => setActiveTab('audiophile_gear')}
-              className={`pb-3 text-sm sm:text-base font-bold transition-all cursor-pointer relative whitespace-nowrap flex items-center gap-2 ${
-                activeTab === 'audiophile_gear'
-                  ? 'text-[#B80C09]'
-                  : 'text-[#5c435a] dark:text-[#B89CB0] hover:text-[#231123] dark:hover:text-white'
-              }`}
-            >
-              <span className="material-symbols-outlined text-[18px]">headphones</span>
-              <span>{ui("Equipamiento Hi-Fi")}</span>
-              {activeTab === 'audiophile_gear' && (
-                <motion.div
-                  layoutId="dashboard-tab-indicator"
-                  className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#B80C09]"
-                  transition={{ type: 'spring', stiffness: 400, damping: 30 }}
-                />
-              )}
-            </button>
+              <button
+                type="button"
+                onClick={() => setActiveTab('audiophile_gear')}
+                className={`pb-2.5 text-sm sm:text-base font-bold transition-all cursor-pointer relative whitespace-nowrap shrink-0 flex items-center gap-2 ${
+                  activeTab === 'audiophile_gear'
+                    ? 'text-[#B80C09]'
+                    : 'text-[#5c435a] dark:text-[#B89CB0] hover:text-[#231123] dark:hover:text-white'
+                }`}
+              >
+                <span className="material-symbols-outlined text-[18px]">headphones</span>
+                <span>{ui("Equipamiento Hi-Fi")}</span>
+                {activeTab === 'audiophile_gear' && (
+                  <motion.div
+                    layoutId="dashboard-tab-indicator"
+                    className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#B80C09]"
+                    transition={{ type: 'spring', stiffness: 400, damping: 30 }}
+                  />
+                )}
+              </button>
 
-            <button
-              type="button"
-              onClick={() => setActiveTab('recompensas')}
-              className={`pb-3 text-sm sm:text-base font-bold transition-all cursor-pointer relative whitespace-nowrap flex items-center gap-2 ${
-                activeTab === 'recompensas'
-                  ? 'text-[#B80C09]'
-                  : 'text-[#5c435a] dark:text-[#B89CB0] hover:text-[#231123] dark:hover:text-white'
-              }`}
-            >
-              <span className="material-symbols-outlined text-[18px] text-amber-500">redeem</span>
-              <span>{ui("Recompensas & Boutique")}</span>
-              {activeTab === 'recompensas' && (
-                <motion.div
-                  layoutId="dashboard-tab-indicator"
-                  className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#B80C09]"
-                  transition={{ type: 'spring', stiffness: 400, damping: 30 }}
-                />
-              )}
-            </button>
+              <button
+                type="button"
+                onClick={() => setActiveTab('recompensas')}
+                className={`pb-2.5 text-sm sm:text-base font-bold transition-all cursor-pointer relative whitespace-nowrap shrink-0 flex items-center gap-2 ${
+                  activeTab === 'recompensas'
+                    ? 'text-[#B80C09]'
+                    : 'text-[#5c435a] dark:text-[#B89CB0] hover:text-[#231123] dark:hover:text-white'
+                }`}
+              >
+                <span className="material-symbols-outlined text-[18px] text-amber-500">redeem</span>
+                <span>{ui("Recompensas & Boutique")}</span>
+                {activeTab === 'recompensas' && (
+                  <motion.div
+                    layoutId="dashboard-tab-indicator"
+                    className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#B80C09]"
+                    transition={{ type: 'spring', stiffness: 400, damping: 30 }}
+                  />
+                )}
+              </button>
 
-            <button
-              type="button"
-              onClick={() => setActiveTab('parental_control')}
-              className={`pb-3 text-sm sm:text-base font-bold transition-all cursor-pointer relative whitespace-nowrap flex items-center gap-2 ${
-                activeTab === 'parental_control'
-                  ? 'text-[#B80C09]'
-                  : 'text-[#5c435a] dark:text-[#B89CB0] hover:text-[#231123] dark:hover:text-white'
-              }`}
-            >
-              <span className="material-symbols-outlined text-[18px]">toys</span>
-              <span>{ui("Modo Kids & Control")} {user?.accountType === 'junior' && user?.parentalControl?.enabled && user?.parentalControl?.blockExplicit ? ui("(Kids Activo)") : ''}
-              </span>
-              {activeTab === 'parental_control' && (
-                <motion.div
-                  layoutId="dashboard-tab-indicator"
-                  className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#B80C09]"
-                  transition={{ type: 'spring', stiffness: 400, damping: 30 }}
-                />
-              )}
-            </button>
+              <button
+                type="button"
+                onClick={() => setActiveTab('parental_control')}
+                className={`pb-2.5 text-sm sm:text-base font-bold transition-all cursor-pointer relative whitespace-nowrap shrink-0 flex items-center gap-2 ${
+                  activeTab === 'parental_control'
+                    ? 'text-[#B80C09]'
+                    : 'text-[#5c435a] dark:text-[#B89CB0] hover:text-[#231123] dark:hover:text-white'
+                }`}
+              >
+                <span className="material-symbols-outlined text-[18px]">toys</span>
+                <span>{ui("Modo Kids & Control")} {user?.accountType === 'junior' && user?.parentalControl?.enabled && user?.parentalControl?.blockExplicit ? ui("(Kids Activo)") : ''}
+                </span>
+                {activeTab === 'parental_control' && (
+                  <motion.div
+                    layoutId="dashboard-tab-indicator"
+                    className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#B80C09]"
+                    transition={{ type: 'spring', stiffness: 400, damping: 30 }}
+                  />
+                )}
+              </button>
+            </div>
 
-            <div className="ml-auto flex items-center gap-2 pb-2">
+            <div className="flex items-center gap-2 shrink-0 pb-1">
               <input
                 ref={backupFileInputRef}
                 type="file"
@@ -550,22 +552,21 @@ export const UserDashboardPage = () => {
               <button
                 type="button"
                 onClick={() => backupFileInputRef.current?.click()}
-                className="px-3 py-1.5 rounded-xl bg-gray-100 hover:bg-gray-200 dark:bg-white/10 dark:hover:bg-white/20 text-[#231123] dark:text-white text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer shadow-xs"
+                className="px-3 py-1.5 rounded-xl bg-gray-100 hover:bg-gray-200 dark:bg-white/10 dark:hover:bg-white/20 text-[#231123] dark:text-white text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer shadow-xs whitespace-nowrap shrink-0"
                 title={ui("Restaurar tus colecciones, reseñas y preferencias desde un archivo JSON")}
               >
                 <span className="material-symbols-outlined text-[15px] text-amber-600 dark:text-amber-400">upload</span>
-                <span className="hidden sm:inline">{ui("Importar")}</span>
+                <span>{ui("Importar")}</span>
               </button>
 
               <button
                 type="button"
                 onClick={handleExportBackup}
-                className="px-3 py-1.5 rounded-xl bg-gray-100 hover:bg-gray-200 dark:bg-white/10 dark:hover:bg-white/20 text-[#231123] dark:text-white text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer shadow-xs"
+                className="px-3 py-1.5 rounded-xl bg-gray-100 hover:bg-gray-200 dark:bg-white/10 dark:hover:bg-white/20 text-[#231123] dark:text-white text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer shadow-xs whitespace-nowrap shrink-0"
                 title={ui("Descargar respaldo JSON de tus álbumes, reseñas y configuración")}
               >
                 <span className="material-symbols-outlined text-[15px] text-[#B80C09]">download</span>
-                <span className="hidden sm:inline">{ui("Exportar")}</span>
-                <span className="sm:hidden">{ui("Backup")}</span>
+                <span>{ui("Exportar")}</span>
               </button>
             </div>
           </div>

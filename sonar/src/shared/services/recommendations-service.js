@@ -38,6 +38,14 @@ export const KNOWN_COVER_MAPPINGS = [
     cover: 'https://cdn-images.dzcdn.net/images/cover/a175af9b7d329bc678cb4d26fc13d6de/500x500-000000-80-0-0.jpg',
   },
   {
+    keywords: ['kind of blue', 'miles davis', 'so what', 'freddie freeloader', 'blue in green', 'all blues', 'flamenco sketches'],
+    cover: 'https://cdn-images.dzcdn.net/images/cover/a5af0a34b26fc72d3a70ac969c4147c4/500x500-000000-80-0-0.jpg',
+  },
+  {
+    keywords: ['charlie brown', 'vince guaraldi', 'linus and lucy', 'christmas time is here', 'skating'],
+    cover: 'https://cdn-images.dzcdn.net/images/cover/8efc232ae4a0365dfe9c49f64421f50b/500x500-000000-80-0-0.jpg',
+  },
+  {
     keywords: ['currents', 'let it happen', 'the less i know the better', 'tame impala', 'eventually', 'nangs', 'the moment', 'yes i\'m changing', 'past life'],
     cover: 'https://cdn-images.dzcdn.net/images/cover/de5b9b704cd4ec36f8bf49beb3e17ba2/500x500-000000-80-0-0.jpg',
   },
@@ -109,8 +117,13 @@ export const getFallbackCoverForAlbum = (albumOrTitle) => {
 export const resolveAccurateCoverForTrack = (track) => {
   if (!track) return DEFAULT_FALLBACK_COVER;
 
+  const isBrokenOrPlaceholder = (url) => {
+    if (!url || typeof url !== 'string' || !url.startsWith('http')) return true;
+    return url.includes('d41d8cd98f00b204e9800998ecf8427e') || url.includes('11075d5a71120a1ce2d94cf219d266e7') || url.includes('empty');
+  };
+
   // Si ya tiene una carátula específica válida
-  if (track.cover && typeof track.cover === 'string' && track.cover.startsWith('http') && !track.cover.includes('empty')) {
+  if (track.cover && !isBrokenOrPlaceholder(track.cover)) {
     // Si la carátula existente es el genérico de In Rainbows pero el track es de otro álbum/artista, corregir
     const trackText = `${track.title || ''} ${track.album || ''} ${track.artist || ''}`.toLowerCase();
     const isRadioheadInRainbows = trackText.includes('in rainbows') || trackText.includes('15 step') || trackText.includes('reckoner');
@@ -230,12 +243,12 @@ export const CATALOG_RECOMMENDATIONS = [
   // Jazz & Fusion
   {
     id: 'rec-5',
-    deezerId: 118260,
+    deezerId: 278900312,
     title: 'Kind of Blue',
     artist: 'Miles Davis',
     year: '1959',
     genre: 'Jazz & Fusion',
-    cover: 'https://cdn-images.dzcdn.net/images/cover/11075d5a71120a1ce2d94cf219d266e7/500x500-000000-80-0-0.jpg',
+    cover: 'https://cdn-images.dzcdn.net/images/cover/a5af0a34b26fc72d3a70ac969c4147c4/500x500-000000-80-0-0.jpg',
     rating: 5.0,
     description: 'El disco de jazz por excelencia para audiófilos.',
   },
@@ -334,12 +347,12 @@ export const CATALOG_RECOMMENDATIONS = [
   },
   {
     id: 'rec-junior-3',
-    deezerId: 118260,
+    deezerId: 520396082,
     title: 'A Charlie Brown Jazz & Classics',
     artist: 'Vince Guaraldi Trio',
     year: '1965',
     genre: 'Jazz & Fusion',
-    cover: 'https://cdn-images.dzcdn.net/images/cover/11075d5a71120a1ce2d94cf219d266e7/500x500-000000-80-0-0.jpg',
+    cover: 'https://cdn-images.dzcdn.net/images/cover/8efc232ae4a0365dfe9c49f64421f50b/500x500-000000-80-0-0.jpg',
     rating: 4.9,
     isKidSafe: true,
     description: 'Piano acústico suave y composiciones llenas de calidez y nostalgia familiar.',

@@ -606,7 +606,7 @@ export const Navbar = ({
                   onClick={() => handleNavClick(link)}
                   whileHover={{ y: -1 }}
                   whileTap={{ scale: 0.95 }}
-                  className={`relative px-1 sm:px-2 py-2 text-[10px] sm:text-[11px] lg:text-xs font-bold rounded-xl cursor-pointer transition-colors duration-200 ${
+                  className={`relative px-1.5 sm:px-2.5 py-2 text-[10px] sm:text-[11px] lg:text-xs font-bold rounded-xl cursor-pointer transition-colors duration-200 whitespace-nowrap shrink-0 ${
                     isActive
                       ? 'text-[#231123] dark:text-white'
                       : 'text-[#482d46] hover:text-[#B80C09] dark:text-[#d8c5d3] dark:hover:text-white'
