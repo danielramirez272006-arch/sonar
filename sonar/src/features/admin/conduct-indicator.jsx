@@ -2,6 +2,9 @@ import { useUIText } from '../../shared/i18n/use-ui-text.js';
 import { useRef, useState } from 'react'
 import { useTranslation } from '../../shared/context/language-context.jsx'
 import { useAuth } from '../../shared/context/auth-context.jsx'
+import { ShieldCheck, Shield, AlertCircle, AlertTriangle, ShieldAlert } from 'lucide-react'
+
+const ICONS = [ShieldCheck, Shield, AlertCircle, AlertTriangle, ShieldAlert]
 
 export function ConductIndicator({ user, reviews = [], onUserUpdate }) {
   const ui = useUIText();
@@ -11,7 +14,7 @@ export function ConductIndicator({ user, reviews = [], onUserUpdate }) {
   const reports = Array.isArray(user.conductReports) ? user.conductReports : []
   const count = reports.filter(report => report.status !== 'dismissed').length
   const level = count === 0 ? 0 : count < 4 ? 1 : count < 7 ? 2 : count < 10 ? 3 : 4
-  const faces = ['😊', '🙁', '😐', '😠', '😡']
+  const Icon = ICONS[level]
   const labels = [t('admin.conduct.level.none'), t('admin.conduct.level.review'), t('admin.conduct.level.multiple'), t('admin.conduct.level.priority'), t('admin.conduct.level.high')]
   const [reason, setReason] = useState('')
   const [busy, setBusy] = useState(false)
@@ -45,7 +48,9 @@ export function ConductIndicator({ user, reviews = [], onUserUpdate }) {
 
   return <section className={`conduct-card conduct-card--${level}`} aria-label={t('admin.conduct.title')}>
     <div className="conduct-card__summary">
-      <span className="conduct-card__face" role="img" aria-label={['Cara feliz', 'Cara preocupada', 'Cara seria', 'Cara molesta', 'Cara enojada'][level]}>{faces[level]}</span>
+      <span className="conduct-card__face" role="img" aria-label={['Cara feliz', 'Cara preocupada', 'Cara seria', 'Cara molesta', 'Cara enojada'][level]}>
+        <Icon size={28} strokeWidth={2.3} />
+      </span>
       <div><h3>{t('admin.conduct.title')}</h3><strong>{labels[level]}</strong><p>{count} {t(count === 1 ? 'admin.conduct.report.one' : 'admin.conduct.report.many')}</p></div>
     </div>
     <meter min="0" max="10" value={Math.min(count, 10)} aria-label={ui("{{value0}} reportes; nivel máximo del indicador a partir de 10", { value0: count })} />
