@@ -21,7 +21,9 @@
 .users-conduct--red { background:#672737; color:#ffdde3; }
 .users-badge[class*="users-conduct"]::before { content:''; width:7px; height:7px; border-radius:50%; background:currentColor; }
 .users-actions { display:flex; flex-wrap:wrap; gap:8px; }
-.user-page .users-actions :is(a,button), .users-review-link { display:inline-flex; align-items:center; justify-content:center; min-height:40px; padding:8px 12px; border:1px solid #003844; border-radius:8px; background:#003844; color:#fff; font-size:12px; text-decoration:none; }
+.user-page .users-actions :is(a,button), .users-review-link { display:inline-flex; align-items:center; justify-content:center; min-height:38px; padding:8px 14px; border:1px solid #003844; border-radius:8px; background:#003844; color:#ffffff !important; font-size:12px; font-weight:650; text-decoration:none; cursor:pointer; transition:background-color .18s ease, border-color .18s ease, transform .15s ease, box-shadow .18s ease; }
+.user-page .users-actions :is(a,button):hover:not(:disabled), .user-page .users-actions :is(a,button):focus-visible, .users-review-link:hover { background:#075363 !important; border-color:#075363 !important; color:#ffffff !important; text-decoration:none; transform:translateY(-1px); box-shadow:0 4px 10px rgba(0,56,68,0.25); }
+.user-page .users-actions :is(a,button):active:not(:disabled), .users-review-link:active { background:#00262e !important; border-color:#00262e !important; transform:translateY(0); }
 .user-page :is(a,button,input,select):focus-visible, .admin-profile-modal :is(a,button,input,select,textarea):focus-visible { outline:3px solid #ba799f; outline-offset:3px; }
 .users-review-filter { padding:16px; margin-bottom:18px; background:#003844; color:#fff; border-radius:12px; }
 .users-review-filter a { color:#fff; text-decoration:underline; }
@@ -65,4 +67,6 @@ html.dark .sanction-panel .sanction-option input { accent-color:#8cd4dc; }
 html.dark .sanction-panel .sanction-option small, html.dark .sanction-panel .action-help, html.dark .conduct-card .action-help { color:#d4c6d1; }
 html.dark .sanction-panel .sanction-preview { background:#003844; color:#e2f5f6; border-color:#8cd4dc; }
 html.dark .sanction-panel button.admin-action-primary, html.dark .conduct-card button.admin-action-primary { border-color:#8cd4dc; }
+html.dark .user-page .users-actions :is(a,button), html.dark .users-review-link { background:#003844; border-color:#8cd4dc; color:#ffffff !important; }
+html.dark .user-page .users-actions :is(a,button):hover:not(:disabled), html.dark .user-page .users-actions :is(a,button):focus-visible, html.dark .users-review-link:hover { background:#075363 !important; border-color:#8cd4dc !important; color:#ffffff !important; }
 @media(max-width:480px) { .sanction-panel .sanction-options { grid-template-columns:1fr; } .sanction-panel .decision-buttons button, .conduct-card button.admin-action-primary { width:100%; } }
