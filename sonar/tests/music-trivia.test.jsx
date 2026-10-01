@@ -6,9 +6,9 @@ import { MusicTrivia, initialGame, triviaReducer } from '../src/features/profile
 import { MUSIC_QUESTIONS } from '../src/features/profile/components/music-questions';
 afterEach(() => { cleanup(); vi.useRealTimers(); vi.restoreAllMocks(); });
 const correct = state => MUSIC_QUESTIONS[state.deck[state.index]].correct;
-it('keeps 500 unique valid questions and draws sixteen without repeats', () => {
-  expect(MUSIC_QUESTIONS).toHaveLength(500);
-  expect(new Set(MUSIC_QUESTIONS.map(q => q.question)).size).toBe(500);
+it('keeps 600 unique valid questions and draws sixteen without repeats', () => {
+  expect(MUSIC_QUESTIONS).toHaveLength(600);
+  expect(new Set(MUSIC_QUESTIONS.map(q => q.question)).size).toBe(600);
   for (const q of MUSIC_QUESTIONS) {
     expect(q.options).toHaveLength(3);
     expect(new Set(q.options).size).toBe(3);

@@ -332,4 +332,57 @@ durations.forEach(([units, label]) => {
   }
 });
 
+// Second expansion: append 100 entries so the first 500 indices stay stable.
+// A natural minor scale shares its notes with its relative major (degree 6).
+scales.forEach(major => {
+  const minor = [...major.slice(5), ...major.slice(0, 5)];
+  minor.forEach((value, index) => {
+    const tonic = note(minor[0]);
+    const degree = index + 1;
+    const sequences = languages.map((_, lang) => minor.map(n => note(n)[lang]).join(' – '));
+    add('minor-scales', [
+      `En la escala menor natural de ${tonic[0]}, ¿qué nota ocupa el grado ${degree}?`,
+      `In the ${tonic[1]} natural minor scale, which note is degree ${degree}?`,
+      `Dans la gamme de ${tonic[2]} mineur naturel, quelle note est au degré ${degree} ?`,
+      `Nella scala di ${tonic[3]} minore naturale, quale nota occupa il grado ${degree}?`,
+      `${tonic[4]}自然小调音阶的第${degree}级音是什么？`,
+      `${tonic[5]}ナチュラルマイナースケールの第${degree}音はどれですか？`,
+    ], [note(value), note(minor[(index + 2) % 7]), note(minor[(index + 4) % 7])], [
+      `La escala menor natural es ${sequences[0]}. Al contar desde la tónica, el grado ${degree} es ${note(value)[0]}.`,
+      `The natural minor scale is ${sequences[1]}. Counting from the tonic, degree ${degree} is ${note(value)[1]}.`,
+      `La gamme mineure naturelle est ${sequences[2]}. Depuis la tonique, le degré ${degree} est ${note(value)[2]}.`,
+      `La scala minore naturale è ${sequences[3]}. Contando dalla tonica, il grado ${degree} è ${note(value)[3]}.`,
+      `自然小调音阶为${sequences[4]}。从主音开始数，第${degree}级是${note(value)[4]}。`,
+      `自然短音階は${sequences[5]}です。主音から数えた第${degree}音は${note(value)[5]}です。`,
+    ]);
+  });
+});
+
+const meters = [[2, 4], [3, 4], [4, 4], [5, 4], [6, 4], [3, 8], [6, 8], [9, 8], [12, 8], [2, 2]];
+const subdivisions = [
+  [8, localized('corcheas|eighth notes|croches|crome|八分音符|8分音符')],
+  [16, localized('semicorcheas|sixteenth notes|doubles croches|semicrome|十六分音符|16分音符')],
+  [32, localized('fusas|thirty-second notes|triples croches|biscrome|三十二分音符|32分音符')],
+];
+meters.forEach(([numerator, denominator]) => subdivisions.forEach(([division, label]) => {
+  const meter = `${numerator}/${denominator}`;
+  const total = numerator * division / denominator;
+  const ratio = division / denominator;
+  add('meter', [
+    `¿Cuántas ${label[0]} sin puntillo completan exactamente un compás de ${meter}, sin silencios ni grupos irregulares?`,
+    `How many undotted ${label[1]} exactly fill a ${meter} bar, with no rests or tuplets?`,
+    `Combien de ${label[2]} non pointées remplissent une mesure à ${meter}, sans silences ni groupes irréguliers ?`,
+    `Quante ${label[3]} senza punto riempiono una battuta di ${meter}, senza pause né gruppi irregolari?`,
+    `不使用休止符、附点或连音符时，几个${label[4]}正好填满一个${meter}小节？`,
+    `休符・付点・連符を使わずに${meter}拍子の1小節を満たすには、${label[5]}が何個必要ですか？`,
+  ], [same(total), same(total + 1), same(total + 2)], [
+    `En ${meter}, cada una de las ${numerator} unidades indicadas por el denominador equivale a ${ratio} ${label[0]}: ${numerator} × ${ratio} = ${total}.`,
+    `In ${meter}, each of the ${numerator} denominator units equals ${ratio} ${label[1]}: ${numerator} × ${ratio} = ${total}.`,
+    `En ${meter}, chacune des ${numerator} unités du dénominateur vaut ${ratio} ${label[2]} : ${numerator} × ${ratio} = ${total}.`,
+    `In ${meter}, ciascuna delle ${numerator} unità del denominatore vale ${ratio} ${label[3]}: ${numerator} × ${ratio} = ${total}.`,
+    `${meter}拍号中有${numerator}个由分母指定的时值单位，每个相当于${ratio}个${label[4]}：${numerator} × ${ratio} = ${total}。`,
+    `${meter}拍子では分母で示す音価が${numerator}個あり、それぞれ${label[5]}${ratio}個分です。${numerator} × ${ratio} = ${total}。`,
+  ]);
+}));
+
 export const EXTRA_MUSIC_QUESTIONS = questions;
