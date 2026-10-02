@@ -21,7 +21,7 @@ export const Navbar = ({
   const ui = useUIText();
   const { t } = useTranslation();
   const { isDark, toggleTheme } = useTheme();
-  const { user: authUser, isAuthenticated, logout, isJunior, isParentalControlActive } = useAuth();
+  const { user: authUser, isAuthenticated, logout } = useAuth();
   const { toggleTrack, currentTrack, isPlaying } = usePlayer();
 
   const searchScopes = useMemo(() => [
@@ -35,6 +35,12 @@ export const Navbar = ({
     return hash || 'explore';
   });
   const [navSearch, setNavSearch] = useState('');
+  const [searchOpen, setSearchOpen] = useState(false);
+  const searchToggleRef = useRef(null);
+  const searchInputRef = useRef(null);
+  useEffect(() => {
+    if (searchOpen) searchInputRef.current?.focus();
+  }, [searchOpen]);
   const [navScope, setNavScope] = useState('all');
   const [navResults, setNavResults] = useState({ tracks: [], news: [] });
   const [isNavSearching, setIsNavSearching] = useState(false);
@@ -281,8 +287,8 @@ export const Navbar = ({
   const displayName = authUser?.username || authUser?.name || 'Mi Perfil';
 
   return (
-    <header className="sticky top-0 z-50 w-full bg-[var(--bg-navbar)] border-b border-[var(--border-subtle)] backdrop-blur-md transition-colors duration-300 shadow-xs">
-      <div className="w-full max-w-[1600px] mx-auto px-2 sm:px-4 lg:px-8 h-[68px] flex items-center justify-between gap-1.5 sm:gap-2.5">
+    <header className="sonar-navbar sticky top-0 z-50 w-full bg-[var(--bg-navbar)] border-b border-[var(--border-subtle)] backdrop-blur-md transition-colors duration-300 shadow-xs">
+      <div className="sonar-navbar-inner w-full max-w-[1600px] mx-auto px-2 sm:px-4 lg:px-8 h-[68px] flex items-center justify-between gap-1.5 sm:gap-2.5">
         {/* Izquierda: Logo principal animado */}
         <div className="shrink-0 flex items-center">
           <AnimatedLogo
@@ -295,13 +301,20 @@ export const Navbar = ({
 
         {/* Centro: Buscador global (canciones + contenido editorial) */}
         {showSearch && (
-          <div ref={navDropdownRef} className="hidden md:flex relative flex-1 min-w-[200px] lg:min-w-[300px] max-w-[500px] mx-1 lg:mx-2">
+          <div id="navbar-search-panel" ref={navDropdownRef} className={`sonar-navbar-search relative ${searchOpen ? 'is-open' : ''}`} onKeyDown={event => {
+            if (event.key === 'Escape') {
+              resetNavSearch();
+              setSearchOpen(false);
+              searchToggleRef.current?.focus();
+            }
+          }}>
             <form onSubmit={handleNavSearchSubmit} className="w-full" role="search">
               <div className="relative w-full">
                 <span className="material-symbols-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-[19px] text-[var(--text-muted)] pointer-events-none">
                   search
                 </span>
                 <input
+                  ref={searchInputRef}
                   type="search"
                   role="combobox"
                   aria-expanded={isNavDropdownOpen}
@@ -594,7 +607,14 @@ export const Navbar = ({
         )}
 
         {/* Derecha: Enlaces, Botón de Tema & Avatar / Auth */}
-        <div className="flex items-center gap-1.5 sm:gap-2.5 shrink-0">
+        <div className="sonar-navbar-actions flex items-center gap-1.5 sm:gap-2.5 shrink-0">
+          {showSearch && <button
+            ref={searchToggleRef} type="button" className="sonar-search-toggle"
+            aria-label={ui('Buscar canciones, artistas y noticias')}
+            title={ui('Buscar canciones, artistas y noticias')}
+            aria-expanded={searchOpen} aria-controls="navbar-search-panel"
+            onClick={() => { setSearchOpen(open => !open); setIsNavDropdownOpen(false); }}
+          ><span className="material-symbols-outlined" aria-hidden="true">{searchOpen ? 'close' : 'search'}</span></button>}
           {/* Enlaces de navegación con fondo transparente/translúcido en modo oscuro */}
           <nav className="flex items-center gap-1 sm:gap-1.5">
             {links.map((link) => {
@@ -659,22 +679,7 @@ export const Navbar = ({
           {isAuthenticated && authUser ? (
             <div className="flex items-center gap-2">
               {/* Badge visual de Modo Junior / Parental Control */}
-              {(isJunior || isParentalControlActive) && (
-                <motion.button
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                  onClick={() => {
-                    window.location.hash = '#usuario';
-                    sessionStorage.setItem('sonar_active_profile_tab', 'parental_control');
-                    window.dispatchEvent(new CustomEvent('sonar:navigate-tab', { detail: 'parental_control' }));
-                  }}
-                  title={ui("Modo Kids y Control Parental activo. Clic para administrar.")}
-                  className="hidden sm:flex items-center gap-1 px-2 sm:px-2.5 py-1 rounded-full bg-[#4B2840]/15 dark:bg-[#4B2840]/40 text-[#4B2840] dark:text-[#DCDCDD] border border-[#4B2840]/30 text-[10px] sm:text-[11px] font-black tracking-wide cursor-pointer shadow-xs hover:bg-[#4B2840]/25 transition-all"
-                >
-                  <span className="material-symbols-outlined text-[14px]">child_care</span>
-                  <span>{ui("Modo Kids")}</span>
-                </motion.button>
-              )}
+
 
               {/* Badge Sonar Coins / Boutique */}
               <motion.button

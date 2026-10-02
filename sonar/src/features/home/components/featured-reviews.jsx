@@ -130,8 +130,8 @@ const FeaturedReviewCard = ({ review }) => {
     >
       <div className="flex flex-col gap-4">
         {/* Review Author Header */}
-        <div className="flex items-center justify-between gap-3">
-          <div className="flex items-center gap-3">
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <div className="flex min-w-0 flex-wrap items-center gap-3">
             <div
               className="w-11 h-11 rounded-full overflow-hidden flex items-center justify-center text-white font-bold text-base ring-2 ring-[#e6d5e2] dark:ring-white/15 shrink-0 shadow-xs"
               style={{ backgroundColor: review.avatarBg }}

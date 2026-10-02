@@ -1,4 +1,3 @@
-import { MusicTrivia } from './music-trivia';
 import { useUIText } from '../../../shared/i18n/use-ui-text.js';
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -622,8 +621,6 @@ export const EnhancedParentalControl = () => {
           </div>
         </div>
       </div>
-
-      <MusicTrivia />
 
       {/* 4. CANALES DE DESCUBRIMIENTO EXCLUSIVOS "SONAR KIDS" */}
       <div className="p-6 sm:p-8 rounded-3xl bg-gradient-to-br from-[#231123] via-[#3d1a35] to-[#003844] text-white border border-white/15 shadow-xl flex flex-col gap-5">

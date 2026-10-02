@@ -266,7 +266,7 @@ export const TrendingGrid = () => {
 
           <div className="flex flex-wrap items-center gap-3">
             {/* Filter Tabs */}
-            <div className="inline-flex items-center p-1 rounded-full bg-[#ede0eb] dark:bg-[#1f1020] border border-[#e2cedf] dark:border-white/10 gap-1 shadow-inner transition-colors">
+            <div className="inline-flex flex-wrap max-w-full items-center p-1 rounded-2xl sm:rounded-full bg-[#ede0eb] dark:bg-[#1f1020] border border-[#e2cedf] dark:border-white/10 gap-1 shadow-inner transition-colors">
               {tabs.map((tab) => {
                 const isActive = activeTab === tab.id;
                 return (

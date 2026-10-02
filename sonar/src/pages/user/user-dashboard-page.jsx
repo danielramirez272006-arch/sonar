@@ -27,6 +27,7 @@ import AudiophileSignalChain from '../../features/profile/components/audiophile-
 import ListeningJournalModal from '../../features/profile/components/listening-journal-modal';
 import EnhancedParentalControl from '../../features/profile/components/enhanced-parental-control';
 import RewardsStoreTab from '../../features/profile/components/rewards-store-tab';
+import { MusicTrivia } from '../../features/profile/components/music-trivia';
 
 export const UserDashboardPage = () => {
   const ui = useUIText();
@@ -516,6 +517,17 @@ export const UserDashboardPage = () => {
                     transition={{ type: 'spring', stiffness: 400, damping: 30 }}
                   />
                 )}
+              </button>
+
+              <button
+                type="button"
+                onClick={() => setActiveTab('games')}
+                aria-current={activeTab === 'games' ? 'page' : undefined}
+                className={`pb-2.5 text-sm sm:text-base font-bold transition-all cursor-pointer relative whitespace-nowrap shrink-0 flex items-center gap-2 ${activeTab === 'games' ? 'text-[#B80C09]' : 'text-[#5c435a] dark:text-[#B89CB0] hover:text-[#231123] dark:hover:text-white'}`}
+              >
+                <span className="material-symbols-outlined text-[18px]" aria-hidden="true">sports_esports</span>
+                <span>{ui('Juegos')}</span>
+                {activeTab === 'games' && <motion.div layoutId="dashboard-tab-indicator" className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#B80C09]" transition={{ type: 'spring', stiffness: 400, damping: 30 }} />}
               </button>
 
               <button
@@ -1512,6 +1524,13 @@ export const UserDashboardPage = () => {
           )}
 
           {/* TAB 7: CONTROL PARENTAL Y FILTRO DE CONTENIDO */}
+          {activeTab === 'games' && (
+            <section aria-labelledby="profile-games-title" className="min-w-0 space-y-4">
+              <h2 id="profile-games-title" className="text-2xl font-bold">{ui('Juegos')}</h2>
+              <MusicTrivia />
+            </section>
+          )}
+
           {activeTab === 'parental_control' && (
             <EnhancedParentalControl />
           )}

@@ -6,6 +6,7 @@ import { useRouter } from '../../../shared/routing/app-router';
 import { socialService } from '../../../shared/services/social-service';
 import { useAuth } from '../../../shared/context/auth-context';
 import { useLanguage } from '../../../shared/context/language-context';
+import { useUIText } from '../../../shared/i18n/use-ui-text';
 
 export const ProfileHeader = ({
   user,
@@ -14,7 +15,8 @@ export const ProfileHeader = ({
   isVisitor = false,
 }) => {
   const router = useRouter?.();
-  const { user: authUser } = useAuth();
+  const { user: authUser, isJunior, isParentalControlActive } = useAuth();
+  const ui = useUIText();
   const { t } = useLanguage();
 
   const currentUser = user || {
@@ -273,6 +275,21 @@ export const ProfileHeader = ({
             </div>
 
             {/* Botón según sea Perfil Propio o Visitante */}
+            {isOwnProfile && (
+              <button
+                type="button"
+                className="profile-kids-shortcut"
+                onClick={() => {
+                  sessionStorage.setItem('sonar_active_profile_tab', 'parental_control');
+                  window.dispatchEvent(new CustomEvent('sonar:navigate-tab', { detail: 'parental_control' }));
+                }}
+              >
+                <span className="material-symbols-outlined" aria-hidden="true">child_care</span>
+                <span>{ui('Modo Kids & Control')}</span>
+                {(isJunior || isParentalControlActive) && <span className="profile-kids-status">{ui('(Kids Activo)')}</span>}
+                <span className="material-symbols-outlined" aria-hidden="true">chevron_right</span>
+              </button>
+            )}
             {isOwnProfile ? (
               <motion.button
                 whileHover={{ scale: 1.03 }}

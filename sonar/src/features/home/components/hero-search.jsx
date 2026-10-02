@@ -406,7 +406,7 @@ export const HeroSearch = ({ onSearch = () => {}, onSubmit = () => {} }) => {
   return (
     <section className="relative w-full px-4 sm:px-6 lg:px-10 py-10 sm:py-14 flex flex-col items-center justify-center text-center overflow-visible bg-[#fff7fa] dark:bg-[#231123] transition-colors duration-300">
       {/* Resplandor ambiental de fondo */}
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[380px] sm:w-[580px] h-[220px] sm:h-[280px] bg-rose-200/40 dark:bg-[#B80C09]/15 blur-[90px] sm:blur-[120px] pointer-events-none -z-10 transition-colors duration-300" />
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[380px] max-w-full sm:w-[580px] h-[220px] sm:h-[280px] bg-rose-200/40 dark:bg-[#B80C09]/15 blur-[90px] sm:blur-[120px] pointer-events-none -z-10 transition-colors duration-300" />
 
       <div className="max-w-[840px] w-full mx-auto relative z-30 flex flex-col items-center">
         {/* Título Principal y Subtítulo */}
