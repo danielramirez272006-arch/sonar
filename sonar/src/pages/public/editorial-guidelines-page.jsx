@@ -6,11 +6,11 @@ import { useTranslation } from '../../shared/context/language-context.jsx';
 export const EditorialGuidelinesPage = () => {
   const { t } = useTranslation();
   const ratingScale = [
-    { stars: '5.0', label: 'Obra Maestra Incontestable', desc: 'Producción revolucionaria, cohesión conceptual impecable y relevancia histórica que trasciende su época.' },
-    { stars: '4.0 - 4.9', label: 'Excelente / Imprescindible', desc: 'Álbum sobresaliente con musicalidad de alto calibre y gran balance estético con mínimas fisuras.' },
-    { stars: '3.0 - 3.9', label: 'Notable / Recomendado', desc: 'Trabajo sólido con momentos brillantes, aunque con cierta inconsistencia en el orden de pistas o mezcla.' },
-    { stars: '2.0 - 2.9', label: 'Mediocre / Derivativo', desc: 'Falta de originalidad conceptual, problemas evidentes en la masterización o ejecución compositiva pobre.' },
-    { stars: '1.0 - 1.9', label: 'Deficiente / Fallido', desc: 'Producción defectuosa, carencia de intención artística clara o ejecución desprovista de criterio.' },
+    { stars: '5.0', labelKey: 'page.guidelines.rating.5_0.label', descKey: 'page.guidelines.rating.5_0.desc' },
+    { stars: '4.0 - 4.9', labelKey: 'page.guidelines.rating.4_0.label', descKey: 'page.guidelines.rating.4_0.desc' },
+    { stars: '3.0 - 3.9', labelKey: 'page.guidelines.rating.3_0.label', descKey: 'page.guidelines.rating.3_0.desc' },
+    { stars: '2.0 - 2.9', labelKey: 'page.guidelines.rating.2_0.label', descKey: 'page.guidelines.rating.2_0.desc' },
+    { stars: '1.0 - 1.9', labelKey: 'page.guidelines.rating.1_0.label', descKey: 'page.guidelines.rating.1_0.desc' },
   ];
 
   return (
@@ -47,11 +47,11 @@ export const EditorialGuidelinesPage = () => {
                       ★ {item.stars}
                     </span>
                     <strong className="text-base font-bold text-[#231123] dark:text-white">
-                      {item.label}
+                      {t(item.labelKey)}
                     </strong>
                   </div>
                   <p className="text-xs sm:text-sm text-gray-600 dark:text-[#d8c5d3] max-w-md">
-                    {item.desc}
+                    {t(item.descKey)}
                   </p>
                 </div>
               ))}
@@ -70,7 +70,7 @@ export const EditorialGuidelinesPage = () => {
                   <span>{t('page.guidelines.production')}</span>
                 </h3>
                 <p className="text-xs sm:text-sm text-gray-600 dark:text-[#d8c5d3] leading-relaxed">
-                  Evalúa la espacialidad estéreo, la dinámica de volumen, la compresión y la fidelidad del timbre analógico o digital.
+                  {t('page.guidelines.productionDesc')}
                 </p>
               </div>
 
@@ -80,7 +80,7 @@ export const EditorialGuidelinesPage = () => {
                   <span>{t('page.guidelines.context')}</span>
                 </h3>
                 <p className="text-xs sm:text-sm text-gray-600 dark:text-[#d8c5d3] leading-relaxed">
-                  Sitúa el disco dentro de la trayectoria del artista y el momento sociocultural en que fue concebido.
+                  {t('page.guidelines.contextDesc')}
                 </p>
               </div>
 
@@ -90,7 +90,7 @@ export const EditorialGuidelinesPage = () => {
                   <span>{t('page.guidelines.argument')}</span>
                 </h3>
                 <p className="text-xs sm:text-sm text-gray-600 dark:text-[#d8c5d3] leading-relaxed">
-                  Evita frases vacías como "no me gustó". Explica qué elementos armónicos, rítmicos o líricos fallan o destacan.
+                  {t('page.guidelines.argumentDesc')}
                 </p>
               </div>
 
@@ -100,7 +100,7 @@ export const EditorialGuidelinesPage = () => {
                   <span>{t('page.guidelines.respect')}</span>
                 </h3>
                 <p className="text-xs sm:text-sm text-gray-600 dark:text-[#d8c5d3] leading-relaxed">
-                  Los ataques personales o discriminatorios hacia artistas o miembros de la comunidad resultan en la suspensión inmediata de la cuenta.
+                  {t('page.guidelines.respectDesc')}
                 </p>
               </div>
             </div>

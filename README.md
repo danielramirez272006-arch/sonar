@@ -1,18 +1,19 @@
 # 🎵 SONAR · Audiophile Curation Hub & Music Community
 
 <p align="center">
-  <img src="https://raw.githubusercontent.com/danielramirez272006-arch/sonar/daniel/sonar/public/favicon.svg" alt="SONAR Logo" width="80" height="80" />
+  <img src="https://raw.githubusercontent.com/danielramirez272006-arch/sonar/daniel/sonar/public/favicon.svg" alt="SONAR Logo" width="85" height="85" />
 </p>
 
 <p align="center">
-  <strong>Plataforma comunitaria de crítica musical, preescucha en alta fidelidad y ecosistema interactivo para melómanos con moderación IA.</strong>
+  <strong>Plataforma comunitaria de crítica musical, preescucha en alta fidelidad y ecosistema interactivo para audiófilos con moderación IA y asistente sommelier.</strong>
 </p>
 
 <p align="center">
   <img src="https://img.shields.io/badge/React-19.x-61DAFB?style=for-the-badge&logo=react&logoColor=black" alt="React 19" />
   <img src="https://img.shields.io/badge/Vite-8.x-646CFF?style=for-the-badge&logo=vite&logoColor=white" alt="Vite 8" />
   <img src="https://img.shields.io/badge/TailwindCSS-4.x-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white" alt="Tailwind CSS 4" />
-  <img src="https://img.shields.io/badge/Vitest-157%20Tests%20Passing-4EBA0F?style=for-the-badge&logo=vitest&logoColor=white" alt="Vitest 157 Passing" />
+  <img src="https://img.shields.io/badge/Vitest-195%20Tests%20Passing-4EBA0F?style=for-the-badge&logo=vitest&logoColor=white" alt="Vitest 195 Passing" />
+  <img src="https://img.shields.io/badge/i18n-6%20Languages-blue?style=for-the-badge&logo=google-translate&logoColor=white" alt="i18n 6 Languages" />
   <img src="https://img.shields.io/badge/n8n-Gemini%20Agent%20Active-EA4B71?style=for-the-badge&logo=n8n&logoColor=white" alt="n8n Gemini Agent" />
   <img src="https://img.shields.io/badge/Google%20Gemini-2.0%20Flash-4285F4?style=for-the-badge&logo=google&logoColor=white" alt="Google Gemini" />
 </p>
@@ -28,7 +29,7 @@ SONAR está diseñado siguiendo una cuidada selección cromática con altos rati
 | <span style="display:inline-block;width:20px;height:20px;background:#231123;border-radius:4px;border:1px solid #555;"></span> | **`#231123`** | *Midnight Violet* | **Color de fondo base**: Lienzo principal oscuro sobre el que interactúa el usuario (`sonar-base`). |
 | <span style="display:inline-block;width:20px;height:20px;background:#4B2840;border-radius:4px;border:1px solid #555;"></span> | **`#4B2840`** | *Blackberry Cream* | **Color de superficie**: Tarjetas, paneles modales y separación visual de reseñas (`sonar-surface`). |
 | <span style="display:inline-block;width:20px;height:20px;background:#DCDCDD;border-radius:4px;border:1px solid #555;"></span> | **`#DCDCDD`** | *Alabaster Grey* | **Color de texto principal**: Garantiza legibilidad perfecta y contraste sobre fondos oscuros (`sonar-text`). |
-| <span style="display:inline-block;width:20px;height:20px;background:#003844;border-radius:4px;border:1px solid #555;"></span> | **`#003844`** | *Dark Teal* | **Color primario (acento)**: Botones de acción, bordes activos de Modo Libre y elementos interactivos (`sonar-accent`). |
+| <span style="display:inline-block;width:20px;height:20px;background:#003844;border-radius:4px;border:1px solid #555;"></span> | **`#003844`** | *Dark Teal* | **Color primario (acento)**: Botones de acción, bordes activos y elementos interactivos (`sonar-accent`). |
 | <span style="display:inline-block;width:20px;height:20px;background:#B80C09;border-radius:4px;border:1px solid #555;"></span> | **`#B80C09`** | *Brick Ember* | **Color de alerta/moderación**: Acciones críticas, Modo Supervisado, estados del sistema y acento de marca (`sonar-primary`). |
 
 ---
@@ -51,12 +52,12 @@ cd sonar/sonar
 npm install
 ```
 
-### 3. Iniciar la API Mock (JSON Server)
-En una terminal:
+### 3. Iniciar la API Mock (JSON Server & Backend de Seguridad)
+En una primera terminal:
 ```bash
 npm run api
 ```
-> Corre en `http://localhost:3001/` proveyendo persistencia para usuarios, reseñas, reportes y catálogos.
+> Corre en `http://localhost:3001/` proveyendo persistencia para usuarios, reseñas, recompensas, control de sesiones y catálogos.
 
 ### 4. Iniciar el Servidor de Desarrollo (Vite Frontend)
 En una segunda terminal:
@@ -65,70 +66,74 @@ npm run dev
 ```
 > Abre la URL local generada por Vite (por defecto `http://localhost:5173/`).
 
-### 5. Iniciar n8n (Agente Moderador IA & Webhooks)
+### 5. Iniciar n8n (Agente Moderador IA, Sommelier y Webhooks)
 En una tercera terminal:
 ```bash
 n8n start
 ```
-> Panel accesible en `http://localhost:5678/`. El flujo del **Agente IA con Gemini** se encuentra en `sonar/src/shared/services/n8n/sonar-moderacion-ia-resenas.json`.
+> Panel accesible en `http://localhost:5678/`. Los flujos de n8n se encuentran en `sonar/src/shared/services/n8n/`.
 
 ---
 
 ## ✨ Características Principales
 
-### 🤖 Agente de Moderación IA con Google Gemini & n8n
-- **Agente Inteligente en Tiempo Real**: Analiza reseñas musicales conectando n8n con el modelo `@n8n/n8n-nodes-langchain.lmChatGoogleGemini` (`gemini-2.0-flash`).
-- **Política Estricta de Tolerancia Cero**: Detección automática de insultos, malas palabras, vulgaridades, leetspeak (evasiones de caracteres) y discurso de odio.
-- **Clasificación por Severidad Dinámica**:
-  - 🟢 **`none`**: Críticas respetuosas (incluso negativas o de 1 estrella).
-  - 🟠 **`low`**: Lenguaje informal o coloquial ligeramente soez.
-  - 🟡 **`medium`**: Descalificaciones hacia artistas o álbumes.
-  - 🔴 **`high`**: Agresiones graves, amenazas o discriminación.
-- **Auto-Flagging & Consola Admin**: Las reseñas marcadas se actualizan en la base de datos automáticamente con el distintivo rojo `✧ Marcada por IA`, el desglose de palabras detectadas y la justificación de Gemini.
-- **Notificación por Correo Gmail**: Envío automático de alertas HTML estilizadas al administrador del sistema.
+### 🤖 Sonaria · Sommelier Musical con Inteligencia Artificial
+- Asistente conversacional inteligente impulsado por Google Gemini y n8n (`sonar-chatbot-asistente-musical.json`).
+- Recomendaciones musicales contextuales según estados de ánimo, géneros y artistas de culto.
+- Motor de contingencia local que garantiza respuestas analíticas incluso sin conexión a n8n.
 
-### 🎧 Reproductor Global Hi-Fi con Motor de Síntesis Web Audio
-- **Audio Infalible**: Si los flujos remotos de Deezer presentan restricciones de red o CORS en el navegador del cliente, el motor Web Audio API sintetiza armonías sonoras en tiempo real, garantizando que el reproductor siempre funcione.
-- **Letras Sincronizadas**: Integración de letras para catálogo audiófilo y temas infantiles.
-- **Skins Dinámicos Equipables**:
-  - *Skin VU Meter*: Vúmetros analógicos con agujas balísticas reactivas al ritmo sonoro.
-  - *Skin Casete 1984*: Bobinas analógicas giratorias y contador mecánico en tiempo real.
+### 🛡️ Moderación IA con Google Gemini & n8n
+- **Análisis de Reseñas en Tiempo Real**: Conexión con Gemini 2.0 Flash para auditar contenido generado por usuarios.
+- **Tolerancia Cero a la Toxicidad**: Detección de ataques personales, insultos, evasiones tipográficas y discurso de odio.
+- **Auto-Flagging & Consola de Administración**: Las reseñas marcadas se etiquetan automáticamente con justificación analítica en la base de datos.
+- **Notificaciones al Administrador**: Despacho de correos estilizados con resúmenes de moderación.
 
-### 🛡️ Control Parental & Modos de Experiencia
-- **Modo Kids (Recomendado para Niños)**:
-  - Filtro estricto 100% familiar (bloqueo de lenguaje explícito, temas sensibles y artistas bloqueados).
-  - Temporizador de estudio Pomodoro adaptado para tareas.
-  - Trivia educativa musical interactiva y generador de sonidos relajantes de la naturaleza (lluvia, olas, bosque).
-- **Modo Supervisado Familiar**:
-  - Desbloqueo temporal de pistas explícitas mediante código PIN secreto de 4 dígitos.
-- **Modo Libre (Adultos & Audiófilos)**:
-  - Navegación y escucha sin restricciones por todo el catálogo discográfico.
+### 🎮 Sonar Kids & Trivia Musical Interactiva (600+ Preguntas)
+- **Banco de más de 600 preguntas musicales** curadas con rigor histórico y técnico.
+- **Modos de Juego**:
+  - *Individual (Solo)*: Responde 16 preguntas contrarreloj con 15 segundos por turno. Consigue al menos 10 aciertos para ganar **100 Sonar Coins**.
+  - *Duelo 1 contra 1*: Turnos dinámicos en el mismo dispositivo donde el Jugador 1 compite por el premio para su cuenta.
+- **Persistencia Segura**: Reclamación respaldada por el endpoint `/trivia/reward` con validación de partida y prevención de duplicados.
+
+### 🎧 Reproductor Hi-Fi & Modo Tocadiscos Vinilo 33⅓ RPM
+- **Audio Infalible**: Flujos de preescucha remota y síntesis Web Audio API en contingencia.
+- **Modo Tocadiscos Inmersivo**: Visualizador analógico de aguja, plato giratorio y texturas de vinilo.
+- **Skins Dinámicos Equipables**: Vúmetros VU Meter y Casete analógico 1984.
+
+### 🌐 Internacionalización Completa (6 Idiomas)
+- Soporte nativo para:
+  - 🇪🇸 **Español**
+  - 🇺🇸 **English**
+  - 🇫🇷 **Français**
+  - 🇮🇹 **Italiano**
+  - 🇯🇵 **日本語**
+  - 🇨🇳 **中文**
+- Selector de idioma dinámico en barra superior y pie de página con persistencia en `localStorage`.
+
+### 📚 Secciones Editoriales y Legales de Sonar
+- **Colecciones de Vinilo 180g (`#collections`)**: Guías técnicas de prensaje, gramajes (140g vs 180g), velocidades (33⅓ vs 45 RPM) y preservación antiestática.
+- **Directorio de Sellos (`#labels`)**: Catálogo de casas discográficas de culto (Warp, 4AD, Blue Note, Ninja Tune).
+- **Listas Curadas (`#lists`)**: Selecciones temáticas y obras maestras del Art Rock, Vanguardia y Ambient.
+- **Pautas Editoriales & Código de Criterio (`#guidelines`)**: Escala oficial de 1.0 a 5.0 y directrices de redacción crítica.
+- **Visión & Misión (`#about`)**: Manifiesto institucional y pilares de la curaduría audiófila.
+- **Términos y Condiciones (`#terms`)**: Marco legal, uso de IA y política de propiedad intelectual.
+- **Boletín & Feed RSS 2.0 (`#rss_feed` / `#noticias`)**: Despacho semanal y sincronización para lectores RSS (Feedly, Reeder).
+- **API para Desarrolladores (`#api`)**: Documentación REST con autenticación Bearer Token y endpoints de catálogo y reseñas.
+- **Sesiones & Podcasts (`#podcasts`)**: Reproducción y análisis de episodios audiófilos pista por pista.
 
 ### 🎁 Boutique & Sistema de Recompensas
-- **Saldo Sonar Coins & Niveles XP**: Gana monedas escuchando música, publicando reseñas y completando misiones diarias.
-- **Caja Sorpresa Diaria (Daily Crate Drop)**: Abre una caja cada 24 horas para recibir multiplicadores de monedas y experiencia.
-- **Marcos Cosméticos de Avatar**: Marcos visuales con animaciones reactivas (*Vinilo de Oro 24K, Neón Cyberpunk, Válvula Hi-Fi, Holograma Espectral*).
-- **Títulos de Prestigio**: Luce distinciones como *«Oído Absoluto»* y *«Maestro del Mastering»*.
+- **Economía de Sonar Coins & Niveles XP**: Gana monedas en la trivia, publicando reseñas y explorando música.
+- **Caja Sorpresa Diaria (Daily Crate)**: Apertura cada 24 horas con multiplicadores y recompensas cosméticas.
+- **Marcos de Avatar y Títulos de Prestigio**: Personalización con cosméticos desbloqueables en la tienda.
 
-### 🌐 Automatizaciones con n8n
-- **Moderación IA con Agente Gemini**: `sonar-moderacion-ia-resenas.json`.
-- **Verificación OTP de Registro**: Envío de código de 6 dígitos al correo electrónico del nuevo usuario.
-- **Alerta de Inicio de Sesión**: Detección de nuevos dispositivos y notificación inmediata.
-- **Recuperación de Contraseña**: Flujo de validación OTP para restablecer credenciales.
-- **Boletín Editorial (Newsletter)**: Suscripción automática a tópicos personalizados (Lanzamientos, Vinilos, Hardware Hi-Fi).
+### 🔒 Seguridad Criptográfica & Control de Acceso
+- Contraseñas almacenadas con cifrado seguro **SHA-256** y salting aleatorio criptográfico.
+- Autenticación segura mediante cookies `HttpOnly` y protección estricta de rutas administrativas.
+- Control parental con bloqueo de pistas explícitas mediante código PIN configurable de 4 dígitos.
 
-### 🛠️ Consola de Administración & Moderación
-- **Dashboard de Métricas**: Estadísticas de actividad comunitaria, reseñas pendientes y usuarios activos.
-- **Cola de Moderación**: Filtros de «Todas», «Pendientes», «Aprobadas», «Rechazadas» y «Marcadas por IA».
-- **Análisis Manual con IA**: Botón `✧ Analizar con IA` para auditar cualquier reseña en vivo.
-- **Gestión de Sanciones**: Notificaciones, advertencias y suspensiones con confirmación y auditoría.
-- **Exportación de Datos**: Descarga de registros y reportes en formato CSV.
-
-### ♿ Accesibilidad Universal (WCAG 2.1 AA/AAA)
-- Selector de tamaños de fuente, espaciado e interlineado tipográfico.
-- Modos de daltonismo (Protanopía, Deuteranopía, Tritanopía, Acromatopsia).
-- Lector de pantalla TTS (*Text-to-Speech*) integrado con controles de voz y velocidad.
-- Guía de lectura focalizada y mapa completo de atajos de teclado (`Ctrl+K`, `Alt+A`, etc.).
+### 📊 Importación y Exportación de Catálogos (Excel)
+- Exportación completa del catálogo de discos e historial a hojas de cálculo `.xlsx` mediante la librería `exceljs`.
+- Capacidad de importación masiva de metadatos discográficos.
 
 ---
 
@@ -137,11 +142,11 @@ n8n start
 El proyecto cuenta con una cobertura integral de pruebas unitarias y de integración utilizando **Vitest** y **Testing Library**:
 
 ```bash
-# Ejecutar todas las pruebas
+# Ejecutar toda la suite de pruebas
 npm test
 ```
 
-**Estado actual:** `31 suites de prueba / 157 tests pasando (100% pass rate)`.
+**Estado actual:** `38 suites de prueba / 195 tests pasando al 100%`.
 
 ---
 
@@ -153,22 +158,28 @@ sonar/
 │   ├── src/
 │   │   ├── features/                  # Módulos organizados por dominio
 │   │   │   ├── admin/                 # Consola de administración y moderación
-│   │   │   ├── auth/                  # Formularios de acceso y registro OTP
-│   │   │   ├── home/                  # Componentes de la portada y destacados
-│   │   │   ├── profile/               # Perfil, Control Parental, Boutique y Recompensas
+│   │   │   ├── auth/                  # Formularios de acceso, registro OTP y recuperación
+│   │   │   ├── chatbot/               # Sonaria AI Sommelier
+│   │   │   ├── home/                  # Componentes de la portada y novedades
+│   │   │   ├── profile/               # Perfil, Trivia, Control Parental y Tienda
 │   │   │   └── reviews/               # Feed, tarjetas y modales de reseñas
-│   │   ├── pages/                     # Vistas públicas, privadas y administrativas
-│   │   ├── shared/                    # Contextos, servicios, hooks y componentes comunes
-│   │   │   ├── components/            # UI, navegación, reproductor y accesibilidad
-│   │   │   ├── context/               # Auth, Player, Theme y Accessibility Providers
-│   │   │   ├── routing/               # Router y protección de rutas
-│   │   │   └── services/              # Deezer API, Webhooks n8n, Agente IA y Almacenamiento
+│   │   ├── pages/                     # Vistas públicas, privadas y de administración
+│   │   │   ├── public/                # Guidelines, About, Terms, Vinyl, Labels, RSS, etc.
+│   │   │   ├── user/                  # Dashboard de usuario y perfil
+│   │   │   └── admin/                 # Panel de moderación y auditoría
+│   │   ├── shared/                    # Contextos, servicios, hooks e i18n
+│   │   │   ├── components/            # Layout (Navbar, Footer), UI y Reproductor
+│   │   │   ├── context/               # Auth, Player, Theme, Language y Accessibility
+│   │   │   ├── i18n/                  # Diccionarios y traducciones en 6 idiomas
+│   │   │   └── services/              # Deezer API, Webhooks n8n, Agente IA y Crypto
 │   │   │       └── n8n/               # Workflows JSON listos para importar a n8n
-│   │   ├── Styles/                    # Tokens de diseño y hojas de estilo CSS
-│   │   ├── App.jsx                    # Raíz con arquitectura ErrorBoundary
+│   │   ├── App.jsx                    # Raíz con enrutamiento y ErrorBoundary
 │   │   └── main.jsx                   # Punto de entrada de la aplicación
-│   ├── tests/                         # Suites de pruebas con Vitest (157 tests)
-│   ├── db.json                        # Base de datos simulada de JSON Server
+│   ├── tests/                         # Suites de pruebas con Vitest (195 tests)
+│   ├── server/                        # Backend mock y API con endpoints de seguridad
+│   │   ├── api.cjs                    # Servidor Express / JSON Server seguro
+│   │   └── trivia.checks.cjs          # Verificaciones de backend para Sonar Coins
+│   ├── db.json                        # Base de datos simulada
 │   └── package.json                   # Dependencias y scripts
 └── README.md                          # Documentación principal del repositorio
 ```
@@ -180,10 +191,10 @@ sonar/
 | Comando | Descripción |
 | :--- | :--- |
 | `npm run dev` | Inicia el servidor de desarrollo Vite con HMR (`http://localhost:5173/`). |
-| `npm run api` | Inicia el backend mock JSON Server en el puerto 3001 (`http://localhost:3001/`). |
-| `npm test` | Ejecuta la suite completa de 157 tests con Vitest. |
+| `npm run api` | Inicia el backend API en el puerto 3001 (`http://localhost:3001/`). |
+| `npm test` | Ejecuta la suite completa de 195 tests con Vitest. |
 | `npm run build` | Compila los paquetes optimizados para producción. |
-| `npm run lint` | Analiza el código fuente en busca de errores con ESLint. |
+| `npm run lint` | Analiza el código fuente con ESLint. |
 
 ---
 

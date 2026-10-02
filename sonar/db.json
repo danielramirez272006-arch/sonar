@@ -11092,6 +11092,24 @@
       "trackTitle": "",
       "hasSpoilers": false,
       "cover": "https://cdn-images.dzcdn.net/images/cover/a175af9b7d329bc678cb4d26fc13d6de/1000x1000-000000-80-0-0.jpg"
+    },
+    {
+      "id": "4086fbab0ded5a2515eae33cf68269a6",
+      "userId": "admin-1",
+      "userName": "Administrador",
+      "content": "ta buena",
+      "status": "pending_moderation",
+      "createdAt": "2026-10-01T21:23:56.909Z",
+      "aiFlagged": false,
+      "albumId": "9896728",
+      "albumTitle": "To Pimp a Butterfly",
+      "parentAlbum": "To Pimp a Butterfly",
+      "artist": "Kendrick Lamar",
+      "rating": 4,
+      "type": "album",
+      "trackTitle": "",
+      "hasSpoilers": false,
+      "cover": "https://cdn-images.dzcdn.net/images/cover/00dd0da365a94b1829302d6b7fec70e6/1000x1000-000000-80-0-0.jpg"
     }
   ],
   "featuredReleases": [

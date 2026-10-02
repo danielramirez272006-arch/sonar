@@ -1,0 +1,255 @@
+{
+  "name": "SONAR - Admin Hub IA (Agente Todo-en-Uno + Google Gemini)",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "sonar-admin-hub",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "hub-webhook-001",
+      "name": "Webhook Admin Hub",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [200, 300],
+      "webhookId": "sonar-admin-hub"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "hub-cond-message",
+              "leftValue": "={{ $json.body?.message || $json.message }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "hub-validate-001",
+      "name": "Validar Solicitud",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [420, 300]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "{\n  \"success\": false,\n  \"error\": \"Debes enviar un mensaje o instrucción para el agente Admin Hub.\"\n}",
+        "options": {
+          "responseCode": 400
+        }
+      },
+      "id": "hub-error-001",
+      "name": "Respond Error",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [660, 500]
+    },
+    {
+      "parameters": {
+        "jsCode": "const body = $input.first().json.body || $input.first().json || {};\nconst message = (body.message || '').trim();\nconst sessionId = body.sessionId || 'admin-hub-' + Date.now();\nconst adminName = body.adminName || 'Administrador';\nconst action = body.action || 'general';\n\n// Contexto de la plataforma enviado desde el frontend\nconst context = body.context || {};\nconst usersData = JSON.stringify(context.users || []);\nconst reviewsData = JSON.stringify(context.reviews || []);\nconst releasesData = JSON.stringify(context.releases || []);\nconst labelsData = JSON.stringify(context.labels || []);\nconst vinylsData = JSON.stringify(context.vinyls || []);\nconst reportsData = JSON.stringify(context.reports || []);\n\nconst promptText = `Instrucción del Administrador (${adminName}):\n\"${message}\"\n\nAcción solicitada: ${action}\n\n--- DATOS COMPLETOS DE LA PLATAFORMA SONAR ---\nUsuarios registrados (${(context.users || []).length}): ${usersData}\nReseñas (${(context.reviews || []).length}): ${reviewsData}\nLanzamientos destacados (${(context.releases || []).length}): ${releasesData}\nSellos discográficos (${(context.labels || []).length}): ${labelsData}\nEdiciones de Vinilo (${(context.vinyls || []).length}): ${vinylsData}\nReportes de conducta (${(context.reports || []).length}): ${reportsData}`;\n\nreturn [\n  {\n    json: {\n      message,\n      sessionId,\n      adminName,\n      action,\n      promptText,\n      timestamp: new Date().toISOString()\n    }\n  }\n];"
+      },
+      "id": "hub-prepare-001",
+      "name": "Preparar Contexto Admin",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [660, 240]
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.promptText }}",
+        "options": {
+          "systemMessage": "Eres 'Admin Hub IA', el asistente inteligente TODO-EN-UNO del panel de administración de la plataforma SONAR.\n\nTu rol es ser el co-piloto estratégico del administrador, combinando tres capacidades principales:\n\n## 1. GESTIÓN DE CATÁLOGO\n- Analiza lanzamientos, sellos discográficos y ediciones de vinilo.\n- Detecta duplicados, catálogos incompletos o sin géneros asignados.\n- Sugiere categorización, metadatos faltantes y enriquecimiento de fichas.\n- Identifica tendencias de género, formato y artistas más catalogados.\n- Recomienda lanzamientos para destacar en portada según popularidad y relevancia.\n\n## 2. ANÁLISIS DE USUARIOS\n- Analiza patrones de actividad: usuarios más activos vs inactivos.\n- Detecta usuarios de riesgo: con múltiples reportes de conducta, suspensiones o sanciones.\n- Identifica cuentas sospechosas: registros recientes con actividad atípica, múltiples reseñas en poco tiempo.\n- Calcula métricas de engagement: ratio de reseñas por usuario, promedio de calificaciones.\n- Sugiere estrategias de retención y gamificación.\n\n## 3. REPORTES Y MÉTRICAS EJECUTIVAS\n- Genera resúmenes ejecutivos del estado general de la plataforma.\n- Crea reportes de crecimiento: nuevos usuarios, nuevas reseñas, tendencias semanales.\n- Analiza distribución de calificaciones y sentimiento general.\n- Detecta anomalías estadísticas en la actividad.\n- Produce predicciones de crecimiento basadas en patrones actuales.\n- Resume reportes de conducta pendientes y sugiere priorización.\n\n## FORMATO DE RESPUESTA\nSiempre estructura tus respuestas así:\n1. **Resumen Ejecutivo** — Un párrafo conciso con el hallazgo principal.\n2. **Análisis Detallado** — Datos, métricas y hallazgos con viñetas.\n3. **Alertas y Anomalías** — Si detectas algo urgente, destácalo con 🚨.\n4. **Recomendaciones** — Acciones concretas que el admin debería tomar.\n\nAl final de tu respuesta, SIEMPRE incluye un bloque JSON con metadatos estructurados:\n```json\n{\n  \"category\": \"catalog|users|reports|mixed\",\n  \"severity\": \"info|warning|critical\",\n  \"metrics\": {\n    \"key\": \"value\"\n  },\n  \"quickActions\": [\"Acción sugerida 1\", \"Acción sugerida 2\", \"Acción sugerida 3\"]\n}\n```\n\nREGLAS:\n- Basa tus respuestas EXCLUSIVAMENTE en los datos recibidos. No inventes estadísticas.\n- Si los datos no son suficientes para una conclusión, dilo claramente.\n- Usa lenguaje profesional pero accesible.\n- Prioriza los hallazgos por urgencia e impacto.\n- No tomes decisiones irreversibles. Tu función es analizar y recomendar.\n- Responde siempre en español."
+        }
+      },
+      "id": "hub-agent-001",
+      "name": "Admin Hub Agente IA",
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.7,
+      "position": [920, 240]
+    },
+    {
+      "parameters": {
+        "modelName": "models/gemini-1.5-flash",
+        "options": {
+          "temperature": 0.3
+        }
+      },
+      "id": "hub-gemini-001",
+      "name": "Google Gemini Chat Model",
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [920, 460],
+      "credentials": {
+        "googlePalmApi": {
+          "id": "google-gemini-credentials",
+          "name": "Google Gemini API Key"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sessionKey": "={{ $json.sessionId }}",
+        "contextWindowLength": 15
+      },
+      "id": "hub-memory-001",
+      "name": "Memoria de Sesión Admin",
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.3,
+      "position": [1080, 460]
+    },
+    {
+      "parameters": {
+        "jsCode": "const input = $input.first().json || {};\nconst prev = $('Preparar Contexto Admin').first().json || {};\n\nlet rawOutput = '';\nif (typeof input.output === 'string') {\n  rawOutput = input.output;\n} else if (input.output && typeof input.output.text === 'string') {\n  rawOutput = input.output.text;\n} else if (typeof input.text === 'string') {\n  rawOutput = input.text;\n} else if (typeof input.response === 'string') {\n  rawOutput = input.response;\n} else if (typeof input === 'string') {\n  rawOutput = input;\n} else {\n  rawOutput = String(input.output || 'Admin Hub IA no pudo generar una respuesta.');\n}\n\nlet metadata = {};\nlet quickActions = [];\nlet cleanMessage = rawOutput;\n\n// Extraer bloque JSON de metadatos\nconst jsonMatch = rawOutput.match(/```(?:json)?([\\s\\S]*?)```/);\nif (jsonMatch) {\n  try {\n    const parsed = JSON.parse(jsonMatch[1].trim());\n    metadata = {\n      category: parsed.category || 'mixed',\n      severity: parsed.severity || 'info',\n      metrics: parsed.metrics || {}\n    };\n    if (Array.isArray(parsed.quickActions)) {\n      quickActions = parsed.quickActions;\n    }\n    cleanMessage = rawOutput.replace(/```(?:json)?[\\s\\S]*?```/, '').trim();\n  } catch (e) {\n    // JSON inválido, mantener texto completo\n  }\n}\n\nreturn [\n  {\n    json: {\n      success: true,\n      analysis: cleanMessage,\n      metadata,\n      quickActions,\n      action: prev.action || 'general',\n      sessionId: prev.sessionId || 'admin-hub-default',\n      timestamp: new Date().toISOString(),\n      model: 'gemini-1.5-flash'\n    }\n  }\n];"
+      },
+      "id": "hub-parse-001",
+      "name": "Formatear Respuesta Admin",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1260, 240]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ JSON.stringify({\n  success: true,\n  analysis: $('Formatear Respuesta Admin').first().json.analysis,\n  metadata: $('Formatear Respuesta Admin').first().json.metadata || {},\n  quickActions: $('Formatear Respuesta Admin').first().json.quickActions || [],\n  action: $('Formatear Respuesta Admin').first().json.action,\n  sessionId: $('Formatear Respuesta Admin').first().json.sessionId,\n  timestamp: $('Formatear Respuesta Admin').first().json.timestamp,\n  model: $('Formatear Respuesta Admin').first().json.model\n}) }}",
+        "options": {
+          "responseCode": 200,
+          "responseHeaders": {
+            "entries": [
+              {
+                "name": "Access-Control-Allow-Origin",
+                "value": "*"
+              },
+              {
+                "name": "Access-Control-Allow-Methods",
+                "value": "POST, OPTIONS, GET"
+              },
+              {
+                "name": "Access-Control-Allow-Headers",
+                "value": "Content-Type, Authorization"
+              }
+            ]
+          }
+        }
+      },
+      "id": "hub-respond-001",
+      "name": "Respond Webhook Admin",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [1500, 240]
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Webhook Admin Hub": {
+      "main": [
+        [
+          {
+            "node": "Validar Solicitud",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Validar Solicitud": {
+      "main": [
+        [
+          {
+            "node": "Preparar Contexto Admin",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Respond Error",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Preparar Contexto Admin": {
+      "main": [
+        [
+          {
+            "node": "Admin Hub Agente IA",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Admin Hub Agente IA",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Memoria de Sesión Admin": {
+      "ai_memory": [
+        [
+          {
+            "node": "Admin Hub Agente IA",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Admin Hub Agente IA": {
+      "main": [
+        [
+          {
+            "node": "Formatear Respuesta Admin",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Formatear Respuesta Admin": {
+      "main": [
+        [
+          {
+            "node": "Respond Webhook Admin",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "id": "sonar-admin-hub-agent-flow",
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "sonar-admin-hub-agent-v1",
+  "meta": {
+    "instanceId": "sonar-n8n-admin-hub-agent"
+  },
+  "tags": []
+}
