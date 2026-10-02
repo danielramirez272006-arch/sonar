@@ -1,4 +1,8 @@
 const rows = `
+Juegos|Games|Jeux|Giochi|游戏|ゲーム
+Tamaño de la interfaz|Interface size|Taille de l’interface|Dimensione dell’interfaccia|界面大小|インターフェースのサイズ
+Solo tamaño de las letras|Text size only|Taille des lettres uniquement|Solo dimensione del testo|仅文字大小|文字だけのサイズ
+Agranda las letras sin ampliar las imágenes ni la interfaz.|Enlarge text without enlarging images or the interface.|Agrandit le texte sans agrandir les images ni l’interface.|Ingrandisce il testo senza ingrandire le immagini o l’interfaccia.|放大文字，不放大图片或界面。|画像やインターフェースを拡大せずに文字を大きくします。
 Comentario reportado para moderación. ¡Gracias por mantener la comunidad segura!|Comment reported. Thank you for keeping the community safe!|Commentaire signalé. Merci de protéger la communauté !|Commento segnalato. Grazie per proteggere la community!|评论已举报，感谢维护社区安全！|コメントを報告しました。安全なコミュニティへのご協力ありがとうございます！
 Escribe un comentario o apreciación acústica...|Write a comment or listening impression…|Écrivez un commentaire ou une impression d’écoute…|Scrivi un commento o impressione d’ascolto…|撰写评论或聆听感想…|コメントや音楽の感想を入力…
 Publicar comentario|Post comment|Publier le commentaire|Pubblica commento|发表评论|コメントを投稿

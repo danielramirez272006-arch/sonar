@@ -204,7 +204,7 @@ export const AlbumOfTheWeek = () => {
   };
 
   return (
-    <section className="relative w-full px-4 sm:px-6 lg:px-12 pt-8 pb-12 overflow-hidden bg-gradient-to-b from-[#fff7fa] via-white to-[#fff7fa] dark:from-[#231123] dark:via-[#1c0d1c] dark:to-[#231123] transition-colors duration-300">
+    <section className="sonar-spotlight relative w-full px-4 sm:px-6 lg:px-12 pt-8 pb-12 overflow-hidden bg-gradient-to-b from-[#fff7fa] via-white to-[#fff7fa] dark:from-[#231123] dark:via-[#1c0d1c] dark:to-[#231123] transition-colors duration-300">
       {/* Resplandor ambiental de fondo */}
       <div className="absolute -top-20 left-1/4 w-[400px] sm:w-[600px] h-[400px] sm:h-[600px] rounded-full bg-rose-200/40 dark:bg-[#B80C09]/15 blur-[100px] sm:blur-[140px] pointer-events-none -z-10 transition-colors duration-300" />
       <div className="absolute top-1/3 right-10 w-[300px] sm:w-[450px] h-[300px] sm:h-[450px] rounded-full bg-purple-200/35 dark:bg-[#4B2840]/30 blur-[90px] sm:blur-[130px] pointer-events-none -z-10 transition-colors duration-300" />
@@ -244,7 +244,7 @@ export const AlbumOfTheWeek = () => {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -12 }}
             transition={{ duration: 0.35 }}
-            className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-14 items-center"
+            className="sonar-spotlight-grid grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-14 items-center"
           >
             {/* Vinilo & Funda Deslizante */}
             <div className="w-full lg:col-span-6 flex justify-center items-center py-2 sm:py-6">

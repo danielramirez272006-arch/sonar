@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useState, useEffect, useCallback, useRef } from 'react';
 import i18n from '../i18n';
+import { enlargeTextOnly } from '../utils/text-size';
 
 const AccessibilityContext = createContext(null);
 
@@ -28,6 +29,7 @@ const splitSpeechText = (text) => {
 
 const DEFAULT_SETTINGS = {
   fontSize: 'normal', // 'normal' | 'large' | 'xlarge'
+  textOnlySize: 'normal',
   lineSpacing: 'normal', // 'normal' | 'relaxed' | 'loose'
   readingGuide: false,
   sepiaMode: false,
@@ -101,6 +103,7 @@ export const AccessibilityProvider = ({ children }) => {
   // Aplicar clases de accesibilidad en document.documentElement
   useEffect(() => {
     const root = document.documentElement;
+    root.dataset.a11yTextSize = settings.textOnlySize;
 
     // Clases de tamaño de fuente
     root.classList.remove('a11y-font-large', 'a11y-font-xlarge');
@@ -172,6 +175,11 @@ export const AccessibilityProvider = ({ children }) => {
       root.classList.add(`a11y-cb-${settings.colorBlindness}`);
     }
   }, [settings]);
+
+  useEffect(() => {
+    const factor = { large: 1.15, xlarge: 1.3 }[settings.textOnlySize];
+    if (factor) return enlargeTextOnly(factor);
+  }, [settings.textOnlySize, settings.fontSize]);
 
   // Manejo de atajos globales de teclado
   useEffect(() => {

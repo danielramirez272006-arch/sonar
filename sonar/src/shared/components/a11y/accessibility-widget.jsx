@@ -120,9 +120,9 @@ export const AccessibilityWidget = () => {
                   <div className="p-3.5 rounded-2xl bg-gray-50 dark:bg-white/5 border border-gray-100 dark:border-white/5 flex flex-col gap-2.5">
                     <div className="flex items-center justify-between">
                       <span className="font-bold flex items-center gap-2">
-                        <span className="material-symbols-outlined text-[18px] text-[#B80C09]">format_size</span>{ui("Tamaño del Texto")}</span>
+                        <span className="material-symbols-outlined text-[18px] text-[#B80C09]">format_size</span>{ui("Tamaño de la interfaz")}</span>
                       <span className="text-xs font-bold text-[#5c435a] dark:text-[#B89CB0]">
-                        {settings.fontSize === 'normal' ? ui("100% (Normal)") : settings.fontSize === 'large' ? ui("115% (Grande)") : ui("130% (Extra)")}
+                        {settings.fontSize === 'normal' ? '100%' : settings.fontSize === 'large' ? '112%' : '122%'}
                       </span>
                     </div>
                     <div className="grid grid-cols-3 gap-2">
@@ -135,6 +135,7 @@ export const AccessibilityWidget = () => {
                           key={opt.id}
                           type="button"
                           onClick={() => updateSetting('fontSize', opt.id)}
+                          aria-pressed={settings.fontSize === opt.id}
                           className={`py-2 px-2.5 rounded-xl text-xs font-extrabold transition-all cursor-pointer ${
                             settings.fontSize === opt.id
                               ? 'bg-[#B80C09] text-white shadow-md'
@@ -144,6 +145,18 @@ export const AccessibilityWidget = () => {
                           {ui(opt.label)}
                         </button>
                       ))}
+                    </div>
+                  </div>
+
+                  <div role="group" aria-labelledby="a11y-text-only-title" className="a11y-text-control p-3.5 rounded-2xl bg-gray-50 dark:bg-white/5 border border-gray-100 dark:border-white/5">
+                    <h4 id="a11y-text-only-title" className="a11y-text-control-title">{ui('Solo tamaño de las letras')}</h4>
+                    <p className="text-sm mb-3">{ui('Agranda las letras sin ampliar las imágenes ni la interfaz.')}</p>
+                    <div className="grid grid-cols-3 gap-2">
+                      {['normal', 'large', 'xlarge'].map((size, index) => <button
+                        key={size} type="button" aria-pressed={settings.textOnlySize === size}
+                        onClick={() => updateSetting('textOnlySize', size)}
+                        className={`min-h-11 px-2 py-2 rounded-xl text-sm font-bold ${settings.textOnlySize === size ? 'bg-[#B80C09] text-white' : 'bg-white dark:bg-[#4B2840] border border-gray-200 dark:border-white/10'}`}
+                      >{['100%', '115%', '130%'][index]}</button>)}
                     </div>
                   </div>
 
