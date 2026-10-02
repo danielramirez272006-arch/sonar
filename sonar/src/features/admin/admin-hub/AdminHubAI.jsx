@@ -281,7 +281,7 @@ export function AdminHubAI() {
 
       {/* Herramientas / Módulos */}
       <section className="mb-5">
-        <h2 className="text-xs font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400 mb-3 flex items-center gap-2">
+        <h2 className="text-xs font-bold uppercase tracking-wider text-gray-700 dark:text-gray-300 mb-3 flex items-center gap-2">
           <span className="material-symbols-outlined text-sm text-[#B80C09] dark:text-[#ff4d4a]">construction</span>
           Módulos del Agente
         </h2>
@@ -301,7 +301,7 @@ export function AdminHubAI() {
                 <span className="text-2xl">{tool.icon}</span>
                 <div>
                   <span className="text-sm font-bold text-gray-900 dark:text-white block">{tool.label}</span>
-                  <span className="text-xs text-gray-500 dark:text-gray-400">{tool.description}</span>
+                  <span className="text-xs text-gray-600 dark:text-gray-300 font-medium">{tool.description}</span>
                 </div>
                 {activeTool === tool.id && (
                   <span className="ml-auto material-symbols-outlined text-[#B80C09] dark:text-[#ff4d4a] text-lg">check_circle</span>
@@ -314,7 +314,7 @@ export function AdminHubAI() {
 
       {/* Acciones Rápidas */}
       <section className="mb-6">
-        <h2 className="text-xs font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400 mb-3 flex items-center gap-2">
+        <h2 className="text-xs font-bold uppercase tracking-wider text-gray-700 dark:text-gray-300 mb-3 flex items-center gap-2">
           <span className="material-symbols-outlined text-sm text-[#B80C09] dark:text-[#ff4d4a]">bolt</span>
           Consultas Rápidas
         </h2>
@@ -324,7 +324,7 @@ export function AdminHubAI() {
               key={idx}
               onClick={() => handleQuickPrompt(item)}
               disabled={loading}
-              className="px-3.5 py-2 rounded-xl text-xs font-semibold bg-white dark:bg-[#1c1c1f] hover:bg-red-50 dark:hover:bg-[#27272a] text-gray-800 dark:text-gray-200 border border-gray-200 dark:border-white/10 hover:border-[#B80C09]/50 transition-all duration-200 hover:shadow-md disabled:opacity-50 cursor-pointer flex items-center gap-1.5"
+              className="px-3.5 py-2 rounded-xl text-xs font-semibold bg-white dark:bg-[#1c1c1f] hover:bg-red-50 dark:hover:bg-[#27272a] text-gray-900 dark:text-gray-100 border border-gray-300 dark:border-white/10 hover:border-[#B80C09]/50 transition-all duration-200 hover:shadow-md disabled:opacity-50 cursor-pointer flex items-center gap-1.5"
             >
               <span>{item.icon}</span> {item.label}
             </button>
@@ -368,9 +368,9 @@ export function AdminHubAI() {
               }}
               placeholder="Ej. ¿Qué usuarios tienen más reportes de conducta pendientes? ¿Hay lanzamientos sin género?"
               disabled={loading}
-              className="w-full p-3.5 rounded-xl bg-gray-50 dark:bg-black/40 border border-gray-300 dark:border-white/15 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:border-[#B80C09] focus:ring-1 focus:ring-[#B80C09] focus:bg-white dark:focus:bg-black/60 text-sm resize-none transition-all"
+              className="w-full p-3.5 rounded-xl bg-gray-50 dark:bg-black/40 border border-gray-300 dark:border-white/15 text-gray-900 dark:text-white placeholder-gray-600 dark:placeholder-gray-400 focus:outline-none focus:border-[#B80C09] focus:ring-1 focus:ring-[#B80C09] focus:bg-white dark:focus:bg-black/60 text-sm font-medium resize-none transition-all"
             />
-            <p className="text-[10px] text-gray-400 dark:text-gray-500 mt-1">Ctrl+Enter para enviar</p>
+            <p className="text-[10px] text-gray-500 dark:text-gray-400 mt-1">Ctrl+Enter para enviar</p>
 
             <div className="mt-3">
               <button
