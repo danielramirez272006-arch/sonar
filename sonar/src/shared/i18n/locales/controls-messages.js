@@ -1,4 +1,18 @@
 const rows = `
+Intentos fallidos|Failed attempts|Essais ratés|Tentativi falliti|失败次数|失敗回数
+Memoria musical|Musical memory|Mémoire musicale|Memoria musicale|音乐记忆|音楽メモリー
+Voltea dos cartas y encuentra los instrumentos iguales. ¡Completa las ocho parejas!|Turn over two cards and find matching instruments. Complete all eight pairs!|Retourne deux cartes et retrouve les instruments identiques. Complète les huit paires !|Gira due carte e trova gli strumenti uguali. Completa tutte le otto coppie!|翻开两张牌，找到相同的乐器。完成全部八对！|2枚のカードをめくり、同じ楽器を見つけよう。8組すべてをそろえよう！
+Nueva partida|New game|Nouvelle partie|Nuova partita|新游戏|新しいゲーム
+Parejas|Pairs|Paires|Coppie|配对|ペア
+Movimientos|Moves|Coups|Mosse|步数|手数
+Tablero de memoria|Memory board|Plateau de mémoire|Tabellone della memoria|记忆游戏棋盘|メモリーボード
+Carta|Card|Carte|Carta|卡牌|カード
+Oculta|Hidden|Cachée|Nascosta|隐藏|裏向き
+Pareja encontrada|Pair found|Paire trouvée|Coppia trovata|找到配对|ペア発見
+¡Orquesta completa! Encontraste todas las parejas en {{count}} movimientos.|Orchestra complete! You found every pair in {{count}} moves.|Orchestre complet ! Toutes les paires trouvées en {{count}} coups.|Orchestra completa! Hai trovato tutte le coppie in {{count}} mosse.|乐团集齐！你用了{{count}}步找到全部配对。|オーケストラ完成！{{count}}手ですべてのペアを見つけました。
+No coinciden. Recuerda sus posiciones e inténtalo de nuevo.|Not a match. Remember their positions and try again.|Pas de paire. Retiens leurs positions et réessaie.|Non coincidono. Ricorda le posizioni e riprova.|不匹配。记住位置，再试一次。|ペアではありません。位置を覚えてもう一度挑戦しよう。
+Ahora elige otra carta.|Now choose another card.|Choisis maintenant une autre carte.|Ora scegli un’altra carta.|现在选择另一张牌。|次のカードを選ぼう。
+Parejas encontradas: {{count}} de 8. Elige una carta.|Pairs found: {{count}} of 8. Choose a card.|Paires trouvées : {{count}} sur 8. Choisis une carte.|Coppie trovate: {{count}} su 8. Scegli una carta.|已找到{{count}}对，共8对。选择一张牌。|見つけたペア：8組中{{count}}組。カードを選ぼう。
 Juegos|Games|Jeux|Giochi|游戏|ゲーム
 Tamaño de la interfaz|Interface size|Taille de l’interface|Dimensione dell’interfaccia|界面大小|インターフェースのサイズ
 Solo tamaño de las letras|Text size only|Taille des lettres uniquement|Solo dimensione del testo|仅文字大小|文字だけのサイズ

@@ -28,6 +28,7 @@ import ListeningJournalModal from '../../features/profile/components/listening-j
 import EnhancedParentalControl from '../../features/profile/components/enhanced-parental-control';
 import RewardsStoreTab from '../../features/profile/components/rewards-store-tab';
 import { MusicTrivia } from '../../features/profile/components/music-trivia';
+import MusicMemory from '../../features/profile/components/music-memory';
 
 export const UserDashboardPage = () => {
   const ui = useUIText();
@@ -1527,6 +1528,7 @@ export const UserDashboardPage = () => {
           {activeTab === 'games' && (
             <section aria-labelledby="profile-games-title" className="min-w-0 space-y-4">
               <h2 id="profile-games-title" className="text-2xl font-bold">{ui('Juegos')}</h2>
+              <MusicMemory />
               <MusicTrivia />
             </section>
           )}

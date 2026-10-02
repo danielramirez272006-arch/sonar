@@ -4681,7 +4681,7 @@
       "role": "user",
       "avatarUrl": "",
       "avatarBg": "#B80C09",
-      "bio": "Nuevo mel├│mano explorando vinilos y texturas ac├║sticas en Sonar.",
+      "bio": "Nuevo melómano explorando vinilos y texturas acústicas en Sonar.",
       "stats": {
         "savedAlbums": 0,
         "reviewsCount": 0,
@@ -4690,7 +4690,7 @@
       },
       "preferences": [
         "Art Rock",
-        "Electr├│nica",
+        "Electrónica",
         "Psicodelia"
       ],
       "gear": {
@@ -4699,8 +4699,8 @@
         "favoriteFormat": "Vinilo 33Ôàô RPM"
       },
       "badges": [
-        "Mel├│mano Verificado",
-        "Audi├│filo Inicial"
+        "Melómano Verificado",
+        "Audiófilo Inicial"
       ],
       "createdAt": "2026-09-24T19:33:32.808Z"
     },
@@ -11898,13 +11898,13 @@
     {
       "id": "baa5cfed-dcae-4365-a588-172101fd1af0",
       "userId": null,
-      "userName": "Sof├¡a Sound",
+      "userName": "Sofía Sound",
       "reporterId": "admin-1",
       "reporterName": "Administrador",
       "contentId": "c-2-1",
       "contentType": "comment",
       "contentSnapshot": "El solo de sintetizador modular de \"Digital Love\" sigue siendo inigualable.",
-      "reason": "Lenguaje de odio o discriminaci├│n",
+      "reason": "Lenguaje de odio o discriminación",
       "tags": [],
       "reviewId": 2,
       "status": "resolved",
