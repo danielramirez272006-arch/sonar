@@ -249,6 +249,15 @@ html:not(.dark) :is(.growth-panel, .priority-queue, .moderation-rhythm, .admin-t
 }
 
 .reports-workspace { --reports-muted: #786575; --reports-soft: #f2eaf0; --reports-border: #e4d7e1; padding: 0; overflow: hidden; }
+/* The compact users table is embedded in the dashboard, so keep its mobile
+   override after the desktop column definition below. */
+@media (max-width: 650px) {
+  .admin-workspace > .user-page { min-width: 0; padding: 1rem; }
+  .admin-workspace > .user-page .user-page__table article {
+    grid-template-columns: minmax(0, 1fr) auto;
+  }
+}
+
 .reports-heading { display: flex; justify-content: space-between; align-items: center; gap: 24px; padding: 30px 32px 26px; }
 .reports-eyebrow { color: var(--reports-muted); font-size: 10px; font-weight: 700; letter-spacing: 1.8px; }
 .reports-heading h1 { font-size: clamp(24px, 2.4vw, 34px); letter-spacing: -1px; margin: 10px 0 8px; }
