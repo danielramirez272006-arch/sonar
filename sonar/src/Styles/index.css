@@ -203,7 +203,7 @@ html {
 
 /* Acceso: composición editorial independiente del portal público. */
 .auth-page { min-height: 100vh; background: #fff; color: #231123; }
-.auth-shell { min-height: 100vh; display: grid; grid-template-columns: minmax(420px, 58%) minmax(420px, 42%); }
+.auth-shell { min-height: 100vh; display: grid; grid-template-columns: minmax(0, 58%) minmax(0, 42%); }
 .auth-editorial { position: relative; overflow: hidden; padding: clamp(2rem, 4vw, 4rem) clamp(2rem, 4vw, 4.5rem) 2rem; display: flex; flex-direction: column; justify-content: space-between; gap: 1.5rem; color: #231123; background: radial-gradient(circle at 64% 88%, rgba(255,255,255,.92) 0 5%, transparent 28%), linear-gradient(135deg, #fde6fa 0%, #f7dff6 51%, #f9d8f1 100%); }
 .auth-editorial::after { content: ''; position: absolute; width: 560px; height: 560px; border-radius: 50%; border: 1px solid rgba(255,255,255,.5); bottom: -370px; right: -65px; }
 .auth-editorial__copy { max-width: 590px; position: relative; z-index: 1; }

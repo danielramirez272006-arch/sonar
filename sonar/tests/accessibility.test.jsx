@@ -1,9 +1,5 @@
-/**
- * @vitest-environment jsdom
- */
 import { render, screen, fireEvent, cleanup } from '@testing-library/react';
 import React from 'react';
-import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import { AccessibilityProvider, useAccessibility } from '../src/shared/context/accessibility-context';
 import { AccessibilityWidget } from '../src/shared/components/a11y/accessibility-widget';
 import { KeyboardShortcutsModal } from '../src/shared/components/a11y/keyboard-shortcuts-modal';
@@ -11,10 +7,10 @@ import { SkipToContent } from '../src/shared/components/a11y/skip-to-content';
 import { TTSButton } from '../src/shared/components/a11y/tts-button';
 
 // Mock Web Speech API
-const mockSpeak = vi.fn();
-const mockCancel = vi.fn();
-const mockPause = vi.fn();
-const mockResume = vi.fn();
+const mockSpeak = jest.fn();
+const mockCancel = jest.fn();
+const mockPause = jest.fn();
+const mockResume = jest.fn();
 
 class MockUtterance {
   constructor(text) {

@@ -1,4 +1,3 @@
-import { expect, it } from 'vitest'
 import { growthStatistics } from '../src/shared/services/growth-statistics.js'
 import { validateCatalog } from '../src/shared/services/catalog-service.js'
 it('counts valid records and separates totals from dated registrations', () => {

@@ -1,14 +1,10 @@
-/**
- * @vitest-environment jsdom
- */
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { requestPasswordResetWebhook } from '../src/shared/services/n8n-webhooks';
 
 describe('n8n Forgot Password OTP Webhook Service', () => {
   const originalFetch = global.fetch;
 
   beforeEach(() => {
-    global.fetch = vi.fn().mockResolvedValue({
+    global.fetch = jest.fn().mockResolvedValue({
       ok: true,
       json: async () => ({
         success: true,

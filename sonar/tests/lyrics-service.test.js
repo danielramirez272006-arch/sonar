@@ -1,9 +1,8 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { getLyricsForTrack } from '../src/shared/services/lyrics-service';
 
 describe('Lyrics Service (LRCLIB & Public APIs)', () => {
   beforeEach(() => {
-    vi.restoreAllMocks();
+    jest.restoreAllMocks();
   });
 
   it('obtiene la letra correctamente desde la API pública de LRCLIB', async () => {
@@ -13,7 +12,7 @@ describe('Lyrics Service (LRCLIB & Public APIs)', () => {
       instrumental: false,
     };
 
-    global.fetch = vi.fn().mockResolvedValue({
+    global.fetch = jest.fn().mockResolvedValue({
       ok: true,
       json: async () => mockLyrics,
     });
@@ -30,7 +29,7 @@ describe('Lyrics Service (LRCLIB & Public APIs)', () => {
   });
 
   it('maneja canciones instrumentales sin error', async () => {
-    global.fetch = vi.fn().mockResolvedValue({
+    global.fetch = jest.fn().mockResolvedValue({
       ok: true,
       json: async () => ({ instrumental: true }),
     });
@@ -49,7 +48,7 @@ describe('Lyrics Service (LRCLIB & Public APIs)', () => {
     const resNoParams = await getLyricsForTrack({});
     expect(resNoParams).toBeNull();
 
-    global.fetch = vi.fn().mockResolvedValue({
+    global.fetch = jest.fn().mockResolvedValue({
       ok: false,
       status: 404,
     });

@@ -1,4 +1,3 @@
-﻿import { expect, it } from 'vitest'
 import { adminEvents, behaviorInput, dashboardMetrics, sanctionChanges, userStatus, weekActivity } from '../src/shared/services/admin-data.js'
 it('expires temporary sanctions and preserves permanent bans', () => {
   expect(userStatus({ status: 'suspended', suspendedUntil: '2020-01-01' })).toBe('active')

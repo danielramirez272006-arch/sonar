@@ -1,12 +1,10 @@
-﻿/** @vitest-environment jsdom */
-import { afterEach, expect, it, vi } from 'vitest'
 import { cleanup, fireEvent, render, screen } from '@testing-library/react'
 import { createRef } from 'react'
 import { ConsoleSearch } from '../src/features/admin/console-search.jsx'
-vi.mock('../src/shared/services/deezer-service.js', () => ({ DEFAULT_DEEZER_ALBUMS: [], searchAlbums: vi.fn().mockResolvedValue([]) }))
+jest.mock('../src/shared/services/deezer-service.js', () => ({ DEFAULT_DEEZER_ALBUMS: [], searchAlbums: jest.fn().mockResolvedValue([]) }))
 afterEach(cleanup)
 function setup(query) {
-  render(<ConsoleSearch users={[{ id: '1', username: 'Mateo', email: 'mateo@test.local' }]} reviews={[{ id: '101', userId: '1', content: 'Gran disco', albumId: '23' }]} query={query} setQuery={vi.fn()} inputRef={createRef()} />)
+  render(<ConsoleSearch users={[{ id: '1', username: 'Mateo', email: 'mateo@test.local' }]} reviews={[{ id: '101', userId: '1', content: 'Gran disco', albumId: '23' }]} query={query} setQuery={jest.fn()} inputRef={createRef()} />)
   fireEvent.focus(screen.getByRole('combobox'))
 }
 it('opens a matching user profile with Enter', () => {

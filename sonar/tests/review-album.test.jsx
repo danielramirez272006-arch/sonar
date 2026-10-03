@@ -1,14 +1,12 @@
-/** @vitest-environment jsdom */
-import { afterEach, expect, it, vi } from 'vitest'
 import { cleanup, render, screen } from '@testing-library/react'
 import { ReviewAlbum } from '../src/features/admin/moderation/components/review-album.jsx'
 import { getAlbumById } from '../src/shared/services/deezer-service.js'
 
-vi.mock('../src/shared/services/deezer-service.js', () => ({
-  getAlbumById: vi.fn(),
+jest.mock('../src/shared/services/deezer-service.js', () => ({
+  getAlbumById: jest.fn(),
   DEFAULT_DEEZER_ALBUMS: [{ id: 10709540, title: 'Currents', artist: 'Tame Impala', year: '2015', cover: 'https://example.com/cover.jpg' }],
 }))
-afterEach(() => { cleanup(); vi.clearAllMocks() })
+afterEach(() => { cleanup(); jest.clearAllMocks() })
 
 it('resolves a legacy review and displays the API album and listening link', async () => {
   getAlbumById.mockResolvedValue({ title: 'Currents', artist: 'Tame Impala', cover: 'https://example.com/live.jpg', year: '2015' })

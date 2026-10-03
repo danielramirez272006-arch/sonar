@@ -1,5 +1,3 @@
-/** @vitest-environment jsdom */
-import { expect, it } from 'vitest'
 import JSZip from 'jszip'
 import ExcelJS from 'exceljs'
 import { catalogTemplate, readCatalogExcel } from '../src/shared/services/catalog-excel.js'

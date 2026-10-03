@@ -1,7 +1,3 @@
-/**
- * @vitest-environment jsdom
- */
-import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import { renderHook, act, cleanup } from '@testing-library/react';
 import React from 'react';
 import { authServerFetch } from './helpers/auth-server';
@@ -9,7 +5,7 @@ import { AuthProvider, useAuth } from '../src/shared/context/auth-context';
 
 describe('AuthContext Registration Flow', () => {
   beforeEach(() => {
-    vi.stubGlobal('fetch', authServerFetch());
+    globalThis.__stubGlobal('fetch', authServerFetch());
     window.localStorage.clear();
     global.ResizeObserver = class ResizeObserver {
       observe() {}
@@ -28,7 +24,7 @@ describe('AuthContext Registration Flow', () => {
     };
   });
 
-  afterEach(() => { cleanup(); vi.unstubAllGlobals(); });
+  afterEach(() => { cleanup(); globalThis.__unstubAllGlobals(); });
 
   it('debe registrar un nuevo usuario y actualizar el estado de autenticación', async () => {
     const wrapper = ({ children }) => <AuthProvider>{children}</AuthProvider>;

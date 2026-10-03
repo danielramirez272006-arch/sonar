@@ -1,5 +1,3 @@
-/** @vitest-environment jsdom */
-import { afterEach, beforeAll, expect, it } from 'vitest'
 import { cleanup, fireEvent, render } from '@testing-library/react'
 import { Avatar } from '../src/shared/components/ui/avatar.jsx'
 import { BlobatarAvatar } from '../src/shared/components/ui/blobatar-avatar.jsx'

@@ -1,6 +1,4 @@
-/** @vitest-environment jsdom */
 import React from 'react';
-import { afterEach, describe, expect, it, vi } from 'vitest';
 import { act, cleanup, fireEvent, render, renderHook, screen } from '@testing-library/react';
 import { I18nextProvider } from 'react-i18next';
 import i18n, { LANGUAGES, resources } from '../src/shared/i18n/index.js';
@@ -10,9 +8,9 @@ import { useUIText } from '../src/shared/i18n/use-ui-text.js';
 import { usePageScroll } from '../src/shared/routing/use-page-scroll.js';
 
 // The editorial card has perpetual animations unrelated to form localization.
-vi.mock('../src/features/auth/components/rotating-review.jsx', () => ({ RotatingReview: () => null }));
+jest.mock('../src/features/auth/components/rotating-review.jsx', () => ({ RotatingReview: () => null }));
 
-afterEach(async () => { cleanup(); await i18n.changeLanguage('es'); vi.restoreAllMocks(); });
+afterEach(async () => { cleanup(); await i18n.changeLanguage('es'); jest.restoreAllMocks(); });
 
 describe('translation resources', () => {
   for (const { code } of LANGUAGES) {
@@ -62,7 +60,7 @@ describe('reactive language selection', () => {
 });
 
 it('scrolls on page changes but not filters, search or parameter changes', () => {
-  const scroll = vi.spyOn(window, 'scrollTo').mockImplementation(() => {});
+  const scroll = jest.spyOn(window, 'scrollTo').mockImplementation(() => {});
   const { rerender } = renderHook(({ path }) => usePageScroll(path), { initialProps: { path: 'explore' } });
   rerender({ path: 'explore?q=rock' });
   rerender({ path: 'explore?q=jazz&filter=new' });

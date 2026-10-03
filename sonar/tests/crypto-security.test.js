@@ -1,7 +1,3 @@
-/**
- * @vitest-environment jsdom
- */
-import { describe, it, expect } from 'vitest';
 import { hashPassword, verifyPassword, generateSalt } from '../src/shared/services/crypto-service';
 
 describe('Crypto Security & Password Encryption Service', () => {

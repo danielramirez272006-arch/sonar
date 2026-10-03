@@ -1,8 +1,7 @@
-import { expect, it, vi, afterEach } from 'vitest'
 import { getCatalog, saveCatalog } from '../src/shared/services/catalog-service.js'
 import { saveImportedRow } from '../src/shared/services/catalog-import-service.js'
-vi.mock('../src/shared/services/catalog-service.js', () => ({ getCatalog: vi.fn(), saveCatalog: vi.fn() }))
-afterEach(() => vi.resetAllMocks())
+jest.mock('../src/shared/services/catalog-service.js', () => ({ getCatalog: jest.fn(), saveCatalog: jest.fn() }))
+afterEach(() => jest.resetAllMocks())
 const item = { importId: 'stable-id', data: { title: 'Disco' } }
 it('recovers a lost response without inserting a duplicate', async () => {
   getCatalog.mockResolvedValueOnce([]).mockResolvedValueOnce([{ id: 'stable-id', title: 'Disco' }])

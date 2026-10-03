@@ -1,17 +1,15 @@
-﻿// @vitest-environment jsdom
 import React from 'react';
-import { afterEach, beforeEach, expect, it, vi } from 'vitest';
 import { cleanup, render, screen, waitFor } from '@testing-library/react';
 import { GoogleSignInButton } from '../src/features/auth/components/google-signin-button';
 
 beforeEach(() => {
-  vi.stubEnv('VITE_GOOGLE_CLIENT_ID', 'test.apps.googleusercontent.com');
-  window.google = { accounts: { id: { initialize: vi.fn(), renderButton: vi.fn(), prompt: vi.fn() } } };
+  globalThis.__stubEnv('VITE_GOOGLE_CLIENT_ID', 'test.apps.googleusercontent.com');
+  window.google = { accounts: { id: { initialize: jest.fn(), renderButton: jest.fn(), prompt: jest.fn() } } };
 });
-afterEach(() => { cleanup(); delete window.google; vi.unstubAllEnvs(); });
+afterEach(() => { cleanup(); delete window.google; globalThis.__unstubAllEnvs(); });
 
 it('renderiza el botón oficial y entrega la credencial al formulario', async () => {
-  const onCredential = vi.fn();
+  const onCredential = jest.fn();
   render(<GoogleSignInButton onCredential={onCredential} />);
   await waitFor(() => expect(window.google.accounts.id.renderButton).toHaveBeenCalled());
   expect(window.google.accounts.id.prompt).not.toHaveBeenCalled();
@@ -20,8 +18,8 @@ it('renderiza el botón oficial y entrega la credencial al formulario', async ()
 });
 
 it('muestra un error cuando falta la configuración sin simular una cuenta', async () => {
-  vi.stubEnv('VITE_GOOGLE_CLIENT_ID', '');
-  const onCredential = vi.fn();
+  globalThis.__stubEnv('VITE_GOOGLE_CLIENT_ID', '');
+  const onCredential = jest.fn();
   render(<GoogleSignInButton onCredential={onCredential} />);
   expect((await screen.findByRole('alert')).textContent).toContain('VITE_GOOGLE_CLIENT_ID');
   expect(onCredential).not.toHaveBeenCalled();

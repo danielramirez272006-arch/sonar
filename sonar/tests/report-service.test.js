@@ -1,9 +1,8 @@
-import { beforeEach, expect, it, vi } from 'vitest'
 import { apiRequest } from '../src/shared/services/api-client.js'
 import { submitCommunityReport } from '../src/shared/services/report-service.js'
 import { reportsFrom } from '../src/shared/services/admin-data.js'
-vi.mock('../src/shared/services/api-client.js', () => ({ apiRequest: vi.fn() }))
-beforeEach(() => vi.resetAllMocks())
+jest.mock('../src/shared/services/api-client.js', () => ({ apiRequest: jest.fn() }))
+beforeEach(() => jest.resetAllMocks())
 const input = { authorId: 'author', reporter: { id: 'reader', username: 'Reader' }, contentId: 'comment-1', contentType: 'comment', contentSnapshot: 'Texto reportado', reason: 'Spam' }
 it('persists a home report in the format consumed by the admin', async () => {
   apiRequest.mockResolvedValueOnce([{ id: 'author', username: 'Author', conductReports: [] }]).mockResolvedValueOnce({})

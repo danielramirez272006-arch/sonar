@@ -1,7 +1,3 @@
-/**
- * @vitest-environment jsdom
- */
-import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import React from 'react';
 import { render, screen, cleanup } from '@testing-library/react';
 import { AdminRoute } from '../src/shared/routing/admin-route';
@@ -14,7 +10,7 @@ describe('AdminRoute Component Security Guard', () => {
 
   afterEach(() => {
     cleanup();
-    vi.restoreAllMocks();
+    jest.restoreAllMocks();
   });
 
   const renderWithAuth = (authValues, fallbackContent = <div>Redirigido a Login</div>) => {

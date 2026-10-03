@@ -1,12 +1,10 @@
-/** @vitest-environment jsdom */
-import { afterEach, expect, it, vi } from 'vitest'
 import { cleanup, fireEvent, render, screen } from '@testing-library/react'
 import { CatalogPage } from '../src/pages/admin/catalog-page.jsx'
 import { getCatalog, saveCatalog, deleteCatalog } from '../src/shared/services/catalog-service.js'
-vi.mock('../src/shared/context/auth-context.jsx', () => ({ useAuth: () => ({ user: { role: 'admin' } }) }))
-vi.mock('../src/shared/components/ui/modal.jsx', () => ({ Modal: ({ children, title }) => <div role="dialog" aria-label={title}>{children}</div> }))
-vi.mock('../src/shared/services/catalog-service.js', async importOriginal => ({ ...await importOriginal(), getCatalog: vi.fn(), saveCatalog: vi.fn(), deleteCatalog: vi.fn() }))
-afterEach(() => { cleanup(); vi.resetAllMocks() })
+jest.mock('../src/shared/context/auth-context.jsx', () => ({ useAuth: () => ({ user: { role: 'admin' } }) }))
+jest.mock('../src/shared/components/ui/modal.jsx', () => ({ Modal: ({ children, title }) => <div role="dialog" aria-label={title}>{children}</div> }))
+jest.mock('../src/shared/services/catalog-service.js', () => ({ ...jest.requireActual('../src/shared/services/catalog-service.js'), getCatalog: jest.fn(), saveCatalog: jest.fn(), deleteCatalog: jest.fn() }))
+afterEach(() => { cleanup(); jest.resetAllMocks() })
 it('creates an announcement, preserves the editor on failure and confirms deletion', async () => {
   getCatalog.mockResolvedValue([])
   saveCatalog.mockRejectedValueOnce(new Error('Sin conexión')).mockResolvedValue({ id: 'a', title: 'Novedades', description: 'Texto', status: 'draft' })

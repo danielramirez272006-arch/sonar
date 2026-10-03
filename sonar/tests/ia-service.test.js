@@ -1,4 +1,3 @@
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import {
   analyzeReview,
   getLyricalContext,
@@ -6,17 +5,17 @@ import {
 } from '../src/shared/services/ia-service.js'
 
 beforeEach(() => {
-  vi.useFakeTimers()
+  jest.useFakeTimers()
 })
 
 afterEach(() => {
-  vi.useRealTimers()
+  jest.useRealTimers()
 })
 
 describe('getRecommendations', () => {
   it('devuelve cuatro álbumes con los campos requeridos', async () => {
     const result = getRecommendations('1')
-    await vi.runAllTimersAsync()
+    await jest.runAllTimersAsync()
     const albums = await result
 
     expect(Array.isArray(albums)).toBe(true)
@@ -40,7 +39,7 @@ describe('getLyricalContext', () => {
     [undefined, undefined],
   ])('devuelve análisis y cita para %s / %s', async (albumName, artist) => {
     const result = getLyricalContext(albumName, artist)
-    await vi.runAllTimersAsync()
+    await jest.runAllTimersAsync()
 
     expect(await result).toEqual({
       analisis: expect.any(String),
@@ -52,7 +51,7 @@ describe('getLyricalContext', () => {
 describe('analyzeReview', () => {
   it('mantiene una reseña normal pendiente sin marcarla', async () => {
     const result = analyzeReview({ content: 'Un álbum con melodías excelentes.' })
-    await vi.runAllTimersAsync()
+    await jest.runAllTimersAsync()
 
     expect(await result).toEqual({
       aiFlagged: false,
@@ -64,7 +63,7 @@ describe('analyzeReview', () => {
 
   it('marca lenguaje ofensivo sin aprobar ni rechazar la reseña', async () => {
     const result = analyzeReview({ content: '¡IDIOTA!' })
-    await vi.runAllTimersAsync()
+    await jest.runAllTimersAsync()
 
     expect(await result).toEqual({
       aiFlagged: true,

@@ -45,7 +45,8 @@
           "id": "ac8cd3e8-a43d-4e6a-bb6b-117fac4e3c65",
           "reason": "hola",
           "createdAt": "2026-09-23T14:33:37.458Z",
-          "status": "pending"
+          "status": "reviewed",
+          "updatedAt": "2026-10-03T22:26:30.512Z"
         },
         {
           "id": "4f760362-fac5-4671-953f-93e18e52eefa",
@@ -10428,6 +10429,17 @@
         "blockExplicit": false,
         "pin": "1234"
       }
+    },
+    {
+      "id": "2a3524d7182129b95020d378db773471",
+      "email": "danielramirez272006@gmail.com",
+      "username": "Daniel Ramírez",
+      "role": "user",
+      "provider": "google",
+      "googleId": "101998128882862308299",
+      "avatarUrl": "https://lh3.googleusercontent.com/a/ACg8ocL2Yq1Z90WHM2gjiiIejiuqLTB5MRTvnbEdBjabxdY1PR5yGbQ=s96-c",
+      "status": "active",
+      "createdAt": "2026-10-03T22:18:21.583Z"
     }
   ],
   "reviews": [
@@ -10601,10 +10613,18 @@
       "rating": 4,
       "content": "negro ",
       "hasSpoilers": false,
-      "status": "pending_moderation",
+      "status": "approved",
       "aiFlagged": false,
       "createdAt": "2026-09-28T14:44:00.116Z",
-      "id": "Y_FOTlT"
+      "id": "Y_FOTlT",
+      "moderationHistory": [
+        {
+          "id": "9d0466c9-30cd-403f-a362-14bde3950cde",
+          "createdAt": "2026-10-03T22:28:43.185Z",
+          "adminId": "admin-1",
+          "status": "approved"
+        }
+      ]
     },
     {
       "userId": "user-1790116484490",

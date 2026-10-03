@@ -1,4 +1,3 @@
-import { expect, it } from 'vitest'
 import { communityOpinions } from '../src/shared/services/community-opinions.js'
 const review = (id, content, changes = {}) => ({ id, userId: id, albumId: 'album', status: 'approved', content, ...changes })
 it('groups similar opinions from distinct users, normalizing accents and punctuation', () => {

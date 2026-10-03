@@ -1,17 +1,15 @@
-/** @vitest-environment jsdom */
-import { afterEach, beforeEach, expect, it, vi } from 'vitest'
 import { act, cleanup, fireEvent, render, screen, waitFor } from '@testing-library/react'
 import App from '../src/App.jsx'
 import { apiRequest, getReviews, getUsers, getPendingReviews, updateReview } from '../src/shared/services/api-client.js'
 
-vi.mock('../src/shared/components/ui/blobatar-avatar.jsx', () => ({ BlobatarAvatar: () => <span /> }))
-vi.mock('../src/shared/services/deezer-service.js', () => ({ getAlbumById: async () => null, DEFAULT_DEEZER_ALBUMS: [], searchAlbums: async () => [] }))
-vi.mock('../src/shared/services/api-client.js', () => ({
-  apiRequest: vi.fn(), getReviews: vi.fn(), getUsers: vi.fn(), getPendingReviews: vi.fn(), updateReview: vi.fn(),
+jest.mock('../src/shared/components/ui/blobatar-avatar.jsx', () => ({ BlobatarAvatar: () => <span /> }))
+jest.mock('../src/shared/services/deezer-service.js', () => ({ getAlbumById: async () => null, DEFAULT_DEEZER_ALBUMS: [], searchAlbums: async () => [] }))
+jest.mock('../src/shared/services/api-client.js', () => ({
+  apiRequest: jest.fn(), getReviews: jest.fn(), getUsers: jest.fn(), getPendingReviews: jest.fn(), updateReview: jest.fn(),
 }))
 
 beforeEach(() => {
-  vi.resetAllMocks()
+  jest.resetAllMocks()
   apiRequest.mockImplementation(async path => path === '/auth/me' ? { id: '1', username: 'Mateo', role: 'admin' } : [])
   window.localStorage.setItem('sonar_auth_user', JSON.stringify({ id: '1', username: 'Mateo', role: 'admin' }))
   window.history.replaceState(null, '', '/#admin')

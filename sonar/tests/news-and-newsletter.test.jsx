@@ -1,9 +1,5 @@
-/**
- * @vitest-environment jsdom
- */
 import { render, screen, fireEvent, cleanup } from '@testing-library/react';
 import React from 'react';
-import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import { NewsPage } from '../src/pages/public/news-page';
 import { subscribeNewsletterWebhook } from '../src/shared/services/n8n-webhooks';
 import { PlayerProvider } from '../src/shared/context/player-context';
@@ -14,7 +10,7 @@ import { AuthProvider } from '../src/shared/context/auth-context';
 describe('News Page & n8n Newsletter Integration', () => {
   beforeEach(() => {
     localStorage.clear();
-    vi.restoreAllMocks();
+    jest.restoreAllMocks();
   });
 
   afterEach(() => {
@@ -72,7 +68,7 @@ describe('News Page & n8n Newsletter Integration', () => {
   });
 
   it('ejecuta la suscripción al boletín semanal mediante el servicio de webhook n8n', async () => {
-    global.fetch = vi.fn().mockResolvedValue({
+    global.fetch = jest.fn().mockResolvedValue({
       ok: true,
       json: async () => ({
         success: true,

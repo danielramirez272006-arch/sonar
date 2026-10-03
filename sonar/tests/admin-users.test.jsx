@@ -1,11 +1,9 @@
-/** @vitest-environment jsdom */
-import { afterEach, expect, it, vi } from 'vitest'
 import { cleanup, fireEvent, render, screen, within } from '@testing-library/react'
 import { UsersPage } from '../src/pages/admin/users-page.jsx'
 import { ModerationTable } from '../src/features/admin/moderation/components/moderation-table.jsx'
 
-vi.mock('../src/shared/components/ui/blobatar-avatar.jsx', () => ({ BlobatarAvatar: () => <span /> }))
-vi.mock('../src/features/admin/moderation/components/review-album.jsx', () => ({ ReviewAlbum: ({ review }) => <p>{review.content}</p> }))
+jest.mock('../src/shared/components/ui/blobatar-avatar.jsx', () => ({ BlobatarAvatar: () => <span /> }))
+jest.mock('../src/features/admin/moderation/components/review-album.jsx', () => ({ ReviewAlbum: ({ review }) => <p>{review.content}</p> }))
 afterEach(cleanup)
 const users = [
   { id: 1, username: 'Ana', email: 'ana@sonar.test', accountType: 'junior', createdAt: '2025-01-01', conductReports: [{ status: 'pending' }] },

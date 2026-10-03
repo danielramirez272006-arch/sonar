@@ -1,7 +1,3 @@
-/**
- * @vitest-environment jsdom
- */
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import {
   requestRegisterOtpWebhook,
   notifyLoginAlertWebhook,
@@ -12,7 +8,7 @@ describe('n8n Auth Webhook Services (Registro OTP y Alerta de Login)', () => {
   const originalFetch = global.fetch;
 
   beforeEach(() => {
-    global.fetch = vi.fn().mockResolvedValue({
+    global.fetch = jest.fn().mockResolvedValue({
       ok: true,
       json: async () => ({
         success: true,

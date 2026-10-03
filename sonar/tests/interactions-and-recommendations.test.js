@@ -1,7 +1,3 @@
-/**
- * @vitest-environment jsdom
- */
-import { describe, it, expect, beforeEach } from 'vitest';
 import { interactionsService } from '../src/shared/services/interactions-service';
 import { getRecommendationsForUser, GENRE_OPTIONS } from '../src/shared/services/recommendations-service';
 

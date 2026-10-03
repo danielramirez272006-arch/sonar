@@ -1,8 +1,7 @@
-import { afterEach, expect, it, vi } from 'vitest'
 import { validateCatalog, getCatalog, saveCatalog, deleteCatalog } from '../src/shared/services/catalog-service.js'
 import { apiRequest } from '../src/shared/services/api-client.js'
-vi.mock('../src/shared/services/api-client.js', () => ({ apiRequest: vi.fn() }))
-afterEach(() => vi.resetAllMocks())
+jest.mock('../src/shared/services/api-client.js', () => ({ apiRequest: jest.fn() }))
+afterEach(() => jest.resetAllMocks())
 const admin = { role: 'admin' }
 const label = { name: 'Sello nuevo', country: 'Guatemala', status: 'draft' }
 it('validates required fields, dates, links and announcement periods', () => {

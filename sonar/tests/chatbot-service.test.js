@@ -1,9 +1,8 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { sendChatMessage } from '../src/shared/services/chatbot-service.js'
 
 describe('Sonar AI Sommelier Chatbot Service', () => {
   beforeEach(() => {
-    vi.restoreAllMocks()
+    jest.restoreAllMocks()
   })
 
   it('rechaza mensajes vacíos o con solo espacios', async () => {
@@ -27,7 +26,7 @@ describe('Sonar AI Sommelier Chatbot Service', () => {
       sessionId: 'test-session-123',
     }
 
-    global.fetch = vi.fn().mockResolvedValueOnce({
+    global.fetch = jest.fn().mockResolvedValueOnce({
       ok: true,
       json: async () => mockN8nResponse,
     })
@@ -42,7 +41,7 @@ describe('Sonar AI Sommelier Chatbot Service', () => {
   })
 
   it('utiliza el motor de contingencia local inteligente si n8n no responde', async () => {
-    global.fetch = vi.fn().mockRejectedValue(new Error('Network error'))
+    global.fetch = jest.fn().mockRejectedValue(new Error('Network error'))
 
     const result = await sendChatMessage('¿Cómo ganar Sonar Coins?', 'test-local-session')
 
@@ -53,7 +52,7 @@ describe('Sonar AI Sommelier Chatbot Service', () => {
   })
 
   it('brinda respuesta de bienvenida y orientación sobre SONAR ante preguntas abiertas', async () => {
-    global.fetch = vi.fn().mockRejectedValue(new Error('Network error'))
+    global.fetch = jest.fn().mockRejectedValue(new Error('Network error'))
 
     const result = await sendChatMessage('Hola qué tal', 'test-greeting')
 

@@ -1,8 +1,7 @@
-import { expect, it, vi } from 'vitest'
 import { isNewsVisible, toNewsArticle } from '../src/shared/services/news-service.js'
 import { saveCatalog, validateCatalog, deleteCatalog } from '../src/shared/services/catalog-service.js'
 import { apiRequest } from '../src/shared/services/api-client.js'
-vi.mock('../src/shared/services/api-client.js', () => ({ apiRequest: vi.fn().mockResolvedValue({}) }))
+jest.mock('../src/shared/services/api-client.js', () => ({ apiRequest: jest.fn().mockResolvedValue({}) }))
 const input = { title: 'Noticia', description: 'Resumen', content: 'Texto completo', category: 'Crónicas', startDate: '2026-09-25', endDate: '', status: 'published' }
 it('keeps imported images and edition links and rejects unsafe image URLs', () => {
   expect(validateCatalog('announcements', { ...input, cover: 'data:image/jpeg;base64,/9j/AA==', vinylId: 42 })).toMatchObject({ cover: 'data:image/jpeg;base64,/9j/AA==', vinylId: '42' })

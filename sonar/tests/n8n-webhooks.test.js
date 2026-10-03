@@ -1,21 +1,20 @@
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import {
   notifyReviewCreated,
   sendReviewToModeration,
 } from '../src/shared/services/n8n-webhooks.js'
 
 beforeEach(() => {
-  vi.useFakeTimers()
+  jest.useFakeTimers()
   // El fetch mockeado simula que n8n no está disponible (lanza error).
   // El servicio debe informar el fallo sin simular un envío exitoso.
-  vi.stubGlobal('fetch', vi.fn(() => {
+  globalThis.__stubGlobal('fetch', jest.fn(() => {
     throw new Error('n8n no disponible en entorno de test.')
   }))
 })
 
 afterEach(() => {
-  vi.useRealTimers()
-  vi.unstubAllGlobals()
+  jest.useRealTimers()
+  globalThis.__unstubAllGlobals()
 })
 
 describe('sendReviewToModeration', () => {
@@ -34,7 +33,7 @@ describe('sendReviewToModeration', () => {
   })
   it('informa el fallo y conserva el ID si n8n no responde', async () => {
     const result = sendReviewToModeration({ id: '101', content: 'Excelente álbum.' })
-    await vi.runAllTimersAsync()
+    await jest.runAllTimersAsync()
 
     expect(await result).toEqual({
       success: false,
@@ -57,7 +56,7 @@ describe('notifyReviewCreated', () => {
       sendReviewToModeration(review),
       notifyReviewCreated(review),
     ])
-    await vi.runAllTimersAsync()
+    await jest.runAllTimersAsync()
     const [sent, notified] = await result
 
     expect(notified).toEqual(sent)

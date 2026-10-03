@@ -1,4 +1,3 @@
-import { expect, it } from 'vitest';
 import { EXTRA_MUSIC_QUESTIONS, EXTRA_TRIVIA_TRANSLATIONS } from '../src/shared/data/music-question-expansion.js';
 import { MUSIC_QUESTIONS } from '../src/features/profile/components/music-questions.js';
 

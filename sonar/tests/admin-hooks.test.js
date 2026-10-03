@@ -1,5 +1,3 @@
-/** @vitest-environment jsdom */
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { act, cleanup, renderHook, waitFor } from '@testing-library/react'
 import { useModeration } from '../src/features/admin/moderation/use-moderation.js'
 import { useAdminDashboard } from '../src/features/admin/dashboard/use-admin-dashboard.js'
@@ -10,11 +8,11 @@ import {
   getReviews,
 } from '../src/shared/services/api-client.js'
 
-vi.mock('../src/shared/services/api-client.js', () => ({
-  getPendingReviews: vi.fn(),
-  updateReview: vi.fn(),
-  getUsers: vi.fn(),
-  getReviews: vi.fn(),
+jest.mock('../src/shared/services/api-client.js', () => ({
+  getPendingReviews: jest.fn(),
+  updateReview: jest.fn(),
+  getUsers: jest.fn(),
+  getReviews: jest.fn(),
 }))
 
 const pendingReviews = [
@@ -39,11 +37,11 @@ const expectedMetrics = {
 }
 
 beforeEach(() => {
-  vi.resetAllMocks()
+  jest.resetAllMocks()
   getPendingReviews.mockResolvedValue(pendingReviews)
   getUsers.mockResolvedValue(users)
   getReviews.mockResolvedValue(reviews)
-  vi.stubGlobal('fetch', vi.fn(() => {
+  globalThis.__stubGlobal('fetch', jest.fn(() => {
     throw new Error('No se permiten peticiones HTTP en estas pruebas.')
   }))
 })
@@ -53,7 +51,7 @@ afterEach(() => {
   try {
     expect(globalThis.fetch).not.toHaveBeenCalled()
   } finally {
-    vi.unstubAllGlobals()
+    globalThis.__unstubAllGlobals()
   }
 })
 
