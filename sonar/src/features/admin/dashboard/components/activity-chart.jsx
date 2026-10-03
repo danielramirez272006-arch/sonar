@@ -25,7 +25,7 @@ export function ActivityChart({ events = [] }) {
             <XAxis dataKey="day" stroke="currentColor" />
             <YAxis allowDecimals={false} stroke="currentColor" />
             <Tooltip contentStyle={{ background: '#111', border: '1px solid #444', color: '#fff' }} />
-            <Bar dataKey={type} name={current} fill="#1db954" radius={[6, 6, 0, 0]} />
+            <Bar dataKey={type} name={current} fill="#B80C09" radius={[6, 6, 0, 0]} />
           </BarChart>
         </ResponsiveContainer>
       </div>
