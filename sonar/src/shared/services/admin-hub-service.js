@@ -49,7 +49,7 @@ export async function fetchAdminHubContext() {
  * @param {string} action - Tipo de acción: 'catalog', 'users', 'reports', 'general'.
  * @param {Object} [customContext] - Contexto opcional (si no se especifica, lo consulta automáticamente).
  */
-export async function askAdminHub(message, action = 'general', customContext = null) {
+export async function askAdminHub(message, action = 'general', customContext = null, language = 'es') {
   if (!message || typeof message !== 'string' || !message.trim()) {
     throw new Error('Debes ingresar una instrucción o pregunta para Admin Hub IA.')
   }
@@ -71,11 +71,26 @@ export async function askAdminHub(message, action = 'general', customContext = n
 
   const sessionId = `admin-hub-${Date.now()}`
 
+  const languageNames = {
+    es: 'Spanish (Español)',
+    en: 'English',
+    ja: 'Japanese (日本語)',
+    fr: 'French (Français)',
+    it: 'Italian (Italiano)',
+    zh: 'Chinese (中文)',
+  }
+  const langName = languageNames[language] || 'Spanish (Español)'
+
+  const languageInstruction = language && language !== 'es'
+    ? `\n\n[CRITICAL SYSTEM INSTRUCTION: The user interface language is ${langName} (${language}). You MUST write your entire response, headings, analysis, bullet points, alerts, recommendations, and suggested quickActions in ${langName} (${language}). Do NOT use Spanish.]`
+    : ''
+
   const payload = {
-    message: cleanMessage,
+    message: cleanMessage + languageInstruction,
     action,
     adminName,
     sessionId,
+    language: language || 'es',
     context: {
       users: context.users || [],
       reviews: context.reviews || [],
@@ -105,7 +120,7 @@ export async function askAdminHub(message, action = 'general', customContext = n
         console.log(
           '%c[Admin Hub IA -> n8n Agent] Enviando instrucción:',
           'color: #6366f1; font-weight: bold;',
-          { endpoint, message: cleanMessage, action, attempt }
+          { endpoint, message: cleanMessage, action, language: payload.language, attempt }
         )
 
         const controller = new AbortController()
@@ -160,13 +175,13 @@ export async function askAdminHub(message, action = 'general', customContext = n
 
   // Fallback simulado cuando n8n no está activo
   await delay(1500)
-  return generateSimulatedHubResponse(cleanMessage, action, payload.context)
+  return generateSimulatedHubResponse(cleanMessage, action, payload.context, language || 'es')
 }
 
 /**
  * Genera un análisis simulado de alta calidad cuando n8n no está activo.
  */
-function generateSimulatedHubResponse(message, action, context) {
+function generateSimulatedHubResponse(message, action, context, language = 'es') {
   const { users, reviews, releases, labels, vinyls, reports } = context
   const timestamp = new Date().toISOString()
   const lower = message.toLowerCase()

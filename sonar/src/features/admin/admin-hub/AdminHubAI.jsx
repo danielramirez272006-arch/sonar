@@ -1,9 +1,11 @@
 import React, { useState, useEffect, useRef } from 'react'
 import { askAdminHub, fetchAdminHubContext } from '../../../shared/services/admin-hub-service.js'
 import { useUIText } from '../../../shared/i18n/use-ui-text.js'
+import { useLanguage } from '../../../shared/context/language-context.jsx'
 
 export function AdminHubAI() {
   const ui = useUIText()
+  const { currentLang } = useLanguage()
   const [inputMessage, setInputMessage] = useState('')
   const [loading, setLoading] = useState(false)
   const [currentResponse, setCurrentResponse] = useState(null)
