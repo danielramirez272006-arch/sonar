@@ -1,70 +1,11 @@
 import React, { useState, useEffect, useRef } from 'react'
 import { askAdminHub, fetchAdminHubContext } from '../../../shared/services/admin-hub-service.js'
-
-const HUB_TOOLS = [
-  {
-    id: 'catalog',
-    icon: '💿',
-    label: 'Gestión de Catálogo',
-    description: 'Analiza lanzamientos, sellos y vinilos',
-    color: '#B80C09',
-  },
-  {
-    id: 'users',
-    icon: '👥',
-    label: 'Análisis de Usuarios',
-    description: 'Detecta patrones y usuarios de riesgo',
-    color: '#f59e0b',
-  },
-  {
-    id: 'reports',
-    icon: '📊',
-    label: 'Reportes y Métricas',
-    description: 'Genera resúmenes ejecutivos',
-    color: '#10b981',
-  },
-]
-
-const QUICK_PROMPTS = [
-  {
-    icon: '🔍',
-    label: 'Auditar catálogo completo',
-    prompt: 'Analiza el catálogo completo: lanzamientos, sellos y vinilos. Detecta duplicados, géneros faltantes y sugiere mejoras de clasificación.',
-    action: 'catalog',
-  },
-  {
-    icon: '🚨',
-    label: 'Detectar usuarios de riesgo',
-    prompt: 'Identifica usuarios con múltiples reportes de conducta, cuentas suspendidas o comportamientos atípicos. Prioriza por urgencia.',
-    action: 'users',
-  },
-  {
-    icon: '📈',
-    label: 'Reporte ejecutivo',
-    prompt: 'Genera un reporte ejecutivo completo: métricas clave, estado de moderación, distribución de calificaciones y recomendaciones estratégicas.',
-    action: 'reports',
-  },
-  {
-    icon: '🎯',
-    label: 'Engagement y retención',
-    prompt: 'Analiza las métricas de engagement: ratio de reseñas por usuario, usuarios inactivos, y sugiere estrategias de retención y gamificación.',
-    action: 'users',
-  },
-  {
-    icon: '🏷️',
-    label: 'Tendencias de género',
-    prompt: '¿Qué géneros musicales, formatos y tendencias destacan en el catálogo? ¿Cuáles están subrepresentados?',
-    action: 'catalog',
-  },
-  {
-    icon: '⚖️',
-    label: 'Estado de moderación',
-    prompt: 'Resume el estado actual de la cola de moderación: reseñas pendientes, reportes sin resolver, y prioridades de revisión.',
-    action: 'reports',
-  },
-]
+import { useUIText } from '../../../shared/i18n/use-ui-text.js'
+import { useLanguage } from '../../../shared/context/language-context.jsx'
 
 export function AdminHubAI() {
+  const ui = useUIText()
+  const { currentLang } = useLanguage()
   const [inputMessage, setInputMessage] = useState('')
   const [loading, setLoading] = useState(false)
   const [currentResponse, setCurrentResponse] = useState(null)
@@ -75,6 +16,69 @@ export function AdminHubAI() {
   const [contextCache, setContextCache] = useState(null)
   const responseEndRef = useRef(null)
   const inputRef = useRef(null)
+
+  const hubTools = [
+    {
+      id: 'catalog',
+      icon: '💿',
+      label: ui('Gestión de Catálogo'),
+      description: ui('Analiza lanzamientos, sellos y vinilos'),
+      color: '#B80C09',
+    },
+    {
+      id: 'users',
+      icon: '👥',
+      label: ui('Análisis de Usuarios'),
+      description: ui('Detecta patrones y usuarios de riesgo'),
+      color: '#f59e0b',
+    },
+    {
+      id: 'reports',
+      icon: '📊',
+      label: ui('Reportes y Métricas'),
+      description: ui('Genera resúmenes ejecutivos'),
+      color: '#10b981',
+    },
+  ]
+
+  const quickPrompts = [
+    {
+      icon: '🔍',
+      label: ui('Auditar catálogo completo'),
+      prompt: ui('Analiza el catálogo completo: lanzamientos, sellos y vinilos. Detecta duplicados, géneros faltantes y sugiere mejoras de clasificación.'),
+      action: 'catalog',
+    },
+    {
+      icon: '🚨',
+      label: ui('Detectar usuarios de riesgo'),
+      prompt: ui('Identifica usuarios con múltiples reportes de conducta, cuentas suspendidas o comportamientos atípicos. Prioriza por urgencia.'),
+      action: 'users',
+    },
+    {
+      icon: '📈',
+      label: ui('Reporte ejecutivo'),
+      prompt: ui('Genera un reporte ejecutivo completo: métricas clave, estado de moderación, distribución de calificaciones y recomendaciones estratégicas.'),
+      action: 'reports',
+    },
+    {
+      icon: '🎯',
+      label: ui('Engagement y retención'),
+      prompt: ui('Analiza las métricas de engagement: ratio de reseñas por usuario, usuarios inactivos, y sugiere estrategias de retención y gamificación.'),
+      action: 'users',
+    },
+    {
+      icon: '🏷️',
+      label: ui('Tendencias de género'),
+      prompt: ui('¿Qué géneros musicales, formatos y tendencias destacan en el catálogo? ¿Cuáles están subrepresentados?'),
+      action: 'catalog',
+    },
+    {
+      icon: '⚖️',
+      label: ui('Estado de moderación'),
+      prompt: ui('Resume el estado actual de la cola de moderación: reseñas pendientes, reportes sin resolver, y prioridades de revisión.'),
+      action: 'reports',
+    },
+  ]
 
   // Cargar estadísticas al iniciar
   useEffect(() => {
@@ -113,7 +117,7 @@ export function AdminHubAI() {
 
     try {
       const ctx = contextCache || await fetchAdminHubContext()
-      const result = await askAdminHub(text, action, ctx)
+      const result = await askAdminHub(text, action, ctx, currentLang)
 
       if (result.success) {
         const entry = {
@@ -131,11 +135,11 @@ export function AdminHubAI() {
         setHistory(prev => [entry, ...prev])
         setInputMessage('')
       } else {
-        throw new Error('No fue posible procesar la solicitud con Admin Hub IA.')
+        throw new Error(ui('No fue posible procesar la solicitud con Admin Hub IA.'))
       }
     } catch (err) {
       console.error('[Admin Hub IA Error]:', err)
-      setError(err.message || 'Ocurrió un error al comunicar con Admin Hub IA.')
+      setError(err.message || ui('Ocurrió un error al comunicar con Admin Hub IA.'))
     } finally {
       setLoading(false)
       setTimeout(() => {
@@ -165,10 +169,10 @@ export function AdminHubAI() {
 
   const getCategoryLabel = (cat) => {
     switch (cat) {
-      case 'catalog': return '💿 Catálogo'
-      case 'users': return '👥 Usuarios'
-      case 'reports': return '📊 Reportes'
-      default: return '🔄 General'
+      case 'catalog': return `💿 ${ui('Catálogo')}`
+      case 'users': return `👥 ${ui('Usuarios')}`
+      case 'reports': return `📊 ${ui('Reportes')}`
+      default: return `🔄 ${ui('General')}`
     }
   }
 
@@ -246,13 +250,13 @@ export function AdminHubAI() {
             </div>
             <div>
               <div className="flex items-center gap-2">
-                <h1 className="text-2xl font-black tracking-wide text-white">Admin Hub IA</h1>
+                <h1 className="text-2xl font-black tracking-wide text-white">{ui("Admin Hub IA")}</h1>
                 <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-black/30 text-red-100 border border-white/20 flex items-center gap-1">
                   🧠 AI Agent + Gemini + n8n
                 </span>
               </div>
               <p className="text-sm text-red-100/90 mt-0.5">
-                Co-piloto estratégico todo-en-uno: catálogo, usuarios y reportes ejecutivos.
+                {ui("Co-piloto estratégico todo-en-uno: catálogo, usuarios y reportes ejecutivos.")}
               </p>
             </div>
           </div>
@@ -260,18 +264,18 @@ export function AdminHubAI() {
           {/* Badge de estado */}
           {platformStats && (
             <div className="flex flex-wrap items-center gap-2 text-xs bg-black/30 backdrop-blur-md p-3 rounded-xl border border-white/20 text-white">
-              <span className="text-red-200 font-medium">Estado:</span>
-              <span className="px-2 py-0.5 bg-white/15 rounded-md font-mono">{platformStats.users} usuarios</span>
-              <span className="px-2 py-0.5 bg-white/15 rounded-md font-mono">{platformStats.reviews} reseñas</span>
-              <span className="px-2 py-0.5 bg-white/15 rounded-md font-mono">{platformStats.releases} catálogos</span>
+              <span className="text-red-200 font-medium">{ui("Estado:")}</span>
+              <span className="px-2 py-0.5 bg-white/15 rounded-md font-mono">{platformStats.users} {ui("usuarios")}</span>
+              <span className="px-2 py-0.5 bg-white/15 rounded-md font-mono">{platformStats.reviews} {ui("reseñas")}</span>
+              <span className="px-2 py-0.5 bg-white/15 rounded-md font-mono">{platformStats.releases} {ui("catálogos")}</span>
               {platformStats.pendingReviews > 0 && (
                 <span className="px-2 py-0.5 bg-amber-400/30 rounded-md text-amber-100 font-mono border border-amber-300/40">
-                  ⚠ {platformStats.pendingReviews} pendientes
+                  ⚠ {platformStats.pendingReviews} {ui("pendientes")}
                 </span>
               )}
               {platformStats.highRiskUsers > 0 && (
                 <span className="px-2 py-0.5 bg-red-900/60 rounded-md text-red-100 font-mono border border-red-400/40">
-                  🚨 {platformStats.highRiskUsers} riesgo
+                  🚨 {platformStats.highRiskUsers} {ui("riesgo")}
                 </span>
               )}
             </div>
@@ -283,10 +287,10 @@ export function AdminHubAI() {
       <section className="mb-5">
         <h2 className="text-xs font-bold uppercase tracking-wider text-gray-700 dark:text-gray-300 mb-3 flex items-center gap-2">
           <span className="material-symbols-outlined text-sm text-[#B80C09] dark:text-[#ff4d4a]">construction</span>
-          Módulos del Agente
+          {ui("Módulos del Agente")}
         </h2>
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-          {HUB_TOOLS.map(tool => (
+          {hubTools.map(tool => (
             <button
               key={tool.id}
               onClick={() => handleToolSelect(tool.id)}
@@ -316,10 +320,10 @@ export function AdminHubAI() {
       <section className="mb-6">
         <h2 className="text-xs font-bold uppercase tracking-wider text-gray-700 dark:text-gray-300 mb-3 flex items-center gap-2">
           <span className="material-symbols-outlined text-sm text-[#B80C09] dark:text-[#ff4d4a]">bolt</span>
-          Consultas Rápidas
+          {ui("Consultas Rápidas")}
         </h2>
         <div className="flex flex-wrap gap-2">
-          {QUICK_PROMPTS.map((item, idx) => (
+          {quickPrompts.map((item, idx) => (
             <button
               key={idx}
               onClick={() => handleQuickPrompt(item)}
@@ -338,17 +342,17 @@ export function AdminHubAI() {
         <div className="lg:col-span-1 space-y-4">
           <div className="p-5 rounded-2xl bg-white dark:bg-[#1c1c1f] border border-gray-200 dark:border-white/10 shadow-md">
             <label htmlFor="admin-hub-prompt" className="block text-sm font-semibold text-gray-800 dark:text-gray-200 mb-2">
-              Instrucción para el agente:
+              {ui("Instrucción para el agente:")}
             </label>
             {activeTool && (
               <div className="mb-3 flex items-center gap-2 text-xs">
                 <span className="px-2.5 py-1 rounded-lg bg-red-50 dark:bg-[#B80C09]/20 text-[#B80C09] dark:text-red-200 border border-[#B80C09]/40 font-semibold">
-                  {HUB_TOOLS.find(t => t.id === activeTool)?.icon} {HUB_TOOLS.find(t => t.id === activeTool)?.label}
+                  {hubTools.find(t => t.id === activeTool)?.icon} {hubTools.find(t => t.id === activeTool)?.label}
                 </span>
                 <button
                   onClick={() => setActiveTool(null)}
                   className="text-gray-400 hover:text-gray-700 dark:hover:text-white cursor-pointer transition-colors"
-                  title="Quitar filtro de módulo"
+                  title={ui("Quitar filtro de módulo")}
                 >
                   ✕
                 </button>
@@ -366,11 +370,11 @@ export function AdminHubAI() {
                   handleSubmit()
                 }
               }}
-              placeholder="Ej. ¿Qué usuarios tienen más reportes de conducta pendientes? ¿Hay lanzamientos sin género?"
+              placeholder={ui("Ej. ¿Qué usuarios tienen más reportes de conducta pendientes? ¿Hay lanzamientos sin género?")}
               disabled={loading}
               className="w-full p-3.5 rounded-xl bg-gray-50 dark:bg-black/40 border border-gray-300 dark:border-white/15 text-gray-900 dark:text-white placeholder-gray-600 dark:placeholder-gray-400 focus:outline-none focus:border-[#B80C09] focus:ring-1 focus:ring-[#B80C09] focus:bg-white dark:focus:bg-black/60 text-sm font-medium resize-none transition-all"
             />
-            <p className="text-[10px] text-gray-500 dark:text-gray-400 mt-1">Ctrl+Enter para enviar</p>
+            <p className="text-[10px] text-gray-500 dark:text-gray-400 mt-1">{ui("Ctrl+Enter para enviar")}</p>
 
             <div className="mt-3">
               <button
@@ -381,12 +385,12 @@ export function AdminHubAI() {
                 {loading ? (
                   <>
                     <span className="material-symbols-outlined text-lg animate-spin">progress_activity</span>
-                    Agente procesando...
+                    {ui("Agente procesando...")}
                   </>
                 ) : (
                   <>
                     <span className="material-symbols-outlined text-lg">neurology</span>
-                    Enviar al Agente
+                    {ui("Enviar al Agente")}
                   </>
                 )}
               </button>
@@ -398,7 +402,7 @@ export function AdminHubAI() {
             <div className="p-5 rounded-2xl bg-white dark:bg-[#1c1c1f]/80 border border-gray-200 dark:border-white/10 shadow-sm">
               <h3 className="text-xs font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400 mb-3 flex items-center gap-2">
                 <span className="material-symbols-outlined text-sm">history</span>
-                Historial ({history.length})
+                {ui("Historial")} ({history.length})
               </h3>
               <div className="space-y-2 max-h-72 overflow-y-auto pr-1">
                 {history.map(item => (
@@ -437,9 +441,9 @@ export function AdminHubAI() {
                     <span className="material-symbols-outlined text-2xl text-[#B80C09] dark:text-[#ff4d4a] animate-pulse">neurology</span>
                   </div>
                 </div>
-                <h4 className="text-lg font-bold text-gray-900 dark:text-white mb-1">Admin Hub IA procesando</h4>
+                <h4 className="text-lg font-bold text-gray-900 dark:text-white mb-1">{ui("Admin Hub IA procesando")}</h4>
                 <p className="text-sm text-gray-600 dark:text-gray-300 max-w-xs">
-                  Analizando datos de usuarios, catálogo y reportes mediante el agente n8n...
+                  {ui("Analizando datos de usuarios, catálogo y reportes mediante el agente n8n...")}
                 </p>
               </div>
             )}
@@ -449,7 +453,7 @@ export function AdminHubAI() {
               <div className="mb-4 p-4 rounded-xl bg-red-50 dark:bg-red-900/30 border border-red-300 dark:border-red-500/50 text-red-800 dark:text-red-200 flex items-start gap-3">
                 <span className="material-symbols-outlined text-xl text-red-500">error</span>
                 <div>
-                  <strong className="block text-sm font-bold">Error en la consulta</strong>
+                  <strong className="block text-sm font-bold">{ui("Error en la consulta")}</strong>
                   <span className="text-xs">{error}</span>
                 </div>
               </div>
@@ -462,14 +466,14 @@ export function AdminHubAI() {
                   <div>
                     <div className="flex items-center gap-2 mb-1">
                       <span className="text-xs font-semibold text-[#B80C09] dark:text-[#ff4d4a] tracking-widest uppercase">
-                        Respuesta del Agente
+                        {ui("Respuesta del Agente")}
                       </span>
                       <span className="px-2 py-0.5 rounded text-[10px] font-semibold bg-red-50 dark:bg-[#B80C09]/20 text-[#B80C09] dark:text-red-200 border border-red-200 dark:border-[#B80C09]/40">
                         {getCategoryLabel(currentResponse.metadata?.category || currentResponse.action)}
                       </span>
                       {currentResponse.metadata?.severity && (
                         <span className={`px-2 py-0.5 rounded text-[10px] font-semibold ${getSeverityColor(currentResponse.metadata.severity).bg} ${getSeverityColor(currentResponse.metadata.severity).border} border ${getSeverityColor(currentResponse.metadata.severity).text}`}>
-                          {getSeverityColor(currentResponse.metadata.severity).icon} {currentResponse.metadata.severity === 'critical' ? 'Crítico' : currentResponse.metadata.severity === 'warning' ? 'Atención' : 'Normal'}
+                          {getSeverityColor(currentResponse.metadata.severity).icon} {currentResponse.metadata.severity === 'critical' ? ui('Crítico') : currentResponse.metadata.severity === 'warning' ? ui('Atención') : ui('Normal')}
                         </span>
                       )}
                     </div>
@@ -483,7 +487,7 @@ export function AdminHubAI() {
                     </span>
                     {currentResponse.simulated && (
                       <span className="inline-block mt-1 px-2 py-0.5 rounded text-[10px] font-semibold bg-amber-50 dark:bg-amber-500/20 text-amber-700 dark:text-amber-300 border border-amber-200 dark:border-amber-500/30">
-                        Modo Offline / Simulado
+                        {ui("Modo Offline / Simulado")}
                       </span>
                     )}
                   </div>
@@ -495,7 +499,7 @@ export function AdminHubAI() {
                     {Object.entries(currentResponse.metadata.metrics).slice(0, 8).map(([key, val]) => (
                       <div key={key} className="p-2 rounded-lg bg-gray-50 dark:bg-black/30 border border-gray-200 dark:border-white/5 text-center">
                         <span className="text-lg font-bold text-gray-900 dark:text-white block">{typeof val === 'number' ? val.toLocaleString() : val}</span>
-                        <span className="text-[10px] text-gray-500 dark:text-gray-400 capitalize">{key.replace(/([A-Z])/g, ' $1').trim()}</span>
+                        <span className="text-[10px] text-gray-500 dark:text-gray-400 capitalize">{ui(key.replace(/([A-Z])/g, ' $1').trim())}</span>
                       </div>
                     ))}
                   </div>
@@ -510,7 +514,7 @@ export function AdminHubAI() {
                   <div className="mt-5 pt-4 border-t border-gray-200 dark:border-white/10">
                     <h4 className="text-xs font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400 mb-2 flex items-center gap-2">
                       <span className="material-symbols-outlined text-sm text-[#B80C09] dark:text-[#ff4d4a]">arrow_forward</span>
-                      Acciones Sugeridas
+                      {ui("Acciones Sugeridas")}
                     </h4>
                     <div className="flex flex-wrap gap-2">
                       {currentResponse.quickActions.map((action, idx) => (
@@ -537,16 +541,16 @@ export function AdminHubAI() {
                   <div className="w-20 h-20 rounded-full bg-red-50 dark:bg-[#B80C09]/10 border border-red-100 dark:border-[#B80C09]/20 flex items-center justify-center mb-4">
                     <span className="material-symbols-outlined text-4xl text-[#B80C09]/60 dark:text-[#ff4d4a]/60">neurology</span>
                   </div>
-                  <h3 className="text-lg font-bold text-gray-800 dark:text-gray-300 mb-1">Admin Hub IA listo</h3>
+                  <h3 className="text-lg font-bold text-gray-800 dark:text-gray-300 mb-1">{ui("Admin Hub IA listo")}</h3>
                   <p className="text-sm text-gray-500 dark:text-gray-400 max-w-md">
-                    Selecciona un módulo, usa una consulta rápida o escribe una instrucción para analizar los datos de la plataforma Sonar en tiempo real.
+                    {ui("Selecciona un módulo, usa una consulta rápida o escribe una instrucción para analizar los datos de la plataforma Sonar en tiempo real.")}
                   </p>
                   <div className="mt-4 flex items-center gap-3 text-xs text-gray-400 dark:text-gray-500">
-                    <span className="flex items-center gap-1">💿 Catálogo</span>
+                    <span className="flex items-center gap-1">💿 {ui("Catálogo")}</span>
                     <span>•</span>
-                    <span className="flex items-center gap-1">👥 Usuarios</span>
+                    <span className="flex items-center gap-1">👥 {ui("Usuarios")}</span>
                     <span>•</span>
-                    <span className="flex items-center gap-1">📊 Reportes</span>
+                    <span className="flex items-center gap-1">📊 {ui("Reportes")}</span>
                   </div>
                 </div>
               )
@@ -559,10 +563,10 @@ export function AdminHubAI() {
                 <button
                   onClick={() => navigator.clipboard.writeText(currentResponse.response)}
                   className="hover:text-gray-900 dark:hover:text-white flex items-center gap-1 cursor-pointer transition-colors"
-                  title="Copiar análisis"
+                  title={ui("Copiar análisis")}
                 >
                   <span className="material-symbols-outlined text-sm">content_copy</span>
-                  Copiar análisis
+                  {ui("Copiar análisis")}
                 </button>
               </footer>
             )}
