@@ -117,7 +117,7 @@ export function AdminHubAI() {
 
     try {
       const ctx = contextCache || await fetchAdminHubContext()
-      const result = await askAdminHub(text, action, ctx)
+      const result = await askAdminHub(text, action, ctx, currentLang)
 
       if (result.success) {
         const entry = {
