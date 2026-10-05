@@ -12,7 +12,7 @@
   <img src="https://img.shields.io/badge/React-19.x-61DAFB?style=for-the-badge&logo=react&logoColor=black" alt="React 19" />
   <img src="https://img.shields.io/badge/Vite-8.x-646CFF?style=for-the-badge&logo=vite&logoColor=white" alt="Vite 8" />
   <img src="https://img.shields.io/badge/TailwindCSS-4.x-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white" alt="Tailwind CSS 4" />
-  <img src="https://img.shields.io/badge/Vitest-195%20Tests%20Passing-4EBA0F?style=for-the-badge&logo=vitest&logoColor=white" alt="Vitest 195 Passing" />
+  <img src="https://img.shields.io/badge/Vitest-196%20Tests%20Passing-4EBA0F?style=for-the-badge&logo=vitest&logoColor=white" alt="Vitest 196 Passing" />
   <img src="https://img.shields.io/badge/i18n-6%20Languages-blue?style=for-the-badge&logo=google-translate&logoColor=white" alt="i18n 6 Languages" />
   <img src="https://img.shields.io/badge/n8n-Gemini%20Agent%20Active-EA4B71?style=for-the-badge&logo=n8n&logoColor=white" alt="n8n Gemini Agent" />
   <img src="https://img.shields.io/badge/Google%20Gemini-2.0%20Flash-4285F4?style=for-the-badge&logo=google&logoColor=white" alt="Google Gemini" />
@@ -82,6 +82,12 @@ n8n start
 - Recomendaciones musicales contextuales según estados de ánimo, géneros y artistas de culto.
 - Motor de contingencia local que garantiza respuestas analíticas incluso sin conexión a n8n.
 
+### 🧠 Admin Hub IA · Co-piloto Estratégico Todo-en-Uno
+- **Agente de IA Integrado**: Integración con Google Gemini + n8n (`sonar-admin-hub-agent.json`) para asistencia avanzada en vivo al administrador.
+- **Triada de Capacidades**: Gestión de Catálogo (duplicados, géneros faltantes), Análisis de Usuarios (cuentas de riesgo, reportes pendientes) y Reportes Ejecutivos.
+- **Soporte Multilingüe Auténtico**: Detecta la preferencia de idioma del administrador (`es`, `en`, `fr`, `it`, `zh`, `ja`) y genera respuestas, métricas, recomendaciones y *quickActions* en el idioma activo.
+- **Modo Contingencia Offline**: Generador simulado multilingüe de alta calidad cuando n8n no está disponible.
+
 ### 🛡️ Moderación IA con Google Gemini & n8n
 - **Análisis de Reseñas en Tiempo Real**: Conexión con Gemini 2.0 Flash para auditar contenido generado por usuarios.
 - **Tolerancia Cero a la Toxicidad**: Detección de ataques personales, insultos, evasiones tipográficas y discurso de odio.
@@ -146,7 +152,7 @@ El proyecto cuenta con una cobertura integral de pruebas unitarias y de integrac
 npm test
 ```
 
-**Estado actual:** `38 suites de prueba / 195 tests pasando al 100%`.
+**Estado actual:** `38 suites de prueba / 196 tests pasando al 100%`.
 
 ---
 
@@ -157,7 +163,7 @@ sonar/
 ├── sonar/
 │   ├── src/
 │   │   ├── features/                  # Módulos organizados por dominio
-│   │   │   ├── admin/                 # Consola de administración y moderación
+│   │   │   ├── admin/                 # Consola de administración, Admin Hub IA y moderación
 │   │   │   ├── auth/                  # Formularios de acceso, registro OTP y recuperación
 │   │   │   ├── chatbot/               # Sonaria AI Sommelier
 │   │   │   ├── home/                  # Componentes de la portada y novedades
@@ -175,7 +181,7 @@ sonar/
 │   │   │       └── n8n/               # Workflows JSON listos para importar a n8n
 │   │   ├── App.jsx                    # Raíz con enrutamiento y ErrorBoundary
 │   │   └── main.jsx                   # Punto de entrada de la aplicación
-│   ├── tests/                         # Suites de pruebas con Vitest (195 tests)
+│   ├── tests/                         # Suites de pruebas con Vitest (196 tests)
 │   ├── server/                        # Backend mock y API con endpoints de seguridad
 │   │   ├── api.cjs                    # Servidor Express / JSON Server seguro
 │   │   └── trivia.checks.cjs          # Verificaciones de backend para Sonar Coins
@@ -192,7 +198,7 @@ sonar/
 | :--- | :--- |
 | `npm run dev` | Inicia el servidor de desarrollo Vite con HMR (`http://localhost:5173/`). |
 | `npm run api` | Inicia el backend API en el puerto 3001 (`http://localhost:3001/`). |
-| `npm test` | Ejecuta la suite completa de 195 tests con Vitest. |
+| `npm test` | Ejecuta la suite completa de 196 tests con Vitest. |
 | `npm run build` | Compila los paquetes optimizados para producción. |
 | `npm run lint` | Analiza el código fuente con ESLint. |
 
