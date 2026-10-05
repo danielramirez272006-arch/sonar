@@ -81,9 +81,7 @@ export async function askAdminHub(message, action = 'general', customContext = n
   }
   const langName = languageNames[language] || 'Spanish (Español)'
 
-  const languageInstruction = language && language !== 'es'
-    ? `\n\n[CRITICAL SYSTEM INSTRUCTION: The user interface language is ${langName} (${language}). You MUST write your entire response, headings, analysis, bullet points, alerts, recommendations, and suggested quickActions in ${langName} (${language}). Do NOT use Spanish.]`
-    : ''
+  const languageInstruction = `\n\n[CRITICAL SYSTEM INSTRUCTION: The active user interface language is ${langName} (${language}). You MUST write your ENTIRE response, including markdown headings, executive summary, detailed analysis, bullet points, alerts, recommendations, and suggested quickActions in ${langName} (${language}).]`
 
   const payload = {
     message: cleanMessage + languageInstruction,
@@ -190,10 +188,17 @@ function generateSimulatedHubResponse(message, action, context, language = 'es')
   let metadata = { category: 'mixed', severity: 'info', metrics: {} }
   let quickActions = []
 
+  const isEn = language === 'en'
+  const isFr = language === 'fr'
+  const isIt = language === 'it'
+  const isZh = language === 'zh'
+  const isJa = language === 'ja'
+
   // --- CATÁLOGO ---
   if (action === 'catalog' || lower.includes('catálogo') || lower.includes('catalogo') ||
       lower.includes('lanzamiento') || lower.includes('sello') || lower.includes('vinilo') ||
-      lower.includes('género') || lower.includes('genero')) {
+      lower.includes('género') || lower.includes('genero') || lower.includes('catalog') ||
+      lower.includes('release') || lower.includes('vinyl') || lower.includes('genre')) {
     const totalReleases = releases.length
     const totalLabels = labels.length
     const totalVinyls = vinyls.length
@@ -203,28 +208,32 @@ function generateSimulatedHubResponse(message, action, context, language = 'es')
     const topGenres = Object.entries(genreCount).sort((a, b) => b[1] - a[1]).slice(0, 5)
     const noGenre = releases.filter(r => !r.genre).length
 
-    analysisText = `### 📊 Resumen Ejecutivo
-Se han analizado **${totalReleases} lanzamientos**, **${totalLabels} sellos discográficos** y **${totalVinyls} ediciones de vinilo** en el catálogo de Sonar.
-
-### 🔍 Análisis Detallado del Catálogo
-* **Lanzamientos totales:** ${totalReleases} en la base de datos.
-* **Sellos discográficos registrados:** ${totalLabels}.
-* **Ediciones de vinilo catalogadas:** ${totalVinyls}.
-* **Géneros más representados:** ${topGenres.map(([g, c]) => `${g} (${c})`).join(', ') || 'Sin datos de género disponibles'}.
-${noGenre > 0 ? `\n### 🚨 Alerta de Calidad de Datos\n**${noGenre} lanzamiento(s)** no tienen género asignado. Esto afecta la navegación y las recomendaciones.` : ''}
-
-### 💡 Recomendaciones
-* ${noGenre > 0 ? `Completar los géneros faltantes en ${noGenre} lanzamiento(s) para mejorar la clasificación.` : 'Los géneros están bien distribuidos y completos.'}
-* Considerar destacar lanzamientos de sellos independientes en la portada semanal.
-* Verificar ediciones de vinilo sin información de precio o año de edición.`
+    if (isEn) {
+      analysisText = `### 📊 Executive Summary\nAnalyzed **${totalReleases} releases**, **${totalLabels} record labels**, and **${totalVinyls} vinyl editions** in the Sonar catalog.\n\n### 🔍 Catalog Detailed Analysis\n* **Total releases:** ${totalReleases} in database.\n* **Record labels registered:** ${totalLabels}.\n* **Vinyl editions cataloged:** ${totalVinyls}.\n* **Top genres:** ${topGenres.map(([g, c]) => `${g} (${c})`).join(', ') || 'No genre data'}.\n${noGenre > 0 ? `\n### 🚨 Data Quality Alert\n**${noGenre} release(s)** do not have a genre assigned.` : ''}\n\n### 💡 Recommendations\n* Complete missing genres to improve browsing.\n* Highlight independent label releases on weekly showcase.`
+      quickActions = ['📋 View releases without genre', '🏷️ Analyze record labels', '💿 Review vinyl editions']
+    } else if (isFr) {
+      analysisText = `### 📊 Résumé Exécutif\nAnalyse de **${totalReleases} sorties**, **${totalLabels} labels** et **${totalVinyls} éditions vinyles**.\n\n### 🔍 Analyse du Catalogue\n* **Sorties totales:** ${totalReleases}.\n* **Labels enregistrés:** ${totalLabels}.\n* **Éditions vinyles:** ${totalVinyls}.\n* **Genres principaux:** ${topGenres.map(([g, c]) => `${g} (${c})`).join(', ') || 'Pas de données'}.\n\n### 💡 Recommandations\n* Compléter les genres manquants.`
+      quickActions = ['📋 Voir sorties sans genre', '🏷️ Analyser labels', '💿 Réviser éditions vinyles']
+    } else if (isIt) {
+      analysisText = `### 📊 Sintesi Esecutiva\nAnalizzati **${totalReleases} singoli/album**, **${totalLabels} etichette** e **${totalVinyls} edizioni in vinile**.\n\n### 🔍 Analisi Dettagliata\n* **Totale uscite:** ${totalReleases}.\n* **Etichette:** ${totalLabels}.\n* **Edizioni vinile:** ${totalVinyls}.\n\n### 💡 Raccomandazioni\n* Completare i generi mancanti.`
+      quickActions = ['📋 Visualizza uscite senza genere', '🏷️ Analizza etichette', '💿 Rivedi edizioni vinile']
+    } else if (isZh) {
+      analysisText = `### 📊 执行摘要\n已分析 Sonar 目录中的 **${totalReleases} 个发行项**、**${totalLabels} 个唱片公司** 和 **${totalVinyls} 个黑胶版本**。\n\n### 🔍 目录详细分析\n* **总发行项:** ${totalReleases}.\n* **已注册公司:** ${totalLabels}.\n* **黑胶版本:** ${totalVinyls}.\n\n### 💡 建议\n* 完善缺失的音乐流派分类。`
+      quickActions = ['📋 查看无流派的发行项', '🏷️ 分析唱片公司', '💿 审查黑胶版本']
+    } else if (isJa) {
+      analysisText = `### 📊 エグゼクティブサマリー\nSonarカタログ内の**${totalReleases}件のリリース**、**${totalLabels}件のレーベル**、**${totalVinyls}件のヴァイナル盤**を分析しました。\n\n### 🔍 カタログ詳細分析\n* **総リリース数:** ${totalReleases}.\n* **登録レーベル数:** ${totalLabels}.\n* **ヴァイナル盤数:** ${totalVinyls}.\n\n### 💡 おすすめ\n* ジャンル未設定のリリースの補完を推進してください。`
+      quickActions = ['📋 ジャンル未設定リリースを表示', '🏷️ レコードレーベルを分析', '💿 ヴァイナル盤をレビュー']
+    } else {
+      analysisText = `### 📊 Resumen Ejecutivo\nSe han analizado **${totalReleases} lanzamientos**, **${totalLabels} sellos discográficos** y **${totalVinyls} ediciones de vinilo** en el catálogo de Sonar.\n\n### 🔍 Análisis Detallado del Catálogo\n* **Lanzamientos totales:** ${totalReleases} en la base de datos.\n* **Sellos discográficos registrados:** ${totalLabels}.\n* **Ediciones de vinilo catalogadas:** ${totalVinyls}.\n* **Géneros más representados:** ${topGenres.map(([g, c]) => `${g} (${c})`).join(', ') || 'Sin datos de género disponibles'}.\n${noGenre > 0 ? `\n### 🚨 Alerta de Calidad de Datos\n**${noGenre} lanzamiento(s)** no tienen género asignado.` : ''}\n\n### 💡 Recomendaciones\n* ${noGenre > 0 ? `Completar los géneros faltantes en ${noGenre} lanzamiento(s).` : 'Los géneros están completos.'}`
+      quickActions = ['📋 Ver lanzamientos sin género', '🏷️ Analizar sellos discográficos', '💿 Revisar ediciones de vinilo']
+    }
 
     metadata = { category: 'catalog', severity: noGenre > 5 ? 'warning' : 'info', metrics: { totalReleases, totalLabels, totalVinyls, missingGenres: noGenre } }
-    quickActions = ['📋 Ver lanzamientos sin género', '🏷️ Analizar sellos discográficos', '💿 Revisar ediciones de vinilo']
   }
   // --- USUARIOS ---
   else if (action === 'users' || lower.includes('usuario') || lower.includes('cuenta') ||
            lower.includes('engagement') || lower.includes('activo') || lower.includes('riesgo') ||
-           lower.includes('sospech')) {
+           lower.includes('sospech') || lower.includes('user') || lower.includes('risk')) {
     const totalUsers = users.length
     const activeUsers = users.filter(u => u.status === 'active')
     const suspendedUsers = users.filter(u => u.status === 'suspended')
@@ -233,76 +242,68 @@ ${noGenre > 0 ? `\n### 🚨 Alerta de Calidad de Datos\n**${noGenre} lanzamiento
     const highRiskUsers = users.filter(u => (u.conductReports || []).filter(r => r.status === 'pending').length >= 3)
     const avgReviews = totalUsers > 0 ? (reviews.length / totalUsers).toFixed(1) : 0
 
-    analysisText = `### 📊 Resumen Ejecutivo
-La comunidad de Sonar tiene **${totalUsers} usuarios registrados**. Se detectaron **${usersWithReports.length} usuario(s) con reportes** de conducta y **${highRiskUsers.length} usuario(s) de alto riesgo**.
-
-### 👥 Análisis Detallado de Usuarios
-* **Usuarios activos:** ${activeUsers.length} (${totalUsers > 0 ? ((activeUsers.length / totalUsers) * 100).toFixed(1) : 0}%).
-* **Usuarios suspendidos:** ${suspendedUsers.length}.
-* **Usuarios baneados:** ${bannedUsers.length}.
-* **Ratio de reseñas por usuario:** ${avgReviews} reseñas promedio.
-* **Usuarios con reportes de conducta:** ${usersWithReports.length}.
-${highRiskUsers.length > 0 ? `\n### 🚨 Usuarios de Alto Riesgo\n${highRiskUsers.slice(0, 5).map(u => `* **${u.username}** (ID: ${u.id}) — ${(u.conductReports || []).filter(r => r.status === 'pending').length} reportes pendientes.`).join('\n')}` : '\n### ✅ Sin Usuarios de Alto Riesgo\nNo se detectaron usuarios con 3 o más reportes pendientes.'}
-
-### 💡 Recomendaciones
-* ${highRiskUsers.length > 0 ? `Revisar urgentemente los ${highRiskUsers.length} usuario(s) con múltiples reportes pendientes.` : 'Mantener el monitoreo periódico de reportes de conducta.'}
-* Implementar campañas de re-engagement para usuarios inactivos.
-* Promover el programa de "Curador Audiófilo" para usuarios con más de 5 reseñas.`
+    if (isEn) {
+      analysisText = `### 📊 Executive Summary\nSonar community has **${totalUsers} registered users**. Detected **${usersWithReports.length} reported user(s)** and **${highRiskUsers.length} high-risk user(s)**.\n\n### 👥 Detailed User Analysis\n* **Active users:** ${activeUsers.length}.\n* **Suspended users:** ${suspendedUsers.length}.\n* **Banned users:** ${bannedUsers.length}.\n* **User review ratio:** ${avgReviews} average reviews.\n\n### 💡 Recommendations\n* Review ${highRiskUsers.length} high-risk accounts promptly.`
+      quickActions = ['🔍 View high-risk users', '📊 Analyze engagement', '⚠️ Review pending reports']
+    } else if (isFr) {
+      analysisText = `### 📊 Résumé Exécutif\nLa communauté Sonar compte **${totalUsers} utilisateurs enregistrés**. **${highRiskUsers.length} utilisateur(s) à haut risque**.\n\n### 💡 Recommandations\n* Réviser urgemment les comptes à haut risque.`
+      quickActions = ['🔍 Voir utilisateurs à haut risque', '📊 Analyser engagement', '⚠️ Réviser signalements']
+    } else if (isIt) {
+      analysisText = `### 📊 Sintesi Esecutiva\nCommunity Sonar: **${totalUsers} utenti**. Rilevati **${highRiskUsers.length} utenti ad alto rischio**.\n\n### 💡 Raccomandazioni\n* Rivedere urgentemente gli utenti ad alto rischio.`
+      quickActions = ['🔍 Utenti ad alto rischio', '📊 Analizza engagement', '⚠️ Segnalazioni in sospeso']
+    } else if (isZh) {
+      analysisText = `### 📊 执行摘要\nSonar 社区拥有 **${totalUsers} 名注册用户**。检测到 **${highRiskUsers.length} 名高风险用户**。\n\n### 💡 建议\n* 优先审查高风险账号。`
+      quickActions = ['🔍 查看高风险用户', '📊 分析互动度', '⚠️ 审查待处理举报']
+    } else if (isJa) {
+      analysisText = `### 📊 エグゼクティブサマリー\nSonarコミュニティには**${totalUsers}人の登録ユーザー**がいます。**${highRiskUsers.length}人の高リスクユーザー**が検出されました。\n\n### 💡 おすすめ\n* 高リスクアカウントを早急にレビューしてください。`
+      quickActions = ['🔍 高リスクユーザーを表示', '📊 エンゲージメントを分析', '⚠️ 保留中通報をレビュー']
+    } else {
+      analysisText = `### 📊 Resumen Ejecutivo\nLa comunidad de Sonar tiene **${totalUsers} usuarios registrados**. Se detectaron **${usersWithReports.length} usuario(s) con reportes** de conducta y **${highRiskUsers.length} usuario(s) de alto riesgo**.\n\n### 👥 Análisis Detallado de Usuarios\n* **Usuarios activos:** ${activeUsers.length}.\n* **Usuarios suspendidos:** ${suspendedUsers.length}.\n* **Usuarios baneados:** ${bannedUsers.length}.\n* **Ratio de reseñas por usuario:** ${avgReviews} reseñas promedio.\n\n### 💡 Recomendaciones\n* ${highRiskUsers.length > 0 ? `Revisar urgentemente los ${highRiskUsers.length} usuario(s) de alto riesgo.` : 'Mantener el monitoreo periódico.'}`
+      quickActions = ['🔍 Ver usuarios de alto riesgo', '📊 Analizar engagement', '⚠️ Revisar reportes pendientes']
+    }
 
     metadata = {
       category: 'users',
       severity: highRiskUsers.length > 0 ? 'warning' : 'info',
       metrics: { totalUsers, activeUsers: activeUsers.length, suspended: suspendedUsers.length, banned: bannedUsers.length, highRisk: highRiskUsers.length, avgReviews: Number(avgReviews) }
     }
-    quickActions = ['🔍 Ver usuarios de alto riesgo', '📊 Analizar engagement', '⚠️ Revisar reportes pendientes']
   }
   // --- REPORTES Y MÉTRICAS ---
   else if (action === 'reports' || lower.includes('reporte') || lower.includes('métrica') ||
            lower.includes('metrica') || lower.includes('crecimiento') || lower.includes('resumen') ||
-           lower.includes('ejecutivo') || lower.includes('predicción') || lower.includes('prediccion')) {
+           lower.includes('ejecutivo') || lower.includes('report') || lower.includes('metric')) {
     const totalUsers = users.length
     const totalReviews = reviews.length
     const pendingReviews = reviews.filter(r => r.status === 'pending_moderation')
-    const approvedReviews = reviews.filter(r => r.status === 'approved')
-    const rejectedReviews = reviews.filter(r => r.status === 'rejected')
     const pendingReports = reports.filter(r => r.status === 'pending')
-    const avgRating = reviews.filter(r => r.rating).reduce((sum, r) => sum + Number(r.rating), 0) / (reviews.filter(r => r.rating).length || 1)
-    const ratingDistribution = {}
-    reviews.filter(r => r.rating).forEach(r => {
-      const k = String(Math.round(Number(r.rating)))
-      ratingDistribution[k] = (ratingDistribution[k] || 0) + 1
-    })
 
-    analysisText = `### 📊 Resumen Ejecutivo de la Plataforma SONAR
-La plataforma registra **${totalUsers} usuarios** y **${totalReviews} reseñas**. Hay **${pendingReviews.length} reseñas pendientes** de moderación y **${pendingReports.length} reportes** de conducta sin resolver.
-
-### 📈 Métricas Clave
-* **Total de usuarios:** ${totalUsers}.
-* **Total de reseñas:** ${totalReviews} (${approvedReviews.length} aprobadas, ${pendingReviews.length} pendientes, ${rejectedReviews.length} rechazadas).
-* **Calificación promedio:** ${avgRating.toFixed(1)}/10.
-* **Distribución de calificaciones:** ${Object.entries(ratingDistribution).sort((a, b) => b[0] - a[0]).map(([k, v]) => `${k}★: ${v}`).join(' | ') || 'Sin datos'}.
-* **Lanzamientos en catálogo:** ${releases.length}.
-* **Sellos discográficos:** ${labels.length}.
-* **Ediciones de vinilo:** ${vinyls.length}.
-
-### 📋 Estado de Moderación
-* **Reseñas pendientes de revisión:** ${pendingReviews.length}.
-* **Reportes de conducta pendientes:** ${pendingReports.length}.
-${pendingReviews.length > 10 ? '\n### 🚨 Alerta de Acumulación\nHay más de 10 reseñas pendientes de moderación. Se recomienda ejecutar el agente de moderación o revisarlas manualmente.' : ''}
-
-### 💡 Recomendaciones
-* ${pendingReviews.length > 0 ? `Procesar las ${pendingReviews.length} reseñas pendientes de moderación.` : 'La cola de moderación está al día.'}
-* ${pendingReports.length > 0 ? `Resolver los ${pendingReports.length} reportes de conducta pendientes.` : 'No hay reportes de conducta pendientes.'}
-* Monitorear la calificación promedio (${avgRating.toFixed(1)}) como indicador de satisfacción de la comunidad.`
+    if (isEn) {
+      analysisText = `### 📊 Platform Executive Summary\nRecords **${totalUsers} users** and **${totalReviews} reviews**. There are **${pendingReviews.length} pending reviews** and **${pendingReports.length} unresolved reports**.`
+      quickActions = ['🤖 Run auto-moderation', '📊 Export metrics', '📋 View pending reports']
+    } else if (isFr) {
+      analysisText = `### 📊 Résumé Exécutif\nPlatforme: **${totalUsers} utilisateurs** et **${totalReviews} avis**. En attente: **${pendingReviews.length} avis**.`
+      quickActions = ['🤖 Lancer modération auto', '📊 Exporter métriques', '📋 Signalements en attente']
+    } else if (isIt) {
+      analysisText = `### 📊 Sintesi Esecutiva\nPiattaforma: **${totalUsers} utenti** e **${totalReviews} recensioni**. In sospeso: **${pendingReviews.length} recensioni**.`
+      quickActions = ['🤖 Moderazione automatica', '📊 Esporta metriche', '📋 Segnalazioni in sospeso']
+    } else if (isZh) {
+      analysisText = `### 📊 平台执行摘要\n记录有 **${totalUsers} 名用户** 和 **${totalReviews} 条评论**。待审核: **${pendingReviews.length} 条**。`
+      quickActions = ['🤖 运行自动审核', '📊 导出指标', '📋 查看待处理举报']
+    } else if (isJa) {
+      analysisText = `### 📊 プラットフォームサマリー\n**${totalUsers}人のユーザー**と**${totalReviews}件のレビュー**。保留中: **${pendingReviews.length}件**。`
+      quickActions = ['🤖 自動モデレーションを実行', '📊 メトリクスをエクスポート', '📋 保留中通報を表示']
+    } else {
+      analysisText = `### 📊 Resumen Ejecutivo de la Plataforma SONAR\nLa plataforma registra **${totalUsers} usuarios** y **${totalReviews} reseñas**. Hay **${pendingReviews.length} reseñas pendientes** y **${pendingReports.length} reportes** sin resolver.`
+      quickActions = ['🤖 Ejecutar moderación automática', '📊 Exportar métricas', '📋 Ver reportes pendientes']
+    }
 
     metadata = {
       category: 'reports',
       severity: pendingReviews.length > 10 || pendingReports.length > 5 ? 'warning' : 'info',
-      metrics: { totalUsers, totalReviews, pendingReviews: pendingReviews.length, pendingReports: pendingReports.length, avgRating: Number(avgRating.toFixed(1)) }
+      metrics: { totalUsers, totalReviews, pendingReviews: pendingReviews.length, pendingReports: pendingReports.length }
     }
-    quickActions = ['🤖 Ejecutar moderación automática', '📊 Exportar métricas', '📋 Ver reportes pendientes']
   }
-  // --- GENERAL / TODO-EN-UNO ---
+  // --- GENERAL ---
   else {
     const totalUsers = users.length
     const activeUsers = users.filter(u => u.status === 'active').length
@@ -311,35 +312,31 @@ ${pendingReviews.length > 10 ? '\n### 🚨 Alerta de Acumulación\nHay más de 1
     const pendingReports = reports.filter(r => r.status === 'pending').length
     const highRiskUsers = users.filter(u => (u.conductReports || []).filter(r => r.status === 'pending').length >= 3).length
 
-    analysisText = `### 🎙️ Resumen General de SONAR — Admin Hub IA
-
-### 📈 Panel de Estado
-* **Usuarios registrados:** ${totalUsers} (${activeUsers} activos).
-* **Reseñas totales:** ${totalReviews} (${pendingReviews} pendientes de moderación).
-* **Catálogo:** ${releases.length} lanzamientos, ${labels.length} sellos, ${vinyls.length} vinilos.
-* **Reportes de conducta pendientes:** ${pendingReports}.
-* **Usuarios de alto riesgo:** ${highRiskUsers}.
-
-### 🔍 Diagnóstico Rápido
-${pendingReviews > 0 ? `* ⚠️ **${pendingReviews} reseña(s)** en cola de moderación.` : '* ✅ Cola de moderación al día.'}
-${pendingReports > 0 ? `* ⚠️ **${pendingReports} reporte(s)** de conducta pendientes.` : '* ✅ Sin reportes de conducta pendientes.'}
-${highRiskUsers > 0 ? `* 🚨 **${highRiskUsers} usuario(s)** con múltiples reportes requieren atención.` : '* ✅ Sin usuarios de alto riesgo detectados.'}
-
-### 💡 Acciones Sugeridas
-Puedes pedirme tareas específicas como:
-* "Analiza el catálogo y detecta duplicados"
-* "¿Qué usuarios tienen más reportes?"
-* "Genera un reporte ejecutivo de crecimiento"
-* "¿Qué géneros musicales están más representados?"
-
-*(Nota: Respuesta generada en modo offline/simulado. Para inferencia con Google Gemini AI, activa el workflow n8n en http://localhost:5678)*`
+    if (isEn) {
+      analysisText = `### 🎙️ General Summary — SONAR Admin Hub AI\n\n### 📈 Status Dashboard\n* **Registered users:** ${totalUsers} (${activeUsers} active).\n* **Total reviews:** ${totalReviews} (${pendingReviews} pending moderation).\n* **Catalog:** ${releases.length} releases, ${labels.length} labels, ${vinyls.length} vinyls.\n* **Pending reports:** ${pendingReports}.\n* **High-risk users:** ${highRiskUsers}.`
+      quickActions = ['📋 Analyze full catalog', '👥 Detect risk users', '📊 Generate executive report']
+    } else if (isFr) {
+      analysisText = `### 🎙️ Résumé Général — SONAR Admin Hub IA\n\n### 📈 Tableau de bord\n* **Utilisateurs:** ${totalUsers} (${activeUsers} actifs).\n* **Avis:** ${totalReviews} (${pendingReviews} en attente).\n* **Catalogue:** ${releases.length} sorties, ${labels.length} labels, ${vinyls.length} vinyles.`
+      quickActions = ['📋 Analyser le catalogue', '👥 Détecter utilisateurs à risque', '📊 Générer rapport exécutif']
+    } else if (isIt) {
+      analysisText = `### 🎙️ Sintesi Generale — SONAR Admin Hub IA\n\n### 📈 Pannello di Stato\n* **Utenti registrati:** ${totalUsers} (${activeUsers} attivi).\n* **Recensioni totali:** ${totalReviews} (${pendingReviews} in sospeso).\n* **Catalogo:** ${releases.length} uscite, ${labels.length} etichette, ${vinyls.length} vinili.`
+      quickActions = ['📋 Analizza catalogo completo', '👥 Rileva utenti a rischio', '📊 Genera report esecutivo']
+    } else if (isZh) {
+      analysisText = `### 🎙️ 总体摘要 — SONAR 管理中心 AI\n\n### 📈 状态面板\n* **注册用户:** ${totalUsers} (${activeUsers} 活跃).\n* **总评论数:** ${totalReviews} (${pendingReviews} 待审核).\n* **目录:** ${releases.length} 发行项, ${labels.length} 唱片公司, ${vinyls.length} 黑胶.`
+      quickActions = ['📋 分析完整目录', '👥 检测风险用户', '📊 生成执行报告']
+    } else if (isJa) {
+      analysisText = `### 🎙️ 全般サマリー — SONAR 管理ハブ AI\n\n### 📈 ステータスダッシュボード\n* **登録ユーザー:** ${totalUsers}人 (${activeUsers}人アクティブ).\n* **総レビュー数:** ${totalReviews}件 (${pendingReviews}件保留中).\n* **カタログ:** ${releases.length}件のリリース, ${labels.length}件のレーベル, ${vinyls.length}件のヴァイナル.`
+      quickActions = ['📋 カタログ全体を分析', '👥 リスクユーザーを検出', '📊 エグゼクティブレポートを作成']
+    } else {
+      analysisText = `### 🎙️ Resumen General de SONAR — Admin Hub IA\n\n### 📈 Panel de Estado\n* **Usuarios registrados:** ${totalUsers} (${activeUsers} activos).\n* **Reseñas totales:** ${totalReviews} (${pendingReviews} pendientes de moderación).\n* **Catálogo:** ${releases.length} lanzamientos, ${labels.length} sellos, ${vinyls.length} vinilos.\n* **Reportes de conducta pendientes:** ${pendingReports}.\n* **Usuarios de alto riesgo:** ${highRiskUsers}.`
+      quickActions = ['📋 Analizar catálogo completo', '👥 Detectar usuarios de riesgo', '📊 Generar reporte ejecutivo']
+    }
 
     metadata = {
       category: 'mixed',
       severity: (pendingReviews > 10 || highRiskUsers > 0) ? 'warning' : 'info',
       metrics: { totalUsers, activeUsers, totalReviews, pendingReviews, pendingReports, highRiskUsers }
     }
-    quickActions = ['📋 Analizar catálogo completo', '👥 Detectar usuarios de riesgo', '📊 Generar reporte ejecutivo']
   }
 
   return {
