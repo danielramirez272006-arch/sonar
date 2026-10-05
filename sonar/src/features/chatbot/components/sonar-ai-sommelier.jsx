@@ -158,10 +158,14 @@ export function SonarAiSommelier() {
     }
   }, [isOpen, messages])
 
-  // No mostrar Sonaria en páginas de login/registro (hash routing: /#login)
-  const hash = (window.location.hash || '').replace(/^#\/?/, '').toLowerCase().split('?')[0]
+  // No mostrar Sonaria en páginas de autenticación ni en el panel de administración
+  const currentPath = (location?.pathname || '').toLowerCase()
+  const rawHash = (window.location.hash || '').replace(/^#\/?/, '').toLowerCase().split('?')[0]
+  
   const hiddenPages = ['login', 'register', 'signup', 'forgot-password', 'recuperar-password', 'recuperar-contrasena', 'reset-password']
-  if (hiddenPages.includes(hash)) {
+  const isAdminRoute = currentPath.startsWith('/admin') || currentPath.startsWith('/moderacion') || rawHash.startsWith('admin') || rawHash.startsWith('moderacion')
+
+  if (hiddenPages.includes(rawHash) || hiddenPages.includes(currentPath.replace(/^\//, '')) || isAdminRoute) {
     return null
   }
 
