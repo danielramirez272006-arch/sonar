@@ -21,224 +21,224 @@
     {
       "parameters": {
         "jsCode": "const inputData = $input.first().json || {};\nconst body = inputData.body || inputData;\n\nconst reviewId = body.reviewId || body.id || body?.review?.id || 'N/A';\nconst content = body.content || body.message || body?.review?.content || 'Sin texto de comentario';\nconst userId = body.userId || body.user?.id || body?.userId || 'N/A';\nconst username = body.username || body.user?.name || body?.userName || 'Usuario Sonar';\nconst email = body.email || body.user?.email || body?.user?.email || 'usuario@sonar.com';\n\nreturn [{\n  json: {\n    reviewId,\n    content,\n    userId,\n    username,\n    email,\n    timestamp: new Date().toISOString()\n  }\n}];"
-    },
-    "id": "prep-data-002",
-    "name": "Preparar Datos de Reseña",
-    "type": "n8n-nodes-base.code",
-    "typeVersion": 2,
-    "position": [
-      480,
-      300
-    ]
-  },
-  {
-    "parameters": {
-      "jsCode": "const inputData = $input.first().json || {};\nconst { reviewId, content, userId, username, email, timestamp } = inputData;\n\nconst promptText = `Analiza el siguiente comentario de reseña para determinar si contiene lenguaje ofensivo, insultos, agresión, spam o contenido dañino para alguien. \r\n\r\nComentario: \"${content}\"\r\n\r\nResponde JSON con esta estructura exacta:\r\n{\r\n  \"offensive\": true/false,\r\n  \"severity\": \"low|medium|high\", \r\n  \"category\": \"insult|aggression|spam|harassment|other\",\r\n  \"explanation\": \"Explicación breve del hallazgo\",\r\n  \"actionRequired\": true/false,\r\n  \"suggestedSuspensionDays\": number (0-365)\r\n}\r\n\r\nSé objetivo. Si hay algún término ofensivo en cualquier idioma, establece offensive=true. Sé conservador con severity: low para términos leves, medium para insultos moderados, high para agresión seria o acoso.\r\n`;\n\nreturn [{\n  json: {\n    promptText,\n    metadata: {\n      reviewId,\n      content,\n      source: 'gemini-openrouter'\n    }\n  }\n}];"
-    },
-    "id": "prepare-prompt-003",
-    "name": "Preparar Prompt IA",
-    "type": "n8n-nodes-base.code",
-    "typeVersion": 2,
-    "position": [
-      720,
-      300
-    ]
-  },
-  {
-    "parameters": {
-      "modelName": "models/gemini-1.5-flash",
-      "options": {
-        "temperature": 0.1
-      }
-    },
-    "id": "gemini-model-004",
-    "name": "Google Gemini Model",
-    "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
-    "typeVersion": 1,
-    "position": [
-      960,
-      300
-    ],
-    "credentials": {
-      "googlePalmApi": {
-        "id": "google-gemini-credentials",
-        "name": "Google Gemini API Key"
-      }
-    }
-  },
-  {
-    "parameters": {
-      "modelName": "models/openrouter/gemini-1.5-flash",
-      "options": {
-        "temperature": 0.1
-      }
-    },
-    "id": "openrouter-model-005",
-    "name": "OpenRouter Gemini Model",
-    "type": "@n8n/n8n-nodes-langchain.lmChatOpenRouter",
-    "typeVersion": 1,
-    "position": [
-      960,
-      500
-    ],
-    "credentials": {
-      "openRouterApi": {
-        "id": "openrouter-credentials",
-        "name": "OpenRouter API Key"
-      }
-    }
-  },
-  {
-    "parameters": {
-      "promptType": "define",
-      "text": "={{ $json.promptText }}",
-      "options": {
-        "systemMessage": "Eres Sonar AI, el sistema de moderación inteligente de Sonar. Tu tarea es analizar comentarios de reseñas en busca de contenido ofensivo, dañino o inapropiado. Sé objetivo y consistente. Siempre responde en formato JSON estructurado como se especifica. Si el contenido es borderline, inclina hacia la moderación pero sé justo."
-      }
-    },
-    "id": "agent-006",
-    "name": "AI Agent Moderación",
-    "type": "@n8n/n8n-nodes-langchain.agent",
-    "typeVersion": 1.7,
-    "position": [
-      1200,
-      300
-    ]
-  },
-  {
-    "parameters": {
-      "jsCode": "const inputData = $input.first().json || {};\nconst { text, response } = inputData;\n\nlet analysisResult = {\n  offensive: false,\n  severity: 'low',\n  category: 'other',\n  explanation: 'Análisis completado por IA.',\n  actionRequired: false,\n  suggestedSuspensionDays: 0\n};\n\ntry {\n  let responseText = '';\n  \n  if (response.output) {\n    responseText = String(response.output);\n  } else if (response.text) {\n    responseText = String(response.text);\n  } else if (typeof response === 'string') {\n    responseText = response;\n  } else {\n    responseText = JSON.stringify(response);\n  }\n\n  const parsed = JSON.parse(responseText);\n  \n  if (parsed.offensive !== undefined) {\n    analysisResult = {\n      offensive: Boolean(parsed.offensive),\n      severity: parsed.severity || 'low',\n      category: parsed.category || 'other',\n      explanation: parsed.explanation || 'Sin explicación',\n      actionRequired: parsed.actionRequired !== undefined ? Boolean(parsed.actionRequired) : true,\n      suggestedSuspensionDays: Number(parsed.suggestedSuspensionDays) || 0\n    };\n  } else {\n    const lowerText = String(responseText).toLowerCase();\n    const offensiveTerms = ['idiota', 'imbécil', 'mierda', 'puta', 'pendejo', 'hijo de', 'spam', 'odio', 'muérete', 'muerete'];\n    const foundTerms = offensiveTerms.filter(term => lowerText.includes(term));\n    \n    if (foundTerms.length > 0) {\n      analysisResult.offensive = true;\n      \n      if (foundTerms.some(t => ['mierda', 'spam', 'odio'].includes(t))) {\n        analysisResult.severity = 'medium';\n      } else {\n        analysisResult.severity = 'low';\n      }\n      analysisResult.category = 'insult';\n      analysisResult.explanation = `Términos ofensivos detectados: ${foundTerms.join(', ')}`;\n      analysisResult.actionRequired = true;\n      analysisResult.suggestedSuspensionDays = 30;\n    } else {\n      analysisResult.explanation = 'No ofensivo - contenido limpio.';\n    }\n  }\n} catch (err) {\n  console.error('[AI Agent] Error parsing response:', err);\n  analysisResult.explanation = 'Error procesando respuesta IA, revisar manualmente.';\n}\n\nreturn [{\n  json: {\n    ...analysisResult,\n    metadata: {\n      reviewId: inputData.metadata?.reviewId,\n      source: 'ai-analysis'\n    }\n  }\n}];"
-    },
-    "id": "parse-ai-response-007",
-    "name": "Parsear Respuesta IA",
-    "type": "n8n-nodes-base.code",
-    "typeVersion": 2,
-    "position": [
-      1440,
-      300
-    ]
-  },
-  {
-    "parameters": {
-      "jsCode": "const inputData = $input.first().json || {};\nconst { offensive, severity, category, explanation, suggestedSuspensionDays, userId, username, email, metadata } = inputData;\n\n// Determinar la acción basada en la severidad\nlet action = 'finalize';\nlet suspensionDays = 0;\nlet shouldSuspend = false;\nlet shouldDelete = false;\nlet shouldSendWarning = false;\nlet warningType = 'no-action';\n\nswitch (severity) {\n  case 'high':\n    action = 'suspend';\n    shouldSuspend = true;\n    shouldDelete = true;\n    suspensionDays = Math.max(1, Number(suggestedSuspensionDays) || 30);\n    warningType = 'suspension';\n    break;\n  case 'medium':\n    action = 'warn';\n    shouldSuspend = false;\n    shouldDelete = true;\n    suspensionDays = 7;\n    warningType = 'medium-warning';\n    break;\n  case 'low':\n  default:\n    action = 'flag';\n    shouldSuspend = false;\n    shouldDelete = false;\n    suspensionDays = 0;\n    warningType = 'low-flag';\n    break;\n}\n\n// Construir datos de suspensión si es necesario\nlet suspensionData = null;\nif (shouldSuspend) {\n  suspensionData = {\n    userId: userId || 'N/A',\n    username: username || 'Usuario Desconocido',\n    email: email || 'usuario@sonar.com',\n    reason: `Reseña ofensiva [${severity}]: ${explanation || 'Sin detalles'}`,\n    severity: severity,\n    suspensionDays: suspensionDays,\n    performedBy: 'Sistema IA - Moderación Automática',\n    timestamp: new Date().toISOString()\n  };\n}\n\nreturn [{\n  json: {\n    ...inputData,\n    action,\n    suspensionData,\n    shouldSuspend,\n    shouldDelete,\n    shouldSendWarning: warningType !== 'no-action' && warningType !== 'low-flag',\n    warningType,\n    suspensionDays,\n    processedAt: new Date().toISOString()\n  }\n}];"
-    },
-    "id": "decision-008",
-    "name": "Tomar Decisión de Acción",
-    "type": "n8n-nodes-base.code",
-    "typeVersion": 2,
-    "position": [
-      1680,
-      300
-    ]
-  },
-  {
-    "parameters": {
-      "operation": "post",
-      "url": "http://localhost:5678/api/v1/users/suspend",
-      "jsonParameters": true,
-      "options": {
-        "bodyContentType": "json"
       },
-      "headerParameters": [
-        {
-          "name": "X-Admin-Token",
-          "value": "admin-secret-token-12345"
-        },
-        {
-          "name": "Content-Type",
-          "value": "application/json"
-        }
+      "id": "prep-data-002",
+      "name": "Preparar Datos de Reseña",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        480,
+        300
       ]
     },
-    "id": "http-suspend-user-009",
-    "name": "Suspender Cuenta (Admin Credentials)",
-    "type": "n8n-nodes-base.httpRequest",
-    "typeVersion": 2,
-    "position": [
-      1920,
-      200
-    ]
-  },
-  {
-    "parameters": {
-      "mailOptions": {
-        "to": "={{ $json.suspensionData.email }}",
-        "subject": "⚠️ Cuenta Suspendida - SONAR",
-        "text": "Hola $JSON.suspensionData.username,\n\nTu cuenta ha sido suspendida temporalmente por $JSON.suspensionDays días.\n\nMotivo: $JSON.suspensionData.reason\n\nSeveridad: $JSON.suspensionData.severity\n\nSi consideras que fue un error, contacta al equipo de soporte.\n\n-- Equipo Sonar\n\nEste es un mensaje automático generado por el sistema de moderación IA."
-      }
-    },
-    "id": "email-suspension-010",
-    "name": "Enviar Correo Suspensión",
-    "type": "n8n-nodes-base.emailSend",
-    "typeVersion": 2,
-    "position": [
-      2160,
-      200
-    ]
-  },
-  {
-    "parameters": {
-      "operation": "post",
-      "url": "http://localhost:5678/api/v1/reviews/delete",
-      "jsonParameters": true,
-      "options": {
-        "bodyContentType": "json"
+    {
+      "parameters": {
+        "jsCode": "const inputData = $input.first().json || {};\nconst { reviewId, content, userId, username, email, timestamp } = inputData;\n\nconst promptText = `Analiza el siguiente comentario de reseña para determinar si contiene lenguaje ofensivo, insultos, agresión, spam o contenido dañino para alguien. \r\n\r\nComentario: \"${content}\"\r\n\r\nResponde JSON con esta estructura exacta:\r\n{\r\n  \"offensive\": true/false,\r\n  \"severity\": \"low|medium|high\", \r\n  \"category\": \"insult|aggression|spam|harassment|other\",\r\n  \"explanation\": \"Explicación breve del hallazgo\",\r\n  \"actionRequired\": true/false,\r\n  \"suggestedSuspensionDays\": number (0-365)\r\n}\r\n\r\nSé objetivo. Si hay algún término ofensivo en cualquier idioma, establece offensive=true. Sé conservador con severity: low para términos leves, medium para insultos moderados, high para agresión seria o acoso.\r\n`;\n\nreturn [{\n  json: {\n    promptText,\n    metadata: {\n      reviewId,\n      content,\n      source: 'gemini-openrouter'\n    }\n  }\n}];"
       },
-      "headerParameters": [
-        {
-          "name": "X-Admin-Token",
-          "value": "admin-secret-token-12345"
-        },
-        {
-          "name": "Content-Type",
-          "value": "application/json"
-        }
+      "id": "prepare-prompt-003",
+      "name": "Preparar Prompt IA",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        720,
+        300
       ]
     },
-    "id": "http-delete-review-011",
-    "name": "Eliminar Comentario Reseña",
-    "type": "n8n-nodes-base.httpRequest",
-    "typeVersion": 2,
-    "position": [
-      1920,
-      400
-    ]
-  },
-  {
-    "parameters": {
-      "mailOptions": {
-        "to": "={{ $json.email }}",
-        "subject": "⚠️ Advertencia de Moderación - SONAR",
-        "text": "Hola Usuario,\n\nSe ha detectado contenido ofensivo en tu reseña. El contenido ha sido marcado para revisión administrativa.\n\n-- Equipo Sonar"
+    {
+      "parameters": {
+        "modelName": "models/gemini-3.1-flash-lite",
+        "options": {
+          "temperature": 0.1
+        }
+      },
+      "id": "gemini-model-004",
+      "name": "Google Gemini Model",
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        960,
+        300
+      ],
+      "credentials": {
+        "googlePalmApi": {
+          "id": "WIj69PJbz7zW1DQw",
+          "name": "Google Gemini(PaLM) Api account"
+        }
       }
     },
-    "id": "email-warning-012",
-    "name": "Enviar Correo Advertencia",
-    "type": "n8n-nodes-base.emailSend",
-    "typeVersion": 2,
-    "position": [
-      2160,
-      400
-    ]
-  },
-  {
-    "parameters": {
-      "respondWith": "json",
-      "responseBody": "={\n  \"success\": true,\n  \"reviewId\": {{ $json.reviewId }},\n  \"offensive\": {{ $json.offensive }},\n  \"severity\": {{ $json.severity }},\n  \"action\": {{ $json.action }},\n  \"explanation\": {{ JSON.stringify($json.explanation) }},\n  \"suspensionDays\": {{ $json.suspensionDays }},\n  \"timestamp\": {{ JSON.stringify($json.timestamp) }}\n}",
-      "options": {
-        "responseCode": 200
+    {
+      "parameters": {
+        "modelName": "models/openrouter/gemini-1.5-flash",
+        "options": {
+          "temperature": 0.1
+        }
+      },
+      "id": "openrouter-model-005",
+      "name": "OpenRouter Gemini Model",
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenRouter",
+      "typeVersion": 1,
+      "position": [
+        960,
+        500
+      ],
+      "credentials": {
+        "openRouterApi": {
+          "id": "openrouter-credentials",
+          "name": "OpenRouter API Key"
+        }
       }
     },
-    "id": "respond-webhook-013",
-    "name": "Responder Webhook",
-    "type": "n8n-nodes-base.respondToWebhook",
-    "typeVersion": 1.1,
-    "position": [
-      2400,
-      300
-    ]
-  }
-],
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.promptText }}",
+        "options": {
+          "systemMessage": "Eres Sonar AI, el sistema de moderación inteligente de Sonar. Tu tarea es analizar comentarios de reseñas en busca de contenido ofensivo, dañino o inapropiado. Sé objetivo y consistente. Siempre responde en formato JSON estructurado como se especifica. Si el contenido es borderline, inclina hacia la moderación pero sé justo."
+        }
+      },
+      "id": "agent-006",
+      "name": "AI Agent Moderación",
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.7,
+      "position": [
+        1200,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const inputData = $input.first().json || {};\nconst { text, response } = inputData;\n\nlet analysisResult = {\n  offensive: false,\n  severity: 'low',\n  category: 'other',\n  explanation: 'Análisis completado por IA.',\n  actionRequired: false,\n  suggestedSuspensionDays: 0\n};\n\ntry {\n  let responseText = '';\n  \n  if (response.output) {\n    responseText = String(response.output);\n  } else if (response.text) {\n    responseText = String(response.text);\n  } else if (typeof response === 'string') {\n    responseText = response;\n  } else {\n    responseText = JSON.stringify(response);\n  }\n\n  const parsed = JSON.parse(responseText);\n  \n  if (parsed.offensive !== undefined) {\n    analysisResult = {\n      offensive: Boolean(parsed.offensive),\n      severity: parsed.severity || 'low',\n      category: parsed.category || 'other',\n      explanation: parsed.explanation || 'Sin explicación',\n      actionRequired: parsed.actionRequired !== undefined ? Boolean(parsed.actionRequired) : true,\n      suggestedSuspensionDays: Number(parsed.suggestedSuspensionDays) || 0\n    };\n  } else {\n    const lowerText = String(responseText).toLowerCase();\n    const offensiveTerms = ['idiota', 'imbécil', 'mierda', 'puta', 'pendejo', 'hijo de', 'spam', 'odio', 'muérete', 'muerete'];\n    const foundTerms = offensiveTerms.filter(term => lowerText.includes(term));\n    \n    if (foundTerms.length > 0) {\n      analysisResult.offensive = true;\n      \n      if (foundTerms.some(t => ['mierda', 'spam', 'odio'].includes(t))) {\n        analysisResult.severity = 'medium';\n      } else {\n        analysisResult.severity = 'low';\n      }\n      analysisResult.category = 'insult';\n      analysisResult.explanation = `Términos ofensivos detectados: ${foundTerms.join(', ')}`;\n      analysisResult.actionRequired = true;\n      analysisResult.suggestedSuspensionDays = 30;\n    } else {\n      analysisResult.explanation = 'No ofensivo - contenido limpio.';\n    }\n  }\n} catch (err) {\n  console.error('[AI Agent] Error parsing response:', err);\n  analysisResult.explanation = 'Error procesando respuesta IA, revisar manualmente.';\n}\n\nreturn [{\n  json: {\n    ...analysisResult,\n    metadata: {\n      reviewId: inputData.metadata?.reviewId,\n      source: 'ai-analysis'\n    }\n  }\n}];"
+      },
+      "id": "parse-ai-response-007",
+      "name": "Parsear Respuesta IA",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1440,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const inputData = $input.first().json || {};\nconst { offensive, severity, category, explanation, suggestedSuspensionDays, userId, username, email, metadata } = inputData;\n\n// Determinar la acción basada en la severidad\nlet action = 'finalize';\nlet suspensionDays = 0;\nlet shouldSuspend = false;\nlet shouldDelete = false;\nlet shouldSendWarning = false;\nlet warningType = 'no-action';\n\nswitch (severity) {\n  case 'high':\n    action = 'suspend';\n    shouldSuspend = true;\n    shouldDelete = true;\n    suspensionDays = Math.max(1, Number(suggestedSuspensionDays) || 30);\n    warningType = 'suspension';\n    break;\n  case 'medium':\n    action = 'warn';\n    shouldSuspend = false;\n    shouldDelete = true;\n    suspensionDays = 7;\n    warningType = 'medium-warning';\n    break;\n  case 'low':\n  default:\n    action = 'flag';\n    shouldSuspend = false;\n    shouldDelete = false;\n    suspensionDays = 0;\n    warningType = 'low-flag';\n    break;\n}\n\n// Construir datos de suspensión si es necesario\nlet suspensionData = null;\nif (shouldSuspend) {\n  suspensionData = {\n    userId: userId || 'N/A',\n    username: username || 'Usuario Desconocido',\n    email: email || 'usuario@sonar.com',\n    reason: `Reseña ofensiva [${severity}]: ${explanation || 'Sin detalles'}`,\n    severity: severity,\n    suspensionDays: suspensionDays,\n    performedBy: 'Sistema IA - Moderación Automática',\n    timestamp: new Date().toISOString()\n  };\n}\n\nreturn [{\n  json: {\n    ...inputData,\n    action,\n    suspensionData,\n    shouldSuspend,\n    shouldDelete,\n    shouldSendWarning: warningType !== 'no-action' && warningType !== 'low-flag',\n    warningType,\n    suspensionDays,\n    processedAt: new Date().toISOString()\n  }\n}];"
+      },
+      "id": "decision-008",
+      "name": "Tomar Decisión de Acción",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1680,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "post",
+        "url": "http://localhost:5678/api/v1/users/suspend",
+        "jsonParameters": true,
+        "options": {
+          "bodyContentType": "json"
+        },
+        "headerParameters": [
+          {
+            "name": "X-Admin-Token",
+            "value": "admin-secret-token-12345"
+          },
+          {
+            "name": "Content-Type",
+            "value": "application/json"
+          }
+        ]
+      },
+      "id": "http-suspend-user-009",
+      "name": "Suspender Cuenta (Admin Credentials)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 2,
+      "position": [
+        1920,
+        200
+      ]
+    },
+    {
+      "parameters": {
+        "mailOptions": {
+          "to": "={{ $json.suspensionData.email }}",
+          "subject": "⚠️ Cuenta Suspendida - SONAR",
+          "text": "Hola $JSON.suspensionData.username,\n\nTu cuenta ha sido suspendida temporalmente por $JSON.suspensionDays días.\n\nMotivo: $JSON.suspensionData.reason\n\nSeveridad: $JSON.suspensionData.severity\n\nSi consideras que fue un error, contacta al equipo de soporte.\n\n-- Equipo Sonar\n\nEste es un mensaje automático generado por el sistema de moderación IA."
+        }
+      },
+      "id": "email-suspension-010",
+      "name": "Enviar Correo Suspensión",
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2,
+      "position": [
+        2160,
+        200
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "post",
+        "url": "http://localhost:5678/api/v1/reviews/delete",
+        "jsonParameters": true,
+        "options": {
+          "bodyContentType": "json"
+        },
+        "headerParameters": [
+          {
+            "name": "X-Admin-Token",
+            "value": "admin-secret-token-12345"
+          },
+          {
+            "name": "Content-Type",
+            "value": "application/json"
+          }
+        ]
+      },
+      "id": "http-delete-review-011",
+      "name": "Eliminar Comentario Reseña",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 2,
+      "position": [
+        1920,
+        400
+      ]
+    },
+    {
+      "parameters": {
+        "mailOptions": {
+          "to": "={{ $json.email }}",
+          "subject": "⚠️ Advertencia de Moderación - SONAR",
+          "text": "Hola Usuario,\n\nSe ha detectado contenido ofensivo en tu reseña. El contenido ha sido marcado para revisión administrativa.\n\n-- Equipo Sonar"
+        }
+      },
+      "id": "email-warning-012",
+      "name": "Enviar Correo Advertencia",
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2,
+      "position": [
+        2160,
+        400
+      ]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={\n  \"success\": true,\n  \"reviewId\": {{ $json.reviewId }},\n  \"offensive\": {{ $json.offensive }},\n  \"severity\": {{ $json.severity }},\n  \"action\": {{ $json.action }},\n  \"explanation\": {{ JSON.stringify($json.explanation) }},\n  \"suspensionDays\": {{ $json.suspensionDays }},\n  \"timestamp\": {{ JSON.stringify($json.timestamp) }}\n}",
+        "options": {
+          "responseCode": 200
+        }
+      },
+      "id": "respond-webhook-013",
+      "name": "Responder Webhook",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [
+        2400,
+        300
+      ]
+    }
+  ],
   "connections": {
     "Webhook nueva reseña": {
       "main": [
@@ -321,18 +321,7 @@
       "main": [
         [
           {
-            "node": "Suspender Cuenta (Admin Credentials)",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Tomar Decisión de Acción": {
-      "main": [
-        [
-          {
-            "node": "Eliminar Comentario Reseña",
+            "node": "Enviar Correo Advertencia",
             "type": "main",
             "index": 0
           }
@@ -372,17 +361,6 @@
         ]
       ]
     },
-    "Tomar Decisión de Acción": {
-      "main": [
-        [
-          {
-            "node": "Enviar Correo Advertencia",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
     "Enviar Correo Advertencia": {
       "main": [
         [
@@ -404,5 +382,5 @@
     "instanceId": "sonar-n8n-resenia-instance"
   },
   "id": "sonar-resenia-suspension-flow",
-  "tags": ["review", "ai-moderation", "suspension", "admin-credentials"]
+  "tags": []
 }

@@ -1,5 +1,5 @@
 const jsonServer = require('json-server');
-const { randomBytes, createHash, timingSafeEqual } = require('node:crypto');
+const { randomBytes, randomInt, createHash, timingSafeEqual } = require('node:crypto');
 const path = require('node:path');
 const { createModeration } = require('./moderation-agent.cjs');
 const equal = (a,b) => { const x=Buffer.from(String(a || '')), y=Buffer.from(String(b || '')); return x.length === y.length && timingSafeEqual(x,y); };
@@ -9,13 +9,28 @@ function verify(password, saved) {
   if (typeof password !== 'string' || !password || typeof saved !== 'string') return false;
   if (saved.startsWith('sha256$')) {
     const [,salt,digest] = saved.split('$');
-    return equal(createHash('sha256').update(`${salt}:${password}`).digest('hex'), digest);
+    const saltedPassword = `${salt}:${password}`;
+    if (equal(createHash('sha256').update(saltedPassword).digest('hex'), digest)) return true;
+    // Recover accounts created by clients without Web Crypto, then upgrade their hash at login.
+    if (/^[0-9a-f]{16}$/.test(digest)) {
+      let hash = 0;
+      for (let i = 0; i < saltedPassword.length; i++) {
+        hash = (hash << 5) - hash + saltedPassword.charCodeAt(i);
+        hash |= 0;
+      }
+      return equal(Math.abs(hash).toString(16).padStart(16, '0'), digest);
+    }
+    return false;
   }
+  // Compatibility with demo accounts created by the old client-side mock auth.
+  if (saved === 'hashed_password_mock') return equal(password, 'password123');
+  if (saved === 'admin_mock_password') return equal(password, 'admin123') || equal(password, saved);
   return equal(password,saved);
 }
 function createApp({ filename = path.join(__dirname,'../db.json'), env = process.env, request = fetch } = {}) {
   const app = jsonServer.create(), router = jsonServer.router(filename), db = router.db;
   const sessions = new Map();
+  const passwordResetCodes = new Map();
   const admin = db.getState().users.find(u => u.role === 'admin' && u.email === (env.SONAR_ADMIN_EMAIL || 'admin@sonar.local'));
   const agent = createModeration(db, { adminId: admin?.id, geminiKey: env.GEMINI_API_KEY, geminiModel: env.GEMINI_MODEL, openrouterKey: env.OPENROUTER_API_KEY }, request);
   app.use(jsonServer.bodyParser);
@@ -39,6 +54,11 @@ function createApp({ filename = path.join(__dirname,'../db.json'), env = process
     const u = db.getState().users.find(u => u.email?.toLowerCase() === String(req.body.email || '').trim().toLowerCase());
     if (!u || !verify(req.body.password,u.password)) return res.status(401).json({error:'Correo o contraseña incorrectos'});
     if (blocked(u)) return res.status(403).json({error:'Cuenta suspendida o baneada'});
+    if (/^sha256\$[^$]+\$[0-9a-f]{16}$/.test(u.password || '') || ['hashed_password_mock','admin_mock_password'].includes(u.password)) {
+      const salt = randomBytes(16).toString('hex');
+      u.password = `sha256$${salt}$${createHash('sha256').update(`${salt}:${req.body.password}`).digest('hex')}`;
+      db.write();
+    }
     res.json(establish(res,u));
   });
   app.post('/trivia/reward',async (req,res) => {
@@ -74,7 +94,47 @@ function createApp({ filename = path.join(__dirname,'../db.json'), env = process
     req.user.password=`sha256$${salt}$${createHash('sha256').update(`${salt}:${req.body.newPassword}`).digest('hex')}`;
     db.write(); res.json({success:true});
   });
+  app.post('/auth/password/reset/request',async (req,res) => {
+    const email=String(req.body.email || '').trim().toLowerCase();
+    if (!email || email.length>254 || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return res.status(400).json({error:'Correo electrónico inválido'});
+    const user=db.getState().users.find(u=>u.email?.toLowerCase()===email);
+    if (!user) return res.status(404).json({error:'No existe una cuenta con ese correo'});
+    const previous=passwordResetCodes.get(email);
+    if (previous && previous.sentAt>Date.now()-60_000) return res.status(429).json({error:'Espera un minuto antes de solicitar otro código'});
+    const code=String(randomInt(100000,1000000));
+    const endpoint=env.N8N_FORGOT_PASSWORD_WEBHOOK_URL || 'http://127.0.0.1:5678/webhook/forgot-password';
+    try {
+      const response=await request(endpoint,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email,code}),signal:AbortSignal.timeout(8000)});
+      if (!response.ok) throw new Error(`n8n HTTP ${response.status}`);
+      passwordResetCodes.set(email,{codeHash:createHash('sha256').update(code).digest('hex'),expiresAt:Date.now()+15*60_000,sentAt:Date.now(),attempts:0});
+      return res.json({success:true,message:'Si la cuenta existe, recibirás un código de recuperación por correo.'});
+    } catch {
+      return res.status(503).json({error:'No se pudo enviar el correo de recuperación. Comprueba que n8n esté activo y vuelve a intentarlo.'});
+    }
+  });
+  app.post('/auth/password/reset', (req,res) => {
+    const email=String(req.body.email || '').trim().toLowerCase();
+    const code=String(req.body.code || '').trim();
+    const newPassword=req.body.newPassword;
+    const pending=passwordResetCodes.get(email);
+    if (!pending || pending.expiresAt<Date.now() || pending.attempts>=5) {
+      passwordResetCodes.delete(email);
+      return res.status(400).json({error:'El código es incorrecto o expiró. Solicita uno nuevo.'});
+    }
+    pending.attempts++;
+    const submittedHash=createHash('sha256').update(code).digest('hex');
+    if (!/^\d{6}$/.test(code) || !equal(submittedHash,pending.codeHash)) return res.status(400).json({error:'El código es incorrecto o expiró. Solicita uno nuevo.'});
+    if (typeof newPassword!=='string' || newPassword.length<6 || newPassword.length>200) return res.status(400).json({error:'La contraseña debe tener al menos 6 caracteres.'});
+    const user=db.getState().users.find(u=>u.email?.toLowerCase()===email);
+    if (!user) return res.status(404).json({error:'No existe una cuenta con ese correo'});
+    const salt=randomBytes(16).toString('hex');
+    user.password=`sha256$${salt}$${createHash('sha256').update(`${salt}:${newPassword}`).digest('hex')}`;
+    db.write();
+    passwordResetCodes.delete(email);
+    res.json({success:true});
+  });
   app.post('/auth/google',async (req,res) => {
+    let googleResponseReceived = false;
     try {
       const googleClientId = env.GOOGLE_CLIENT_ID || env.VITE_GOOGLE_CLIENT_ID;
       if (!googleClientId || req.body.credential === 'dev-google-credential-token') {
@@ -97,8 +157,16 @@ function createApp({ filename = path.join(__dirname,'../db.json'), env = process
         if (blocked(u)) return res.status(403).json({error:'Cuenta suspendida o baneada'});
         return res.json(establish(res,u));
       }
-      const response = await request('https://oauth2.googleapis.com/tokeninfo?id_token='+encodeURIComponent(req.body.credential || ''),{signal:AbortSignal.timeout(10000)});
+      const tokenInfoUrl = 'https://oauth2.googleapis.com/tokeninfo?id_token='+encodeURIComponent(req.body.credential || '');
+      let response;
+      try {
+        response = await request(tokenInfoUrl,{signal:AbortSignal.timeout(10000)});
+      } catch (firstError) {
+        console.warn('Reintentando validacion de Google:', firstError?.cause?.code || firstError?.name || 'network error');
+        response = await request(tokenInfoUrl,{signal:AbortSignal.timeout(10000)});
+      }
       const p = await response.json();
+      googleResponseReceived = true;
       if (!response.ok || p.aud !== googleClientId || !['accounts.google.com','https://accounts.google.com'].includes(p.iss) || Number(p.exp)*1000 <= Date.now() || ![true,'true'].includes(p.email_verified)) return res.status(401).json({error:'Credencial Google inválida'});
       let u = db.getState().users.find(u => u.email?.toLowerCase() === p.email.toLowerCase());
       if (!u) {
@@ -109,7 +177,13 @@ function createApp({ filename = path.join(__dirname,'../db.json'), env = process
       }
       if (blocked(u)) return res.status(403).json({error:'Cuenta suspendida o baneada'});
       res.json(establish(res,u));
-    } catch { res.status(502).json({error:'No se pudo validar Google'}); }
+    } catch (error) {
+      if (!googleResponseReceived) {
+        console.error('No se pudo conectar con la validacion de Google:', error?.cause?.code || error?.name || 'network error');
+        return res.status(503).json({error:'El servidor no puede conectarse con Google. Revisa la conexion o la configuracion de red del servidor e intenta de nuevo.'});
+      }
+      return res.status(502).json({error:'No se pudo procesar la respuesta de Google. Intenta de nuevo.'});
+    }
   });
   app.use('/admin/moderation',(req,res,next) => req.isAgent || req.isAdmin ? next() : res.status(403).json({error:'Permiso administrativo requerido'}));
   app.post('/admin/moderation/run-agent',async (req,res) => {

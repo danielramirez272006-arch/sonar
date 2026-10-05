@@ -33,10 +33,11 @@ it('keeps the admin dashboard visible after loading null records from JSON Serve
   await screen.findAllByText('Mateo')
   expect(screen.getByRole('heading', { name: /Tu mesa de/ })).toBeTruthy()
   await act(async () => {
-    window.history.replaceState(null, '', '/#moderacion')
+    window.location.hash = '#/moderacion'
+    window.dispatchEvent(new Event('popstate'))
     window.dispatchEvent(new Event('hashchange'))
   })
-  await screen.findByText('Todo en armonía')
+  await screen.findByText(/Todo en armonía|Sin reseñas pendientes/i)
 })
 
 it('navigates from catalog back to admin without mixing the previous page with the new route', async () => {

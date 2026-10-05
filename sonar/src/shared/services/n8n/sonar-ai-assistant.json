@@ -50,7 +50,7 @@
     },
     {
       "parameters": {
-        "modelName": "models/gemini-1.5-flash",
+        "modelName": "models/gemini-3.1-flash-lite",
         "options": {
           "temperature": 0.2
         }
@@ -65,8 +65,8 @@
       ],
       "credentials": {
         "googlePalmApi": {
-          "id": "google-gemini-credentials",
-          "name": "Google Gemini API Key"
+          "id": "WIj69PJbz7zW1DQw",
+          "name": "Google Gemini(PaLM) Api account"
         }
       }
     },

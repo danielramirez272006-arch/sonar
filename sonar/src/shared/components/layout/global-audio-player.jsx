@@ -163,7 +163,7 @@ export const GlobalAudioPlayer = () => {
 
   const getNormalizedRoute = () => {
     if (typeof window === 'undefined') return '';
-    const hash = (window.location.hash || '').replace(/^#/, '').toLowerCase().split('?')[0];
+    const hash = (window.location.hash || '').replace(/^#\/?/, '').toLowerCase().split('?')[0];
     const path = (window.location.pathname || '').replace(/^\//, '').toLowerCase().split('?')[0];
     return hash || path;
   };

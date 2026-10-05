@@ -1,7 +1,14 @@
+import { Navigate, Outlet } from 'react-router-dom';
 import { useUIText } from '../i18n/use-ui-text.js';
 import { useAuth } from '../context/auth-context';
 
-export const AdminRoute = ({ children, fallback = null }) => {
+/**
+ * Protege rutas exclusivas del rol `admin` (rol almacenado en db.json).
+ * - Sin sesión: redirige a `/login`.
+ * - Con sesión pero sin rol admin: redirige al panel del usuario (`/usuario`).
+ * Un `fallback` explícito reemplaza ambas redirecciones.
+ */
+export const AdminRoute = ({ children, fallback }) => {
   const ui = useUIText();
   const { user, isAuthenticated, isLoading } = useAuth();
 
@@ -10,10 +17,11 @@ export const AdminRoute = ({ children, fallback = null }) => {
   }
 
   if (!isAuthenticated || user?.role !== 'admin') {
-    return fallback;
+    if (fallback !== undefined) return fallback;
+    return <Navigate to={isAuthenticated ? '/usuario' : '/login'} replace />;
   }
 
-  return children;
+  return children ?? <Outlet />;
 };
 
 export default AdminRoute;

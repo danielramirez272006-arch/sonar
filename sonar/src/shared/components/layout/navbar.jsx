@@ -31,8 +31,8 @@ export const Navbar = ({
   ], [t]);
 
   const [activeTab, setActiveTab] = useState(() => {
-    const hash = window.location.hash.replace(/^#/, '');
-    return hash || 'explore';
+    const hash = window.location.hash.replace(/^#\/?/, '');
+    return hash.split('?')[0] || 'explore';
   });
   const [navSearch, setNavSearch] = useState('');
   const [searchOpen, setSearchOpen] = useState(false);
@@ -121,7 +121,7 @@ export const Navbar = ({
 
   useEffect(() => {
     const onHashChange = () => {
-      const hash = window.location.hash.replace(/^#/, '');
+      const hash = window.location.hash.replace(/^#\/?/, '');
       setActiveTab(hash.split('?')[0] || 'explore');
     };
     window.addEventListener('hashchange', onHashChange);
@@ -160,7 +160,8 @@ export const Navbar = ({
       if (onSearch) onSearch(term);
       window.dispatchEvent(new CustomEvent('sonar:search', { detail: term }));
 
-      if (window.location.hash !== '#explore' && window.location.hash !== '') {
+      const currentRoute = window.location.hash.replace(/^#\/?/, '');
+      if (currentRoute !== 'explore' && currentRoute !== '') {
         window.location.hash = '#explore';
       } else {
         setTimeout(() => {

@@ -1,7 +1,9 @@
-import { renderHook, act, cleanup } from '@testing-library/react';
+import { renderHook, act, cleanup, render, screen, fireEvent } from '@testing-library/react';
 import React from 'react';
 import { authServerFetch } from './helpers/auth-server';
 import { AuthProvider, useAuth } from '../src/shared/context/auth-context';
+import { createUser } from '../src/shared/services/api-client.js';
+import { RegisterForm } from '../src/features/auth/components/register-form.jsx';
 
 describe('AuthContext Registration Flow', () => {
   beforeEach(() => {
@@ -83,10 +85,6 @@ describe('AuthContext Registration Flow', () => {
   });
 
   it('detecta si el correo ya está registrado en el paso 1 antes de crear la contraseña', async () => {
-    const { createUser } = await import('../src/shared/services/api-client.js');
-    const { RegisterForm } = await import('../src/features/auth/components/register-form.jsx');
-    const { render, screen, fireEvent } = await import('@testing-library/react');
-
     const duplicateEmail = 'registrado@sonar.audio';
     await createUser({
       id: 'existing-user-123',

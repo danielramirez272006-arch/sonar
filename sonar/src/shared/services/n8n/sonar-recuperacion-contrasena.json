@@ -100,7 +100,7 @@
     {
       "parameters": {
         "respondWith": "json",
-        "responseBody": "{\n  \"success\": true,\n  \"message\": \"Código de verificación enviado correctamente a tu correo.\",\n  \"code\": \"={{ $json.code }}\"\n}",
+        "responseBody": "{\n  \"success\": true,\n  \"message\": \"Código de verificación enviado correctamente a tu correo.\"\n}",
         "options": {
           "responseCode": 200
         }

@@ -15,7 +15,7 @@ export default defineConfig({
   preview: {
     proxy: {
       '/api/catalog': {
-        target: 'http://localhost:3001',
+        target: 'http://127.0.0.1:3001',
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/api\/catalog/, ''),
       },
@@ -41,7 +41,7 @@ export default defineConfig({
     },
     proxy: {
       '/api/catalog': {
-        target: 'http://localhost:3001',
+        target: 'http://127.0.0.1:3001',
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/api\/catalog/, ''),
       },

@@ -8,7 +8,7 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 import { useTranslation } from './shared/context/language-context.jsx'
 import { ConsoleSearch } from './features/admin/console-search.jsx'
 import { ModerationTable } from './features/admin/moderation/components/moderation-table.jsx'
-import { BrowserRouter } from 'react-router-dom'
+import { HashRouter, useLocation } from 'react-router-dom'
 import { getReviews, getUsers, updateUser, updateReview } from './shared/services/api-client.js'
 import { analyzeReview } from './shared/services/ia-service.js'
 import { useAdminDashboard, useModeration } from './features/admin/index.js'
@@ -48,7 +48,9 @@ export function AdminConsole() {
   const { isDark, toggleTheme } = useTheme()
   const dashboard = useAdminDashboard()
   const moderation = useModeration()
-  const [adminHash, setAdminHash] = useState(() => window.location.hash)
+  const location = useLocation()
+  // Sección activa de la consola derivada de la ruta de React Router (p. ej. #moderacion, #admin-catalog-music?edit=1).
+  const adminHash = `#${location.pathname.replace(/^\//, '')}${location.search}`
   const catalogType = adminHash.split('?')[0].replace('#admin-catalog-', '')
   const routeParams = new URLSearchParams(adminHash.split('?')[1] || '')
   const baseRoute = adminHash.split('?')[0]
@@ -73,13 +75,6 @@ export function AdminConsole() {
     Promise.resolve().then(() => {
       if (!cancelled) return loadData()
     }).catch(cause => setError(cause.message))
-    function onHashChange() {
-      const nextHash = window.location.hash
-      const base = nextHash.split('?')[0]
-      if (!['#dashboard', '#moderacion', '#usuarios', '#admin', '#admin-reports', '#admin-reviews', '#sonar-ai', '#admin-ai', '#admin-hub', ''].includes(base) && !base.startsWith('#admin-catalog-')) return
-      setAdminHash(nextHash)
-      setQuery('')
-    }
     function onShortcut(event) {
       if ((event.ctrlKey || event.metaKey) && event.key === 'k') {
         event.preventDefault()
@@ -92,17 +87,18 @@ export function AdminConsole() {
     window.addEventListener('focus', reloadReports)
     window.addEventListener('sonar:reports-updated', reloadReports)
     const reportRefresh = window.setInterval(reloadReports, 30000)
-    window.addEventListener('hashchange', onHashChange)
     window.addEventListener('keydown', onShortcut)
     return () => {
       cancelled = true
       window.clearInterval(reportRefresh)
       window.removeEventListener('focus', reloadReports)
       window.removeEventListener('sonar:reports-updated', reloadReports)
-      window.removeEventListener('hashchange', onHashChange)
       window.removeEventListener('keydown', onShortcut)
     }
   }, [loadData])
+
+  // Al cambiar de sección se limpia la búsqueda de la consola.
+  useEffect(() => { setQuery('') }, [location.pathname])
 
   async function refresh() {
     if (actionLock.current) return
@@ -265,7 +261,7 @@ export default function App() {
   return (
       <ErrorBoundary>
         <LanguageProvider>
-          <BrowserRouter>
+          <HashRouter>
             <AccessibilityProvider>
               <AuthProvider>
                 <ThemeProvider>
@@ -289,7 +285,7 @@ export default function App() {
                 </ThemeProvider>
               </AuthProvider>
             </AccessibilityProvider>
-          </BrowserRouter>
+          </HashRouter>
         </LanguageProvider>
       </ErrorBoundary>
   )

@@ -5,8 +5,38 @@ import { createUser } from '../src/shared/services/api-client';
 import { hashPassword } from '../src/shared/services/crypto-service';
 
 describe('ForgotPassword Email OTP Code Entry Flow', () => {
+  const originalFetch = global.fetch;
+
   beforeEach(() => {
     window.localStorage.clear();
+    global.fetch = jest.fn().mockImplementation((url) => {
+      const urlStr = typeof url === 'string' ? url : url?.url || '';
+      if (urlStr.includes('/auth/password/reset/request')) {
+        const payload = JSON.stringify({ success: true, message: 'Código enviado' });
+        return Promise.resolve({
+          ok: true,
+          status: 200,
+          text: async () => payload,
+          json: async () => JSON.parse(payload),
+        });
+      }
+      if (urlStr.includes('/auth/password/reset')) {
+        const payload = JSON.stringify({ success: true });
+        return Promise.resolve({
+          ok: true,
+          status: 200,
+          text: async () => payload,
+          json: async () => JSON.parse(payload),
+        });
+      }
+      const empty = JSON.stringify({});
+      return Promise.resolve({
+        ok: true,
+        status: 200,
+        text: async () => empty,
+        json: async () => ({}),
+      });
+    });
     global.ResizeObserver = class ResizeObserver {
       observe() {}
       unobserve() {}
@@ -24,7 +54,10 @@ describe('ForgotPassword Email OTP Code Entry Flow', () => {
     };
   });
 
-  afterEach(cleanup);
+  afterEach(() => {
+    global.fetch = originalFetch;
+    cleanup();
+  });
 
   it('solicita el código al correo, permite ingresarlo en pantalla y restablece la contraseña', async () => {
     const testEmail = 'melomano_otp@sonar.local';

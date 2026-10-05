@@ -95,7 +95,13 @@
       "position": [
         880,
         220
-      ]
+      ],
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "ZAzEhZk3GJrQj3oo",
+          "name": "Gmail account 2"
+        }
+      }
     },
     {
       "parameters": {

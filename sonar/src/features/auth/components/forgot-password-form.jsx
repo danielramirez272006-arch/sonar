@@ -1,9 +1,7 @@
 import { useUIText } from '../../../shared/i18n/use-ui-text.js';
 import { useState, useEffect } from 'react';
 import { ArrowRight, ArrowLeft, CheckCircle2, KeyRound, Mail, ShieldCheck, Eye, EyeOff, Sparkles, RefreshCw, Send } from 'lucide-react';
-import { requestPasswordResetWebhook } from '../../../shared/services/n8n-webhooks';
-import { getUserByEmail, updateUser, getUsers } from '../../../shared/services/api-client';
-import { hashPassword } from '../../../shared/services/crypto-service';
+import { apiRequest } from '../../../shared/services/api-client';
 import { RotatingReview } from './rotating-review';
 
 const EditorialPanel = () => { const ui = useUIText(); return (<aside className="auth-editorial" aria-label={ui("Comunidad editorial de audio")}>
@@ -29,8 +27,6 @@ export const ForgotPasswordForm = () => {
   // Pasos: 1 = Email, 2 = Escribir Código OTP del Correo, 3 = Nueva Contraseña, 4 = Éxito
   const [step, setStep] = useState(1);
   const [email, setEmail] = useState('');
-  const [targetUser, setTargetUser] = useState(null);
-  const [expectedCode, setExpectedCode] = useState('');
   const [enteredCode, setEnteredCode] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
@@ -61,26 +57,10 @@ export const ForgotPasswordForm = () => {
 
     setIsLoading(true);
     try {
-      // Buscar usuario en base de datos local / mock
-      let found = await getUserByEmail(cleanEmail);
-      if (!found) {
-        const allUsers = await getUsers();
-        found = allUsers.find(
-          (u) =>
-            u.email?.toLowerCase() === cleanEmail ||
-            u.username?.toLowerCase() === cleanEmail ||
-            u.username?.toLowerCase().replace(/\s+/g, '_') === cleanEmail
-        );
-      }
-
-      setTargetUser(found || { email: cleanEmail });
-
-      // Generar código y enviar webhook a n8n
-      const code = Math.floor(100000 + Math.random() * 900000).toString();
-      const result = await requestPasswordResetWebhook(cleanEmail, code);
-
-      setExpectedCode(result.code || code);
-      setResendTimer(15);
+      await apiRequest('/auth/password/reset/request', { method: 'POST', body: JSON.stringify({ email: cleanEmail }) });
+      setEmail(cleanEmail);
+      setEnteredCode('');
+      setResendTimer(60);
       setStep(2);
     } catch (err) {
       setErrorMessage(err.message || 'No se pudo enviar el código al correo. Inténtalo de nuevo.');
@@ -94,8 +74,8 @@ export const ForgotPasswordForm = () => {
     e.preventDefault();
     setErrorMessage('');
 
-    if (enteredCode.trim() !== expectedCode.trim()) {
-      setErrorMessage('El código de 6 dígitos ingresado es incorrecto o ha expirado.');
+    if (!/^\d{6}$/.test(enteredCode.trim())) {
+      setErrorMessage('Ingresa el código de 6 dígitos que recibiste por correo.');
       return;
     }
 
@@ -119,26 +99,10 @@ export const ForgotPasswordForm = () => {
 
     setIsLoading(true);
     try {
-      // Hasheo seguro SHA-256 con salt criptográfico
-      const encryptedPassword = await hashPassword(newPassword);
-
-      if (targetUser?.id) {
-        await updateUser(targetUser.id, { password: encryptedPassword });
-      }
-
-      // Si el usuario en sesión es este, actualizar su sesión local
-      try {
-        const savedAuth = window.localStorage?.getItem('sonar_auth_user');
-        if (savedAuth) {
-          const authObj = JSON.parse(savedAuth);
-          if (authObj.email?.toLowerCase() === targetUser?.email?.toLowerCase() || authObj.id === targetUser?.id) {
-            authObj.password = encryptedPassword;
-            window.localStorage?.setItem('sonar_auth_user', JSON.stringify(authObj));
-          }
-        }
-      } catch {
-        // Fallback
-      }
+      await apiRequest('/auth/password/reset', {
+        method: 'POST',
+        body: JSON.stringify({ email, code: enteredCode.trim(), newPassword }),
+      });
 
       setStep(4);
     } catch (err) {
@@ -284,10 +248,14 @@ export const ForgotPasswordForm = () => {
                   type="button"
                   disabled={resendTimer > 0}
                   onClick={async () => {
-                    const newCode = Math.floor(100000 + Math.random() * 900000).toString();
-                    await requestPasswordResetWebhook(email, newCode);
-                    setExpectedCode(newCode);
-                    setResendTimer(15);
+                    setErrorMessage('');
+                    try {
+                      await apiRequest('/auth/password/reset/request', { method: 'POST', body: JSON.stringify({ email }) });
+                      setEnteredCode('');
+                      setResendTimer(60);
+                    } catch (err) {
+                      setErrorMessage(err.message || 'No se pudo reenviar el código.');
+                    }
                   }}
                   style={{
                     background: 'none',

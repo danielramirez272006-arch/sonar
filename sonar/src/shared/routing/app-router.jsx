@@ -1,8 +1,10 @@
-import React, { useState, useEffect, createContext, useContext } from 'react';
+import React, { createContext, useContext, useEffect, useMemo, useRef } from 'react';
+import { Routes, Route, useLocation, useNavigate } from 'react-router-dom';
 import { usePageScroll } from './use-page-scroll.js';
 import { AnimatePresence } from 'framer-motion';
 import PageTransition from '../components/ui/page-transition';
 import { ErrorBoundary } from '../components/ui/error-boundary';
+import { catalogTypes } from '../services/catalog-service.js';
 
 // Páginas Públicas
 import HomePage from '../../pages/public/home-page';
@@ -33,152 +35,125 @@ import { AdminConsole } from '../../App';
 import PrivateRoute from './private-route';
 import AdminRoute from './admin-route';
 
-// Contexto de Navegación Liviano
+/**
+ * Tabla de rutas de la aplicación.
+ * Cada entrada declara las URL (incluidos alias en español) y la página que renderiza.
+ * Se usa con HashRouter, por lo que `#login` y `#/login` resuelven a la misma ruta.
+ */
+export const PUBLIC_ROUTES = [
+  { paths: ['/', 'explore', 'home'], Page: HomePage },
+  { paths: ['login'], Page: LoginPage },
+  { paths: ['register'], Page: RegisterPage },
+  { paths: ['forgot-password', 'recuperar-password', 'recuperar-contrasena', 'reset-password'], Page: ForgotPasswordPage },
+  { paths: ['community'], Page: CommunityPage },
+  { paths: ['reviews', 'criticas'], Page: ReviewsFeedPage },
+  { paths: ['lists', 'listas'], Page: CuratedListsPage },
+  { paths: ['collections', 'colecciones'], Page: VinylCollectionsPage },
+  { paths: ['blog'], Page: BlogPage },
+  { paths: ['labels', 'sellos'], Page: RecordLabelsPage },
+  { paths: ['guidelines', 'pautas'], Page: EditorialGuidelinesPage },
+  { paths: ['podcasts', 'podcast'], Page: PodcastsPage },
+  { paths: ['noticias', 'news', 'radar'], Page: NewsPage },
+  { paths: ['album', 'vinyl', 'tocadiscos'], Page: VinylModePage },
+  { paths: ['album/:albumId'], Page: AlbumDetailPage },
+  { paths: ['rss_feed', 'rss', 'feed'], Page: RssPage },
+  { paths: ['about'], Page: AboutPage },
+  { paths: ['terms'], Page: TermsPage },
+];
+
+/** Rutas privadas: requieren sesión iniciada (cualquier rol). */
+export const PRIVATE_ROUTES = [
+  { paths: ['profile-settings', 'perfil/configuracion', 'configuracion', 'ajustes'], Page: ProfileSettingsPage },
+  { paths: ['usuario', 'profile', 'user-dashboard', 'saved'], Page: UserDashboardPage },
+];
+
+/** Rutas de administración: requieren sesión con rol `admin` (definido en db.json). */
+export const ADMIN_ROUTES = [
+  { paths: ['api', 'developers'], Page: DeveloperApiPage },
+  {
+    // La consola resuelve internamente la sección activa a partir de la URL.
+    paths: [
+      'admin/*', 'dashboard/*', 'moderacion', 'usuarios',
+      'admin-reports', 'admin-reviews', 'admin-ai', 'admin-hub', 'sonar-ai', 'ai-assistant',
+      ...Object.keys(catalogTypes).map(type => `admin-catalog-${type}`),
+    ],
+    Page: AdminConsole,
+  },
+];
+
+const renderRoutes = routes => routes.flatMap(({ paths, Page }) =>
+  paths.map(path => <Route key={path} path={path} element={<Page />} />),
+);
+
+// Contexto de navegación conservado por compatibilidad con componentes existentes.
 const RouterContext = createContext({
   currentPath: '/',
-  navigate: () => {},
+  navigate: (path) => { window.location.hash = `#${String(path).replace(/^[#/]+/, '')}`; },
 });
 
 export const useRouter = () => useContext(RouterContext);
 
+/** Convierte el hash actual (`#login`, `#/login?x=1`) en una ruta de React Router. */
+const hashToPath = () => `/${window.location.hash.replace(/^#\/?/, '')}`;
+
 export const AppRouter = () => {
-  const [currentPath, setCurrentPath] = useState(() => {
-    const hash = window.location.hash.replace(/^#/, '');
-    return hash || window.location.pathname || '/';
-  });
-  usePageScroll(currentPath);
+  const location = useLocation();
+  const navigate = useNavigate();
+  const currentKey = `${location.pathname}${location.search}`;
+  const latestKey = useRef(currentKey);
+  usePageScroll(location.pathname);
 
+  // Varios componentes escuchan `hashchange`. React Router navega con la History API,
+  // que no emite ese evento, así que se notifica cada cambio de ruta.
   useEffect(() => {
-    const handleLocationChange = () => {
-      const hash = window.location.hash.replace(/^#/, '');
-      setCurrentPath(hash || window.location.pathname || '/');
+    if (latestKey.current === currentKey) return;
+    latestKey.current = currentKey;
+    window.dispatchEvent(new Event('hashchange'));
+  }, [currentKey]);
+
+  // Si el hash cambia sin `popstate` (p. ej. history.replaceState), se sincroniza el router.
+  useEffect(() => {
+    let timer = null;
+    const syncFromHash = () => {
+      clearTimeout(timer);
+      timer = setTimeout(() => {
+        const target = hashToPath();
+        if (target !== latestKey.current) navigate(target, { replace: true });
+      }, 0);
     };
-
-    window.addEventListener('popstate', handleLocationChange);
-    window.addEventListener('hashchange', handleLocationChange);
-
+    window.addEventListener('hashchange', syncFromHash);
     return () => {
-      window.removeEventListener('popstate', handleLocationChange);
-      window.removeEventListener('hashchange', handleLocationChange);
+      clearTimeout(timer);
+      window.removeEventListener('hashchange', syncFromHash);
     };
-  }, []);
+  }, [navigate]);
 
-  const navigate = (path) => {
-    if (path.startsWith('#')) {
-      window.location.hash = path;
-    } else {
-      window.location.hash = `#${path.replace(/^\//, '')}`;
-    }
-    setCurrentPath(path.replace(/^[#/]/, ''));
-  };
-
-  // Selector dinámico de componentes por ruta
-  const renderCurrentPage = () => {
-    const rawPath = currentPath.toLowerCase().replace(/^\//, '').split('?')[0];
-
-    if (rawPath === '' || rawPath === 'explore' || rawPath === 'home') {
-      return <HomePage />;
-    }
-    if (rawPath === 'login') {
-      return <LoginPage />;
-    }
-    if (rawPath === 'register') {
-      return <RegisterPage />;
-    }
-    if (
-      rawPath === 'forgot-password' ||
-      rawPath === 'recuperar-password' ||
-      rawPath === 'recuperar-contrasena' ||
-      rawPath === 'reset-password'
-    ) {
-      return <ForgotPasswordPage />;
-    }
-    if (rawPath === 'community') {
-      return <CommunityPage />;
-    }
-    if (rawPath === 'reviews' || rawPath === 'criticas') {
-      return <ReviewsFeedPage />;
-    }
-    if (rawPath === 'lists' || rawPath === 'listas') {
-      return <CuratedListsPage />;
-    }
-    if (rawPath === 'collections' || rawPath === 'colecciones') {
-      return <VinylCollectionsPage />;
-    }
-    if (rawPath === 'api' || rawPath === 'developers') {
-      return (
-        <AdminRoute fallback={<LoginPage />}>
-          <DeveloperApiPage />
-        </AdminRoute>
-      );
-    }
-    if (rawPath === 'blog') {
-      return <BlogPage />;
-    }
-    if (rawPath === 'labels' || rawPath === 'sellos') {
-      return <RecordLabelsPage />;
-    }
-    if (rawPath === 'guidelines' || rawPath === 'pautas') {
-      return <EditorialGuidelinesPage />;
-    }
-    if (rawPath === 'podcasts' || rawPath === 'podcast') {
-      return <PodcastsPage />;
-    }
-    if (rawPath === 'noticias' || rawPath === 'news' || rawPath === 'radar') {
-      return <NewsPage />;
-    }
-    if (rawPath === 'album' || rawPath === 'vinyl' || rawPath === 'tocadiscos') {
-      return <VinylModePage />;
-    }
-    if (rawPath.startsWith('album/')) {
-      return <AlbumDetailPage />;
-    }
-    if (rawPath === 'rss_feed' || rawPath === 'rss' || rawPath === 'feed') {
-      return <RssPage />;
-    }
-    if (rawPath === 'about') {
-      return <AboutPage />;
-    }
-    if (rawPath === 'terms') {
-      return <TermsPage />;
-    }
-    if (
-      rawPath === 'profile-settings' ||
-      rawPath === 'perfil/configuracion' ||
-      rawPath === 'configuracion' ||
-      rawPath === 'ajustes'
-    ) {
-      return (
-        <PrivateRoute fallback={<LoginPage />}>
-          <ProfileSettingsPage />
-        </PrivateRoute>
-      );
-    }
-    if (rawPath === 'usuario' || rawPath === 'profile' || rawPath === 'user-dashboard' || rawPath === 'saved') {
-      return (
-        <PrivateRoute fallback={<LoginPage />}>
-          <UserDashboardPage />
-        </PrivateRoute>
-      );
-    }
-    // Se conserva la entrada histórica de la consola para no romper enlaces existentes.
-    if (rawPath.split('?')[0] === 'usuarios' || rawPath.startsWith('admin') || rawPath.startsWith('dashboard') || rawPath.startsWith('moderacion') || rawPath.includes('sonar-ai') || rawPath.includes('ai-assistant') || rawPath.includes('admin-hub')) {
-      return (
-        <AdminRoute fallback={<LoginPage />}>
-          <AdminConsole />
-        </AdminRoute>
-      );
-    }
-
-    return <NotFoundPage />;
-  };
+  const routerValue = useMemo(() => ({
+    currentPath: location.pathname.replace(/^\//, ''),
+    navigate: (path) => navigate(`/${String(path).replace(/^[#/]+/, '')}`),
+  }), [location.pathname, navigate]);
 
   return (
-    <RouterContext.Provider value={{ currentPath, navigate }}>
+    <RouterContext.Provider value={routerValue}>
       <AnimatePresence mode="wait">
-        <PageTransition key={currentPath}>
-          <ErrorBoundary key={currentPath}>
-            {renderCurrentPage()}
+        <PageTransition key={location.pathname}>
+          <ErrorBoundary key={location.pathname}>
+            <Routes location={location}>
+              {/* Rutas públicas */}
+              {renderRoutes(PUBLIC_ROUTES)}
+
+              {/* Rutas privadas: cualquier usuario autenticado */}
+              <Route element={<PrivateRoute />}>
+                {renderRoutes(PRIVATE_ROUTES)}
+              </Route>
+
+              {/* Rutas privadas: solo administradores */}
+              <Route element={<AdminRoute />}>
+                {renderRoutes(ADMIN_ROUTES)}
+              </Route>
+
+              <Route path="*" element={<NotFoundPage />} />
+            </Routes>
           </ErrorBoundary>
         </PageTransition>
       </AnimatePresence>

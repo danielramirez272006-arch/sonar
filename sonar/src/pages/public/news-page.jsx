@@ -29,7 +29,7 @@ const CATEGORIES = [
 /** Lee los parámetros de búsqueda que envía la barra de la navbar (#noticias?q=...&abrir=...). */
 function readNewsHashParams() {
   if (typeof window === 'undefined') return null;
-  const hash = window.location.hash.replace(/^#/, '');
+  const hash = window.location.hash.replace(/^#\/?/, '');
   const [path, query = ''] = hash.split('?');
   if (path.toLowerCase() !== 'noticias') return null;
   return new URLSearchParams(query);

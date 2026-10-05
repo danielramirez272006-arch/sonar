@@ -12,7 +12,10 @@
       "name": "Webhook Admin Hub",
       "type": "n8n-nodes-base.webhook",
       "typeVersion": 2,
-      "position": [200, 300],
+      "position": [
+        200,
+        300
+      ],
       "webhookId": "sonar-admin-hub"
     },
     {
@@ -44,7 +47,10 @@
       "name": "Validar Solicitud",
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
-      "position": [420, 300]
+      "position": [
+        420,
+        300
+      ]
     },
     {
       "parameters": {
@@ -58,7 +64,10 @@
       "name": "Respond Error",
       "type": "n8n-nodes-base.respondToWebhook",
       "typeVersion": 1.1,
-      "position": [660, 500]
+      "position": [
+        660,
+        500
+      ]
     },
     {
       "parameters": {
@@ -68,7 +77,10 @@
       "name": "Preparar Contexto Admin",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
-      "position": [660, 240]
+      "position": [
+        660,
+        240
+      ]
     },
     {
       "parameters": {
@@ -82,11 +94,14 @@
       "name": "Admin Hub Agente IA",
       "type": "@n8n/n8n-nodes-langchain.agent",
       "typeVersion": 1.7,
-      "position": [920, 240]
+      "position": [
+        920,
+        240
+      ]
     },
     {
       "parameters": {
-        "modelName": "models/gemini-1.5-flash",
+        "modelName": "models/gemini-3.1-flash-lite",
         "options": {
           "temperature": 0.3
         }
@@ -95,11 +110,14 @@
       "name": "Google Gemini Chat Model",
       "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
       "typeVersion": 1,
-      "position": [920, 460],
+      "position": [
+        920,
+        460
+      ],
       "credentials": {
         "googlePalmApi": {
-          "id": "google-gemini-credentials",
-          "name": "Google Gemini API Key"
+          "id": "WIj69PJbz7zW1DQw",
+          "name": "Google Gemini(PaLM) Api account"
         }
       }
     },
@@ -112,7 +130,10 @@
       "name": "Memoria de Sesión Admin",
       "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
       "typeVersion": 1.3,
-      "position": [1080, 460]
+      "position": [
+        1080,
+        460
+      ]
     },
     {
       "parameters": {
@@ -122,7 +143,10 @@
       "name": "Formatear Respuesta Admin",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
-      "position": [1260, 240]
+      "position": [
+        1260,
+        240
+      ]
     },
     {
       "parameters": {
@@ -152,7 +176,10 @@
       "name": "Respond Webhook Admin",
       "type": "n8n-nodes-base.respondToWebhook",
       "typeVersion": 1.1,
-      "position": [1500, 240]
+      "position": [
+        1500,
+        240
+      ]
     }
   ],
   "pinData": {},
