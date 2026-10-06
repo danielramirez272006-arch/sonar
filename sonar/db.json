@@ -10440,7 +10440,13 @@
       "avatarUrl": "https://lh3.googleusercontent.com/a/ACg8ocL2Yq1Z90WHM2gjiiIejiuqLTB5MRTvnbEdBjabxdY1PR5yGbQ=s96-c",
       "status": "active",
       "createdAt": "2026-10-03T22:18:21.583Z",
-      "password": "sha256$0a4df45c9579803232af305a0e60a3a0$fb9465f1680c3bd8593ea9ff5a5283a14ecb50a3be208966eb278500ce98c957"
+      "password": "sha256$0a4df45c9579803232af305a0e60a3a0$fb9465f1680c3bd8593ea9ff5a5283a14ecb50a3be208966eb278500ce98c957",
+      "parentalControl": {
+        "enabled": false,
+        "blockExplicit": false,
+        "pin": "4321"
+      },
+      "accountType": "standard"
     }
   ],
   "reviews": [
